@@ -67,6 +67,10 @@ Avant de proposer une fonctionnalité, vérifier :
 
 ## 7. Règles de modification
 
+- Toute modification de comportement doit ajouter ou mettre à jour les tests pertinents. Aucun agent ne doit déclarer une fonctionnalité terminée lorsque les tests applicables n’ont pas été exécutés.
+
+- Ne jamais créer un commit, pousser une branche ou ouvrir une Pull Request sans instruction humaine explicite dans la tâche courante.
+
 - Une seule fonctionnalité par tâche.
 - Pas de refactorisation sans nécessité directe.
 - Pas d’abstraction spéculative.

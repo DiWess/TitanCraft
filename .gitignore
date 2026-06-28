@@ -1,0 +1,65 @@
+# Godot caches and generated imports
+.godot/
+.import/
+*.import
+
+# Godot temporary files
+*.tmp
+*.temp
+*.translation
+
+# .NET build output
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE caches
+.vs/
+.vscode/.ropeproject/
+.vscode/.history/
+.vscode/*.log
+.idea/
+*.code-workspace
+
+# Local builds and exports
+builds/
+exports/
+*.pck
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Secrets and environment files
+.env
+.env.*
+*.secret
+*.secrets
+
+# Test outputs
+tests/TestResults/
+*.trx
+*.coverage
+
+# GdUnit4 generated runner
+tests/gdunit4_testadapter_v5/

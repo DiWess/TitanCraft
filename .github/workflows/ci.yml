@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Godot 4.7 .NET
+        run: |
+          curl -L -o godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+          unzip -q godot.zip -d godot
+          GODOT_EXE="$PWD/godot/Godot_v4.7-stable_mono_linux_x86_64/Godot_v4.7-stable_mono_linux.x86_64"
+          test -f "$GODOT_EXE"
+          chmod +x "$GODOT_EXE"
+          sudo ln -sf "$GODOT_EXE" /usr/local/bin/godot
+          "$GODOT_EXE" --headless --version | grep '4.7.stable.mono.official.5b4e0cb0f'
+      - name: Install Godot export templates
+        run: |
+          curl -L -o templates.tpz https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_export_templates.tpz
+          unzip -q templates.tpz -d templates_extract
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.7.stable.mono"
+          cp -R templates_extract/templates/. "$HOME/.local/share/godot/export_templates/4.7.stable.mono/"
+          test -f "$HOME/.local/share/godot/export_templates/4.7.stable.mono/windows_release_x86_64.exe"
+      - run: ./tools/test.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-test-results
+          path: |
+            tests/TestResults
+            builds/Windows/TitanCraft.exe
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Godot 4.7 .NET
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_win64.zip -OutFile godot.zip
+          Expand-Archive godot.zip -DestinationPath godot
+          $godotExe = Get-ChildItem -Path godot -Recurse -Filter Godot_v4.7-stable_mono_win64.exe | Select-Object -First 1
+          if (-not $godotExe) { throw 'Godot_v4.7-stable_mono_win64.exe not found after extraction' }
+          $godotExe.DirectoryName | Out-File -FilePath $env:GITHUB_PATH -Append
+          & $godotExe.FullName --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
+      - name: Install Godot export templates
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_export_templates.tpz -OutFile templates.tpz
+          Expand-Archive templates.tpz -DestinationPath templates_extract
+          $templateRoot = Join-Path $env:APPDATA 'Godot/export_templates/4.7.stable.mono'
+          New-Item -ItemType Directory -Force $templateRoot | Out-Null
+          Copy-Item -Recurse -Force 'templates_extract/templates/*' $templateRoot
+          if (-not (Test-Path (Join-Path $templateRoot 'windows_release_x86_64.exe'))) { throw 'Windows release export template missing' }
+      - run: ./tools/test.ps1
+        shell: pwsh
+      - name: Native exported smoke
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath builds/Windows/TitanCraft.exe -ArgumentList '--headless','--quit-after','120' -PassThru
+          if (-not $p.WaitForExit(30000)) { $p.Kill(); throw 'Exported build timeout' }
+          if ($p.ExitCode -ne 0) { throw "Exported build failed with $($p.ExitCode)" }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-build-and-test-results
+          path: |
+            tests/TestResults
+            builds/Windows

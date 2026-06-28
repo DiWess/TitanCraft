@@ -81,6 +81,7 @@ Avant de proposer une fonctionnalité, vérifier :
 - Pas de code dont la licence est inconnue.
 - Ne jamais modifier inutilement des fichiers binaires.
 - Ne pas prétendre qu’un test a réussi s’il n’a pas été exécuté.
+- Une Pull Request ne doit jamais être fusionnée tant que tous les contrôles CI obligatoires Linux et Windows ne sont pas terminés avec succès.
 - Signaler clairement ce qui ne peut pas être testé dans le conteneur.
 
 ## 8. Architecture

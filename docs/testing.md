@@ -43,3 +43,7 @@ Add pure logic tests under `tests/Unit/`. Add runtime scene behavior checks to `
 ## Headless limits
 
 Headless tests validate loading, physics, input simulation, and finite transforms. They do not replace human gameplay review for FPS feel, mouse comfort, or Windows build UX before distribution.
+
+## GdUnit analyzer compatibility note
+
+`tests/TitanCraft.Tests.csproj` keeps `gdUnit4.analyzers` enabled and temporarily suppresses `CS9057` only. Local verification without that suppression shows `gdUnit4.analyzers` 1.0.0 is loaded, but the analyzer assembly references Roslyn compiler 4.14 while the current Godot .NET 8 build path runs compiler 4.11. A NuGet check on 2026-06-28 found no newer `gdUnit4.analyzers` package than 1.0.0, so the suppression remains targeted and temporary instead of disabling GdUnit diagnostics. Remove it once the Godot SDK/compiler toolchain or analyzer package versions are compatible.

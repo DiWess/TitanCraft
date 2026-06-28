@@ -7,7 +7,40 @@ $templateRoot = Join-Path $env:APPDATA "Godot/export_templates/$templateVersion"
 if (Test-Path $results) { Remove-Item -Recurse -Force $results }
 New-Item -ItemType Directory -Force $results | Out-Null
 New-Item -ItemType Directory -Force "builds/Windows" | Out-Null
-$env:GODOT_BIN = if ($env:GODOT_BIN) { $env:GODOT_BIN } else { (Get-Command godot).Source }
+
+function Assert-LastExitCode {
+    param([string]$Step)
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Step failed with exit code $LASTEXITCODE"
+    }
+}
+
+if ($env:GODOT_BIN) {
+    if (Test-Path $env:GODOT_BIN) {
+        $godotExe = (Resolve-Path $env:GODOT_BIN).Path
+    } else {
+        $godotCommand = Get-Command $env:GODOT_BIN -ErrorAction SilentlyContinue
+
+        if (-not $godotCommand) {
+            throw "GODOT_BIN cannot be resolved: $env:GODOT_BIN"
+        }
+
+        $godotExe = $godotCommand.Source
+    }
+} else {
+    $godotExe = (Get-Command godot -ErrorAction Stop).Source
+}
+
+if (-not (Test-Path $godotExe)) {
+    throw "Godot executable does not exist: $godotExe"
+}
+
+if ([System.IO.Path]::GetExtension($godotExe) -ne ".exe") {
+    throw "Windows GODOT_BIN must point to a .exe: $godotExe"
+}
+
+$env:GODOT_BIN = $godotExe
 
 function Install-ExportTemplates {
     $releaseTemplate = Join-Path $templateRoot "windows_release_x86_64.exe"
@@ -22,21 +55,25 @@ function Install-ExportTemplates {
 
 Install-ExportTemplates
 if (!(Test-Path (Join-Path $templateRoot "windows_release_x86_64.exe"))) { throw "Windows export template missing" }
-& $env:GODOT_BIN --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
-$wrapper = (Resolve-Path "tools/godot-headless.sh").Path
-$settings = "tests/TitanCraft.runsettings"
-$content = Get-Content $settings -Raw
-$content = $content -replace "<GODOT_BIN>.*?</GODOT_BIN>", "<GODOT_BIN>$wrapper</GODOT_BIN>"
-Set-Content -Path $settings -Value $content
+& $godotExe --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
+Assert-LastExitCode "Godot version check"
 
 dotnet restore
+Assert-LastExitCode "dotnet restore"
 dotnet build --configuration Debug
+Assert-LastExitCode "dotnet build Debug"
 dotnet build --configuration Release
+Assert-LastExitCode "dotnet build Release"
 dotnet test tests/TitanCraft.Tests.csproj --settings tests/TitanCraft.runsettings --logger "trx;LogFileName=unit.trx" --results-directory $results
-& $env:GODOT_BIN --headless --path . --import --quit 2>&1 | Tee-Object "$results/import.log"
-& $env:GODOT_BIN --headless --path . tests/Integration/IntegrationTestRunner.tscn 2>&1 | Tee-Object "$results/integration.log"
-& $env:GODOT_BIN --headless --path . --quit-after 300 2>&1 | Tee-Object "$results/smoke.log"
-& $env:GODOT_BIN --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe 2>&1 | Tee-Object "$results/export.log"
+Assert-LastExitCode "dotnet test"
+& $godotExe --headless --path . --import --quit 2>&1 | Tee-Object "$results/import.log"
+Assert-LastExitCode "Godot import"
+& $godotExe --headless --path . tests/Integration/IntegrationTestRunner.tscn 2>&1 | Tee-Object "$results/integration.log"
+Assert-LastExitCode "Godot integration"
+& $godotExe --headless --path . --quit-after 300 2>&1 | Tee-Object "$results/smoke.log"
+Assert-LastExitCode "Godot smoke"
+& $godotExe --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe 2>&1 | Tee-Object "$results/export.log"
+Assert-LastExitCode "Windows export"
 if (!(Test-Path "builds/Windows/TitanCraft.exe")) { throw "Windows export missing" }
 
 $matches = Select-String -Path "$results/*" -Pattern "SCRIPT ERROR|Unhandled exception|Failed to load|Cannot get node|NullReferenceException"

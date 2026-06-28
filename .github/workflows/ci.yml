@@ -54,7 +54,9 @@ jobs:
           $godotExe = Get-ChildItem -Path godot -Recurse -Filter Godot_v4.7-stable_mono_win64.exe | Select-Object -First 1
           if (-not $godotExe) { throw 'Godot_v4.7-stable_mono_win64.exe not found after extraction' }
           $godotExe.DirectoryName | Out-File -FilePath $env:GITHUB_PATH -Append
+          "GODOT_BIN=$($godotExe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
           & $godotExe.FullName --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
+          if ($LASTEXITCODE -ne 0) { throw "Godot version check failed with exit code $LASTEXITCODE" }
       - name: Install Godot export templates
         shell: pwsh
         run: |

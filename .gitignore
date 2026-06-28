@@ -60,3 +60,6 @@ $RECYCLE.BIN/
 tests/TestResults/
 *.trx
 *.coverage
+
+# GdUnit4 generated runner
+tests/gdunit4_testadapter_v5/

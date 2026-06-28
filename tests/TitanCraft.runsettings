@@ -5,8 +5,12 @@
     <ResultsDirectory>./tests/TestResults</ResultsDirectory>
     <TestSessionTimeout>1800000</TestSessionTimeout>
     <TreatNoTestsAsError>true</TreatNoTestsAsError>
+    <EnvironmentVariables>
+      <GODOT_BIN>/workspace/TitanCraft/tools/godot-headless.sh</GODOT_BIN>
+    </EnvironmentVariables>
   </RunConfiguration>
   <GdUnit4>
+    <Parameters>"--headless --verbose"</Parameters>
     <DisplayName>FullyQualifiedName</DisplayName>
     <CaptureStdOut>true</CaptureStdOut>
     <CompileProcessTimeout>30000</CompileProcessTimeout>

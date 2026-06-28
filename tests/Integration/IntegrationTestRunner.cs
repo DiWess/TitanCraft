@@ -148,8 +148,8 @@ public partial class IntegrationTestRunner : Node
 
     private static T LoadScene<T>(string path) where T : Node
     {
-        var scene = ResourceLoader.Load<PackedScene>(path);
-        Require(scene is not null, $"Failed to load {path}");
+        var scene = ResourceLoader.Load<PackedScene>(path)
+            ?? throw new InvalidOperationException($"Failed to load {path}");
         return scene.Instantiate<T>();
     }
 

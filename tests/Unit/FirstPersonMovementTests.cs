@@ -9,6 +9,7 @@ namespace TitanCraft.Tests.Unit;
 public sealed class FirstPersonMovementTests
 {
     [TestCase]
+    [RequireGodotRuntime]
     public void ClampPitchLimitsVerticalAngle()
     {
         var max = Mathf.DegToRad(85.0f);
@@ -18,6 +19,7 @@ public sealed class FirstPersonMovementTests
     }
 
     [TestCase]
+    [RequireGodotRuntime]
     public void MoveDirectionIsNormalizedForDiagonalInput()
     {
         var direction = FirstPersonMovement.GetMoveDirection(Basis.Identity, new Vector2(1.0f, 1.0f));
@@ -26,6 +28,7 @@ public sealed class FirstPersonMovementTests
     }
 
     [TestCase]
+    [RequireGodotRuntime]
     public void CardinalDirectionsRemainHorizontalAndMeasurable()
     {
         AssertThat(FirstPersonMovement.GetMoveDirection(Basis.Identity, Vector2.Up).Z).IsLess(0.0f);

@@ -1,6 +1,8 @@
 using System;
 using Godot;
 using TitanCraft.Player;
+using TitanCraft.SaveSystem;
+using TitanCraft.UI;
 
 namespace TitanCraft.Tests.Integration;
 
@@ -8,15 +10,27 @@ public partial class IntegrationTestRunner : Node
 {
     private const string MainScenePath = "res://scenes/Main/Main.tscn";
     private const string PlayerScenePath = "res://scenes/Player/Player.tscn";
-    private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "quit_game"];
+    private static readonly string[] UiScenePaths = [
+        "res://scenes/UI/HUD.tscn",
+        "res://scenes/UI/MainMenu.tscn",
+        "res://scenes/UI/PauseMenu.tscn",
+        "res://scenes/UI/VictoryScreen.tscn",
+        "res://scenes/UI/DefeatScreen.tscn",
+    ];
+    private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "quit_game", "pause_menu"];
 
     public override async void _Ready()
     {
         try
         {
+            LocalSaveGameStore.DeleteSave();
             TestInputMap();
             await TestMainScene();
             await TestPlayerScene();
+            await TestUiScenes();
+            await TestHudBinding();
+            await TestEndScreenNavigation();
+            await TestSaveLoadFlow();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -36,7 +50,8 @@ public partial class IntegrationTestRunner : Node
         foreach (var action in RequiredActions[..4])
             RequireHasPhysicalKey(action);
         RequireHasKey("jump", Key.Space);
-        RequireHasKey("quit_game", Key.Escape);
+        RequireHasKey("quit_game", Key.Q);
+        RequireHasKey("pause_menu", Key.Escape);
     }
 
     private async System.Threading.Tasks.Task TestMainScene()
@@ -66,6 +81,122 @@ public partial class IntegrationTestRunner : Node
         Require(FirstPersonMovement.HasValidParameters(player.WalkSpeed, player.JumpVelocity, player.MouseSensitivity, player.MaxLookAngleDegrees), "Player exported parameters invalid");
         player.QueueFree();
         await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestUiScenes()
+    {
+        foreach (var path in UiScenePaths)
+        {
+            var scene = LoadScene<Node>(path);
+            AddChild(scene);
+            await Frames(2);
+            Require(scene.GetTree() is not null, $"UI scene did not enter tree: {path}");
+            scene.QueueFree();
+            await Frames(2);
+        }
+
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        Require(main.GetNode<CanvasLayer>("HUD") is not null, "Main scene HUD missing");
+        var pause = main.GetNode<CanvasLayer>("PauseMenu");
+        Require(pause.GetNode<Button>("Panel/Menu/ResumeButton") is not null, "Pause resume button missing");
+        Require(pause.GetNode<Button>("Panel/Menu/MainMenuButton") is not null, "Pause main menu button missing");
+        main.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestHudBinding()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var hud = main.GetNode<CrashSiteHud>("HUD");
+
+        player.Health.ApplyDamage(25);
+        player.Inventory.AddResources(metal: 4, biomass: 2, electronicComponents: 1);
+        player.Inventory.MarkMechanicalArmBuilt();
+        player.Mission.TryCompleteResourceCollection();
+        await Frames(2);
+
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Health").Text == "Health: 75/100", "HUD health did not update from player health");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Metal: 4"), "HUD resources did not update from inventory");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/MechanicalArmState").Text.Contains("Online"), "HUD arm state did not update from inventory");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text.Contains("Mechanical Arm Mk I"), "HUD objective did not update from mission state");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/InteractionPrompt").Visible == false, "HUD interaction prompt should start hidden without a target");
+        main.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestEndScreenNavigation()
+    {
+        var victoryMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(victoryMain);
+        await Frames(2);
+        var victoryPlayer = victoryMain.GetNode<FirstPersonController>("Player");
+        var victoryNavigator = victoryMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        victoryNavigator.EnableSceneChanges = false;
+        victoryPlayer.Mission.TryCompleteResourceCollection();
+        victoryPlayer.Mission.TryCompleteMechanicalArmConstruction();
+        victoryPlayer.Mission.TryCompleteGalaxabrainDefeat(true);
+        victoryPlayer.Mission.TryCompleteComponentRecovery();
+        victoryPlayer.Mission.TryCompleteBeaconActivation();
+        await Frames(2);
+        Require(victoryNavigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after mission victory");
+        victoryMain.QueueFree();
+        await Frames(2);
+
+        var defeatMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(defeatMain);
+        await Frames(2);
+        var defeatPlayer = defeatMain.GetNode<FirstPersonController>("Player");
+        var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        defeatNavigator.EnableSceneChanges = false;
+        defeatPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
+        await Frames(2);
+        Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat screen was not requested after player death");
+        defeatMain.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestSaveLoadFlow()
+    {
+        LocalSaveGameStore.DeleteSave();
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var saveCoordinator = main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
+        var pauseMenu = main.GetNode<PauseMenu>("PauseMenu");
+        player.GlobalPosition = new Vector3(3.0f, 2.0f, -7.0f);
+        player.Health.ApplyDamage(40);
+        player.Inventory.AddResources(metal: 6, biomass: 1, electronicComponents: 2);
+        player.Mission.TryCompleteResourceCollection();
+        pauseMenu.GetNode<Button>("Panel/Menu/SaveButton").EmitSignal(Button.SignalName.Pressed);
+        await Frames(2);
+        Require(saveCoordinator.LastSaveSucceeded, "Pause Save did not write a save file");
+        Require(LocalSaveGameStore.SaveExists(), "Save file does not exist after pause Save");
+        main.QueueFree();
+        await Frames(2);
+
+        var loadedMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(loadedMain);
+        await Frames(2);
+        var loadedPlayer = loadedMain.GetNode<FirstPersonController>("Player");
+        var loadedCoordinator = loadedMain.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
+        Require(loadedCoordinator.LastLoadSucceeded, "Continue load did not restore an existing save");
+        Require(loadedPlayer.Health.CurrentHealth == 60, "Loaded health mismatch");
+        Require(loadedPlayer.Inventory.Metal == 6 && loadedPlayer.Inventory.ElectronicComponents == 2, "Loaded inventory mismatch");
+        Require(loadedPlayer.Mission.CurrentStep == Missions.CrashSiteMissionStep.BuildMechanicalArm, "Loaded mission step mismatch");
+        Require(HorizontalDistance(loadedPlayer.GlobalPosition, new Vector3(3.0f, 2.0f, -7.0f)) < 0.1f, "Loaded player position mismatch");
+        loadedMain.QueueFree();
+        await Frames(2);
+        LocalSaveGameStore.DeleteSave();
     }
 
     private async System.Threading.Tasks.Task TestPhysicsAndMovement()

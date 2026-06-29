@@ -47,20 +47,25 @@ public partial class IntegrationTestRunner : Node
     {
         foreach (var action in RequiredActions)
             Require(InputMap.HasAction(action), $"Missing InputMap action: {action}");
-        foreach (var action in RequiredActions[..4])
-            RequireHasPhysicalKey(action);
+        RequireHasPhysicalKey("move_forward", Key.W);
+        RequireHasPhysicalKey("move_forward", Key.Z);
+        RequireHasPhysicalKey("move_left", Key.A);
+        RequireHasPhysicalKey("move_left", Key.Q);
+        RequireHasPhysicalKey("move_backward", Key.S);
+        RequireHasPhysicalKey("move_right", Key.D);
         RequireHasKey("jump", Key.Space);
         RequireHasKey("pause_menu", Key.Escape);
-        RequireMoveLeftDoesNotTriggerQuitGame();
+        RequireGameplayMovementDoesNotTriggerQuitGame();
     }
 
-    private static void RequireMoveLeftDoesNotTriggerQuitGame()
+    private static void RequireGameplayMovementDoesNotTriggerQuitGame()
     {
         if (!InputMap.HasAction("quit_game"))
             return;
 
-        foreach (var inputEvent in InputMap.ActionGetEvents("move_left"))
-            Require(!inputEvent.IsAction("quit_game"), "move_left also triggers quit_game");
+        foreach (var action in RequiredActions[..4])
+            foreach (var inputEvent in InputMap.ActionGetEvents(action))
+                Require(!inputEvent.IsAction("quit_game"), $"{action} also triggers quit_game");
     }
 
     private async System.Threading.Tasks.Task TestMainScene()
@@ -295,12 +300,12 @@ public partial class IntegrationTestRunner : Node
 
     private static float HorizontalDistance(Vector3 from, Vector3 to) => new Vector2(to.X - from.X, to.Z - from.Z).Length();
 
-    private static void RequireHasPhysicalKey(string action)
+    private static void RequireHasPhysicalKey(string action, Key key)
     {
         foreach (var inputEvent in InputMap.ActionGetEvents(action))
-            if (inputEvent is InputEventKey { PhysicalKeycode: not Key.None })
+            if (inputEvent is InputEventKey eventKey && eventKey.PhysicalKeycode == key)
                 return;
-        throw new InvalidOperationException($"{action} has no physical key");
+        throw new InvalidOperationException($"{action} is not mapped to physical key {key}");
     }
 
     private static void RequireHasKey(string action, Key key)

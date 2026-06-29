@@ -26,6 +26,15 @@ TitanCraft uses a minimal layered test setup.
 Unit tests cover FPS movement math: pitch clamp, normalized directions, diagonal-speed limits, and parameter validity.
 Integration tests cover the real Godot scenes, collision nodes, light, player capsule/camera, physics landing, movement actions, jump, camera clamp, and InputMap configuration.
 
+## Manual control check
+
+Movement keeps both keyboard layouts active for local playtesting:
+
+- QWERTY/WASD: `W` forward, `A` left, `S` backward, `D` right.
+- AZERTY/ZQSD: `Z` forward, `Q` left, `S` backward, `D` right.
+
+`Q` is reserved for left movement in the AZERTY/ZQSD layout and must not trigger critical gameplay actions such as `quit_game`.
+
 ## CI
 
 GitHub Actions should run the same restore, Debug/Release builds, unit tests, Godot headless integration test, import, export, log scan, and artifact upload on Linux and Windows.

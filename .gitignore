@@ -3,6 +3,10 @@
 .import/
 *.import
 
+# Prevent accidental nested Godot projects from making imports ignore test folders
+**/project.godot
+!project.godot
+
 # Godot temporary files
 *.tmp
 *.temp

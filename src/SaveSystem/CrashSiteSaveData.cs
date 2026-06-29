@@ -8,6 +8,7 @@ public sealed class CrashSiteSaveData
     public const int CurrentSaveVersion = 1;
 
     public int SaveVersion { get; set; } = CurrentSaveVersion;
+    public string CheckpointId { get; set; } = string.Empty;
     public float PlayerX { get; set; }
     public float PlayerY { get; set; }
     public float PlayerZ { get; set; }
@@ -16,7 +17,19 @@ public sealed class CrashSiteSaveData
     public int Biomass { get; set; }
     public int ElectronicComponents { get; set; }
     public bool MechanicalArmBuilt { get; set; }
+    public bool IsMechanicalArmBuilt
+    {
+        get => MechanicalArmBuilt;
+        set => MechanicalArmBuilt = value;
+    }
     public bool GalaxabrainComponentCollected { get; set; }
+    public bool IsGalaxabrainComponentCollected
+    {
+        get => GalaxabrainComponentCollected;
+        set => GalaxabrainComponentCollected = value;
+    }
+    public bool IsGalaxabrainDefeated { get; set; }
+    public bool IsBeaconActivated { get; set; }
     public CrashSiteMissionStep MissionStep { get; set; }
 
     /// <summary>
@@ -28,6 +41,7 @@ public sealed class CrashSiteSaveData
         return new CrashSiteSaveData
         {
             SaveVersion = CurrentSaveVersion,
+            CheckpointId = string.Empty,
             PlayerX = 0f,
             PlayerY = 0f,
             PlayerZ = 0f,
@@ -37,7 +51,9 @@ public sealed class CrashSiteSaveData
             ElectronicComponents = 0,
             MechanicalArmBuilt = false,
             GalaxabrainComponentCollected = false,
-            MissionStep = CrashSiteMissionStep.Start
+            IsGalaxabrainDefeated = false,
+            IsBeaconActivated = false,
+            MissionStep = CrashSiteMissionStep.CollectResources
         };
     }
 }

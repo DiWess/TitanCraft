@@ -1,22 +1,20 @@
 using System;
-using Godot;
-
 namespace TitanCraft.Missions;
 
 /// <summary>
 /// Manages the state and progression of the crash site mission.
 /// Tracks completed objectives and current mission step.
 /// </summary>
-public partial class CrashSiteMissionState : Resource
+public sealed class CrashSiteMissionState
 {
-    private CrashSiteMissionStep _currentStep = CrashSiteMissionStep.Start;
+    private CrashSiteMissionStep _currentStep = CrashSiteMissionStep.CollectResources;
     private bool _resourceCollectionCompleted;
     private bool _mechanicalArmConstructionCompleted;
     private bool _galaxabrainDefeatCompleted;
     private bool _componentRecoveryCompleted;
     private bool _beaconActivationCompleted;
 
-    public event EventHandler? Changed;
+    public event Action<CrashSiteMissionState>? Changed;
 
     /// <summary>
     /// Gets the current mission step.
@@ -29,7 +27,6 @@ public partial class CrashSiteMissionState : Resource
             if (_currentStep != value)
             {
                 _currentStep = value;
-                EmitSignal(SignalName.Changed);
             }
         }
     }
@@ -39,13 +36,12 @@ public partial class CrashSiteMissionState : Resource
     /// </summary>
     public string CurrentObjectiveText => _currentStep switch
     {
-        CrashSiteMissionStep.Start => "Collect Resources",
         CrashSiteMissionStep.CollectResources => "Collect Resources",
         CrashSiteMissionStep.BuildMechanicalArm => "Build Mechanical Arm Mk I",
         CrashSiteMissionStep.ActivateBeacon => "Activate Beacon",
         CrashSiteMissionStep.DefeatGalaxabrain => "Defeat Galaxabrain",
-        CrashSiteMissionStep.ComponentRecovery => "Recover Components",
-        CrashSiteMissionStep.Victory => "Victory!",
+        CrashSiteMissionStep.RecoverGalaxabrainComponent => "Recover Galaxabrain Component",
+        CrashSiteMissionStep.Victory => "Mission complete: Beacon activated",
         _ => "Unknown Objective"
     };
 
@@ -54,14 +50,13 @@ public partial class CrashSiteMissionState : Resource
     /// </summary>
     public bool TryCompleteResourceCollection()
     {
-        if (_resourceCollectionCompleted)
+        if (_resourceCollectionCompleted || _currentStep != CrashSiteMissionStep.CollectResources)
             return false;
 
         _resourceCollectionCompleted = true;
-        if (_currentStep == CrashSiteMissionStep.Start || _currentStep == CrashSiteMissionStep.CollectResources)
-            CurrentStep = CrashSiteMissionStep.BuildMechanicalArm;
+        CurrentStep = CrashSiteMissionStep.BuildMechanicalArm;
 
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this);
         return true;
     }
 
@@ -70,30 +65,28 @@ public partial class CrashSiteMissionState : Resource
     /// </summary>
     public bool TryCompleteMechanicalArmConstruction()
     {
-        if (_mechanicalArmConstructionCompleted)
+        if (_mechanicalArmConstructionCompleted || _currentStep != CrashSiteMissionStep.BuildMechanicalArm)
             return false;
 
         _mechanicalArmConstructionCompleted = true;
-        if (_currentStep == CrashSiteMissionStep.BuildMechanicalArm)
-            CurrentStep = CrashSiteMissionStep.ActivateBeacon;
+        CurrentStep = CrashSiteMissionStep.DefeatGalaxabrain;
 
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this);
         return true;
     }
 
     /// <summary>
     /// Attempts to complete the Galaxabrain defeat objective.
     /// </summary>
-    public bool TryCompleteGalaxabrainDefeat(bool defeated = true)
+    public bool TryCompleteGalaxabrainDefeat(bool isGalaxabrainDefeated = true)
     {
-        if (_galaxabrainDefeatCompleted)
+        if (_galaxabrainDefeatCompleted || !isGalaxabrainDefeated || _currentStep != CrashSiteMissionStep.DefeatGalaxabrain)
             return false;
 
-        _galaxabrainDefeatCompleted = defeated;
-        if (defeated && _currentStep == CrashSiteMissionStep.DefeatGalaxabrain)
-            CurrentStep = CrashSiteMissionStep.ComponentRecovery;
+        _galaxabrainDefeatCompleted = true;
+        CurrentStep = CrashSiteMissionStep.RecoverGalaxabrainComponent;
 
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this);
         return true;
     }
 
@@ -102,14 +95,13 @@ public partial class CrashSiteMissionState : Resource
     /// </summary>
     public bool TryCompleteComponentRecovery()
     {
-        if (_componentRecoveryCompleted)
+        if (_componentRecoveryCompleted || _currentStep != CrashSiteMissionStep.RecoverGalaxabrainComponent)
             return false;
 
         _componentRecoveryCompleted = true;
-        if (_currentStep == CrashSiteMissionStep.ComponentRecovery)
-            UpdateVictoryStatus();
+        CurrentStep = CrashSiteMissionStep.ActivateBeacon;
 
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this);
         return true;
     }
 
@@ -118,14 +110,13 @@ public partial class CrashSiteMissionState : Resource
     /// </summary>
     public bool TryCompleteBeaconActivation()
     {
-        if (_beaconActivationCompleted)
+        if (_beaconActivationCompleted || _currentStep != CrashSiteMissionStep.ActivateBeacon)
             return false;
 
         _beaconActivationCompleted = true;
-        if (_currentStep == CrashSiteMissionStep.ActivateBeacon)
-            CurrentStep = CrashSiteMissionStep.DefeatGalaxabrain;
+        UpdateVictoryStatus();
 
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this);
         return true;
     }
 
@@ -138,12 +129,12 @@ public partial class CrashSiteMissionState : Resource
 
         // Infer completed objectives based on current step
         _resourceCollectionCompleted = savedStep >= CrashSiteMissionStep.BuildMechanicalArm;
-        _mechanicalArmConstructionCompleted = savedStep >= CrashSiteMissionStep.ActivateBeacon;
-        _beaconActivationCompleted = savedStep >= CrashSiteMissionStep.DefeatGalaxabrain;
-        _galaxabrainDefeatCompleted = savedStep >= CrashSiteMissionStep.ComponentRecovery;
-        _componentRecoveryCompleted = savedStep >= CrashSiteMissionStep.Victory;
+        _mechanicalArmConstructionCompleted = savedStep >= CrashSiteMissionStep.DefeatGalaxabrain;
+        _galaxabrainDefeatCompleted = savedStep >= CrashSiteMissionStep.RecoverGalaxabrainComponent;
+        _componentRecoveryCompleted = savedStep >= CrashSiteMissionStep.ActivateBeacon;
+        _beaconActivationCompleted = savedStep >= CrashSiteMissionStep.Victory;
 
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this);
     }
 
     /// <summary>

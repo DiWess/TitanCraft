@@ -1,10 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=12 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
-albedo_color = Color(0.24, 0.28, 0.24, 1)
-roughness = 0.8
+albedo_color = Color(0.28, 0.36, 0.3, 1)
+roughness = 0.85
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
@@ -13,12 +13,33 @@ material = SubResource("StandardMaterial3D_ground")
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(150, 0.2, 150)
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.18, 0.27, 0.42, 1)
+sky_horizon_color = Color(0.58, 0.55, 0.5, 1)
+ground_bottom_color = Color(0.12, 0.13, 0.13, 1)
+ground_horizon_color = Color(0.5, 0.48, 0.45, 1)
+sun_angle_max = 30.0
+sun_curve = 0.15
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
 [sub_resource type="Environment" id="Environment_main"]
-background_mode = 1
-background_color = Color(0.04, 0.06, 0.09, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.35, 0.38, 0.42, 1)
-ambient_light_energy = 0.6
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_prop"]
+albedo_color = Color(0.55, 0.42, 0.2, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+size = Vector3(1.5, 1.5, 1.5)
+material = SubResource("StandardMaterial3D_prop")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_crate"]
+size = Vector3(1.5, 1.5, 1.5)
 
 [node name="Main" type="Node3D"]
 
@@ -27,7 +48,7 @@ environment = SubResource("Environment_main")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 8, 0)
-light_energy = 2.5
+light_energy = 1.2
 shadow_enabled = true
 
 [node name="Ground" type="StaticBody3D" parent="."]
@@ -37,6 +58,33 @@ mesh = SubResource("BoxMesh_ground")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_ground")
+
+[node name="Placeholder_Crate1" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.85, -5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate1"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate1"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_Crate2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.85, -8)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate2"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate2"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_Crate3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.85, -12)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate3"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate3"]
+shape = SubResource("BoxShape3D_crate")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)

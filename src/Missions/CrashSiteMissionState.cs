@@ -1,3 +1,5 @@
+using System;
+
 namespace TitanCraft.Missions;
 
 public enum CrashSiteMissionStep
@@ -12,6 +14,7 @@ public enum CrashSiteMissionStep
 
 public sealed class CrashSiteMissionState
 {
+    public event Action<CrashSiteMissionState>? Changed;
     public CrashSiteMissionStep CurrentStep { get; private set; } = CrashSiteMissionStep.CollectResources;
 
     public string CurrentObjectiveText => CurrentStep switch
@@ -50,6 +53,15 @@ public sealed class CrashSiteMissionState
         return TryAdvanceFrom(CrashSiteMissionStep.ActivateBeacon);
     }
 
+    public void Restore(CrashSiteMissionStep step)
+    {
+        if (!Enum.IsDefined(step))
+            step = CrashSiteMissionStep.CollectResources;
+
+        CurrentStep = step;
+        Changed?.Invoke(this);
+    }
+
     private bool TryAdvanceFrom(CrashSiteMissionStep expectedStep)
     {
         if (CurrentStep != expectedStep)
@@ -58,6 +70,7 @@ public sealed class CrashSiteMissionState
         }
 
         CurrentStep++;
+        Changed?.Invoke(this);
         return true;
     }
 }

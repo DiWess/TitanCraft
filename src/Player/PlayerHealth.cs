@@ -4,6 +4,7 @@ namespace TitanCraft.Player;
 
 public sealed class PlayerHealth
 {
+    public event Action<PlayerHealth>? Changed;
     public const int DefaultMaxHealth = 100;
 
     public PlayerHealth(int maxHealth = DefaultMaxHealth)
@@ -31,10 +32,18 @@ public sealed class PlayerHealth
         }
 
         CurrentHealth = Math.Max(0, CurrentHealth - damage);
+        Changed?.Invoke(this);
     }
 
     public void PrepareRespawn()
     {
         CurrentHealth = MaxHealth;
+        Changed?.Invoke(this);
+    }
+
+    public void Restore(int currentHealth)
+    {
+        CurrentHealth = Math.Clamp(currentHealth, 0, MaxHealth);
+        Changed?.Invoke(this);
     }
 }

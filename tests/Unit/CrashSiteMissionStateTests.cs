@@ -48,6 +48,28 @@ public sealed class CrashSiteMissionStateTests
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.CollectResources);
     }
 
+
+    [TestCase]
+    public void EachIntermediateStepBlocksLaterCompletionMethods()
+    {
+        var mission = new CrashSiteMissionState();
+
+        AssertThat(mission.TryCompleteResourceCollection()).IsTrue();
+        AssertThat(mission.TryCompleteGalaxabrainDefeat()).IsFalse();
+        AssertThat(mission.TryCompleteComponentRecovery()).IsFalse();
+        AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.BuildMechanicalArm);
+
+        AssertThat(mission.TryCompleteMechanicalArmConstruction()).IsTrue();
+        AssertThat(mission.TryCompleteComponentRecovery()).IsFalse();
+        AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
+
+        AssertThat(mission.TryCompleteGalaxabrainDefeat()).IsTrue();
+        AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
+    }
+
     [TestCase]
     public void VictoryDoesNotAdvancePastFinalStep()
     {

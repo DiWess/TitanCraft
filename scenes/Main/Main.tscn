@@ -1,6 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=17 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
+[ext_resource type="Script" path="res://src/World/Workbench.cs" id="3_workbench"]
+[ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="4_galaxabrain_component"]
+[ext_resource type="Script" path="res://src/World/SavePoint.cs" id="5_save_point"]
+[ext_resource type="Script" path="res://src/World/Beacon.cs" id="6_beacon"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
 albedo_color = Color(0.28, 0.36, 0.3, 1)
@@ -84,6 +89,83 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.85, -12)
 mesh = SubResource("BoxMesh_crate")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate3"]
+shape = SubResource("BoxShape3D_crate")
+
+
+[node name="Placeholder_MetalPickup" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.85, -4)
+script = ExtResource("2_resource_pickup")
+ResourceKind = 0
+Quantity = 10
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_MetalPickup"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_BiomassPickup" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.85, -4)
+script = ExtResource("2_resource_pickup")
+ResourceKind = 1
+Quantity = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_BiomassPickup"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_ElectronicsPickup" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -10)
+script = ExtResource("2_resource_pickup")
+ResourceKind = 2
+Quantity = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_ElectronicsPickup"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_Workbench" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.85, -12)
+script = ExtResource("3_workbench")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Workbench"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Workbench"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_SavePoint" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.85, -12)
+script = ExtResource("5_save_point")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_SavePoint"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_SavePoint"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_GalaxabrainComponentPickup" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.85, -16)
+script = ExtResource("4_galaxabrain_component")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_GalaxabrainComponentPickup"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_GalaxabrainComponentPickup"]
+shape = SubResource("BoxShape3D_crate")
+
+[node name="Placeholder_Beacon" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0.85, -20)
+script = ExtResource("6_beacon")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Beacon"]
+mesh = SubResource("BoxMesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Beacon"]
 shape = SubResource("BoxShape3D_crate")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]

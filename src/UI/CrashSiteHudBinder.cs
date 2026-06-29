@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.Missions;
 using TitanCraft.Player;
 
 namespace TitanCraft.UI;
@@ -10,6 +11,7 @@ public partial class CrashSiteHudBinder : Node
 
     private FirstPersonController _player = null!;
     private CrashSiteHud _hud = null!;
+    private bool _startTutorialDismissed;
 
     public override void _Ready()
     {
@@ -49,5 +51,14 @@ public partial class CrashSiteHudBinder : Node
         _hud.SetMechanicalArmBuilt(inventory.IsMechanicalArmBuilt);
     }
 
-    private void UpdateMission(TitanCraft.Missions.CrashSiteMissionState mission) => _hud.SetObjective(mission.CurrentObjectiveText);
+    private void UpdateMission(CrashSiteMissionState mission)
+    {
+        _hud.SetObjective(mission.CurrentObjectiveText);
+
+        if (_startTutorialDismissed || mission.CurrentStep == CrashSiteMissionStep.CollectResources)
+            return;
+
+        _startTutorialDismissed = true;
+        _hud.SetStartTutorialVisible(false);
+    }
 }

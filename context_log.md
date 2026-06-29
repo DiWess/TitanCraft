@@ -19,3 +19,5 @@
 - 2026-06-29: Fixed Crash Site mission progression ordering, mission change notifications, and save DTO compatibility so CI build and regression tests pass.
 
 - 2026-06-29: Removed the gameplay quit action from Q, kept Escape pause as the clean exit path, and added integration coverage so left movement cannot trigger quit_game.
+
+- 2026-06-29: Added the short Crash Site start tutorial HUD prompt with mission-progression dismissal and integration coverage.

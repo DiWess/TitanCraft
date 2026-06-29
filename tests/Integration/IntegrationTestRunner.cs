@@ -8,7 +8,14 @@ public partial class IntegrationTestRunner : Node
 {
     private const string MainScenePath = "res://scenes/Main/Main.tscn";
     private const string PlayerScenePath = "res://scenes/Player/Player.tscn";
-    private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "quit_game"];
+    private static readonly string[] UiScenePaths = [
+        "res://scenes/UI/HUD.tscn",
+        "res://scenes/UI/MainMenu.tscn",
+        "res://scenes/UI/PauseMenu.tscn",
+        "res://scenes/UI/VictoryScreen.tscn",
+        "res://scenes/UI/DefeatScreen.tscn",
+    ];
+    private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "quit_game", "pause_menu"];
 
     public override async void _Ready()
     {
@@ -17,6 +24,7 @@ public partial class IntegrationTestRunner : Node
             TestInputMap();
             await TestMainScene();
             await TestPlayerScene();
+            await TestUiScenes();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -36,7 +44,8 @@ public partial class IntegrationTestRunner : Node
         foreach (var action in RequiredActions[..4])
             RequireHasPhysicalKey(action);
         RequireHasKey("jump", Key.Space);
-        RequireHasKey("quit_game", Key.Escape);
+        RequireHasKey("quit_game", Key.Q);
+        RequireHasKey("pause_menu", Key.Escape);
     }
 
     private async System.Threading.Tasks.Task TestMainScene()
@@ -65,6 +74,30 @@ public partial class IntegrationTestRunner : Node
         Require(player.GetNode<Camera3D>("Head/Camera3D").Current, "Camera inactive");
         Require(FirstPersonMovement.HasValidParameters(player.WalkSpeed, player.JumpVelocity, player.MouseSensitivity, player.MaxLookAngleDegrees), "Player exported parameters invalid");
         player.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestUiScenes()
+    {
+        foreach (var path in UiScenePaths)
+        {
+            var scene = LoadScene<Node>(path);
+            AddChild(scene);
+            await Frames(2);
+            Require(scene.GetTree() is not null, $"UI scene did not enter tree: {path}");
+            scene.QueueFree();
+            await Frames(2);
+        }
+
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        Require(main.GetNode<CanvasLayer>("HUD") is not null, "Main scene HUD missing");
+        var pause = main.GetNode<CanvasLayer>("PauseMenu");
+        Require(pause.GetNode<Button>("Panel/Menu/ResumeButton") is not null, "Pause resume button missing");
+        Require(pause.GetNode<Button>("Panel/Menu/MainMenuButton") is not null, "Pause main menu button missing");
+        main.QueueFree();
         await Frames(2);
     }
 

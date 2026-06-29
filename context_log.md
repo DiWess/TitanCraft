@@ -5,3 +5,5 @@
 - 2026-06-29: Added the minimal Crash Site combat path with mechanical arm attack gating, enemy-to-player damage, input binding, and combat progression tests.
 
 - 2026-06-29: Made the MVP mechanical arm recipe data-backed from a single JSON recipe while preserving focused crafting behavior and unit coverage.
+
+- 2026-06-29: Added README-required minimal UI screens for HUD, main menu, pause menu, victory, and defeat with integration scene-loading coverage.

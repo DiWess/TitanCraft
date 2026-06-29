@@ -30,6 +30,10 @@ autowrap_mode = 3
 [node name="Resources" type="Label" parent="Panel/Margin/VBox"]
 text = "Metal: 0  Biomass: 0  Electronics: 0"
 
+[node name="StartTutorial" type="Label" parent="Panel/Margin/VBox"]
+text = "ZQSD/WASD: move | Mouse: look | Space: jump | E: interact | Left click: attack | Esc: pause"
+autowrap_mode = 3
+
 [node name="InteractionPrompt" type="Label" parent="Panel/Margin/VBox"]
 visible = false
 text = ""

@@ -28,6 +28,7 @@ public partial class IntegrationTestRunner : Node
             await TestMainScene();
             await TestPlayerScene();
             await TestUiScenes();
+            await TestHudStartTutorial();
             await TestHudBinding();
             await TestEndScreenNavigation();
             await TestSaveLoadFlow();
@@ -122,6 +123,24 @@ public partial class IntegrationTestRunner : Node
     }
 
 
+
+    private async System.Threading.Tasks.Task TestHudStartTutorial()
+    {
+        var hud = LoadScene<CrashSiteHud>("res://scenes/UI/HUD.tscn");
+        AddChild(hud);
+        await Frames(2);
+        var startTutorial = hud.GetNode<Label>("Panel/Margin/VBox/StartTutorial");
+        Require(startTutorial.Visible, "HUD start tutorial should start visible");
+        Require(startTutorial.Text.Contains("ZQSD/WASD"), "HUD start tutorial missing movement controls");
+        Require(startTutorial.Text.Contains("Mouse"), "HUD start tutorial missing mouse look control");
+        Require(startTutorial.Text.Contains("Space"), "HUD start tutorial missing jump control");
+        Require(startTutorial.Text.Contains("E"), "HUD start tutorial missing interact control");
+        Require(startTutorial.Text.Contains("Left click"), "HUD start tutorial missing attack control");
+        Require(startTutorial.Text.Contains("Esc"), "HUD start tutorial missing pause control");
+        hud.QueueFree();
+        await Frames(2);
+    }
+
     private async System.Threading.Tasks.Task TestHudBinding()
     {
         var main = LoadScene<Node3D>(MainScenePath);
@@ -141,6 +160,7 @@ public partial class IntegrationTestRunner : Node
         Require(hud.GetNode<Label>("Panel/Margin/VBox/MechanicalArmState").Text.Contains("Online"), "HUD arm state did not update from inventory");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text.Contains("Mechanical Arm Mk I"), "HUD objective did not update from mission state");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/InteractionPrompt").Visible == false, "HUD interaction prompt should start hidden without a target");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/StartTutorial").Visible == false, "HUD start tutorial should hide after mission progression");
         main.QueueFree();
         await Frames(2);
     }

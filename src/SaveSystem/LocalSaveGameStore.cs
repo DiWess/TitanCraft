@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using Godot;
 
@@ -11,8 +12,12 @@ public static class LocalSaveGameStore
 
     public static void DeleteSave(string savePath = DefaultSavePath)
     {
-        if (FileAccess.FileExists(savePath))
-            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(savePath));
+        if (!FileAccess.FileExists(savePath))
+            return;
+
+        var error = DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(savePath));
+        if (error != Error.Ok)
+            GD.PushWarning($"Could not delete local save '{savePath}': {error}");
     }
 
     public static bool TryLoad(out CrashSiteSaveData saveData, string savePath = DefaultSavePath)
@@ -35,7 +40,8 @@ public static class LocalSaveGameStore
 
     public static void Save(CrashSiteSaveData saveData, string savePath = DefaultSavePath)
     {
-        using var file = FileAccess.Open(savePath, FileAccess.ModeFlags.Write);
+        using var file = FileAccess.Open(savePath, FileAccess.ModeFlags.Write)
+            ?? throw new InvalidOperationException($"Could not open local save for writing: {savePath}");
         file.StoreString(JsonSerializer.Serialize(saveData));
     }
 }

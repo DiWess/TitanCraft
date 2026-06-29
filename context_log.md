@@ -13,3 +13,5 @@
 - 2026-06-29: Wired Crash Site victory and defeat events to end-screen navigation through a UI coordinator with integration coverage for both transition requests.
 
 - 2026-06-29: Added local Crash Site save/load support for Continue, pause Save, and defeat reload using a versioned offline JSON save file.
+
+- 2026-06-29: Hardened local save file writes and deletion for CI parity across Linux and Windows while preserving the MVP save/load flow.

@@ -33,6 +33,7 @@ public partial class CrashSiteSaveCoordinator : Node
     public void SaveGame()
     {
         var position = _player.GlobalPosition;
+        LastSaveSucceeded = false;
         LocalSaveGameStore.Save(new CrashSiteSaveData
         {
             PlayerX = position.X,
@@ -51,6 +52,7 @@ public partial class CrashSiteSaveCoordinator : Node
 
     public bool LoadGameIfPresent()
     {
+        LastLoadSucceeded = false;
         if (!LocalSaveGameStore.TryLoad(out var saveData, SavePath))
             return false;
 

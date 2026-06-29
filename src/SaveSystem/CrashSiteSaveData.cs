@@ -4,7 +4,10 @@ namespace TitanCraft.SaveSystem;
 
 public sealed class CrashSiteSaveData
 {
-    public int SaveVersion { get; set; } = 1;
+    // Constant for versioning save files — used to validate compatibility
+    public const int CurrentSaveVersion = 1;
+
+    public int SaveVersion { get; set; } = CurrentSaveVersion;
     public float PlayerX { get; set; }
     public float PlayerY { get; set; }
     public float PlayerZ { get; set; }
@@ -15,4 +18,26 @@ public sealed class CrashSiteSaveData
     public bool MechanicalArmBuilt { get; set; }
     public bool GalaxabrainComponentCollected { get; set; }
     public CrashSiteMissionStep MissionStep { get; set; }
+
+    /// <summary>
+    /// Factory method to create a new game save with default values.
+    /// Used when starting a new game or when save data is invalid.
+    /// </summary>
+    public static CrashSiteSaveData NewGame()
+    {
+        return new CrashSiteSaveData
+        {
+            SaveVersion = CurrentSaveVersion,
+            PlayerX = 0f,
+            PlayerY = 0f,
+            PlayerZ = 0f,
+            Health = 100,
+            Metal = 0,
+            Biomass = 0,
+            ElectronicComponents = 0,
+            MechanicalArmBuilt = false,
+            GalaxabrainComponentCollected = false,
+            MissionStep = CrashSiteMissionStep.Start
+        };
+    }
 }

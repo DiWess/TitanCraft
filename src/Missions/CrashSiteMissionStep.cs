@@ -5,11 +5,12 @@ namespace TitanCraft.Missions;
 /// </summary>
 public enum CrashSiteMissionStep
 {
-    Start,
     CollectResources,
+    Start = CollectResources,
     BuildMechanicalArm,
-    ActivateBeacon,
     DefeatGalaxabrain,
-    ComponentRecovery,
+    RecoverGalaxabrainComponent,
+    ComponentRecovery = RecoverGalaxabrainComponent,
+    ActivateBeacon,
     Victory
 }

@@ -21,7 +21,7 @@ public partial class GalaxabrainComponentPickup : Area3D, ICrashSiteInteractable
             return false;
         }
 
-        if (!mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true))
+        if (!mission.TryCompleteGalaxabrainDefeat(true))
         {
             return false;
         }

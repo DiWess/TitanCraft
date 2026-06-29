@@ -1,8 +1,10 @@
 using System;
 using Godot;
 using TitanCraft.Player;
+using TitanCraft.Missions;
 using TitanCraft.SaveSystem;
 using TitanCraft.UI;
+using TitanCraft.World;
 
 namespace TitanCraft.Tests.Integration;
 
@@ -17,6 +19,16 @@ public partial class IntegrationTestRunner : Node
         "res://scenes/UI/VictoryScreen.tscn",
         "res://scenes/UI/DefeatScreen.tscn",
     ];
+    private static readonly string[] RequiredMaterials = [
+        "res://assets/Materials/HumanIvory.tres",
+        "res://assets/Materials/HumanGraphite.tres",
+        "res://assets/Materials/HumanBronze.tres",
+        "res://assets/Materials/HumanOrangeInteractive.tres",
+        "res://assets/Materials/VolcanicRock.tres",
+        "res://assets/Materials/AlienBlack.tres",
+        "res://assets/Materials/AlienVioletEmissive.tres",
+        "res://assets/Materials/BiomassRed.tres",
+    ];
     private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "pause_menu"];
 
     public override async void _Ready()
@@ -25,6 +37,7 @@ public partial class IntegrationTestRunner : Node
         {
             LocalSaveGameStore.DeleteSave();
             TestInputMap();
+            TestVisualMaterialsLoad();
             await TestMainScene();
             await TestPlayerScene();
             await TestUiScenes();
@@ -32,6 +45,7 @@ public partial class IntegrationTestRunner : Node
             await TestHudBinding();
             await TestEndScreenNavigation();
             await TestSaveLoadFlow();
+            await TestBeaconVisualState();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -80,8 +94,24 @@ public partial class IntegrationTestRunner : Node
         Require(ground.GetNode<CollisionShape3D>("CollisionShape3D").Shape is not null, "Ground collision missing");
         Require(main.GetNode<DirectionalLight3D>("DirectionalLight3D") is not null, "Light missing");
         Require(player.GlobalPosition.Y > ground.GlobalPosition.Y, "Player is not above ground");
+        Require(main.FindChildren("*", "WorldEnvironment", false, false).Count == 1, "Main scene must have one active WorldEnvironment");
+        Require(main.GetNode<Area3D>("Placeholder_Workbench") is not null, "Workbench missing");
+        var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+        Require(beacon.GetNode<Node3D>("ClosedVisual").Visible, "Closed beacon visual missing");
+        Require(!beacon.GetNode<Node3D>("ActiveVisual").Visible, "Active beacon visual should start hidden");
+        Require(main.GetNode<Area3D>("Placeholder_MetalPickup") is not null, "Metal pickup missing");
+        Require(main.GetNode<Area3D>("Placeholder_BiomassPickup") is not null, "Biomass pickup missing");
+        Require(main.GetNode<Area3D>("Placeholder_ElectronicsPickup") is not null, "Electronics pickup missing");
+        Require(main.GetNode<Node3D>("Moon") is not null, "Large moon missing");
+        Require(main.GetNode<Node3D>("AlienCrystal_1") is not null, "Alien crystal route missing");
         main.QueueFree();
         await Frames(2);
+    }
+
+    private static void TestVisualMaterialsLoad()
+    {
+        foreach (var path in RequiredMaterials)
+            Require(ResourceLoader.Load<StandardMaterial3D>(path) is not null, $"Material missing or not StandardMaterial3D: {path}");
     }
 
     private async System.Threading.Tasks.Task TestPlayerScene()
@@ -197,6 +227,23 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
     }
 
+
+    private async System.Threading.Tasks.Task TestBeaconVisualState()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator").EnableSceneChanges = false;
+        var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+        player.Mission.Restore(CrashSiteMissionStep.ActivateBeacon);
+        player.Inventory.MarkGalaxabrainComponentCollected();
+        Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed at valid mission state");
+        Require(!beacon.GetNode<Node3D>("ClosedVisual").Visible, "Closed beacon visual stayed visible after activation");
+        Require(beacon.GetNode<Node3D>("ActiveVisual").Visible, "Active beacon visual did not appear after activation");
+        main.QueueFree();
+        await Frames(2);
+    }
 
     private async System.Threading.Tasks.Task TestSaveLoadFlow()
     {

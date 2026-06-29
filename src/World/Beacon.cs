@@ -7,7 +7,13 @@ namespace TitanCraft.World;
 
 public partial class Beacon : Area3D, ICrashSiteInteractable
 {
+    [Export] public NodePath ClosedVisualPath { get; set; } = "ClosedVisual";
+
+    [Export] public NodePath ActiveVisualPath { get; set; } = "ActiveVisual";
+
     public bool IsActivated { get; private set; }
+
+    public override void _Ready() => UpdateVisualState();
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
     {
@@ -22,6 +28,16 @@ public partial class Beacon : Area3D, ICrashSiteInteractable
         }
 
         IsActivated = mission.TryCompleteBeaconActivation();
+        UpdateVisualState();
         return IsActivated;
+    }
+
+    private void UpdateVisualState()
+    {
+        if (!ClosedVisualPath.IsEmpty && GetNodeOrNull<Node3D>(ClosedVisualPath) is { } closedVisual)
+            closedVisual.Visible = !IsActivated;
+
+        if (!ActiveVisualPath.IsEmpty && GetNodeOrNull<Node3D>(ActiveVisualPath) is { } activeVisual)
+            activeVisual.Visible = IsActivated;
     }
 }

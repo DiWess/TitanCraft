@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=35 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -11,239 +11,306 @@
 [ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteEndScreenNavigator.cs" id="11_end_nav"]
 [ext_resource type="Script" path="res://src/SaveSystem/CrashSiteSaveCoordinator.cs" id="12_save"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
-albedo_color = Color(0.28, 0.36, 0.3, 1)
-roughness = 0.85
+[ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="13_ivory"]
+[ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="14_graphite"]
+[ext_resource type="Material" path="res://assets/Materials/HumanBronze.tres" id="15_bronze"]
+[ext_resource type="Material" path="res://assets/Materials/HumanOrangeInteractive.tres" id="16_orange"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicRock.tres" id="17_rock"]
+[ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
+[ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
+[ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
-material = SubResource("StandardMaterial3D_ground")
-
+material = ExtResource("17_rock")
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(150, 0.2, 150)
-
+[sub_resource type="BoxShape3D" id="BoxShape3D_crate"]
+size = Vector3(1.5, 1.5, 1.5)
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+size = Vector3(1.5, 1.5, 1.5)
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_panel"]
+size = Vector3(4, 2.6, 0.35)
+material = ExtResource("13_ivory")
+[sub_resource type="BoxMesh" id="BoxMesh_orange_strip"]
+size = Vector3(2.5, 0.18, 0.08)
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_metal"]
+size = Vector3(1.8, 0.45, 1.2)
+material = ExtResource("14_graphite")
+[sub_resource type="SphereMesh" id="SphereMesh_biomass"]
+radial_segments = 8
+rings = 4
+radius = 0.75
+height = 1.1
+material = ExtResource("20_biomass")
+[sub_resource type="CylinderMesh" id="CylinderMesh_electronics"]
+radial_segments = 6
+top_radius = 0.55
+bottom_radius = 0.65
+height = 1.1
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_workbench"]
+size = Vector3(3.2, 0.8, 1.5)
+material = ExtResource("13_ivory")
+[sub_resource type="CylinderMesh" id="CylinderMesh_save"]
+radial_segments = 8
+top_radius = 0.8
+bottom_radius = 0.95
+height = 0.35
+material = ExtResource("16_orange")
+[sub_resource type="CylinderMesh" id="CylinderMesh_beacon"]
+radial_segments = 6
+top_radius = 0.35
+bottom_radius = 0.65
+height = 2.4
+material = ExtResource("14_graphite")
+[sub_resource type="PrismMesh" id="PrismMesh_crystal"]
+size = Vector3(1, 2.4, 1)
+material = ExtResource("19_violet")
+[sub_resource type="BoxMesh" id="BoxMesh_rock"]
+size = Vector3(3, 2, 2.3)
+material = ExtResource("17_rock")
+[sub_resource type="SphereMesh" id="SphereMesh_moon"]
+radial_segments = 12
+rings = 6
+radius = 8.0
+material = ExtResource("13_ivory")
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
-sky_top_color = Color(0.18, 0.27, 0.42, 1)
-sky_horizon_color = Color(0.58, 0.55, 0.5, 1)
-ground_bottom_color = Color(0.12, 0.13, 0.13, 1)
-ground_horizon_color = Color(0.5, 0.48, 0.45, 1)
-sun_angle_max = 30.0
-sun_curve = 0.15
-
+sky_top_color = Color(0.03, 0.05, 0.09, 1)
+sky_horizon_color = Color(0.10, 0.14, 0.23, 1)
+ground_bottom_color = Color(0.03, 0.035, 0.04, 1)
+ground_horizon_color = Color(0.07, 0.08, 0.09, 1)
 [sub_resource type="Sky" id="Sky_main"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
-
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 2
 sky = SubResource("Sky_main")
 ambient_light_source = 3
+ambient_light_color = Color(0.18, 0.23, 0.32, 1)
+ambient_light_energy = 0.45
 tonemap_mode = 2
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_prop"]
-albedo_color = Color(0.55, 0.42, 0.2, 1)
-roughness = 0.7
-
-[sub_resource type="BoxMesh" id="BoxMesh_crate"]
-size = Vector3(1.5, 1.5, 1.5)
-material = SubResource("StandardMaterial3D_prop")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_crate"]
-size = Vector3(1.5, 1.5, 1.5)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal_placeholder"]
-albedo_color = Color(0.62, 0.64, 0.66, 1)
-metallic = 0.65
-roughness = 0.35
-
-[sub_resource type="BoxMesh" id="BoxMesh_metal_placeholder"]
-size = Vector3(1.8, 0.9, 1.2)
-material = SubResource("StandardMaterial3D_metal_placeholder")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_biomass_placeholder"]
-albedo_color = Color(0.18, 0.75, 0.28, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_biomass_placeholder"]
-radius = 0.75
-height = 1.3
-material = SubResource("StandardMaterial3D_biomass_placeholder")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_electronics_placeholder"]
-albedo_color = Color(0.1, 0.45, 0.95, 1)
-emission_enabled = true
-emission = Color(0.05, 0.18, 0.45, 1)
-emission_energy_multiplier = 0.35
-roughness = 0.45
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_electronics_placeholder"]
-top_radius = 0.65
-bottom_radius = 0.65
-height = 1.25
-material = SubResource("StandardMaterial3D_electronics_placeholder")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_workbench_placeholder"]
-albedo_color = Color(0.9, 0.56, 0.18, 1)
-roughness = 0.6
-
-[sub_resource type="BoxMesh" id="BoxMesh_workbench_placeholder"]
-size = Vector3(2.4, 0.7, 1.4)
-material = SubResource("StandardMaterial3D_workbench_placeholder")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_save_placeholder"]
-albedo_color = Color(0.55, 0.2, 0.95, 1)
-emission_enabled = true
-emission = Color(0.18, 0.05, 0.35, 1)
-emission_energy_multiplier = 0.25
-roughness = 0.55
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_save_placeholder"]
-top_radius = 0.8
-bottom_radius = 0.8
-height = 0.35
-material = SubResource("StandardMaterial3D_save_placeholder")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beacon_placeholder"]
-albedo_color = Color(1, 0.92, 0.18, 1)
-emission_enabled = true
-emission = Color(0.7, 0.52, 0.05, 1)
-emission_energy_multiplier = 0.45
-roughness = 0.4
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_beacon_placeholder"]
-top_radius = 0.35
-bottom_radius = 0.65
-height = 2.4
-material = SubResource("StandardMaterial3D_beacon_placeholder")
+glow_enabled = true
+glow_intensity = 0.18
+glow_strength = 0.45
+fog_enabled = true
+fog_light_color = Color(0.14, 0.17, 0.22, 1)
+fog_density = 0.006
 
 [node name="Main" type="Node3D"]
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 8, 0)
-light_energy = 1.2
+transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
+light_energy = 1.05
 shadow_enabled = true
-
 [node name="Ground" type="StaticBody3D" parent="."]
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 mesh = SubResource("BoxMesh_ground")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_ground")
-
+[node name="Moon" type="MeshInstance3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-42,36,-70)
+mesh = SubResource("SphereMesh_moon")
+[node name="C7_Wall_1" type="StaticBody3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,1.4,-10)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="C7_Wall_2" type="StaticBody3D" parent="."]
+transform = Transform3D(1.2,0,0,0,1,0,0,0,1,0,1.4,-14)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="C7_Wall_3" type="StaticBody3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,10,1.4,-10)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="C7_Wall_4" type="StaticBody3D" parent="."]
+transform = Transform3D(0.8,0,0,0,1,0,0,0,1.4,15,1.4,-16)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="BaseLamp_1" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-10,3.0,-8)
+light_color = Color(1, 0.48, 0.18, 1)
+light_energy = 0.55
+omni_range = 8.0
+[node name="BaseLamp_2" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,4,3.0,-12)
+light_color = Color(1, 0.48, 0.18, 1)
+light_energy = 0.55
+omni_range = 8.0
+[node name="BaseLamp_3" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,14,3.0,-14)
+light_color = Color(1, 0.48, 0.18, 1)
+light_energy = 0.55
+omni_range = 8.0
+[node name="BaseLamp_4" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-2,3.0,-4)
+light_color = Color(1, 0.48, 0.18, 1)
+light_energy = 0.55
+omni_range = 8.0
+[node name="VolcanicRock_1" type="StaticBody3D" parent="."]
+transform = Transform3D(1.2,0.15,0,0,1,0,-0.08,0,1,-20,1.0,-18)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
+[node name="VolcanicRock_2" type="StaticBody3D" parent="."]
+transform = Transform3D(1.4,0.15,0,0,1.2,0,-0.08,0,1,22,1.0,-30)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
+[node name="VolcanicRock_3" type="StaticBody3D" parent="."]
+transform = Transform3D(1,0.15,0,0,1.4,0,-0.08,0,1.3,-25,1.0,-35)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
+[node name="VolcanicRock_4" type="StaticBody3D" parent="."]
+transform = Transform3D(1.8,0.15,0,0,1.8,0,-0.08,0,1.2,38,1.0,-42)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
+[node name="VolcanicRock_5" type="StaticBody3D" parent="."]
+transform = Transform3D(3,0.15,0,0,4,0,-0.08,0,2,-55,1.0,-62)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
+[node name="VolcanicRock_6" type="StaticBody3D" parent="."]
+transform = Transform3D(3,0.15,0,0,5,0,-0.08,0,2,55,1.0,-68)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
+[node name="VolcanicRock_7" type="StaticBody3D" parent="."]
+transform = Transform3D(4,0.15,0,0,3,0,-0.08,0,2,0,1.0,-72)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_rock")
 [node name="Placeholder_Crate1" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.85, -5)
-
+transform = Transform3D(1,0.05,0,0,1,0,0,0,1,4,0.85,-5)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate1"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_Crate2" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.85, -8)
-
+transform = Transform3D(1,0.05,0,0,1,0,0,0,1,-6,0.85,-8)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate2"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_Crate3" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.85, -12)
-
+transform = Transform3D(1,0.05,0,0,1,0,0,0,1,1.5,0.85,-12)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Crate3"]
 shape = SubResource("BoxShape3D_crate")
-
-
 [node name="Placeholder_MetalPickup" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.85, -4)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,8,0.85,-4)
 script = ExtResource("2_resource_pickup")
 ResourceKind = 0
 Quantity = 10
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-mesh = SubResource("BoxMesh_metal_placeholder")
-
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_metal")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_MetalPickup"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_BiomassPickup" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.85, -4)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-8,0.85,-4)
 script = ExtResource("2_resource_pickup")
 ResourceKind = 1
 Quantity = 3
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-mesh = SubResource("SphereMesh_biomass_placeholder")
-
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_biomass")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_BiomassPickup"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_ElectronicsPickup" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -10)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0.85,-10)
 script = ExtResource("2_resource_pickup")
 ResourceKind = 2
 Quantity = 2
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-mesh = SubResource("CylinderMesh_electronics_placeholder")
-
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_electronics")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_ElectronicsPickup"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_Workbench" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.85, -12)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,12,0.85,-12)
 script = ExtResource("3_workbench")
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Workbench"]
-mesh = SubResource("BoxMesh_workbench_placeholder")
-
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_workbench")
+[node name="ControlPanel" type="MeshInstance3D" parent="Placeholder_Workbench"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.8)
+mesh = SubResource("BoxMesh_orange_strip")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Workbench"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_SavePoint" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.85, -12)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,0.85,-12)
 script = ExtResource("5_save_point")
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_SavePoint"]
-mesh = SubResource("CylinderMesh_save_placeholder")
-
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_save")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_SavePoint"]
 shape = SubResource("BoxShape3D_crate")
-
 [node name="Placeholder_Beacon" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0.85, -20)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,28,0.85,-20)
 script = ExtResource("6_beacon")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Beacon"]
-mesh = SubResource("CylinderMesh_beacon_placeholder")
-
+[node name="ClosedVisual" type="MeshInstance3D" parent="Placeholder_Beacon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_beacon")
+[node name="ActiveVisual" type="MeshInstance3D" parent="Placeholder_Beacon"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0.35, 0)
+mesh = SubResource("PrismMesh_crystal")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholder_Beacon"]
 shape = SubResource("BoxShape3D_crate")
-
+[node name="AlienCrystal_1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.2, -18)
+mesh = SubResource("PrismMesh_crystal")
+[node name="AlienCrystal_2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 24, 1.2, -22)
+mesh = SubResource("PrismMesh_crystal")
+[node name="AlienCrystal_3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 30, 1.2, -18)
+mesh = SubResource("PrismMesh_crystal")
+[node name="AlienCrystal_4" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20, 1.2, -30)
+mesh = SubResource("PrismMesh_crystal")
+[node name="AlienCrystal_5" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 35, 1.2, -28)
+mesh = SubResource("PrismMesh_crystal")
+[node name="AlienZoneLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,24,3,-22)
+light_color = Color(0.45, 0.25, 1, 1)
+light_energy = 0.45
+omni_range = 10.0
 [node name="Player" parent="." instance=ExtResource("1_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)
 [node name="Placeholder_GalaxabrainScout" parent="." instance=ExtResource("7_galaxabrain_scout")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.0, -16)
+transform = Transform3D(1,0,0,0,1,0,0,0,1,20,1.0,-16)
 PlayerPath = NodePath("../Player")
-
 [node name="HUD" parent="." instance=ExtResource("8_hud")]
-
 [node name="PauseMenu" parent="." instance=ExtResource("9_pause")]
-
 [node name="HudBinder" type="Node" parent="."]
 script = ExtResource("10_hud_binder")
-
 [node name="EndScreenNavigator" type="Node" parent="."]
 script = ExtResource("11_end_nav")
-
 [node name="SaveCoordinator" type="Node" parent="."]
 script = ExtResource("12_save")

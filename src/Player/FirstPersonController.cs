@@ -44,12 +44,6 @@ public partial class FirstPersonController : CharacterBody3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("quit_game"))
-        {
-            GetTree().Quit();
-            return;
-        }
-
         if (@event.IsActionPressed("interact"))
         {
             TryInteract();

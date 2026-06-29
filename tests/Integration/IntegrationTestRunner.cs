@@ -17,7 +17,7 @@ public partial class IntegrationTestRunner : Node
         "res://scenes/UI/VictoryScreen.tscn",
         "res://scenes/UI/DefeatScreen.tscn",
     ];
-    private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "quit_game", "pause_menu"];
+    private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "pause_menu"];
 
     public override async void _Ready()
     {
@@ -50,8 +50,17 @@ public partial class IntegrationTestRunner : Node
         foreach (var action in RequiredActions[..4])
             RequireHasPhysicalKey(action);
         RequireHasKey("jump", Key.Space);
-        RequireHasKey("quit_game", Key.Q);
         RequireHasKey("pause_menu", Key.Escape);
+        RequireMoveLeftDoesNotTriggerQuitGame();
+    }
+
+    private static void RequireMoveLeftDoesNotTriggerQuitGame()
+    {
+        if (!InputMap.HasAction("quit_game"))
+            return;
+
+        foreach (var inputEvent in InputMap.ActionGetEvents("move_left"))
+            Require(!inputEvent.IsAction("quit_game"), "move_left also triggers quit_game");
     }
 
     private async System.Threading.Tasks.Task TestMainScene()

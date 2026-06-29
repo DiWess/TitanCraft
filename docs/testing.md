@@ -35,6 +35,16 @@ Movement keeps both keyboard layouts active for local playtesting:
 
 `Q` is reserved for left movement in the AZERTY/ZQSD layout and must not trigger critical gameplay actions such as `quit_game`.
 
+
+## Manual placeholder readability check
+
+Use this check after visual changes to `scenes/Main/Main.tscn`:
+
+1. Launch the Crash Site scene in Godot and stand near the player spawn.
+2. Look toward each `Placeholder_*` interactive from several meters away without collecting it first.
+3. Confirm metal is readable as a grey metallic block, biomass as a green rounded object, electronics as a blue cylinder, the workbench as an orange bench-like block, the save point as a purple low cylinder, and the beacon as a tall yellow marker.
+4. Walk around each object and confirm the simple interaction collisions do not behave like decorative walls or block the route through the crash site.
+
 ## CI
 
 GitHub Actions should run the same restore, Debug/Release builds, unit tests, Godot headless integration test, import, export, log scan, and artifact upload on Linux and Windows.

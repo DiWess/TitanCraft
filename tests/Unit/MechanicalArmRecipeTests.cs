@@ -9,14 +9,24 @@ namespace TitanCraft.Tests.Unit;
 public sealed class MechanicalArmRecipeTests
 {
     [TestCase]
+    public void DefaultRecipeLoadsReadmeDefinedDataCosts()
+    {
+        var recipe = new MechanicalArmRecipe();
+
+        AssertThat(recipe.MetalCost).IsEqual(10);
+        AssertThat(recipe.BiomassCost).IsEqual(3);
+        AssertThat(recipe.ElectronicComponentsCost).IsEqual(2);
+    }
+
+    [TestCase]
     public void TryCraftBuildsArmWhenInventoryHasMvpCost()
     {
         var inventory = new MvpInventory();
-        inventory.AddResources(
-            metal: MechanicalArmRecipe.MetalCost,
-            biomass: MechanicalArmRecipe.BiomassCost,
-            electronicComponents: MechanicalArmRecipe.ElectronicComponentsCost);
         var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(
+            metal: recipe.MetalCost,
+            biomass: recipe.BiomassCost,
+            electronicComponents: recipe.ElectronicComponentsCost);
 
         var didCraft = recipe.TryCraft(inventory);
 
@@ -28,30 +38,30 @@ public sealed class MechanicalArmRecipeTests
     public void TryCraftFailsWithoutChangingInventoryWhenResourcesAreInsufficient()
     {
         var inventory = new MvpInventory();
-        inventory.AddResources(
-            metal: MechanicalArmRecipe.MetalCost,
-            biomass: MechanicalArmRecipe.BiomassCost,
-            electronicComponents: MechanicalArmRecipe.ElectronicComponentsCost - 1);
         var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(
+            metal: recipe.MetalCost,
+            biomass: recipe.BiomassCost,
+            electronicComponents: recipe.ElectronicComponentsCost - 1);
 
         var didCraft = recipe.TryCraft(inventory);
 
         AssertThat(didCraft).IsFalse();
         AssertThat(inventory.IsMechanicalArmBuilt).IsFalse();
-        AssertThat(inventory.Metal).IsEqual(MechanicalArmRecipe.MetalCost);
-        AssertThat(inventory.Biomass).IsEqual(MechanicalArmRecipe.BiomassCost);
-        AssertThat(inventory.ElectronicComponents).IsEqual(MechanicalArmRecipe.ElectronicComponentsCost - 1);
+        AssertThat(inventory.Metal).IsEqual(recipe.MetalCost);
+        AssertThat(inventory.Biomass).IsEqual(recipe.BiomassCost);
+        AssertThat(inventory.ElectronicComponents).IsEqual(recipe.ElectronicComponentsCost - 1);
     }
 
     [TestCase]
     public void TryCraftPreventsDuplicateMechanicalArmCrafting()
     {
         var inventory = new MvpInventory();
-        inventory.AddResources(
-            metal: MechanicalArmRecipe.MetalCost * 2,
-            biomass: MechanicalArmRecipe.BiomassCost * 2,
-            electronicComponents: MechanicalArmRecipe.ElectronicComponentsCost * 2);
         var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(
+            metal: recipe.MetalCost * 2,
+            biomass: recipe.BiomassCost * 2,
+            electronicComponents: recipe.ElectronicComponentsCost * 2);
 
         var firstCraft = recipe.TryCraft(inventory);
         var secondCraft = recipe.TryCraft(inventory);
@@ -59,20 +69,20 @@ public sealed class MechanicalArmRecipeTests
         AssertThat(firstCraft).IsTrue();
         AssertThat(secondCraft).IsFalse();
         AssertThat(inventory.IsMechanicalArmBuilt).IsTrue();
-        AssertThat(inventory.Metal).IsEqual(MechanicalArmRecipe.MetalCost);
-        AssertThat(inventory.Biomass).IsEqual(MechanicalArmRecipe.BiomassCost);
-        AssertThat(inventory.ElectronicComponents).IsEqual(MechanicalArmRecipe.ElectronicComponentsCost);
+        AssertThat(inventory.Metal).IsEqual(recipe.MetalCost);
+        AssertThat(inventory.Biomass).IsEqual(recipe.BiomassCost);
+        AssertThat(inventory.ElectronicComponents).IsEqual(recipe.ElectronicComponentsCost);
     }
 
     [TestCase]
     public void TryCraftSpendsExactlyTheReadmeDefinedCost()
     {
         var inventory = new MvpInventory();
-        inventory.AddResources(
-            metal: MechanicalArmRecipe.MetalCost + 4,
-            biomass: MechanicalArmRecipe.BiomassCost + 2,
-            electronicComponents: MechanicalArmRecipe.ElectronicComponentsCost + 1);
         var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(
+            metal: recipe.MetalCost + 4,
+            biomass: recipe.BiomassCost + 2,
+            electronicComponents: recipe.ElectronicComponentsCost + 1);
 
         var didCraft = recipe.TryCraft(inventory);
 
@@ -86,18 +96,18 @@ public sealed class MechanicalArmRecipeTests
     public void CanCraftReportsCraftabilityWithoutSpendingResources()
     {
         var inventory = new MvpInventory();
-        inventory.AddResources(
-            metal: MechanicalArmRecipe.MetalCost,
-            biomass: MechanicalArmRecipe.BiomassCost,
-            electronicComponents: MechanicalArmRecipe.ElectronicComponentsCost);
         var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(
+            metal: recipe.MetalCost,
+            biomass: recipe.BiomassCost,
+            electronicComponents: recipe.ElectronicComponentsCost);
 
         var canCraft = recipe.CanCraft(inventory);
 
         AssertThat(canCraft).IsTrue();
         AssertThat(inventory.IsMechanicalArmBuilt).IsFalse();
-        AssertThat(inventory.Metal).IsEqual(MechanicalArmRecipe.MetalCost);
-        AssertThat(inventory.Biomass).IsEqual(MechanicalArmRecipe.BiomassCost);
-        AssertThat(inventory.ElectronicComponents).IsEqual(MechanicalArmRecipe.ElectronicComponentsCost);
+        AssertThat(inventory.Metal).IsEqual(recipe.MetalCost);
+        AssertThat(inventory.Biomass).IsEqual(recipe.BiomassCost);
+        AssertThat(inventory.ElectronicComponents).IsEqual(recipe.ElectronicComponentsCost);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Player;
 
 namespace TitanCraft.Enemies;
 
@@ -126,6 +127,8 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public NodePath? MissionComponentPath { get; set; }
 
+    public GalaxabrainScoutBrain Brain => _brain;
+
     public GalaxabrainScoutState State => _brain.State;
 
     public override void _Ready()
@@ -157,7 +160,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         Velocity = Vector3.Zero;
         if (_brain.TryConsumeAttack())
         {
-            GD.Print($"Galaxabrain Scout attacks for {Damage} damage.");
+            TryDamagePlayer(player);
         }
     }
 
@@ -169,6 +172,14 @@ public partial class GalaxabrainScout : CharacterBody3D
         if (wasAlive && _brain.IsDead)
         {
             Die();
+        }
+    }
+
+    private void TryDamagePlayer(Node3D player)
+    {
+        if (player is FirstPersonController controller)
+        {
+            controller.Health.ApplyDamage(Damage);
         }
     }
 
@@ -196,6 +207,10 @@ public partial class GalaxabrainScout : CharacterBody3D
         if (missionComponent is not null)
         {
             missionComponent.Visible = isVisible;
+            if (missionComponent is Area3D area)
+            {
+                area.Monitoring = isVisible;
+            }
         }
     }
 }

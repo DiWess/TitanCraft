@@ -32,6 +32,6 @@ text = "Return to Main Menu"
 text = "Quit"
 
 [connection signal="pressed" from="Panel/Menu/ResumeButton" to="." method="Resume"]
-[connection signal="pressed" from="Panel/Menu/SaveButton" to="." method="SavePlaceholder"]
+[connection signal="pressed" from="Panel/Menu/SaveButton" to="." method="SaveGame"]
 [connection signal="pressed" from="Panel/Menu/MainMenuButton" to="." method="ReturnToMainMenu"]
 [connection signal="pressed" from="Panel/Menu/QuitButton" to="." method="QuitGame"]

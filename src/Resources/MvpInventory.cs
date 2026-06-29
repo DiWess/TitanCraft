@@ -64,6 +64,20 @@ public sealed class MvpInventory
         Changed?.Invoke(this);
     }
 
+    public void Restore(int metal, int biomass, int electronicComponents, bool isMechanicalArmBuilt, bool hasGalaxabrainComponent)
+    {
+        ThrowIfNegative(metal, nameof(metal));
+        ThrowIfNegative(biomass, nameof(biomass));
+        ThrowIfNegative(electronicComponents, nameof(electronicComponents));
+
+        Metal = metal;
+        Biomass = biomass;
+        ElectronicComponents = electronicComponents;
+        IsMechanicalArmBuilt = isMechanicalArmBuilt;
+        HasGalaxabrainComponent = hasGalaxabrainComponent;
+        Changed?.Invoke(this);
+    }
+
     private static void ThrowIfNegative(int quantity, string parameterName)
     {
         if (quantity < 0)

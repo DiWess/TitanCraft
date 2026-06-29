@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using TitanCraft.Player;
+using TitanCraft.SaveSystem;
 using TitanCraft.UI;
 
 namespace TitanCraft.Tests.Integration;
@@ -22,12 +23,14 @@ public partial class IntegrationTestRunner : Node
     {
         try
         {
+            LocalSaveGameStore.DeleteSave();
             TestInputMap();
             await TestMainScene();
             await TestPlayerScene();
             await TestUiScenes();
             await TestHudBinding();
             await TestEndScreenNavigation();
+            await TestSaveLoadFlow();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -158,6 +161,42 @@ public partial class IntegrationTestRunner : Node
         Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat screen was not requested after player death");
         defeatMain.QueueFree();
         await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestSaveLoadFlow()
+    {
+        LocalSaveGameStore.DeleteSave();
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var saveCoordinator = main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
+        var pauseMenu = main.GetNode<PauseMenu>("PauseMenu");
+        player.GlobalPosition = new Vector3(3.0f, 2.0f, -7.0f);
+        player.Health.ApplyDamage(40);
+        player.Inventory.AddResources(metal: 6, biomass: 1, electronicComponents: 2);
+        player.Mission.TryCompleteResourceCollection();
+        pauseMenu.GetNode<Button>("Panel/Menu/SaveButton").EmitSignal(Button.SignalName.Pressed);
+        await Frames(2);
+        Require(saveCoordinator.LastSaveSucceeded, "Pause Save did not write a save file");
+        Require(LocalSaveGameStore.SaveExists(), "Save file does not exist after pause Save");
+        main.QueueFree();
+        await Frames(2);
+
+        var loadedMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(loadedMain);
+        await Frames(2);
+        var loadedPlayer = loadedMain.GetNode<FirstPersonController>("Player");
+        var loadedCoordinator = loadedMain.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
+        Require(loadedCoordinator.LastLoadSucceeded, "Continue load did not restore an existing save");
+        Require(loadedPlayer.Health.CurrentHealth == 60, "Loaded health mismatch");
+        Require(loadedPlayer.Inventory.Metal == 6 && loadedPlayer.Inventory.ElectronicComponents == 2, "Loaded inventory mismatch");
+        Require(loadedPlayer.Mission.CurrentStep == Missions.CrashSiteMissionStep.BuildMechanicalArm, "Loaded mission step mismatch");
+        Require(HorizontalDistance(loadedPlayer.GlobalPosition, new Vector3(3.0f, 2.0f, -7.0f)) < 0.1f, "Loaded player position mismatch");
+        loadedMain.QueueFree();
+        await Frames(2);
+        LocalSaveGameStore.DeleteSave();
     }
 
     private async System.Threading.Tasks.Task TestPhysicsAndMovement()

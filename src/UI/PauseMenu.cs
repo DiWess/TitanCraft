@@ -1,9 +1,11 @@
+using System;
 using Godot;
 
 namespace TitanCraft.UI;
 
 public partial class PauseMenu : CanvasLayer
 {
+    public event Action? SaveRequested;
     [Export] public string MainMenuScenePath { get; set; } = "res://scenes/UI/MainMenu.tscn";
     [Export] public bool CanSave { get; set; } = true;
 
@@ -33,7 +35,7 @@ public partial class PauseMenu : CanvasLayer
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
-    public void SavePlaceholder() { }
+    public void SaveGame() => SaveRequested?.Invoke();
 
     public void ReturnToMainMenu()
     {

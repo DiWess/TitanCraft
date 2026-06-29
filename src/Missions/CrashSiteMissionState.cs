@@ -53,6 +53,15 @@ public sealed class CrashSiteMissionState
         return TryAdvanceFrom(CrashSiteMissionStep.ActivateBeacon);
     }
 
+    public void Restore(CrashSiteMissionStep step)
+    {
+        if (!Enum.IsDefined(step))
+            step = CrashSiteMissionStep.CollectResources;
+
+        CurrentStep = step;
+        Changed?.Invoke(this);
+    }
+
     private bool TryAdvanceFrom(CrashSiteMissionStep expectedStep)
     {
         if (CurrentStep != expectedStep)

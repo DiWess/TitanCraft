@@ -40,4 +40,10 @@ public sealed class PlayerHealth
         CurrentHealth = MaxHealth;
         Changed?.Invoke(this);
     }
+
+    public void Restore(int currentHealth)
+    {
+        CurrentHealth = Math.Clamp(currentHealth, 0, MaxHealth);
+        Changed?.Invoke(this);
+    }
 }

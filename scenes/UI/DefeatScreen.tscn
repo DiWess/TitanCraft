@@ -30,7 +30,11 @@ text = "Reload the last save point to continue the Crash Site mission."
 horizontal_alignment = 1
 autowrap_mode = 3
 
+[node name="ReloadButton" type="Button" parent="Menu"]
+text = "Reload Last Save"
+
 [node name="MainMenuButton" type="Button" parent="Menu"]
 text = "Return to Main Menu"
 
+[connection signal="pressed" from="Menu/ReloadButton" to="." method="ReloadLastSave"]
 [connection signal="pressed" from="Menu/MainMenuButton" to="." method="ReturnToMainMenu"]

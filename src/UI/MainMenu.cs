@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.SaveSystem;
 
 namespace TitanCraft.UI;
 
@@ -9,14 +10,18 @@ public partial class MainMenu : Control
 
     public override void _Ready()
     {
-        GetNode<Button>("Menu/ContinueButton").Disabled = !FileAccess.FileExists(SavePath);
+        GetNode<Button>("Menu/ContinueButton").Disabled = !LocalSaveGameStore.SaveExists(SavePath);
     }
 
-    public void NewGame() => GetTree().ChangeSceneToFile(GameScenePath);
+    public void NewGame()
+    {
+        LocalSaveGameStore.DeleteSave(SavePath);
+        GetTree().ChangeSceneToFile(GameScenePath);
+    }
 
     public void ContinueGame()
     {
-        if (FileAccess.FileExists(SavePath))
+        if (LocalSaveGameStore.SaveExists(SavePath))
             GetTree().ChangeSceneToFile(GameScenePath);
     }
 

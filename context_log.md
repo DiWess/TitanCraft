@@ -11,3 +11,5 @@
 - 2026-06-29: Connected the Crash Site HUD to player health, inventory, mission objective, interaction targeting, and mechanical arm state changes without moving gameplay decisions into UI scripts.
 
 - 2026-06-29: Wired Crash Site victory and defeat events to end-screen navigation through a UI coordinator with integration coverage for both transition requests.
+
+- 2026-06-29: Added local Crash Site save/load support for Continue, pause Save, and defeat reload using a versioned offline JSON save file.

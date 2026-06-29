@@ -1,3 +1,6 @@
+// These tests use Godot value-type math only; keeping them runtime-free prevents the GdUnit adapter connection timeout in CI.
+#pragma warning disable GdUnit0501
+
 using GdUnit4;
 using Godot;
 using TitanCraft.Player;
@@ -44,3 +47,5 @@ public sealed class FirstPersonMovementTests
         AssertThat(FirstPersonMovement.HasValidParameters(5.0f, 4.5f, 0.0025f, 95.0f)).IsFalse();
     }
 }
+
+#pragma warning restore GdUnit0501

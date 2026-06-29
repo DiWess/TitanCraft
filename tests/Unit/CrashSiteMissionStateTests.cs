@@ -25,7 +25,7 @@ public sealed class CrashSiteMissionStateTests
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.BuildMechanicalArm);
         AssertThat(mission.TryCompleteMechanicalArmConstruction()).IsTrue();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
-        AssertThat(mission.TryCompleteGalaxabrainDefeat()).IsTrue();
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsTrue();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
         AssertThat(mission.TryCompleteComponentRecovery()).IsTrue();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.ActivateBeacon);
@@ -41,7 +41,7 @@ public sealed class CrashSiteMissionStateTests
         var mission = new CrashSiteMissionState();
 
         AssertThat(mission.TryCompleteMechanicalArmConstruction()).IsFalse();
-        AssertThat(mission.TryCompleteGalaxabrainDefeat()).IsFalse();
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsFalse();
         AssertThat(mission.TryCompleteComponentRecovery()).IsFalse();
         AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
 
@@ -55,7 +55,7 @@ public sealed class CrashSiteMissionStateTests
         var mission = new CrashSiteMissionState();
 
         AssertThat(mission.TryCompleteResourceCollection()).IsTrue();
-        AssertThat(mission.TryCompleteGalaxabrainDefeat()).IsFalse();
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsFalse();
         AssertThat(mission.TryCompleteComponentRecovery()).IsFalse();
         AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.BuildMechanicalArm);
@@ -65,9 +65,21 @@ public sealed class CrashSiteMissionStateTests
         AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
 
-        AssertThat(mission.TryCompleteGalaxabrainDefeat()).IsTrue();
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsTrue();
         AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
+    }
+
+    [TestCase]
+    public void DefeatStepDoesNotAdvanceBeforeGalaxabrainIsDead()
+    {
+        var mission = new CrashSiteMissionState();
+        mission.TryCompleteResourceCollection();
+        mission.TryCompleteMechanicalArmConstruction();
+
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: false)).IsFalse();
+
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
     }
 
     [TestCase]
@@ -76,7 +88,7 @@ public sealed class CrashSiteMissionStateTests
         var mission = new CrashSiteMissionState();
         mission.TryCompleteResourceCollection();
         mission.TryCompleteMechanicalArmConstruction();
-        mission.TryCompleteGalaxabrainDefeat();
+        mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true);
         mission.TryCompleteComponentRecovery();
         mission.TryCompleteBeaconActivation();
 

@@ -35,9 +35,9 @@ public sealed class CrashSiteMissionState
         return TryAdvanceFrom(CrashSiteMissionStep.BuildMechanicalArm);
     }
 
-    public bool TryCompleteGalaxabrainDefeat()
+    public bool TryCompleteGalaxabrainDefeat(bool isGalaxabrainDefeated)
     {
-        return TryAdvanceFrom(CrashSiteMissionStep.DefeatGalaxabrain);
+        return isGalaxabrainDefeated && TryAdvanceFrom(CrashSiteMissionStep.DefeatGalaxabrain);
     }
 
     public bool TryCompleteComponentRecovery()

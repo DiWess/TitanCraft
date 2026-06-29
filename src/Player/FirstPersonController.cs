@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.Enemies;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
 using TitanCraft.World;
@@ -12,15 +13,21 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float MouseSensitivity { get; set; } = 0.0025f;
     [Export] public float MaxLookAngleDegrees { get; set; } = 85.0f;
     [Export] public float InteractionRange { get; set; } = 3.0f;
+    [Export] public float AttackRange { get; set; } = MechanicalArmAttackLogic.DefaultRange;
+    [Export] public int MechanicalArmDamage { get; set; } = MechanicalArmAttackLogic.DefaultMechanicalArmDamage;
+    [Export] public float AttackCooldownSeconds { get; set; } = MechanicalArmAttackLogic.DefaultCooldownSeconds;
 
     public MvpInventory Inventory { get; } = new();
 
     public CrashSiteMissionState Mission { get; } = new();
 
+    public PlayerHealth Health { get; } = new();
+
     private Camera3D _camera = null!;
     private Node3D _head = null!;
     private float _gravity;
     private float _cameraPitch;
+    private MechanicalArmAttackLogic _mechanicalArmAttack = null!;
 
     public override void _Ready()
     {
@@ -28,6 +35,7 @@ public partial class FirstPersonController : CharacterBody3D
         _camera = GetNode<Camera3D>("Head/Camera3D");
         _camera.Current = true;
         _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+        _mechanicalArmAttack = new MechanicalArmAttackLogic(MechanicalArmDamage, AttackCooldownSeconds);
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
@@ -45,6 +53,12 @@ public partial class FirstPersonController : CharacterBody3D
             return;
         }
 
+        if (@event.IsActionPressed("attack"))
+        {
+            TryAttack();
+            return;
+        }
+
         if (@event is InputEventMouseMotion mouseMotion)
         {
             RotateY(-mouseMotion.Relative.X * MouseSensitivity);
@@ -53,6 +67,24 @@ public partial class FirstPersonController : CharacterBody3D
                 MaxLookAngleDegrees);
             _head.Rotation = new Vector3(_cameraPitch, 0.0f, 0.0f);
         }
+    }
+
+    public bool TryAttack()
+    {
+        var query = PhysicsRayQueryParameters3D.Create(
+            _camera.GlobalPosition,
+            _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * AttackRange);
+        query.CollideWithAreas = false;
+        query.CollideWithBodies = true;
+
+        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        if (!hit.TryGetValue("collider", out var colliderVariant))
+        {
+            return false;
+        }
+
+        return colliderVariant.AsGodotObject() is GalaxabrainScout scout
+            && _mechanicalArmAttack.TryAttack(Inventory, scout.Brain);
     }
 
     public bool TryInteract()
@@ -75,6 +107,8 @@ public partial class FirstPersonController : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        _mechanicalArmAttack.Tick((float)delta);
+
         var velocity = Velocity;
 
         if (!IsOnFloor())

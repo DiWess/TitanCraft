@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://titancraft_hud"]
+[gd_scene load_steps=4 format=3 uid="uid://titancraft_hud"]
 
 [ext_resource type="Script" path="res://src/UI/CrashSiteHud.cs" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.0823529, 0.0901961, 0.101961, 0.82)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.909804, 0.470588, 0.133333, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_hud"]
+font_color = Color(0.831373, 0.784314, 0.682353, 1)
+font_size = 16
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -9,8 +25,9 @@ script = ExtResource("1_hud")
 offsets_preset = 1
 offset_left = 12.0
 offset_top = 12.0
-offset_right = 520.0
-offset_bottom = 170.0
+offset_right = 500.0
+offset_bottom = 160.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 theme_override_constants/margin_left = 12
@@ -21,22 +38,31 @@ theme_override_constants/margin_bottom = 12
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
 
 [node name="Health" type="Label" parent="Panel/Margin/VBox"]
+label_settings = SubResource("LabelSettings_hud")
 text = "Health: 100/100"
+theme_override_colors/font_color = Color(0.95, 0.2, 0.16, 1)
 
 [node name="Objective" type="Label" parent="Panel/Margin/VBox"]
+label_settings = SubResource("LabelSettings_hud")
 text = "Objective: Collect resources near the crash site."
 autowrap_mode = 3
 
 [node name="Resources" type="Label" parent="Panel/Margin/VBox"]
+label_settings = SubResource("LabelSettings_hud")
 text = "Metal: 0  Biomass: 0  Electronics: 0"
+theme_override_colors/font_color = Color(0.831373, 0.784314, 0.682353, 1)
 
 [node name="StartTutorial" type="Label" parent="Panel/Margin/VBox"]
+label_settings = SubResource("LabelSettings_hud")
 text = "ZQSD/WASD: move | Mouse: look | Space: jump | E: interact | Left click: attack | Esc: pause"
 autowrap_mode = 3
 
 [node name="InteractionPrompt" type="Label" parent="Panel/Margin/VBox"]
+label_settings = SubResource("LabelSettings_hud")
 visible = false
 text = ""
 
 [node name="MechanicalArmState" type="Label" parent="Panel/Margin/VBox"]
+label_settings = SubResource("LabelSettings_hud")
 text = "Mechanical Arm: Not built"
+theme_override_colors/font_color = Color(0.203922, 0.784314, 0.909804, 1)

@@ -1,0 +1,1 @@
+- 2026-06-29: Added first Crash Site playable interaction slice with resource pickups, workbench crafting, Galaxabrain component recovery, beacon activation, and mission sequence regression coverage.

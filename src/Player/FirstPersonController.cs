@@ -1,4 +1,7 @@
 using Godot;
+using TitanCraft.Missions;
+using TitanCraft.Resources;
+using TitanCraft.World;
 
 namespace TitanCraft.Player;
 
@@ -8,6 +11,11 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float JumpVelocity { get; set; } = 4.5f;
     [Export] public float MouseSensitivity { get; set; } = 0.0025f;
     [Export] public float MaxLookAngleDegrees { get; set; } = 85.0f;
+    [Export] public float InteractionRange { get; set; } = 3.0f;
+
+    public MvpInventory Inventory { get; } = new();
+
+    public CrashSiteMissionState Mission { get; } = new();
 
     private Camera3D _camera = null!;
     private Node3D _head = null!;
@@ -31,6 +39,12 @@ public partial class FirstPersonController : CharacterBody3D
             return;
         }
 
+        if (@event.IsActionPressed("interact"))
+        {
+            TryInteract();
+            return;
+        }
+
         if (@event is InputEventMouseMotion mouseMotion)
         {
             RotateY(-mouseMotion.Relative.X * MouseSensitivity);
@@ -39,6 +53,24 @@ public partial class FirstPersonController : CharacterBody3D
                 MaxLookAngleDegrees);
             _head.Rotation = new Vector3(_cameraPitch, 0.0f, 0.0f);
         }
+    }
+
+    public bool TryInteract()
+    {
+        var query = PhysicsRayQueryParameters3D.Create(
+            _camera.GlobalPosition,
+            _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * InteractionRange);
+        query.CollideWithAreas = true;
+        query.CollideWithBodies = true;
+
+        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        if (!hit.TryGetValue("collider", out var colliderVariant))
+        {
+            return false;
+        }
+
+        return colliderVariant.AsGodotObject() is ICrashSiteInteractable interactable
+            && interactable.Interact(Inventory, Mission);
     }
 
     public override void _PhysicsProcess(double delta)

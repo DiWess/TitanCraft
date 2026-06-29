@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://titancraft_galaxabrain_scout"]
+
+[ext_resource type="Script" path="res://src/Enemies/GalaxabrainScout.cs" id="1_scout"]
+[ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="2_component"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_scout"]
+radius = 0.45
+height = 1.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_placeholder"]
+size = Vector3(0.9, 1.2, 0.9)
+
+[node name="GalaxabrainScout" type="CharacterBody3D"]
+script = ExtResource("1_scout")
+Health = 100
+DetectionRange = 12.0
+AttackRange = 2.0
+Damage = 10
+AttackCooldownSeconds = 0.8
+ChaseSpeed = 3.0
+MissionComponentPath = NodePath("GalaxabrainComponentPickup")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_scout")
+
+[node name="Placeholder_GalaxabrainScout" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_placeholder")
+
+[node name="GalaxabrainComponentPickup" type="Area3D" parent="."]
+visible = false
+monitoring = false
+script = ExtResource("2_component")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GalaxabrainComponentPickup"]
+shape = SubResource("CapsuleShape3D_scout")

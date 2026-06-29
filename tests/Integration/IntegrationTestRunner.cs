@@ -27,6 +27,7 @@ public partial class IntegrationTestRunner : Node
             await TestPlayerScene();
             await TestUiScenes();
             await TestHudBinding();
+            await TestEndScreenNavigation();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -124,6 +125,38 @@ public partial class IntegrationTestRunner : Node
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text.Contains("Mechanical Arm Mk I"), "HUD objective did not update from mission state");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/InteractionPrompt").Visible == false, "HUD interaction prompt should start hidden without a target");
         main.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestEndScreenNavigation()
+    {
+        var victoryMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(victoryMain);
+        await Frames(2);
+        var victoryPlayer = victoryMain.GetNode<FirstPersonController>("Player");
+        var victoryNavigator = victoryMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        victoryNavigator.EnableSceneChanges = false;
+        victoryPlayer.Mission.TryCompleteResourceCollection();
+        victoryPlayer.Mission.TryCompleteMechanicalArmConstruction();
+        victoryPlayer.Mission.TryCompleteGalaxabrainDefeat(true);
+        victoryPlayer.Mission.TryCompleteComponentRecovery();
+        victoryPlayer.Mission.TryCompleteBeaconActivation();
+        await Frames(2);
+        Require(victoryNavigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after mission victory");
+        victoryMain.QueueFree();
+        await Frames(2);
+
+        var defeatMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(defeatMain);
+        await Frames(2);
+        var defeatPlayer = defeatMain.GetNode<FirstPersonController>("Player");
+        var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        defeatNavigator.EnableSceneChanges = false;
+        defeatPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
+        await Frames(2);
+        Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat screen was not requested after player death");
+        defeatMain.QueueFree();
         await Frames(2);
     }
 

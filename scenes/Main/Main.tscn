@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=21 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/UI/HUD.tscn" id="8_hud"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PauseMenu.tscn" id="9_pause"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
+[ext_resource type="Script" path="res://src/UI/CrashSiteEndScreenNavigator.cs" id="11_end_nav"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
 albedo_color = Color(0.28, 0.36, 0.3, 1)
@@ -174,3 +175,6 @@ PlayerPath = NodePath("../Player")
 
 [node name="HudBinder" type="Node" parent="."]
 script = ExtResource("10_hud_binder")
+
+[node name="EndScreenNavigator" type="Node" parent="."]
+script = ExtResource("11_end_nav")

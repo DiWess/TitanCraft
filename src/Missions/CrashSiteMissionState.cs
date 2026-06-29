@@ -1,44 +1,36 @@
-using TitanCraft.Missions;
+namespace TitanCraft.Missions;
 
-namespace TitanCraft.SaveSystem;
-
-public sealed class CrashSiteSaveData
+/// <summary>
+/// Represents the current mission state for the crash site scenario.
+/// Tracks which mission step the player is on.
+/// </summary>
+public sealed class CrashSiteMissionState
 {
-    // Constant for versioning save files — used to validate compatibility
-    public const int CurrentSaveVersion = 1;
-
-    public int SaveVersion { get; set; } = CurrentSaveVersion;
-    public float PlayerX { get; set; }
-    public float PlayerY { get; set; }
-    public float PlayerZ { get; set; }
-    public int Health { get; set; }
-    public int Metal { get; set; }
-    public int Biomass { get; set; }
-    public int ElectronicComponents { get; set; }
-    public bool MechanicalArmBuilt { get; set; }
-    public bool GalaxabrainComponentCollected { get; set; }
-    public CrashSiteMissionStep MissionStep { get; set; }
+    // Default mission step when game starts
+    public CrashSiteMissionStep CurrentStep { get; set; } = CrashSiteMissionStep.CollectResources;
 
     /// <summary>
-    /// Factory method to create a new game save with default values.
-    /// Used when starting a new game or when save data is invalid.
+    /// Advances the mission to the next logical step.
     /// </summary>
-    public static CrashSiteSaveData NewGame()
+    public void AdvanceStep()
     {
-        return new CrashSiteSaveData
+        CurrentStep = CurrentStep switch
         {
-            SaveVersion = CurrentSaveVersion,
-            PlayerX = 0f,
-            PlayerY = 0f,
-            PlayerZ = 0f,
-            Health = 100,
-            Metal = 0,
-            Biomass = 0,
-            ElectronicComponents = 0,
-            MechanicalArmBuilt = false,
-            GalaxabrainComponentCollected = false,
-            // Initialize to the first mission step, consistent with CrashSiteMissionState default
-            MissionStep = CrashSiteMissionStep.CollectResources
+            CrashSiteMissionStep.CollectResources => CrashSiteMissionStep.BuildMechanicalArm,
+            CrashSiteMissionStep.BuildMechanicalArm => CrashSiteMissionStep.CollectGalaxabrainComponent,
+            CrashSiteMissionStep.CollectGalaxabrainComponent => CrashSiteMissionStep.Escape,
+            _ => CrashSiteMissionStep.Escape
         };
     }
+}
+
+/// <summary>
+/// Enum defining the sequential steps of the crash site mission.
+/// </summary>
+public enum CrashSiteMissionStep
+{
+    CollectResources = 0,
+    BuildMechanicalArm = 1,
+    CollectGalaxabrainComponent = 2,
+    Escape = 3
 }

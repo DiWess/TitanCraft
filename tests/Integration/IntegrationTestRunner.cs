@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using TitanCraft.Player;
+using TitanCraft.UI;
 
 namespace TitanCraft.Tests.Integration;
 
@@ -25,6 +26,7 @@ public partial class IntegrationTestRunner : Node
             await TestMainScene();
             await TestPlayerScene();
             await TestUiScenes();
+            await TestHudBinding();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -97,6 +99,30 @@ public partial class IntegrationTestRunner : Node
         var pause = main.GetNode<CanvasLayer>("PauseMenu");
         Require(pause.GetNode<Button>("Panel/Menu/ResumeButton") is not null, "Pause resume button missing");
         Require(pause.GetNode<Button>("Panel/Menu/MainMenuButton") is not null, "Pause main menu button missing");
+        main.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestHudBinding()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var hud = main.GetNode<CrashSiteHud>("HUD");
+
+        player.Health.ApplyDamage(25);
+        player.Inventory.AddResources(metal: 4, biomass: 2, electronicComponents: 1);
+        player.Inventory.MarkMechanicalArmBuilt();
+        player.Mission.TryCompleteResourceCollection();
+        await Frames(2);
+
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Health").Text == "Health: 75/100", "HUD health did not update from player health");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Metal: 4"), "HUD resources did not update from inventory");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/MechanicalArmState").Text.Contains("Online"), "HUD arm state did not update from inventory");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text.Contains("Mechanical Arm Mk I"), "HUD objective did not update from mission state");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/InteractionPrompt").Visible == false, "HUD interaction prompt should start hidden without a target");
         main.QueueFree();
         await Frames(2);
     }

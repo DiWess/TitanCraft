@@ -4,6 +4,7 @@ namespace TitanCraft.Resources;
 
 public sealed class MvpInventory
 {
+    public event Action<MvpInventory>? Changed;
     public int Metal { get; private set; }
 
     public int Biomass { get; private set; }
@@ -23,6 +24,7 @@ public sealed class MvpInventory
         Metal += metal;
         Biomass += biomass;
         ElectronicComponents += electronicComponents;
+        Changed?.Invoke(this);
     }
 
     public bool CanSpendResources(int metal = 0, int biomass = 0, int electronicComponents = 0)
@@ -46,17 +48,20 @@ public sealed class MvpInventory
         Metal -= metal;
         Biomass -= biomass;
         ElectronicComponents -= electronicComponents;
+        Changed?.Invoke(this);
         return true;
     }
 
     public void MarkMechanicalArmBuilt()
     {
         IsMechanicalArmBuilt = true;
+        Changed?.Invoke(this);
     }
 
     public void MarkGalaxabrainComponentCollected()
     {
         HasGalaxabrainComponent = true;
+        Changed?.Invoke(this);
     }
 
     private static void ThrowIfNegative(int quantity, string parameterName)

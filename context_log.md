@@ -7,3 +7,5 @@
 - 2026-06-29: Made the MVP mechanical arm recipe data-backed from a single JSON recipe while preserving focused crafting behavior and unit coverage.
 
 - 2026-06-29: Added README-required minimal UI screens for HUD, main menu, pause menu, victory, and defeat with integration scene-loading coverage.
+
+- 2026-06-29: Connected the Crash Site HUD to player health, inventory, mission objective, interaction targeting, and mechanical arm state changes without moving gameplay decisions into UI scripts.

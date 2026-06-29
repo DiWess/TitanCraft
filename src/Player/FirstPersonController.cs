@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using TitanCraft.Enemies;
 using TitanCraft.Missions;
@@ -8,6 +9,7 @@ namespace TitanCraft.Player;
 
 public partial class FirstPersonController : CharacterBody3D
 {
+    public event Action<string>? InteractionPromptChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
     [Export] public float JumpVelocity { get; set; } = 4.5f;
     [Export] public float MouseSensitivity { get; set; } = 0.0025f;
@@ -28,6 +30,7 @@ public partial class FirstPersonController : CharacterBody3D
     private float _gravity;
     private float _cameraPitch;
     private MechanicalArmAttackLogic _mechanicalArmAttack = null!;
+    private string _interactionPrompt = string.Empty;
 
     public override void _Ready()
     {
@@ -105,9 +108,45 @@ public partial class FirstPersonController : CharacterBody3D
             && interactable.Interact(Inventory, Mission);
     }
 
+    private void UpdateInteractionPrompt()
+    {
+        var prompt = TryGetTargetInteractableName(out var interactableName)
+            ? $"Press E to interact with {interactableName}"
+            : string.Empty;
+
+        if (prompt == _interactionPrompt)
+            return;
+
+        _interactionPrompt = prompt;
+        InteractionPromptChanged?.Invoke(prompt);
+    }
+
+    private bool TryGetTargetInteractableName(out string interactableName)
+    {
+        interactableName = string.Empty;
+
+        var query = PhysicsRayQueryParameters3D.Create(
+            _camera.GlobalPosition,
+            _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * InteractionRange);
+        query.CollideWithAreas = true;
+        query.CollideWithBodies = true;
+
+        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        if (!hit.TryGetValue("collider", out var colliderVariant)
+            || colliderVariant.AsGodotObject() is not ICrashSiteInteractable
+            || colliderVariant.AsGodotObject() is not Node node)
+        {
+            return false;
+        }
+
+        interactableName = node.Name.ToString().Replace("Placeholder_", string.Empty);
+        return true;
+    }
+
     public override void _PhysicsProcess(double delta)
     {
         _mechanicalArmAttack.Tick((float)delta);
+        UpdateInteractionPrompt();
 
         var velocity = Velocity;
 

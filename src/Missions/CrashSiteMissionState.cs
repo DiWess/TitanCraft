@@ -1,3 +1,5 @@
+using System;
+
 namespace TitanCraft.Missions;
 
 public enum CrashSiteMissionStep
@@ -12,6 +14,7 @@ public enum CrashSiteMissionStep
 
 public sealed class CrashSiteMissionState
 {
+    public event Action<CrashSiteMissionState>? Changed;
     public CrashSiteMissionStep CurrentStep { get; private set; } = CrashSiteMissionStep.CollectResources;
 
     public string CurrentObjectiveText => CurrentStep switch
@@ -58,6 +61,7 @@ public sealed class CrashSiteMissionState
         }
 
         CurrentStep++;
+        Changed?.Invoke(this);
         return true;
     }
 }

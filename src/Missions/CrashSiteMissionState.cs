@@ -1,76 +1,44 @@
-using System;
+using TitanCraft.Missions;
 
-namespace TitanCraft.Missions;
+namespace TitanCraft.SaveSystem;
 
-public enum CrashSiteMissionStep
+public sealed class CrashSiteSaveData
 {
-    CollectResources,
-    BuildMechanicalArm,
-    DefeatGalaxabrain,
-    RecoverGalaxabrainComponent,
-    ActivateBeacon,
-    Victory,
-}
+    // Constant for versioning save files — used to validate compatibility
+    public const int CurrentSaveVersion = 1;
 
-public sealed class CrashSiteMissionState
-{
-    public event Action<CrashSiteMissionState>? Changed;
-    public CrashSiteMissionStep CurrentStep { get; private set; } = CrashSiteMissionStep.CollectResources;
+    public int SaveVersion { get; set; } = CurrentSaveVersion;
+    public float PlayerX { get; set; }
+    public float PlayerY { get; set; }
+    public float PlayerZ { get; set; }
+    public int Health { get; set; }
+    public int Metal { get; set; }
+    public int Biomass { get; set; }
+    public int ElectronicComponents { get; set; }
+    public bool MechanicalArmBuilt { get; set; }
+    public bool GalaxabrainComponentCollected { get; set; }
+    public CrashSiteMissionStep MissionStep { get; set; }
 
-    public string CurrentObjectiveText => CurrentStep switch
+    /// <summary>
+    /// Factory method to create a new game save with default values.
+    /// Used when starting a new game or when save data is invalid.
+    /// </summary>
+    public static CrashSiteSaveData NewGame()
     {
-        CrashSiteMissionStep.CollectResources => "Collect metal, biomass, and electronic components near the crash site.",
-        CrashSiteMissionStep.BuildMechanicalArm => "Return to the workbench and build the Mechanical Arm Mk I.",
-        CrashSiteMissionStep.DefeatGalaxabrain => "Use the mechanical arm to defeat the Galaxabrain Scout.",
-        CrashSiteMissionStep.RecoverGalaxabrainComponent => "Recover the component dropped by the Galaxabrain Scout.",
-        CrashSiteMissionStep.ActivateBeacon => "Activate the rescue beacon.",
-        CrashSiteMissionStep.Victory => "Mission complete. The rescue beacon is active.",
-        _ => "Continue the Crash Site mission.",
-    };
-
-    public bool TryCompleteResourceCollection()
-    {
-        return TryAdvanceFrom(CrashSiteMissionStep.CollectResources);
-    }
-
-    public bool TryCompleteMechanicalArmConstruction()
-    {
-        return TryAdvanceFrom(CrashSiteMissionStep.BuildMechanicalArm);
-    }
-
-    public bool TryCompleteGalaxabrainDefeat(bool isGalaxabrainDefeated)
-    {
-        return isGalaxabrainDefeated && TryAdvanceFrom(CrashSiteMissionStep.DefeatGalaxabrain);
-    }
-
-    public bool TryCompleteComponentRecovery()
-    {
-        return TryAdvanceFrom(CrashSiteMissionStep.RecoverGalaxabrainComponent);
-    }
-
-    public bool TryCompleteBeaconActivation()
-    {
-        return TryAdvanceFrom(CrashSiteMissionStep.ActivateBeacon);
-    }
-
-    public void Restore(CrashSiteMissionStep step)
-    {
-        if (!Enum.IsDefined(step))
-            step = CrashSiteMissionStep.CollectResources;
-
-        CurrentStep = step;
-        Changed?.Invoke(this);
-    }
-
-    private bool TryAdvanceFrom(CrashSiteMissionStep expectedStep)
-    {
-        if (CurrentStep != expectedStep)
+        return new CrashSiteSaveData
         {
-            return false;
-        }
-
-        CurrentStep++;
-        Changed?.Invoke(this);
-        return true;
+            SaveVersion = CurrentSaveVersion,
+            PlayerX = 0f,
+            PlayerY = 0f,
+            PlayerZ = 0f,
+            Health = 100,
+            Metal = 0,
+            Biomass = 0,
+            ElectronicComponents = 0,
+            MechanicalArmBuilt = false,
+            GalaxabrainComponentCollected = false,
+            // Initialize to the first mission step, consistent with CrashSiteMissionState default
+            MissionStep = CrashSiteMissionStep.CollectResources
+        };
     }
 }

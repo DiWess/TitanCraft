@@ -14,6 +14,10 @@ public sealed class CrashSiteSaveServiceTests
         var saveData = new CrashSiteSaveData
         {
             CheckpointId = "crash_site_save_point",
+            PlayerX = 3.0f,
+            PlayerY = 2.0f,
+            PlayerZ = -7.0f,
+            Health = 60,
             Metal = 10,
             Biomass = 3,
             ElectronicComponents = 2,
@@ -29,6 +33,10 @@ public sealed class CrashSiteSaveServiceTests
 
         AssertThat(loadedSaveData.SaveVersion).IsEqual(CrashSiteSaveData.CurrentSaveVersion);
         AssertThat(loadedSaveData.CheckpointId).IsEqual("crash_site_save_point");
+        AssertThat(loadedSaveData.PlayerX).IsEqual(3.0f);
+        AssertThat(loadedSaveData.PlayerY).IsEqual(2.0f);
+        AssertThat(loadedSaveData.PlayerZ).IsEqual(-7.0f);
+        AssertThat(loadedSaveData.Health).IsEqual(60);
         AssertThat(loadedSaveData.Metal).IsEqual(10);
         AssertThat(loadedSaveData.Biomass).IsEqual(3);
         AssertThat(loadedSaveData.ElectronicComponents).IsEqual(2);
@@ -46,6 +54,10 @@ public sealed class CrashSiteSaveServiceTests
 
         AssertThat(saveData.SaveVersion).IsEqual(CrashSiteSaveData.CurrentSaveVersion);
         AssertThat(saveData.CheckpointId).IsEqual(string.Empty);
+        AssertThat(saveData.PlayerX).IsEqual(0f);
+        AssertThat(saveData.PlayerY).IsEqual(0f);
+        AssertThat(saveData.PlayerZ).IsEqual(0f);
+        AssertThat(saveData.Health).IsEqual(100);
         AssertThat(saveData.Metal).IsEqual(0);
         AssertThat(saveData.Biomass).IsEqual(0);
         AssertThat(saveData.ElectronicComponents).IsEqual(0);
@@ -61,18 +73,22 @@ public sealed class CrashSiteSaveServiceTests
     {
         const string invalidJson = """
             {
-              "save_version": 1,
-              "checkpoint_id": "crash_site_save_point",
-              "metal": -1,
-              "biomass": 3,
-              "electronic_components": 2,
-              "mission_step": "ActivateBeacon"
+              "SaveVersion": 1,
+              "CheckpointId": "crash_site_save_point",
+              "Metal": -1,
+              "Biomass": 3,
+              "ElectronicComponents": 2,
+              "MissionStep": "ActivateBeacon"
             }
             """;
 
         var saveData = CrashSiteSaveService.DeserializeOrNewGame(invalidJson);
 
         AssertThat(saveData.CheckpointId).IsEqual(string.Empty);
+        AssertThat(saveData.PlayerX).IsEqual(0f);
+        AssertThat(saveData.PlayerY).IsEqual(0f);
+        AssertThat(saveData.PlayerZ).IsEqual(0f);
+        AssertThat(saveData.Health).IsEqual(100);
         AssertThat(saveData.Metal).IsEqual(0);
         AssertThat(saveData.MissionStep).IsEqual(CrashSiteMissionStep.CollectResources);
     }
@@ -82,12 +98,12 @@ public sealed class CrashSiteSaveServiceTests
     {
         const string unknownVersionJson = """
             {
-              "save_version": 999,
-              "checkpoint_id": "future_checkpoint",
-              "metal": 10,
-              "biomass": 3,
-              "electronic_components": 2,
-              "mission_step": "Victory"
+              "SaveVersion": 999,
+              "CheckpointId": "future_checkpoint",
+              "Metal": 10,
+              "Biomass": 3,
+              "ElectronicComponents": 2,
+              "MissionStep": "Victory"
             }
             """;
 

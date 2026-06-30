@@ -1,6 +1,7 @@
 using Godot;
 using TitanCraft.Player;
 using TitanCraft.UI;
+using TitanCraft.World;
 
 namespace TitanCraft.SaveSystem;
 
@@ -8,6 +9,7 @@ public partial class CrashSiteSaveCoordinator : Node
 {
     [Export] public NodePath PlayerPath { get; set; } = "../Player";
     [Export] public NodePath PauseMenuPath { get; set; } = "../PauseMenu";
+    [Export] public NodePath SavePointPath { get; set; } = "../Placeholder_SavePoint";
     [Export] public string SavePath { get; set; } = LocalSaveGameStore.DefaultSavePath;
 
     public bool LastSaveSucceeded { get; private set; }
@@ -15,12 +17,16 @@ public partial class CrashSiteSaveCoordinator : Node
 
     private FirstPersonController _player = null!;
     private PauseMenu _pauseMenu = null!;
+    private SavePoint? _savePoint;
 
     public override void _Ready()
     {
         _player = GetNode<FirstPersonController>(PlayerPath);
         _pauseMenu = GetNode<PauseMenu>(PauseMenuPath);
+        _savePoint = GetNodeOrNull<SavePoint>(SavePointPath);
         _pauseMenu.SaveRequested += SaveGame;
+        if (_savePoint is not null)
+            _savePoint.SaveRequested += SaveGame;
         LoadGameIfPresent();
     }
 
@@ -28,6 +34,8 @@ public partial class CrashSiteSaveCoordinator : Node
     {
         if (_pauseMenu is not null)
             _pauseMenu.SaveRequested -= SaveGame;
+        if (_savePoint is not null)
+            _savePoint.SaveRequested -= SaveGame;
     }
 
     public void SaveGame()

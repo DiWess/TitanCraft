@@ -7,6 +7,8 @@ namespace TitanCraft.World;
 
 public partial class SavePoint : Area3D, ICrashSiteInteractable
 {
+    public event Action? SaveRequested;
+
     public bool HasSavedCheckpoint { get; private set; }
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
@@ -15,6 +17,7 @@ public partial class SavePoint : Area3D, ICrashSiteInteractable
         ArgumentNullException.ThrowIfNull(mission);
 
         HasSavedCheckpoint = true;
+        SaveRequested?.Invoke();
         return true;
     }
 }

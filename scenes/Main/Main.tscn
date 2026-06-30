@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=37 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -19,88 +19,19 @@
 [ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
-[ext_resource type="PackedScene" path="res://scenes/Props/Human/Panel_A.tscn" id="21_panel_a"]
-[ext_resource type="PackedScene" path="res://scenes/Props/Human/Panel_Damaged_A.tscn" id="22_panel_damaged_a"]
-[ext_resource type="PackedScene" path="res://scenes/Props/Human/Frame_A.tscn" id="23_frame_a"]
-[ext_resource type="PackedScene" path="res://scenes/Props/Human/Beam_A.tscn" id="24_beam_a"]
-[ext_resource type="PackedScene" path="res://scenes/Props/Human/Rail_A.tscn" id="25_rail_a"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-end.obj" id="26_corridorend"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-corner.obj" id="27_corridorcorner"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/cables.obj" id="28_cables"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_large_rock.obj" id="29_clifflarge"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_topDiagonal_rock.obj" id="30_clifftopdiag"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_blockSlope_rock.obj" id="31_cliffslope"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_cornerInner_rock.obj" id="32_cliffinner"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_half_rock.obj" id="33_cliffhalf"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/template-wall-detail-a.obj" id="34_walldetail"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
 material = ExtResource("17_rock")
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(150, 0.2, 150)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_ship_fuselage"]
-radial_segments = 8
-top_radius = 1.05
-bottom_radius = 1.35
-height = 8.6
-material = ExtResource("13_ivory")
-[sub_resource type="CylinderMesh" id="CylinderMesh_ship_nosecone"]
-radial_segments = 8
-top_radius = 0.18
-bottom_radius = 1.15
-height = 3.2
-material = ExtResource("13_ivory")
-[sub_resource type="BoxMesh" id="BoxMesh_ship_hull"]
-size = Vector3(10, 2.4, 4.2)
-material = ExtResource("13_ivory")
-[sub_resource type="PrismMesh" id="PrismMesh_ship_nose"]
-size = Vector3(4.6, 2.2, 4.2)
-material = ExtResource("13_ivory")
-[sub_resource type="BoxMesh" id="BoxMesh_ship_wing"]
-size = Vector3(5.5, 0.28, 1.6)
-material = ExtResource("14_graphite")
-[sub_resource type="CylinderMesh" id="CylinderMesh_ship_engine"]
-radial_segments = 8
-top_radius = 0.75
-bottom_radius = 0.9
-height = 2.0
-material = ExtResource("14_graphite")
-[sub_resource type="BoxMesh" id="BoxMesh_scorch_plate"]
-size = Vector3(3.2, 0.08, 2.2)
-material = ExtResource("18_alien_black")
-[sub_resource type="BoxMesh" id="BoxMesh_workbench_top"]
-size = Vector3(3.8, 0.28, 1.7)
-material = ExtResource("13_ivory")
-[sub_resource type="BoxMesh" id="BoxMesh_workbench_leg"]
-size = Vector3(0.28, 1.1, 0.28)
-material = ExtResource("14_graphite")
-[sub_resource type="BoxMesh" id="BoxMesh_resource_plate"]
-size = Vector3(1.2, 0.16, 0.9)
-material = ExtResource("14_graphite")
-[sub_resource type="CylinderMesh" id="CylinderMesh_beacon_ring"]
-radial_segments = 8
-top_radius = 1.25
-bottom_radius = 1.25
-height = 0.12
-material = ExtResource("16_orange")
-[sub_resource type="BoxMesh" id="BoxMesh_save_arch"]
-size = Vector3(0.25, 2.0, 0.25)
-material = ExtResource("16_orange")
-[sub_resource type="BoxMesh" id="BoxMesh_ridge"]
-size = Vector3(22, 1.2, 3.5)
-material = ExtResource("17_rock")
-[sub_resource type="BoxMesh" id="BoxMesh_terminal_screen"]
-size = Vector3(1.3, 0.08, 0.65)
-material = ExtResource("19_violet")
 [sub_resource type="BoxShape3D" id="BoxShape3D_crate"]
 size = Vector3(1.5, 1.5, 1.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_c7_wall"]
 size = Vector3(4, 2.6, 0.35)
 [sub_resource type="BoxShape3D" id="BoxShape3D_blocking_rock"]
 size = Vector3(3, 2, 2.3)
-[sub_resource type="PrismMesh" id="PrismMesh_crate"]
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
 size = Vector3(1.5, 1.5, 1.5)
 material = ExtResource("14_graphite")
 [sub_resource type="BoxMesh" id="BoxMesh_panel"]
@@ -109,7 +40,7 @@ material = ExtResource("13_ivory")
 [sub_resource type="BoxMesh" id="BoxMesh_orange_strip"]
 size = Vector3(2.5, 0.18, 0.08)
 material = ExtResource("16_orange")
-[sub_resource type="PrismMesh" id="PrismMesh_metal"]
+[sub_resource type="BoxMesh" id="BoxMesh_metal"]
 size = Vector3(1.8, 0.45, 1.2)
 material = ExtResource("14_graphite")
 [sub_resource type="SphereMesh" id="SphereMesh_biomass"]
@@ -124,7 +55,7 @@ top_radius = 0.55
 bottom_radius = 0.65
 height = 1.1
 material = ExtResource("14_graphite")
-[sub_resource type="PrismMesh" id="PrismMesh_workbench"]
+[sub_resource type="BoxMesh" id="BoxMesh_workbench"]
 size = Vector3(3.2, 0.8, 1.5)
 material = ExtResource("13_ivory")
 [sub_resource type="CylinderMesh" id="CylinderMesh_save"]
@@ -142,11 +73,8 @@ material = ExtResource("14_graphite")
 [sub_resource type="PrismMesh" id="PrismMesh_crystal"]
 size = Vector3(1, 2.4, 1)
 material = ExtResource("19_violet")
-[sub_resource type="SphereMesh" id="SphereMesh_rock"]
-radial_segments = 7
-rings = 4
-radius = 1.25
-height = 1.8
+[sub_resource type="BoxMesh" id="BoxMesh_rock"]
+size = Vector3(3, 2, 2.3)
 material = ExtResource("17_rock")
 [sub_resource type="SphereMesh" id="SphereMesh_moon"]
 radial_segments = 12
@@ -189,147 +117,44 @@ shape = SubResource("BoxShape3D_ground")
 [node name="Moon" type="MeshInstance3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-42,36,-70)
 mesh = SubResource("SphereMesh_moon")
-
-[node name="CrashShip_WreckedCommandCore" type="Node3D" parent="."]
-transform = Transform3D(0.94, 0, -0.34, 0.08, 0.98, 0.22, 0.33, -0.24, 0.91, -4, 1.55, -18)
-[node name="BrokenHull" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-mesh = SubResource("BoxMesh_ship_hull")
-[node name="AuthoredHullShell" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(1.65, 0.12, -0.38, -0.08, 1.05, 0.18, 0.42, -0.1, 1.35, -0.8, -0.62, 0.1)
-mesh = ExtResource("26_corridorend")
-[node name="FacetedFuselage" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(0,0,1.25,0.18,0.95,0,-1.25,0.18,0,-0.8,-0.3,0)
-mesh = SubResource("CylinderMesh_ship_fuselage")
-[node name="FacetedNoseCone" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(0,0,1.0,0.1,0.78,0,-1.0,0.1,0,4.8,-0.28,0)
-mesh = SubResource("CylinderMesh_ship_nosecone")
-[node name="CollapsedNose" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(1,0,0,0,0.75,0.22,0,-0.22,0.75,6.0,-0.15,0)
-mesh = SubResource("PrismMesh_ship_nose")
-[node name="ImportedBrokenNoseShell" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(0.82, 0.08, -0.36, -0.08, 0.62, 0.1, 0.36, -0.06, 0.82, 3.2, -0.68, -0.85)
-mesh = ExtResource("27_corridorcorner")
-material_override = ExtResource("13_ivory")
-[node name="ImportedSplitHullCore" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(0.95, 0.12, 0.28, -0.08, 0.64, 0.1, -0.28, -0.08, 0.88, -0.9, -0.78, 0.05)
-mesh = ExtResource("26_corridorend")
-material_override = ExtResource("15_bronze")
-[node name="ImportedAftEngineMass" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(0.72, -0.05, 0.36, 0.08, 0.62, -0.08, -0.36, 0.04, 0.72, -3.9, -0.78, 1.15)
-mesh = ExtResource("27_corridorcorner")
-material_override = ExtResource("14_graphite")
-[node name="ImportedTornInteriorPanel" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(0.9, 0.05, -0.25, 0.08, 0.9, 0.08, 0.25, -0.08, 0.9, 0.8, 0.0, -2.05)
-mesh = ExtResource("34_walldetail")
-material_override = ExtResource("15_bronze")
-[node name="AsymmetricServiceModule" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(1.1, 0, 0.34, 0.05, 0.8, -0.12, -0.34, 0.08, 1.1, 2.8, -0.38, 1.1)
-mesh = ExtResource("27_corridorcorner")
-[node name="TornCableBundle" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(1.0, 0.12, -0.32, -0.08, 0.72, 0.06, 0.3, -0.05, 0.9, 0.9, 0.55, -2.1)
-mesh = ExtResource("28_cables")
-[node name="LeftTornWing" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(0.85,0.05,0.25,-0.05,0.55,0.08,-0.25,-0.08,0.85,-1.2,-0.75,-2.75)
-mesh = SubResource("BoxMesh_ship_wing")
-[node name="RightTornWing" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(0.45,-0.05,0.35,0.08,0.45,-0.04,-0.35,0.04,0.45,-2.8,-0.82,2.7)
-mesh = SubResource("BoxMesh_ship_wing")
-[node name="EngineBell_Left" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(0,0,1,0,1,0,-1,0,0,-5.7,-0.1,-1.25)
-mesh = SubResource("CylinderMesh_ship_engine")
-[node name="EngineBell_Right" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-visible = false
-transform = Transform3D(0,0,1,0,1,0,-1,0,0,-5.7,-0.1,1.25)
-mesh = SubResource("CylinderMesh_ship_engine")
-[node name="BlackenedBreach" type="MeshInstance3D" parent="CrashShip_WreckedCommandCore"]
-transform = Transform3D(1,0,0,0,0.4,0.92,0,-0.92,0.4,1.4,0.75,-2.15)
-mesh = SubResource("BoxMesh_scorch_plate")
 [node name="C7_Wall_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_1"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_1"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
-[node name="VisualRoot" type="Node3D" parent="C7_Wall_1"]
-[node name="PanelInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("21_panel_a")]
-[node name="FrameInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("23_frame_a")]
-transform = Transform3D(1, 0, 0, 0, 1.08, 0, 0, 0, 1, 0, 0, -0.18)
-[node name="TopBeamInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(1.08, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 1.42, -0.34)
-[node name="RailInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("25_rail_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_1"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_2" type="StaticBody3D" parent="."]
 transform = Transform3D(1.2,0,0,0,1,0,0,0,1,0,1.4,-14)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_2"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_2"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
-[node name="VisualRoot" type="Node3D" parent="C7_Wall_2"]
-[node name="PanelInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("22_panel_damaged_a")]
-[node name="FrameInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("23_frame_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
-[node name="TopBeamInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(0.82, 0, 0, 0, 1, 0, 0, 0, 1, -0.38, 1.43, -0.34)
-[node name="RailInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("25_rail_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_2"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,10,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_3"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_3"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
-[node name="VisualRoot" type="Node3D" parent="C7_Wall_3"]
-[node name="PanelInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("21_panel_a")]
-[node name="FrameInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("23_frame_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
-[node name="TopBeamInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 1.42, -0.34)
-[node name="RailInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("25_rail_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_3"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_4" type="StaticBody3D" parent="."]
 transform = Transform3D(0.8,0,0,0,1,0,0,0,1.4,15,1.4,-16)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_4"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_4"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
-[node name="VisualRoot" type="Node3D" parent="C7_Wall_4"]
-[node name="PanelInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("22_panel_damaged_a")]
-[node name="FrameInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("23_frame_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
-[node name="TopBeamInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(0.72, 0, 0, 0, 1, 0, 0, 0, 1, 0.46, 1.43, -0.34)
-[node name="RailInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("25_rail_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_4"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="BaseLamp_1" type="OmniLight3D" parent="."]
@@ -356,71 +181,62 @@ omni_range = 8.0
 transform = Transform3D(1.2,0.15,0,0,1,0,-0.08,0,1,-20,1.0,-18)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_1"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="VolcanicRock_2" type="StaticBody3D" parent="."]
 transform = Transform3D(1.4,0.15,0,0,1.2,0,-0.08,0,1,22,1.0,-30)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_2"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="VolcanicRock_3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.15,0,0,1.4,0,-0.08,0,1.3,-25,1.0,-35)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_3"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="DistantRock_4" type="Node3D" parent="."]
 transform = Transform3D(1.8,0.15,0,0,1.8,0,-0.08,0,1.2,38,1.0,-42)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="DistantRock_5" type="Node3D" parent="."]
 transform = Transform3D(3,0.15,0,0,4,0,-0.08,0,2,-55,1.0,-62)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="DistantRock_6" type="Node3D" parent="."]
 transform = Transform3D(3,0.15,0,0,5,0,-0.08,0,2,55,1.0,-68)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="DistantRock_7" type="Node3D" parent="."]
 transform = Transform3D(4,0.15,0,0,3,0,-0.08,0,2,0,1.0,-72)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("SphereMesh_rock")
+mesh = SubResource("BoxMesh_rock")
 [node name="Placeholder_Crate1" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,4,0.85,-5)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("PrismMesh_crate")
-[node name="OrangeLatch" type="MeshInstance3D" parent="Placeholder_Crate1"]
-transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.78)
-mesh = SubResource("BoxMesh_orange_strip")
+mesh = SubResource("BoxMesh_crate")
 [node name="Collision_Crate" type="CollisionShape3D" parent="Placeholder_Crate1"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_Crate2" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,-6,0.85,-8)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("PrismMesh_crate")
-[node name="OrangeLatch" type="MeshInstance3D" parent="Placeholder_Crate2"]
-transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.78)
-mesh = SubResource("BoxMesh_orange_strip")
+mesh = SubResource("BoxMesh_crate")
 [node name="Collision_Crate" type="CollisionShape3D" parent="Placeholder_Crate2"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_Crate3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,1.5,0.85,-12)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("PrismMesh_crate")
-[node name="OrangeLatch" type="MeshInstance3D" parent="Placeholder_Crate3"]
-transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.78)
-mesh = SubResource("BoxMesh_orange_strip")
+mesh = SubResource("BoxMesh_crate")
 [node name="Collision_Crate" type="CollisionShape3D" parent="Placeholder_Crate3"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_MetalPickup" type="Area3D" parent="."]
@@ -429,21 +245,8 @@ script = ExtResource("2_resource_pickup")
 ResourceKind = 0
 Quantity = 10
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("PrismMesh_metal")
-[node name="StackedSalvagePlate" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0.32,0.18)
-mesh = SubResource("BoxMesh_resource_plate")
-[node name="ImportedMetal_FracturedMachineA" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-transform = Transform3D(0.46,0.05,-0.22,-0.03,0.42,0.05,0.22,-0.04,0.46,-0.2,-0.28,0.0)
-mesh = ExtResource("34_walldetail")
-material_override = ExtResource("14_graphite")
-[node name="ImportedMetal_FracturedMachineB" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-transform = Transform3D(0.24,-0.02,0.16,0.04,0.24,0.04,-0.16,-0.02,0.24,0.42,-0.08,0.22)
-mesh = ExtResource("28_cables")
-material_override = ExtResource("15_bronze")
+mesh = SubResource("BoxMesh_metal")
 [node name="Collision_MetalPickup" type="CollisionShape3D" parent="Placeholder_MetalPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_BiomassPickup" type="Area3D" parent="."]
@@ -452,21 +255,8 @@ script = ExtResource("2_resource_pickup")
 ResourceKind = 1
 Quantity = 3
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("SphereMesh_biomass")
-[node name="OrganicCore" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-visible = false
-transform = Transform3D(0.55,0,0,0,0.55,0,0,0,0.55,0.42,0.08,-0.15)
-mesh = SubResource("SphereMesh_biomass")
-[node name="ImportedBiomass_IrregularContainer" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-transform = Transform3D(0.55,0,0.16,0,0.48,0,-0.16,0,0.55,0,-0.34,0)
-mesh = ExtResource("32_cliffinner")
-material_override = ExtResource("20_biomass")
-[node name="ImportedBiomass_CableRestraint" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-transform = Transform3D(0.24,0.02,-0.08,-0.02,0.2,0.03,0.08,-0.03,0.24,0.12,0.04,-0.08)
-mesh = ExtResource("28_cables")
-material_override = ExtResource("18_alien_black")
 [node name="Collision_BiomassPickup" type="CollisionShape3D" parent="Placeholder_BiomassPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_ElectronicsPickup" type="Area3D" parent="."]
@@ -475,54 +265,16 @@ script = ExtResource("2_resource_pickup")
 ResourceKind = 2
 Quantity = 2
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_electronics")
-[node name="CircuitScreen" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-visible = false
-transform = Transform3D(0.75,0,0,0,1,0,0,0,0.75,0,0.62,-0.12)
-mesh = SubResource("BoxMesh_terminal_screen")
-[node name="ImportedElectronics_TechModule" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-transform = Transform3D(0.44,0.03,0.12,0.03,0.4,-0.03,-0.12,0.03,0.44,0,-0.3,0)
-mesh = ExtResource("34_walldetail")
-material_override = ExtResource("14_graphite")
-[node name="ImportedElectronics_CyanCore" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-transform = Transform3D(0.18,0,0,0,0.18,0,0,0,0.18,0.12,0.05,-0.18)
-mesh = ExtResource("28_cables")
-material_override = ExtResource("19_violet")
 [node name="Collision_ElectronicsPickup" type="CollisionShape3D" parent="Placeholder_ElectronicsPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_Workbench" type="Area3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,12,0.85,-12)
 script = ExtResource("3_workbench")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Workbench"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("PrismMesh_workbench")
-[node name="FlatAssemblyTable" type="MeshInstance3D" parent="Placeholder_Workbench"]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0.55,0)
-mesh = SubResource("BoxMesh_workbench_top")
-[node name="LeftLeg" type="MeshInstance3D" parent="Placeholder_Workbench"]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,-1.45,-0.15,-0.55)
-mesh = SubResource("BoxMesh_workbench_leg")
-[node name="RightLeg" type="MeshInstance3D" parent="Placeholder_Workbench"]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,1.45,-0.15,-0.55)
-mesh = SubResource("BoxMesh_workbench_leg")
-[node name="ImportedWorkbench_MachineMass" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(0.82,0.04,0.18,-0.03,0.62,0.06,-0.18,-0.05,0.82,0,-0.42,0.05)
-mesh = ExtResource("27_corridorcorner")
-material_override = ExtResource("13_ivory")
-[node name="ImportedWorkbench_ToolRack" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(0.64,0,0.14,0,0.48,0,-0.14,0,0.64,-0.8,0.18,-0.25)
-mesh = ExtResource("34_walldetail")
-material_override = ExtResource("14_graphite")
-[node name="ImportedWorkbench_ServiceCables" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(0.38,0,-0.1,0,0.32,0,0.1,0,0.38,0.65,0.08,0.28)
-mesh = ExtResource("28_cables")
-material_override = ExtResource("15_bronze")
+mesh = SubResource("BoxMesh_workbench")
 [node name="ControlPanel" type="MeshInstance3D" parent="Placeholder_Workbench"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.8)
 mesh = SubResource("BoxMesh_orange_strip")
@@ -532,100 +284,21 @@ shape = SubResource("BoxShape3D_crate")
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,0.85,-12)
 script = ExtResource("5_save_point")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_SavePoint"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_save")
-[node name="LeftCheckpointArch" type="MeshInstance3D" parent="Placeholder_SavePoint"]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,-0.65,0.9,0)
-mesh = SubResource("BoxMesh_save_arch")
-[node name="RightCheckpointArch" type="MeshInstance3D" parent="Placeholder_SavePoint"]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,0.65,0.9,0)
-mesh = SubResource("BoxMesh_save_arch")
-[node name="ImportedSave_DataStation" type="MeshInstance3D" parent="Placeholder_SavePoint"]
-transform = Transform3D(0.58,0,0.12,0,0.62,0,-0.12,0,0.58,0,-0.42,0)
-mesh = ExtResource("34_walldetail")
-material_override = ExtResource("14_graphite")
-[node name="ImportedSave_EmergencyCore" type="MeshInstance3D" parent="Placeholder_SavePoint"]
-transform = Transform3D(0.24,0,0,0,0.24,0,0,0,0.24,0,0.18,-0.18)
-mesh = ExtResource("28_cables")
-material_override = ExtResource("16_orange")
 [node name="Collision_SavePoint" type="CollisionShape3D" parent="Placeholder_SavePoint"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_Beacon" type="Area3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,28,0.85,-20)
 script = ExtResource("6_beacon")
 [node name="ClosedVisual" type="MeshInstance3D" parent="Placeholder_Beacon"]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_beacon")
 [node name="ActiveVisual" type="MeshInstance3D" parent="Placeholder_Beacon"]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0.35, 0)
 mesh = SubResource("PrismMesh_crystal")
-[node name="SignalRing" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(1,0,0,0,0,1,0,-1,0,0,1.55,0)
-mesh = SubResource("CylinderMesh_beacon_ring")
-[node name="ImportedBeacon_StableBase" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(0.72,0,0.18,0,0.42,0,-0.18,0,0.72,0,-0.45,0)
-mesh = ExtResource("27_corridorcorner")
-material_override = ExtResource("14_graphite")
-[node name="ImportedBeacon_AntennaMast" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(0.24,0,0.03,0,1.3,0,-0.03,0,0.24,0,1.0,0)
-mesh = ExtResource("34_walldetail")
-material_override = ExtResource("13_ivory")
-[node name="ImportedBeacon_PoweredCrown" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(0.32,0,0,0,0.32,0,0,0,0.32,0,1.72,0)
-mesh = ExtResource("28_cables")
-material_override = ExtResource("16_orange")
 [node name="Collision_BeaconBase" type="CollisionShape3D" parent="Placeholder_Beacon"]
 shape = SubResource("BoxShape3D_crate")
-
-
-[node name="ImportedTerrain_HeroFrame_Left" type="MeshInstance3D" parent="."]
-transform = Transform3D(2.0,0,0.35,0,1.65,0,-0.35,0,2.0,-11,-0.58,-13)
-mesh = ExtResource("32_cliffinner")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_HeroFrame_Right" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.7,0,-0.55,0,1.35,0,0.55,0,1.7,10,-0.52,-16)
-mesh = ExtResource("29_clifflarge")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_RouteMask_LowA" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.65,0,0.45,0,0.72,0,-0.45,0,1.65,-2,-0.5,-7)
-mesh = ExtResource("31_cliffslope")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_RouteMask_LowB" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.35,0,-0.35,0,0.65,0,0.35,0,1.35,5,-0.48,-5)
-mesh = ExtResource("33_cliffhalf")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_ForegroundFrame_Left" type="MeshInstance3D" parent="."]
-transform = Transform3D(2.2,0,0.55,0,1.1,0,-0.55,0,2.2,-18,-0.25,5)
-mesh = ExtResource("29_clifflarge")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_ForegroundFrame_Right" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.7,0,-0.7,0,0.95,0,0.7,0,1.7,18,-0.32,6)
-mesh = ExtResource("32_cliffinner")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_RouteEdge_A" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.2,0,0.4,0,0.55,0,-0.4,0,1.2,-9,-0.38,-6)
-mesh = ExtResource("31_cliffslope")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_RouteEdge_B" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.0,0,-0.35,0,0.52,0,0.35,0,1.0,9,-0.35,-8)
-mesh = ExtResource("33_cliffhalf")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_BuriedCrashLip" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.8,0,-0.5,0,0.72,0,0.5,0,1.8,-4,-0.45,-20)
-mesh = ExtResource("30_clifftopdiag")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_BackgroundRidge_A" type="MeshInstance3D" parent="."]
-transform = Transform3D(3.6,0,0.8,0,1.35,0,-0.8,0,3.6,-38,-0.7,-42)
-mesh = ExtResource("29_clifflarge")
-material_override = ExtResource("17_rock")
-[node name="ImportedTerrain_BackgroundRidge_B" type="MeshInstance3D" parent="."]
-transform = Transform3D(3.0,0,-1.0,0,1.1,0,1.0,0,3.0,38,-0.65,-48)
-mesh = ExtResource("33_cliffhalf")
-material_override = ExtResource("17_rock")
 [node name="AlienCrystal_1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.2, -18)
 mesh = SubResource("PrismMesh_crystal")
@@ -646,13 +319,6 @@ transform = Transform3D(1,0,0,0,1,0,0,0,1,24,3,-22)
 light_color = Color(0.45, 0.25, 1, 1)
 light_energy = 0.45
 omni_range = 10.0
-
-[node name="ReadableTerrainRidge_A" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.75,0,0.28,0,0.7,0,-0.28,0,0.75,-30,0.15,16)
-mesh = ExtResource("29_clifflarge")
-[node name="ReadableTerrainRidge_B" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.48,0,-0.55,0,0.85,0,0.55,0,0.48,32,0.18,24)
-mesh = ExtResource("30_clifftopdiag")
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)
 [node name="Placeholder_GalaxabrainScout" parent="." instance=ExtResource("7_galaxabrain_scout")]

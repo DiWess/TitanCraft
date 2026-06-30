@@ -200,3 +200,72 @@ Final total: 41/70. Required total: 48/70.
 The recovery did not meet the required visual target. The imported Kenney subset is verified and useful, but in this specific production scene it still reads as a small set of repeated slab-like modules once texture maps are absent and the existing flat ground remains visible. The terrain masks do not sufficiently bury the flat plane in the required camera views, and the interactable wrappers remain visually subordinate to the old rectangular C7 structures. Further progress should not continue by adding more primitives or more random module scattering. It needs either a dedicated asset-led layout pass with a broader verified environment/industrial prop set, or human art direction selecting a smaller number of purpose-built placeholder assets.
 
 Final verdict: `NOT_GO` due to insufficient asset match for the Phase 3A target, not due to rendering failure.
+
+
+## Phase 3A production rollback and asset-selection gate
+
+Decision date: 2026-06-30
+Status: `READY_FOR_ASSET_SELECTION`
+
+### Cleanup decision
+
+Phase 3A implementation work is terminated. The primitive recovery and the Kenney asset recovery both remained `NOT_GO`; no third primitive-only or asset-subset composition pass is authorized. The screenshot harness, deterministic cameras, review command, proof documentation, asset policy and third-party asset records remain mandatory infrastructure for future visible work.
+
+### Production rollback proof
+
+The live production scenes were surgically restored to the last stable pre-Phase-3A gameplay presentation instead of using a blind hard reset.
+
+Removed from `scenes/Main/Main.tscn`:
+
+- Primitive C7 `VisualRoot` wall-kit assemblies, canted panels, conduits and added hull plates.
+- Primitive crashed-ship composition nodes and terrain-ridge visual-only additions.
+- Primitive interactable wrappers for workbench, save point, beacon and pickups.
+- Kenney imported mesh wrappers added directly to production terrain, interactables and wreck composition.
+- Imported terrain masks/framing meshes and hidden/demoted primitive visual overrides.
+
+Removed from `scenes/Enemies/GalaxabrainScout.tscn`:
+
+- Primitive multi-part Galaxabrain visual assembly, enlarged brain-dome/thorax details, non-gameplay visual children and extra visual-only materials.
+
+Preserved production nodes and contracts in `scenes/Main/Main.tscn`:
+
+- `Ground` and `Ground/Collision_Ground`.
+- `Player` instance and player transform.
+- `C7_Wall_1` through `C7_Wall_4`, including `MeshInstance3D`, `OrangeVent` and `Collision_C7Wall` children.
+- `VolcanicRock_1` through `VolcanicRock_3` and each `Collision_BlockingRock`.
+- `Placeholder_Crate1` through `Placeholder_Crate3` and each `Collision_Crate`.
+- `Placeholder_MetalPickup`, `Placeholder_BiomassPickup`, `Placeholder_ElectronicsPickup`, their `ResourcePickup` scripts, visual mesh children and collision children.
+- `Placeholder_Workbench`, its `Workbench` script, `ControlPanel` child and `Collision_Workbench`.
+- `Placeholder_SavePoint`, its `SavePoint` script and `Collision_SavePoint`.
+- `Placeholder_Beacon`, its `Beacon` script, `ClosedVisual`, `ActiveVisual` and `Collision_BeaconBase`.
+- `Placeholder_GalaxabrainScout` instance transform.
+- HUD binder, end navigation and save coordinator nodes/scripts.
+
+Preserved production nodes and contracts in `scenes/Enemies/GalaxabrainScout.tscn`:
+
+- Root `CharacterBody3D` named `GalaxabrainScout`.
+- `src/Enemies/GalaxabrainScout.cs` script reference.
+- Root collision shape and configured combat/export values.
+- `Placeholder_GalaxabrainScout` visual mesh child.
+- `GalaxabrainComponentPickup` Area3D, `src/World/GalaxabrainComponentPickup.cs` script and pickup collision child.
+- `MissionComponentPath = NodePath("GalaxabrainComponentPickup")`.
+
+### Baseline/reset screenshot evidence
+
+After rollback, the screenshot harness must still be run with:
+
+```bash
+xvfb-run -a godot --path . --rendering-driver opengl3 --script tools/visual_review/capture_phase3a.gd
+```
+
+The generated images under `artifacts/visual-review/` are labeled baseline/reset evidence only. They are not final art evidence and do not claim Phase 3A visual acceptance.
+
+### Asset-selection handoff
+
+Asset selection now lives in:
+
+- `docs/phase3a-asset-requirements.md`
+- `docs/phase3a-asset-shortlist.md`
+- `docs/phase3a-selection-scorecard.md`
+
+No new assets may be downloaded, purchased, imported or integrated until a human explicitly selects an acquisition option.

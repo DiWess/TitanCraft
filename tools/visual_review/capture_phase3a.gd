@@ -14,15 +14,15 @@ const VIEWS := [
 	},
 	{
 		"name": "phase3a_ship_hero",
-		"position": Vector3(-12.5, 2.6, -14.0),
-		"target": Vector3(-2.5, 1.3, -18.5),
-		"fov": 64.0
+		"position": Vector3(-17.0, 3.0, -12.5),
+		"target": Vector3(-2.8, 1.1, -18.3),
+		"fov": 66.0
 	},
 	{
 		"name": "phase3a_ship_oblique",
-		"position": Vector3(5.5, 2.5, -29.0),
-		"target": Vector3(-2.0, 1.2, -18.0),
-		"fov": 64.0
+		"position": Vector3(7.5, 2.8, -31.0),
+		"target": Vector3(-2.0, 1.0, -18.2),
+		"fov": 66.0
 	},
 	{
 		"name": "phase3a_galaxabrain_combat",

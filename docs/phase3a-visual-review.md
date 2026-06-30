@@ -1,8 +1,8 @@
 # Phase 3A Visual Review
 
-Owner: Codex  
-Version: 1  
-Date: 2026-06-30  
+Owner: Codex
+Version: 1
+Date: 2026-06-30
 Review status: NOT_GO after rendered review
 
 ## Scope
@@ -142,3 +142,61 @@ Overall: 40/70. Gate failed.
 ## Final Phase 3A visual verdict
 
 `NOT_GO`: Phase 3A is not visually accepted yet. Rendering is available and screenshots were inspected, but after two bounded correction cycles the scene still reads too much like a sparse editor/test level. The largest remaining issues are terrain flatness, primitive interactable language, and ship material/form cohesion. Further progress likely requires a dedicated art-direction pass or a more asset-led composition slice, not additional blind primitive iteration in Phase 3A.
+
+## Asset-based recovery after primitive-cycle NOT_GO
+
+Decision date: 2026-06-30
+Status: `NOT_GO`
+
+### Imported assets used
+
+Only already documented Kenney CC0 assets were used:
+
+- `assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-end.obj`
+- `assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-corner.obj`
+- `assets/ThirdParty/Kenney/ModularSpaceKit/Models/cables.obj`
+- `assets/ThirdParty/Kenney/ModularSpaceKit/Models/template-wall-detail-a.obj`
+- `assets/ThirdParty/Kenney/NatureKit/Models/cliff_large_rock.obj`
+- `assets/ThirdParty/Kenney/NatureKit/Models/cliff_topDiagonal_rock.obj`
+- `assets/ThirdParty/Kenney/NatureKit/Models/cliff_blockSlope_rock.obj`
+- `assets/ThirdParty/Kenney/NatureKit/Models/cliff_cornerInner_rock.obj`
+- `assets/ThirdParty/Kenney/NatureKit/Models/cliff_half_rock.obj`
+
+No new asset pack was downloaded. No Quaternius or deferred pack was used.
+
+### Asset recovery changes
+
+- Terrain: added imported foreground, route-edge, crash-lip, hero-frame and background rock/cliff visual-only meshes. These have no added collision.
+- Interactables: hid dominant primitive visual children under the existing pickup/workbench/save/beacon roots and added imported visual-only module/cable/cliff children. Roots, scripts, quantities, colliders and gameplay values were preserved.
+- Crashed ship: hid the dominant primitive ship visuals and added imported modular sci-fi pieces as the dominant wreck forms with asymmetric orientations and buried terrain context.
+- Capture framing: adjusted the ship hero and oblique cameras to show the imported wreck composition more consistently.
+
+### Asset-based comparison table
+
+| View | Previous failure | New change | Final score |
+|------|------------------|------------|-------------|
+| Spawn overview | Flat plane dominated the composition; ship and interactables looked primitive. | Added route-edge rocks, background ridges, imported interactable wrappers and imported ship modules. | 6/10 |
+| Ship hero | Ship read as primitive cylinders/slabs and the hero angle over-emphasized one large flat form. | Reframed camera, reduced primitive ship visibility, made imported oriented hull pieces dominant. | 6/10 |
+| Ship oblique | Oblique view proved depth but still looked like primitive chunks. | Added imported hull/nose/engine/interior pieces and asymmetric layout. | 6/10 |
+| Galaxabrain combat | Enemy was acceptable but competed with surrounding primitives and beacon clutter. | Left Galaxabrain unchanged; distant beacon/interactable context changed. | 6/10 |
+| Interactables wide | Workbench/save/beacon/pickups depended heavily on primitive shape and color. | Added imported module/cable/cliff wrappers under existing roots and enlarged wrappers in pass 2. | 6/10 |
+
+### Asset-based scores
+
+| Category | Before asset recovery | Final asset recovery |
+|---|---:|---:|
+| Ship silhouette | 6/10 | 6/10 |
+| Galaxabrain silhouette | 6/10 | 6/10 |
+| Terrain depth | 5/10 | 5/10 |
+| Interactable readability | 6/10 | 6/10 |
+| Material coherence | 6/10 | 6/10 |
+| Non-cubic appearance | 5/10 | 6/10 |
+| Overall presentation | 6/10 | 6/10 |
+
+Final total: 41/70. Required total: 48/70.
+
+### Final asset-based diagnosis
+
+The recovery did not meet the required visual target. The imported Kenney subset is verified and useful, but in this specific production scene it still reads as a small set of repeated slab-like modules once texture maps are absent and the existing flat ground remains visible. The terrain masks do not sufficiently bury the flat plane in the required camera views, and the interactable wrappers remain visually subordinate to the old rectangular C7 structures. Further progress should not continue by adding more primitives or more random module scattering. It needs either a dedicated asset-led layout pass with a broader verified environment/industrial prop set, or human art direction selecting a smaller number of purpose-built placeholder assets.
+
+Final verdict: `NOT_GO` due to insufficient asset match for the Phase 3A target, not due to rendering failure.

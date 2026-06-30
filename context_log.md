@@ -27,3 +27,5 @@
 - 2026-06-30: Moved Galaxabrain Scout pickup exposure coverage out of runtime-dependent unit tests and into the Godot integration runner so CI unit tests stay runtime-free.
 
 - 2026-06-30: Made the main menu the startup scene while preserving Crash Site loading and covering Continue save-state behavior in integration tests.
+
+- 2026-06-30: Wired SavePoint interaction to the local Crash Site save coordinator and covered checkpoint serialization and restore behavior.

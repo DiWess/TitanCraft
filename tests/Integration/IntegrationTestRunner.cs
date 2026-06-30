@@ -379,15 +379,16 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
         var player = main.GetNode<FirstPersonController>("Player");
         var saveCoordinator = main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
-        var pauseMenu = main.GetNode<PauseMenu>("PauseMenu");
+        var savePoint = main.GetNode<SavePoint>("Placeholder_SavePoint");
         player.GlobalPosition = new Vector3(3.0f, 2.0f, -7.0f);
         player.Health.ApplyDamage(40);
         player.Inventory.AddResources(metal: 6, biomass: 1, electronicComponents: 2);
         player.Mission.TryCompleteResourceCollection();
-        pauseMenu.GetNode<Button>("Panel/Menu/SaveButton").EmitSignal(Button.SignalName.Pressed);
+        Require(savePoint.Interact(player.Inventory, player.Mission), "SavePoint interaction failed");
         await Frames(2);
-        Require(saveCoordinator.LastSaveSucceeded, "Pause Save did not write a save file");
-        Require(LocalSaveGameStore.SaveExists(), "Save file does not exist after pause Save");
+        Require(savePoint.HasSavedCheckpoint, "SavePoint did not mark the checkpoint as saved");
+        Require(saveCoordinator.LastSaveSucceeded, "SavePoint interaction did not write a save file");
+        Require(LocalSaveGameStore.SaveExists(), "Save file does not exist after SavePoint interaction");
         main.QueueFree();
         await Frames(2);
 
@@ -396,7 +397,7 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
         var loadedPlayer = loadedMain.GetNode<FirstPersonController>("Player");
         var loadedCoordinator = loadedMain.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
-        Require(loadedCoordinator.LastLoadSucceeded, "Continue load did not restore an existing save");
+        Require(loadedCoordinator.LastLoadSucceeded, "Continue load did not restore an existing checkpoint save");
         Require(loadedPlayer.Health.CurrentHealth == 60, "Loaded health mismatch");
         Require(loadedPlayer.Inventory.Metal == 6 && loadedPlayer.Inventory.ElectronicComponents == 2, "Loaded inventory mismatch");
         Require(loadedPlayer.Mission.CurrentStep == Missions.CrashSiteMissionStep.BuildMechanicalArm, "Loaded mission step mismatch");

@@ -308,7 +308,9 @@ public partial class IntegrationTestRunner : Node
         Require(startTutorial.Text.Contains("Mouse"), "HUD start tutorial missing mouse look control");
         Require(startTutorial.Text.Contains("Space"), "HUD start tutorial missing jump control");
         Require(startTutorial.Text.Contains("E"), "HUD start tutorial missing interact control");
+        Require(startTutorial.Text.Contains("craft at workbench"), "HUD start tutorial missing craft guidance");
         Require(startTutorial.Text.Contains("Left click"), "HUD start tutorial missing attack control");
+        Require(startTutorial.Text.Contains("Mk I"), "HUD start tutorial missing built-arm attack gating");
         Require(startTutorial.Text.Contains("Esc"), "HUD start tutorial missing pause control");
         hud.QueueFree();
         await Frames(2);
@@ -322,6 +324,10 @@ public partial class IntegrationTestRunner : Node
         var player = main.GetNode<FirstPersonController>("Player");
         var hud = main.GetNode<CrashSiteHud>("HUD");
 
+        player.TryAttack();
+        await Frames(2);
+        Require(hud.GetNode<Label>("ActionFeedback").Text.Contains("Mk I is not built"), "HUD attack feedback should explain blocked unbuilt-arm attacks");
+
         player.Health.ApplyDamage(25);
         player.Inventory.AddResources(metal: 4, biomass: 2, electronicComponents: 1);
         player.Inventory.MarkMechanicalArmBuilt();
@@ -330,7 +336,7 @@ public partial class IntegrationTestRunner : Node
 
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Health").Text == "Health: 75/100", "HUD health did not update from player health");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Metal: 4"), "HUD resources did not update from inventory");
-        Require(hud.GetNode<Label>("Panel/Margin/VBox/MechanicalArmState").Text.Contains("Online"), "HUD arm state did not update from inventory");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/MechanicalArmState").Text.Contains("Left click"), "HUD arm state did not explain attack input after crafting");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text.Contains("Mechanical Arm Mk I"), "HUD objective did not update from mission state");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/InteractionPrompt").Visible == false, "HUD interaction prompt should start hidden without a target");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/StartTutorial").Visible == false, "HUD start tutorial should hide after mission progression");

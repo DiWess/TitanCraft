@@ -26,7 +26,7 @@ offsets_preset = 1
 offset_left = 12.0
 offset_top = 12.0
 offset_right = 500.0
-offset_bottom = 160.0
+offset_bottom = 190.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
@@ -54,7 +54,7 @@ theme_override_colors/font_color = Color(0.831373, 0.784314, 0.682353, 1)
 
 [node name="StartTutorial" type="Label" parent="Panel/Margin/VBox"]
 label_settings = SubResource("LabelSettings_hud")
-text = "ZQSD/WASD: move | Mouse: look | Space: jump | E: interact | Left click: attack | Esc: pause"
+text = "ZQSD/WASD: move | Mouse: look | Space: jump | E: interact/craft at workbench | Left click: attack after Mk I is built | Esc: pause"
 autowrap_mode = 3
 
 [node name="InteractionPrompt" type="Label" parent="Panel/Margin/VBox"]
@@ -66,3 +66,19 @@ text = ""
 label_settings = SubResource("LabelSettings_hud")
 text = "Mechanical Arm: Not built"
 theme_override_colors/font_color = Color(0.203922, 0.784314, 0.909804, 1)
+
+[node name="ActionFeedback" type="Label" parent="."]
+offsets_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = -96.0
+offset_right = 360.0
+offset_bottom = -56.0
+text = "Left click: Mk I not built yet — craft it at the workbench first."
+horizontal_alignment = 1
+vertical_alignment = 1
+label_settings = SubResource("LabelSettings_hud")
+theme_override_colors/font_color = Color(1, 0.72, 0.24, 1)

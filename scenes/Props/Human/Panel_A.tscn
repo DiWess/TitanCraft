@@ -1,0 +1,64 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="1_ivory"]
+[ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="2_graphite"]
+[ext_resource type="Material" path="res://assets/Materials/HumanOrangeInteractive.tres" id="3_orange"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_panel_primary"]
+size = Vector3(4, 2.4, 0.12)
+material = ExtResource("1_ivory")
+[sub_resource type="BoxMesh" id="BoxMesh_panel_recess"]
+size = Vector3(3.25, 0.08, 0.04)
+material = ExtResource("2_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_panel_rib_vertical"]
+size = Vector3(0.08, 2.45, 0.08)
+material = ExtResource("2_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_panel_rib_horizontal"]
+size = Vector3(4.1, 0.08, 0.08)
+material = ExtResource("2_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_panel_handle"]
+size = Vector3(0.55, 0.12, 0.08)
+material = ExtResource("3_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_panel_access"]
+size = Vector3(0.72, 0.44, 0.05)
+material = ExtResource("2_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_panel_bolt"]
+size = Vector3(0.12, 0.12, 0.07)
+material = ExtResource("2_graphite")
+
+[node name="Panel_A" type="Node3D"]
+[node name="PrimaryForms" type="Node3D" parent="."]
+[node name="PanelPlate" type="MeshInstance3D" parent="PrimaryForms"]
+mesh = SubResource("BoxMesh_panel_primary")
+[node name="SecondaryForms" type="Node3D" parent="."]
+[node name="LeftRib" type="MeshInstance3D" parent="SecondaryForms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82, 0, -0.08)
+mesh = SubResource("BoxMesh_panel_rib_vertical")
+[node name="RightRib" type="MeshInstance3D" parent="SecondaryForms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.82, 0, -0.08)
+mesh = SubResource("BoxMesh_panel_rib_vertical")
+[node name="TopRib" type="MeshInstance3D" parent="SecondaryForms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16, -0.08)
+mesh = SubResource("BoxMesh_panel_rib_horizontal")
+[node name="BottomRib" type="MeshInstance3D" parent="SecondaryForms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.16, -0.08)
+mesh = SubResource("BoxMesh_panel_rib_horizontal")
+[node name="FunctionalDetails" type="Node3D" parent="."]
+[node name="VentSlotUpper" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52, -0.1)
+mesh = SubResource("BoxMesh_panel_recess")
+[node name="VentSlotLower" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, -0.1)
+mesh = SubResource("BoxMesh_panel_recess")
+[node name="MaintenanceHandle" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, -0.52, -0.12)
+mesh = SubResource("BoxMesh_panel_handle")
+[node name="AccessPlate" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, -0.52, -0.1)
+mesh = SubResource("BoxMesh_panel_access")
+[node name="BoltTopLeft" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0.9, -0.12)
+mesh = SubResource("BoxMesh_panel_bolt")
+[node name="BoltTopRight" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0.9, -0.12)
+mesh = SubResource("BoxMesh_panel_bolt")

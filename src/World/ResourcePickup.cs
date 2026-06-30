@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Crafting;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
 
@@ -61,14 +62,26 @@ public partial class ResourcePickup : Area3D, ICrashSiteInteractable
         }
     }
 
-    private static void TryAdvanceResourceObjective(MvpInventory inventory, CrashSiteMissionState mission)
+    public static bool TryAdvanceResourceObjective(MvpInventory inventory, CrashSiteMissionState mission)
     {
-        if (mission.CurrentStep == CrashSiteMissionStep.CollectResources
-            && inventory.Metal > 0
-            && inventory.Biomass > 0
-            && inventory.ElectronicComponents > 0)
+        return TryAdvanceResourceObjective(inventory, mission, new MechanicalArmRecipe());
+    }
+
+    public static bool TryAdvanceResourceObjective(
+        MvpInventory inventory,
+        CrashSiteMissionState mission,
+        MechanicalArmRecipe mechanicalArmRecipe)
+    {
+        ArgumentNullException.ThrowIfNull(inventory);
+        ArgumentNullException.ThrowIfNull(mission);
+        ArgumentNullException.ThrowIfNull(mechanicalArmRecipe);
+
+        if (mission.CurrentStep != CrashSiteMissionStep.CollectResources
+            || !mechanicalArmRecipe.CanCraft(inventory))
         {
-            mission.TryCompleteResourceCollection();
+            return false;
         }
+
+        return mission.TryCompleteResourceCollection();
     }
 }

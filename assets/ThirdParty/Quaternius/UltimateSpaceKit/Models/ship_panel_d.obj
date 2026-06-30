@@ -1,0 +1,15 @@
+# Curated OBJ subset placeholder extracted for TitanCraft Phase 3A proof; source/licence documented separately.
+v -0.400 0.000 -0.720
+v 0.400 0.000 -0.720
+v 0.400 0.000 0.720
+v -0.400 0.000 0.720
+v -0.160 0.700 -0.504
+v 0.520 0.700 -0.720
+v 0.640 0.700 0.576
+v -0.352 0.700 0.720
+f 1 2 3 4
+f 5 8 7 6
+f 1 5 6 2
+f 2 6 7 3
+f 3 7 8 4
+f 4 8 5 1

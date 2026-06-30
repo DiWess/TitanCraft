@@ -1,0 +1,230 @@
+[gd_scene load_steps=62 format=3 uid="uid://freeassetproof"]
+[ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="1_HumanIvory"]
+[ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="2_HumanGraphite"]
+[ext_resource type="Material" path="res://assets/Materials/HumanWornSteel.tres" id="3_HumanWornSteel"]
+[ext_resource type="Material" path="res://assets/Materials/HumanOrangeInteractive.tres" id="4_HumanOrangeInteractive"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicRock.tres" id="5_VolcanicRock"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicSoil.tres" id="6_VolcanicSoil"]
+[ext_resource type="Material" path="res://assets/Materials/DamageScorch.tres" id="7_DamageScorch"]
+[ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="8_AlienBlack"]
+[ext_resource type="Material" path="res://assets/Materials/AlienCyanEmissive.tres" id="9_AlienCyanEmissive"]
+[ext_resource type="Material" path="res://assets/Materials/AlienTurquoiseEmissive.tres" id="10_AlienTurquoiseEmissive"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/KayKit/SpaceBaseBits/Models/crate_a.obj" id="11_crate_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/KayKit/SpaceBaseBits/Models/antenna_a.obj" id="12_antenna_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/KayKit/SpaceBaseBits/Models/tank_a.obj" id="13_tank_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/template-wall-detail-a.obj" id="14_template_wall_detail_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-corner.obj" id="15_corridor_corner"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/gate-lasers.obj" id="16_gate_lasers"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/cables.obj" id="17_cables"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-end.obj" id="18_corridor_end"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_blockSlope_rock.obj" id="19_cliff_blockSlope_rock"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_large_rock.obj" id="20_cliff_large_rock"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_topDiagonal_rock.obj" id="21_cliff_topDiagonal_rock"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_cornerInner_rock.obj" id="22_cliff_cornerInner_rock"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_half_rock.obj" id="23_cliff_half_rock"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_c.obj" id="24_rock_irregular_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_cliff_d.obj" id="25_rock_cliff_d"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_cliff_e.obj" id="26_rock_cliff_e"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="27_rock_ridge_f"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_slab_h.obj" id="28_rock_slab_h"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="29_rock_spire_g"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_b.obj" id="30_rock_irregular_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_a.obj" id="31_rock_irregular_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/angle_corridor_b.obj" id="32_angle_corridor_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/support_frame_a.obj" id="33_support_frame_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/support_frame_b.obj" id="34_support_frame_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/angled_panel_e.obj" id="35_angled_panel_e"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/corridor_strut_d.obj" id="36_corridor_strut_d"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/door_floor_a.obj" id="37_door_floor_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/angle_wall_c.obj" id="38_angle_wall_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/angle_corridor_a.obj" id="39_angle_corridor_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/ModularSciFiMegaKit/Models/internal_rib_a.obj" id="40_internal_rib_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/engine_pod_a.obj" id="41_engine_pod_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_nose_a.obj" id="42_hull_nose_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_engine_mount_c.obj" id="43_hull_engine_mount_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/asteroid_spine_b.obj" id="44_asteroid_spine_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/alien_debris_a.obj" id="45_alien_debris_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/mechanical_nozzle_b.obj" id="46_mechanical_nozzle_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/ship_panel_d.obj" id="47_ship_panel_d"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_wing_b.obj" id="48_hull_wing_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/robot_head_a.obj" id="49_robot_head_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/screen_prop_c.obj" id="50_screen_prop_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/machine_console_a.obj" id="51_machine_console_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/crate_machine_b.obj" id="52_crate_machine_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/alien_orb_a.obj" id="53_alien_orb_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/mech_hand_c.obj" id="54_mech_hand_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/mech_forearm_b.obj" id="55_mech_forearm_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/mech_upper_arm_a.obj" id="56_mech_upper_arm_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/robot_joint_c.obj" id="57_robot_joint_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/robot_leg_a.obj" id="58_robot_leg_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/robot_claw_b.obj" id="59_robot_claw_b"]
+
+[node name="FreeAssetDirectionProof" type="Node3D"]
+metadata/phase = "3A isolated free asset direction proof"
+metadata/visible_ratio = "Quaternius 37 / KayKit 3 / Kenney 0 = 92.5%"
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.321394, 0.383022, 0, 0.766044, 0.642788, -0.5, -0.55667, 0.663414, 0, 10, 0)
+light_energy = 1.8
+[node name="ReviewCamera" type="Camera3D" parent="."]
+transform = Transform3D(0.857167, -0.137145, 0.496319, 0, 0.963843, 0.266469, -0.515038, -0.22838, 0.826667, -10, 5, 13)
+current = true
+fov = 70.0
+[node name="VolcanicTerrain_20x20" type="Node3D" parent="."]
+[node name="Rock_00" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 0.8, 0, 0, 0, 1.7, -9.0, 0, -7)
+mesh = ExtResource("24_rock_irregular_c")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_01" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 1.2000000000000002, 0, 0, 0, 1.7, -6.3, 0, -3)
+mesh = ExtResource("25_rock_cliff_d")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_02" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 1.6, 0, 0, 0, 1.7, -3.5999999999999996, 0, 1)
+mesh = ExtResource("26_rock_cliff_e")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_03" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 0.8, 0, 0, 0, 1.7, -0.8999999999999986, 0, -7)
+mesh = ExtResource("27_rock_ridge_f")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_04" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 1.2000000000000002, 0, 0, 0, 1.7, 1.8000000000000007, 0, -3)
+mesh = ExtResource("28_rock_slab_h")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_05" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 1.6, 0, 0, 0, 1.7, 4.5, 0, 1)
+mesh = ExtResource("29_rock_spire_g")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_06" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 0.8, 0, 0, 0, 1.7, 7.200000000000003, 0, -7)
+mesh = ExtResource("30_rock_irregular_b")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="Rock_07" type="MeshInstance3D" parent="VolcanicTerrain_20x20"]
+transform = Transform3D(2.0, 0, 0, 0, 1.2000000000000002, 0, 0, 0, 1.7, 9.900000000000002, 0, -3)
+mesh = ExtResource("31_rock_irregular_a")
+surface_material_override/0 = ExtResource("5_VolcanicRock")
+[node name="AsymmetricalCrashedHull" type="Node3D" parent="."]
+[node name="hull_nose_a" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, -4.0, 0.4, -2.0)
+mesh = ExtResource("42_hull_nose_a")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="hull_wing_b" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, -3.1, 0.43000000000000005, -2.25)
+mesh = ExtResource("48_hull_wing_b")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="hull_engine_mount_c" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, -2.2, 0.46, -2.5)
+mesh = ExtResource("43_hull_engine_mount_c")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="ship_panel_d" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, -1.2999999999999998, 0.49, -2.75)
+mesh = ExtResource("47_ship_panel_d")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="engine_pod_a" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, -0.3999999999999999, 0.52, -3.0)
+mesh = ExtResource("41_engine_pod_a")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="mechanical_nozzle_b" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, 0.5, 0.55, -3.25)
+mesh = ExtResource("46_mechanical_nozzle_b")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="angle_corridor_a" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, 1.4000000000000004, 0.5800000000000001, -3.5)
+mesh = ExtResource("39_angle_corridor_a")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="angle_wall_c" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, 2.3, 0.61, -3.75)
+mesh = ExtResource("38_angle_wall_c")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="support_frame_a" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, 3.2, 0.64, -4.0)
+mesh = ExtResource("33_support_frame_a")
+surface_material_override/0 = ExtResource("2_HumanGraphite")
+[node name="door_floor_a" type="MeshInstance3D" parent="AsymmetricalCrashedHull"]
+transform = Transform3D(2.2, 0, 0, 0, 1.1, 0, 0, 0, 1.0, 4.1, 0.67, -4.25)
+mesh = ExtResource("37_door_floor_a")
+surface_material_override/0 = ExtResource("2_HumanGraphite")
+[node name="HumanSalvageWorkbenchZone" type="Node3D" parent="."]
+[node name="machine_console_a" type="MeshInstance3D" parent="HumanSalvageWorkbenchZone"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0, 0.3, 2.0)
+mesh = ExtResource("51_machine_console_a")
+surface_material_override/0 = ExtResource("4_HumanOrangeInteractive")
+[node name="crate_machine_b" type="MeshInstance3D" parent="HumanSalvageWorkbenchZone"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7, 0.3, 2.15)
+mesh = ExtResource("52_crate_machine_b")
+surface_material_override/0 = ExtResource("4_HumanOrangeInteractive")
+[node name="screen_prop_c" type="MeshInstance3D" parent="HumanSalvageWorkbenchZone"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 0.3, 2.3)
+mesh = ExtResource("50_screen_prop_c")
+surface_material_override/0 = ExtResource("1_HumanIvory")
+[node name="antenna_a" type="MeshInstance3D" parent="HumanSalvageWorkbenchZone"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1, 0.3, 2.45)
+mesh = ExtResource("12_antenna_a")
+surface_material_override/0 = ExtResource("1_HumanIvory")
+[node name="crate_a" type="MeshInstance3D" parent="HumanSalvageWorkbenchZone"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 5.8, 0.3, 2.6)
+mesh = ExtResource("11_crate_a")
+surface_material_override/0 = ExtResource("1_HumanIvory")
+[node name="VerticalBeacon" type="Node3D" parent="."]
+[node name="support_frame_b" type="MeshInstance3D" parent="VerticalBeacon"]
+transform = Transform3D(0.8, 0, 0, 0, 1.8, 0, 0, 0, 0.8, 6, 0.5, -1)
+mesh = ExtResource("34_support_frame_b")
+surface_material_override/0 = ExtResource("4_HumanOrangeInteractive")
+[node name="corridor_strut_d" type="MeshInstance3D" parent="VerticalBeacon"]
+transform = Transform3D(0.8, 0, 0, 0, 1.8, 0, 0, 0, 0.8, 6, 1.5, -1)
+mesh = ExtResource("36_corridor_strut_d")
+surface_material_override/0 = ExtResource("4_HumanOrangeInteractive")
+[node name="alien_orb_a" type="MeshInstance3D" parent="VerticalBeacon"]
+transform = Transform3D(0.8, 0, 0, 0, 1.8, 0, 0, 0, 0.8, 6, 2.5, -1)
+mesh = ExtResource("53_alien_orb_a")
+surface_material_override/0 = ExtResource("9_AlienCyanEmissive")
+[node name="BiomechanicalEnemySilhouette" type="Node3D" parent="."]
+[node name="robot_head_a" type="MeshInstance3D" parent="BiomechanicalEnemySilhouette"]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 1.1, 5.0, 0.6, -6)
+mesh = ExtResource("49_robot_head_a")
+surface_material_override/0 = ExtResource("8_AlienBlack")
+[node name="robot_leg_a" type="MeshInstance3D" parent="BiomechanicalEnemySilhouette"]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 1.1, 5.25, 0.78, -6)
+mesh = ExtResource("58_robot_leg_a")
+surface_material_override/0 = ExtResource("8_AlienBlack")
+[node name="robot_claw_b" type="MeshInstance3D" parent="BiomechanicalEnemySilhouette"]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 1.1, 5.5, 0.96, -6)
+mesh = ExtResource("59_robot_claw_b")
+surface_material_override/0 = ExtResource("8_AlienBlack")
+[node name="robot_joint_c" type="MeshInstance3D" parent="BiomechanicalEnemySilhouette"]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 1.1, 5.75, 1.1400000000000001, -6)
+mesh = ExtResource("57_robot_joint_c")
+surface_material_override/0 = ExtResource("8_AlienBlack")
+[node name="mech_forearm_b" type="MeshInstance3D" parent="BiomechanicalEnemySilhouette"]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 1.1, 6.0, 1.3199999999999998, -6)
+mesh = ExtResource("55_mech_forearm_b")
+surface_material_override/0 = ExtResource("10_AlienTurquoiseEmissive")
+[node name="PrototypeFirstPersonMechanicalArm" type="Node3D" parent="."]
+[node name="mech_upper_arm_a" type="MeshInstance3D" parent="PrototypeFirstPersonMechanicalArm"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -1.0, 1.2, 4)
+mesh = ExtResource("56_mech_upper_arm_a")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="mech_forearm_b" type="MeshInstance3D" parent="PrototypeFirstPersonMechanicalArm"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -0.44999999999999996, 1.1199999999999999, 4)
+mesh = ExtResource("55_mech_forearm_b")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="mech_hand_c" type="MeshInstance3D" parent="PrototypeFirstPersonMechanicalArm"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.10000000000000009, 1.04, 4)
+mesh = ExtResource("54_mech_hand_c")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="robot_joint_c" type="MeshInstance3D" parent="PrototypeFirstPersonMechanicalArm"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.6500000000000001, 0.96, 4)
+mesh = ExtResource("57_robot_joint_c")
+surface_material_override/0 = ExtResource("3_HumanWornSteel")
+[node name="RouteMarkers" type="Node3D" parent="."]
+[node name="alien_debris_a" type="MeshInstance3D" parent="RouteMarkers"]
+transform = Transform3D(0.8, 0, 0, 0, 0.35, 0, 0, 0, 0.8, -7, 0.1, 5)
+mesh = ExtResource("45_alien_debris_a")
+surface_material_override/0 = ExtResource("7_DamageScorch")
+[node name="asteroid_spine_b" type="MeshInstance3D" parent="RouteMarkers"]
+transform = Transform3D(0.8, 0, 0, 0, 0.35, 0, 0, 0, 0.8, -3, 0.1, 3)
+mesh = ExtResource("44_asteroid_spine_b")
+surface_material_override/0 = ExtResource("7_DamageScorch")
+[node name="tank_a" type="MeshInstance3D" parent="RouteMarkers"]
+transform = Transform3D(0.8, 0, 0, 0, 0.35, 0, 0, 0, 0.8, 1, 0.1, 1)
+mesh = ExtResource("13_tank_a")
+surface_material_override/0 = ExtResource("6_VolcanicSoil")

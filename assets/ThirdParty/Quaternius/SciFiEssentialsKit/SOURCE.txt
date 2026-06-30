@@ -1,0 +1,4 @@
+Creator: Quaternius
+Pack: SciFiEssentialsKit
+Source page: see THIRD_PARTY_ASSETS.md for exact URL and licence gate.
+Downloaded archive inspected for Phase 3A curated subset; only files under Models/ are imported.

@@ -1,0 +1,124 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_large_rock.obj" id="1_clifflarge"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_cornerInner_rock.obj" id="2_cliffinner"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_blockSlope_rock.obj" id="3_cliffslope"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_topDiagonal_rock.obj" id="4_clifftopdiag"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/NatureKit/Models/cliff_half_rock.obj" id="5_cliffhalf"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-end.obj" id="6_corridorend"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/corridor-corner.obj" id="7_corridorcorner"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/cables.obj" id="8_cables"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/template-wall-detail-a.obj" id="9_walldetail"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Kenney/ModularSpaceKit/Models/gate-lasers.obj" id="10_gatelasers"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_proof"]
+sky_top_color = Color(0.035, 0.05, 0.075, 1)
+sky_horizon_color = Color(0.17, 0.19, 0.22, 1)
+ground_bottom_color = Color(0.015, 0.014, 0.012, 1)
+ground_horizon_color = Color(0.08, 0.075, 0.065, 1)
+
+[sub_resource type="Sky" id="Sky_resource"]
+sky_material = SubResource("Sky_proof")
+
+[sub_resource type="Environment" id="Environment_proof"]
+background_mode = 2
+sky = SubResource("Sky_resource")
+ambient_light_source = 3
+ambient_light_color = Color(0.16, 0.2, 0.24, 1)
+ambient_light_energy = 0.32
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.12
+glow_strength = 0.28
+fog_enabled = true
+fog_light_color = Color(0.16, 0.18, 0.2, 1)
+fog_density = 0.014
+
+[node name="VisualDirectionProof" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_proof")
+
+[node name="ProofCamera_Hero" type="Camera3D" parent="."]
+transform = Transform3D(0.921, 0.063, -0.384, 0, 0.987, 0.162, 0.389, -0.149, 0.909, -8.4, 1.7, 8.7)
+fov = 68.0
+current = true
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="DirectionalKey_SunThroughAsh" type="DirectionalLight3D" parent="Lighting"]
+transform = Transform3D(0.707, -0.408, 0.577, 0, 0.816, 0.577, -0.707, -0.408, 0.577, 0, 7, 0)
+light_energy = 1.05
+light_color = Color(1, 0.88, 0.72, 1)
+shadow_enabled = true
+
+[node name="OrangeWorkLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 2.1, -1.2)
+light_color = Color(1, 0.48, 0.18, 1)
+light_energy = 0.65
+omni_range = 6.0
+
+[node name="AlienCyanGlow" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 1.2, -2.4)
+light_color = Color(0.0, 0.85, 0.95, 1)
+light_energy = 0.45
+omni_range = 4.5
+
+[node name="VolcanicTerrain" type="Node3D" parent="."]
+
+[node name="ForegroundBasalt_Left" type="MeshInstance3D" parent="VolcanicTerrain"]
+transform = Transform3D(1.35, 0, 0, 0, 1.1, 0, 0, 0, 1.35, -6.8, -0.2, 4.6)
+mesh = ExtResource("1_clifflarge")
+
+[node name="ForegroundBasalt_Right" type="MeshInstance3D" parent="VolcanicTerrain"]
+transform = Transform3D(0.95, 0, 0.55, 0, 1.05, 0, -0.55, 0, 0.95, 5.8, -0.1, 4.1)
+mesh = ExtResource("2_cliffinner")
+
+[node name="PathSlope_Basalt" type="MeshInstance3D" parent="VolcanicTerrain"]
+transform = Transform3D(1.9, 0, 0, 0, 0.55, 0, 0, 0, 2.2, -1.8, -0.35, 1.3)
+mesh = ExtResource("3_cliffslope")
+
+[node name="MidgroundBasalt_Ridge" type="MeshInstance3D" parent="VolcanicTerrain"]
+transform = Transform3D(1.8, 0, -0.65, 0, 1.35, 0, 0.65, 0, 1.8, 2.8, -0.45, -4.6)
+mesh = ExtResource("4_clifftopdiag")
+
+[node name="BackgroundBasalt_Silhouette" type="MeshInstance3D" parent="VolcanicTerrain"]
+transform = Transform3D(2.8, 0, 0, 0, 1.8, 0, 0, 0, 1.4, -2.0, -0.55, -8.2)
+mesh = ExtResource("5_cliffhalf")
+
+[node name="HumanSalvageStructure" type="Node3D" parent="."]
+
+[node name="AngledServiceModule" type="MeshInstance3D" parent="HumanSalvageStructure"]
+transform = Transform3D(0.82, 0, -0.36, 0, 0.9, 0, 0.36, 0, 0.82, -1.2, 0.0, -1.9)
+mesh = ExtResource("7_corridorcorner")
+
+[node name="BrokenHullShell" type="MeshInstance3D" parent="HumanSalvageStructure"]
+transform = Transform3D(0.78, 0.08, 0.42, -0.12, 0.88, 0.08, -0.41, -0.13, 0.78, 1.4, 0.16, -2.2)
+mesh = ExtResource("6_corridorend")
+
+[node name="RepairPanelCluster" type="MeshInstance3D" parent="HumanSalvageStructure"]
+transform = Transform3D(0.88, 0, 0.22, 0, 0.88, 0, -0.22, 0, 0.88, -2.4, 0.95, -0.7)
+mesh = ExtResource("9_walldetail")
+
+[node name="ExposedCableBundle" type="MeshInstance3D" parent="HumanSalvageStructure"]
+transform = Transform3D(0.7, 0, -0.32, 0, 0.7, 0, 0.32, 0, 0.7, -0.1, 1.1, -0.45)
+mesh = ExtResource("8_cables")
+
+[node name="CrashedHullFragment" type="Node3D" parent="."]
+
+[node name="BuriedAsymmetricHull" type="MeshInstance3D" parent="CrashedHullFragment"]
+transform = Transform3D(0.46, 0.18, -0.74, -0.06, 0.95, 0.18, 0.76, -0.04, 0.46, 3.2, -0.28, -4.0)
+mesh = ExtResource("6_corridorend")
+
+[node name="TornServiceCables" type="MeshInstance3D" parent="CrashedHullFragment"]
+transform = Transform3D(0.48, 0.08, 0.36, -0.1, 0.58, 0.02, -0.35, -0.08, 0.48, 3.85, 0.65, -3.35)
+mesh = ExtResource("8_cables")
+
+[node name="AlienAccent" type="Node3D" parent="."]
+
+[node name="CyanAlienIntrusion" type="MeshInstance3D" parent="AlienAccent"]
+transform = Transform3D(0.34, 0, -0.22, 0, 0.42, 0, 0.22, 0, 0.34, 4.2, 0.38, -1.9)
+mesh = ExtResource("10_gatelasers")
+
+[node name="CompositionNotes" type="Node3D" parent="."]
+metadata/intent = "Isolated proof scene only: asset-first visual direction gate; not connected to gameplay."

@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://phase3a_visual_review"]
+
+[node name="Phase3AVisualReview" type="Node3D"]
+metadata/intent = "Isolated Phase 3A screenshot harness marker. Runtime capture is driven by tools/visual_review/capture_phase3a.gd and does not alter gameplay startup."

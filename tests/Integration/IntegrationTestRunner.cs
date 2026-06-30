@@ -252,17 +252,9 @@ public partial class IntegrationTestRunner : Node
         foreach (var wallName in new[] { "C7_Wall_1", "C7_Wall_2", "C7_Wall_3", "C7_Wall_4" })
         {
             var wall = main.GetNode<Node3D>(wallName);
-            Require(wall.GetNode<Node3D>("VisualRoot") is not null, $"{wallName} missing Phase 3A visual root");
-            Require(!wall.GetNode<MeshInstance3D>("MeshInstance3D").Visible, $"{wallName} legacy box panel should stay hidden behind authored visuals");
+            Require(wall.GetNode<MeshInstance3D>("MeshInstance3D") is not null, $"{wallName} legacy gameplay wall mesh missing");
+            Require(wall.GetNode<CollisionShape3D>("Collision_C7Wall") is not null, $"{wallName} gameplay collision missing");
         }
-
-        var panel = LoadScene<Node3D>("res://scenes/Props/Human/Panel_A.tscn");
-        AddChild(panel);
-        await Frames(2);
-        Require(panel.GetNode<MeshInstance3D>("PrimaryForms/RightCantedHullPlate").Mesh is PrismMesh, "Phase 3A panel must use a canted non-box hull plate");
-        Require(panel.GetNode<MeshInstance3D>("FunctionalDetails/ExposedServiceConduit").Mesh is CylinderMesh, "Phase 3A panel must expose rounded service conduit detail");
-        panel.QueueFree();
-        await Frames(2);
 
         main.QueueFree();
         await Frames(2);

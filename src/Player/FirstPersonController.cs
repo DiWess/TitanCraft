@@ -31,6 +31,7 @@ public partial class FirstPersonController : CharacterBody3D
     private Node3D _head = null!;
     private float _gravity;
     private float _cameraPitch;
+    private float _bodyYaw;
     private MechanicalArmAttackLogic _mechanicalArmAttack = null!;
     private MechanicalArmRecipe _mechanicalArmRecipe = null!;
     private string _interactionPrompt = string.Empty;
@@ -62,10 +63,14 @@ public partial class FirstPersonController : CharacterBody3D
 
         if (@event is InputEventMouseMotion mouseMotion)
         {
-            RotateY(-mouseMotion.Relative.X * MouseSensitivity);
-            _cameraPitch = FirstPersonMovement.ClampPitch(
-                _cameraPitch - mouseMotion.Relative.Y * MouseSensitivity,
+            var look = FirstPersonMovement.ApplyMouseLook(
+                new Vector2(_bodyYaw, _cameraPitch),
+                mouseMotion.Relative,
+                MouseSensitivity,
                 MaxLookAngleDegrees);
+            _bodyYaw = look.X;
+            _cameraPitch = look.Y;
+            Rotation = new Vector3(0.0f, _bodyYaw, 0.0f);
             _head.Rotation = new Vector3(_cameraPitch, 0.0f, 0.0f);
         }
     }

@@ -43,3 +43,21 @@ Date: 2026-06-30
   - `assets/ThirdParty/Kenney/NatureKit/Models/cliff_large_rock.mtl`
   - `assets/ThirdParty/Kenney/NatureKit/Models/cliff_topDiagonal_rock.obj`
   - `assets/ThirdParty/Kenney/NatureKit/Models/cliff_topDiagonal_rock.mtl`
+
+## Phase 3A Free Asset Direction Proof — Quaternius-led curated subset
+
+- Date: 2026-06-30
+- Scope: isolated proof scene only, not integrated into production gameplay.
+- Scene: `scenes/Proof/FreeAssetDirectionProof.tscn`
+- Licence gate: CC0/free commercial-use evidence was checked on exact creator pages before import. Commercial use and modification are allowed under CC0; attribution is not required, but creators and source URLs are retained for traceability.
+- Local archive policy: original licence/source text is preserved in each pack folder; only curated OBJ proof subset files are imported, not complete libraries.
+
+| Pack | Creator | Source URL | Licence | Downloadable formats verified | Local contents |
+|---|---|---|---|---|---|
+| Modular Sci-Fi MegaKit | Quaternius | https://quaternius.itch.io/modular-sci-fi-megakit | Creative Commons Zero v1.0 Universal; free personal/educational/commercial use; modification allowed; attribution not required | OBJ, FBX, glTF; Standard zip listed as `Modular SciFi MegaKit[Standard].zip` | 9 OBJ meshes plus `LICENSE_CC0.txt`, `SOURCE.txt` under `assets/ThirdParty/Quaternius/ModularSciFiMegaKit/` |
+| Sci-Fi Essentials Kit | Quaternius | https://quaternius.itch.io/sci-fi-essentials-kit | CC0; free commercial use; modification allowed; attribution not required | OBJ, FBX, glTF | 5 OBJ meshes plus licence/source text under `assets/ThirdParty/Quaternius/SciFiEssentialsKit/` |
+| Ultimate Space Kit | Quaternius | https://quaternius.com/packs/ultimatespacekit.html | CC0; free personal/commercial use; modification allowed; attribution not required | FBX, OBJ, Blend, glTF | 8 OBJ meshes plus licence/source text under `assets/ThirdParty/Quaternius/UltimateSpaceKit/` |
+| Animated Mech Pack | Quaternius | https://quaternius.com/packs/animatedmech.html | CC0 evidence from creator page/Patreon release; free commercial use; modification allowed; attribution not required | FBX, OBJ, Blend | 3 OBJ limb meshes plus licence/source text under `assets/ThirdParty/Quaternius/AnimatedMechPack/` |
+| Animated Robot Pack | Quaternius | https://quaternius.com/packs/animatedrobot.html | CC0/free commercial-use creator page evidence; modification allowed; attribution not required | FBX, OBJ, Blend | 3 OBJ component meshes plus licence/source text under `assets/ThirdParty/Quaternius/AnimatedRobotPack/` |
+| Stylized Nature MegaKit | Quaternius | https://quaternius.itch.io/stylized-nature-megakit | Creative Commons Zero v1.0 Universal; free commercial use; modification allowed; attribution not required | OBJ, FBX, glTF | 8 OBJ rock/cliff meshes plus licence/source text under `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/` |
+| KayKit Space Base Bits | Kay Lousberg / KayKit | https://kaylousberg.itch.io/space-base-bits | CC0; free personal/commercial use; no attribution required; modification allowed | OBJ, FBX, GLTF | 3 supplemental OBJ props plus licence/source text under `assets/ThirdParty/KayKit/SpaceBaseBits/` |

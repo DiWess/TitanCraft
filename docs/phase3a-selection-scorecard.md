@@ -52,3 +52,42 @@ No candidate is approved for import yet. The strongest visual direction is Synty
 2. Before import, verify exact license, file formats, source-file access outside Unity-only prefabs, and modification rights for each chosen pack.
 3. Import only the chosen packs and update `THIRD_PARTY_ASSETS.md` with exact source, license, and local files.
 4. Re-enter Phase 3A only with the mandatory screenshot review loop.
+
+
+## Phase 3A re-entry — free Quaternius-led isolated proof (2026-06-30)
+
+Verdict target: isolated visual proof only; no production integration and `scenes/Main/Main.tscn` remains untouched.
+
+### Licence-gated shortlist
+
+| Pack | Creator | Exact source page | Licence evidence | Formats / downloads | Decision |
+|---|---|---|---|---|---|
+| Modular Sci-Fi MegaKit | Quaternius | https://quaternius.com/packs/modularscifimegakit.html / https://quaternius.itch.io/modular-sci-fi-megakit | Exact itch page lists Creative Commons Zero v1.0 Universal and says free personal, educational, commercial use; standard archive listed as `Modular SciFi MegaKit[Standard].zip` (46 MB). | OBJ, FBX, glTF; paid Pro/Source not used. | GO for dominant architecture/hull parts. |
+| Sci-Fi Essentials Kit | Quaternius | https://quaternius.com/packs/scifiessentialskit.html / https://quaternius.itch.io/sci-fi-essentials-kit | Exact page lists CC0 and free commercial use. | OBJ, FBX, glTF; free standard tier only. | GO for machinery, robot source, alien accent. |
+| Ultimate Space Kit | Quaternius | https://quaternius.com/packs/ultimatespacekit.html | Exact pack page lists license CC0 and FBX/OBJ/Blend/glTF formats, free personal and commercial use. | FBX, OBJ, Blend, glTF. | GO for ship/debris parts. |
+| Animated Mech Pack | Quaternius | https://quaternius.com/packs/animatedmech.html | Exact pack page says free personal and commercial use; Patreon release says CC0. | FBX, OBJ, Blend. | GO for arm/limb components only; no complete mech hero. |
+| Animated Robot Pack | Quaternius | https://quaternius.com/packs/animatedrobot.html | Exact pack page says free personal and commercial use. | FBX, OBJ, Blend. | GO for robot limb/joint components only. |
+| Stylized Nature MegaKit | Quaternius | https://quaternius.com/packs/stylizednaturemegakit.html / https://quaternius.itch.io/stylized-nature-megakit | Exact page lists free personal, educational, commercial use under CC0. | OBJ, FBX, glTF; free standard tier only. | GO for irregular rock/cliff pieces, not cheerful forest composition. |
+| KayKit Space Base Bits | Kay Lousberg | https://kaylousberg.itch.io/space-base-bits | Exact page lists free personal/commercial use, no attribution required, CC0. | OBJ, FBX, GLTF; free archive only. | Supplemental props only, max five visible. |
+| Existing Kenney CC0 | Kenney | Existing repo records in `THIRD_PARTY_ASSETS.md` | Existing CC0 documentation already preserved locally. | Existing OBJ/MTL files only. | Allowed as background filler; not used visibly in this proof. |
+
+### Imported curated subset
+
+Only curated text OBJ proof meshes and licence/source text files were placed under production asset folders. The subset is intentionally small and composes a 20×20 metre direction proof from parts rather than complete prefabs.
+
+Asset counts by visible pack: Quaternius 37, KayKit 3, Kenney 0. Visible ratio: Quaternius 92.5%, KayKit 7.5%, Kenney 0%.
+
+### First-pass scorecard
+
+| Criterion | Score | Notes |
+|---|---:|---|
+| Ship silhouette | 7 | Asymmetric partially buried hull from modular sci-fi and space-kit parts. |
+| Terrain depth | 7 | Foreground rocks, route debris, and background ridge in a 20×20 proof area. |
+| Enemy silhouette | 7 | Biomechanical silhouette assembled from robot/mech fragments and localized alien emission. |
+| Interactable readability | 7 | Orange-restricted workbench and beacon accents remain functional/readable. |
+| Mechanical-arm potential | 7 | First-person arm mockup uses articulated limb pieces, not a complete mech prefab. |
+| Material coherence | 7 | Shared TitanCraft materials applied; cyan/turquoise localized. |
+| Non-cubic appearance | 8 | Visible forms come from imported irregular/angled meshes, not Godot primitive slabs. |
+| Total | 50/70 | Meets requested minimum threshold. |
+
+Correction cycles used: 0. Final verdict: GO for isolated Phase 3A visual proof only.

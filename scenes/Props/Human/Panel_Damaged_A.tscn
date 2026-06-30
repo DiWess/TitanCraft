@@ -1,0 +1,55 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="1_ivory"]
+[ext_resource type="Material" path="res://assets/Materials/HumanWornSteel.tres" id="2_steel"]
+[ext_resource type="Material" path="res://assets/Materials/DamageScorch.tres" id="3_scorch"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_panel_primary"]
+size = Vector3(4, 2.4, 0.12)
+material = ExtResource("1_ivory")
+[sub_resource type="BoxMesh" id="BoxMesh_repair_plate"]
+size = Vector3(1.4, 0.7, 0.07)
+material = ExtResource("2_steel")
+[sub_resource type="BoxMesh" id="BoxMesh_patch_strip"]
+size = Vector3(0.12, 1.1, 0.08)
+material = ExtResource("2_steel")
+[sub_resource type="BoxMesh" id="BoxMesh_scorch"]
+size = Vector3(0.95, 0.42, 0.04)
+material = ExtResource("3_scorch")
+[sub_resource type="BoxMesh" id="BoxMesh_seam"]
+size = Vector3(3.7, 0.07, 0.05)
+material = ExtResource("2_steel")
+[sub_resource type="BoxMesh" id="BoxMesh_bolt"]
+size = Vector3(0.12, 0.12, 0.07)
+material = ExtResource("2_steel")
+
+[node name="Panel_Damaged_A" type="Node3D"]
+[node name="PrimaryForms" type="Node3D" parent="."]
+[node name="PanelPlate" type="MeshInstance3D" parent="PrimaryForms"]
+mesh = SubResource("BoxMesh_panel_primary")
+[node name="SecondaryForms" type="Node3D" parent="."]
+[node name="TopSeam" type="MeshInstance3D" parent="SecondaryForms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, -0.08)
+mesh = SubResource("BoxMesh_seam")
+[node name="BottomSeam" type="MeshInstance3D" parent="SecondaryForms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.84, -0.08)
+mesh = SubResource("BoxMesh_seam")
+[node name="FunctionalDetails" type="Node3D" parent="."]
+[node name="RepairPlate" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0.08, 0, -0.08, 1, 0, 0, 0, 1, -0.72, 0.02, -0.11)
+mesh = SubResource("BoxMesh_repair_plate")
+[node name="BraceStripLeft" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0.08, 0, -0.08, 1, 0, 0, 0, 1, -1.05, 0.02, -0.16)
+mesh = SubResource("BoxMesh_patch_strip")
+[node name="BraceStripRight" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0.08, 0, -0.08, 1, 0, 0, 0, 1, -0.35, 0.02, -0.16)
+mesh = SubResource("BoxMesh_patch_strip")
+[node name="ScorchMark" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, -0.04, 0, 0.04, 1, 0, 0, 0, 1, 1.05, -0.4, -0.13)
+mesh = SubResource("BoxMesh_scorch")
+[node name="RepairBoltA" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.42, -0.18)
+mesh = SubResource("BoxMesh_bolt")
+[node name="RepairBoltB" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, -0.38, -0.18)
+mesh = SubResource("BoxMesh_bolt")

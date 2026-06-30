@@ -45,3 +45,13 @@ Le MVP vise une lisibilité jouable, low-to-medium poly, avec matériaux PBR sim
 - Pas de savane générique.
 - Pas de symboles africains aléatoires ni de copie de symboles réels.
 - L’inspiration Comores / océan Indien doit passer par la chaleur de la base, les couleurs minérales, la lune, l’horizon et une bannière géométrique fictive.
+
+## Technical production authority
+
+Detailed measurable production rules for this direction live in `docs/visual-technical-bible.md`. When later visual implementation phases need exact palette values, budgets, scale standards, scene architecture, naming, lighting, VFX, material, UI, or review criteria, use that bible and `docs/visual-review-checklist.md` instead of reinterpreting this summary.
+
+Phase 1 is documentation-only: it does not modify existing material resources, scenes, gameplay, tests, or project settings.
+
+## Phase 2 material implementation note
+
+The Phase 2 master material library is documented in `docs/material-library.md`. Existing material resource filenames are preserved for scene-reference stability, and new master materials remain shared `StandardMaterial3D` resources under `assets/Materials/`.

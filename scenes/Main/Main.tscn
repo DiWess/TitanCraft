@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=42 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -19,6 +19,11 @@
 [ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Human/Panel_A.tscn" id="21_panel_a"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Human/Panel_Damaged_A.tscn" id="22_panel_damaged_a"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Human/Frame_A.tscn" id="23_frame_a"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Human/Beam_A.tscn" id="24_beam_a"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Human/Rail_A.tscn" id="25_rail_a"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
@@ -120,41 +125,81 @@ mesh = SubResource("SphereMesh_moon")
 [node name="C7_Wall_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_1"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_1"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
+[node name="VisualRoot" type="Node3D" parent="C7_Wall_1"]
+[node name="PanelInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("21_panel_a")]
+[node name="FrameInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("23_frame_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
+[node name="TopBeamInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("24_beam_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+[node name="RailInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("25_rail_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_1"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_2" type="StaticBody3D" parent="."]
 transform = Transform3D(1.2,0,0,0,1,0,0,0,1,0,1.4,-14)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_2"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_2"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
+[node name="VisualRoot" type="Node3D" parent="C7_Wall_2"]
+[node name="PanelInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("22_panel_damaged_a")]
+[node name="FrameInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("23_frame_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
+[node name="TopBeamInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("24_beam_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+[node name="RailInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("25_rail_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_2"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,10,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_3"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_3"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
+[node name="VisualRoot" type="Node3D" parent="C7_Wall_3"]
+[node name="PanelInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("21_panel_a")]
+[node name="FrameInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("23_frame_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
+[node name="TopBeamInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("24_beam_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+[node name="RailInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("25_rail_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_3"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_4" type="StaticBody3D" parent="."]
 transform = Transform3D(0.8,0,0,0,1,0,0,0,1.4,15,1.4,-16)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_4"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_4"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
+[node name="VisualRoot" type="Node3D" parent="C7_Wall_4"]
+[node name="PanelInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("22_panel_damaged_a")]
+[node name="FrameInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("23_frame_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
+[node name="TopBeamInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("24_beam_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+[node name="RailInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("25_rail_a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_4"]
 shape = SubResource("BoxShape3D_c7_wall")
 [node name="BaseLamp_1" type="OmniLight3D" parent="."]

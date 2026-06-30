@@ -46,6 +46,25 @@ Use this check after visual changes to `scenes/Main/Main.tscn`:
 4. Walk around each object and confirm the simple interaction collisions do not behave like decorative walls or block the route through the crash site.
 
 
+
+## Reusable visual validation procedure
+
+Use this procedure after any future phase that changes visible scenes, UI, materials, VFX, lighting, props, or environment composition. It complements automated tests; it does not replace gameplay review.
+
+1. Run `godot --headless --path . --import` and confirm the project imports without fatal errors.
+2. Validate every `assets/Materials/*.tres` resource loads as a `StandardMaterial3D` before reviewing scene visuals.
+3. Launch the Crash Site scene in an interactive Godot environment and watch the output log for new runtime errors or warnings.
+4. Walk the main mission route: spawn, resources, workbench, save point, Galaxabrain zone, component pickup, beacon, victory/defeat flow when applicable.
+5. Confirm gameplay collisions remain predictable: no decorative mesh blocks the required route, pickup access, workbench access, enemy combat space, or beacon access.
+6. Confirm interaction raycasts still work at the existing interaction range for pickups, workbench, save point, mission component, and beacon.
+7. Capture before/after screenshots when available from these positions: spawn toward crash/base, pickup cluster, workbench, save point, alien route, enemy threat distance, inactive beacon, active beacon, HUD at 720p, and HUD at 1080p.
+8. Check 1280x720 readability for HUD text, objective, resource counters, prompt, mechanical-arm state, menus, victory, and defeat screens.
+9. Check 1920x1080 readability for the same UI elements and verify decorative patterns do not compete with text.
+10. Compare screenshots against `docs/visual-technical-bible.md` and `docs/visual-review-checklist.md` for palette, human/alien distinction, orange/cyan usage, cultural integrity, geometry density, lighting, and VFX budgets.
+11. Measure FPS in an interactive environment when available and record hardware, resolution, render settings, average FPS, and worst observed FPS. If no interactive graphics environment is available, state that limitation explicitly.
+12. Defer Windows offline validation until a real Windows machine or real Windows VM with the exported build is available; Linux headless checks are not a substitute for Windows readiness.
+
+
 ## Windows offline MVP build verification
 
 Use this process before describing a local Windows MVP build as validated. These commands assume the Godot 4 .NET executable is available as `godot` on `PATH`; if the local executable has a versioned name, substitute that exact executable without changing the arguments.

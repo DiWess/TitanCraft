@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="1_ivory"]
 [ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="2_graphite"]
@@ -41,6 +41,18 @@ material = ExtResource("3_orange")
 [sub_resource type="BoxMesh" id="BoxMesh_shadow_gap"]
 size = Vector3(0.16, 1.25, 0.08)
 material = ExtResource("2_graphite")
+[sub_resource type="PrismMesh" id="PrismMesh_canted_hull"]
+size = Vector3(1.55, 1.35, 0.42)
+material = ExtResource("1_ivory")
+[sub_resource type="PrismMesh" id="PrismMesh_dark_cutaway"]
+size = Vector3(0.9, 1.05, 0.26)
+material = ExtResource("2_graphite")
+[sub_resource type="CylinderMesh" id="CylinderMesh_service_conduit"]
+radial_segments = 8
+top_radius = 0.055
+bottom_radius = 0.055
+height = 1.55
+material = ExtResource("4_steel")
 
 [sub_resource type="BoxMesh" id="BoxMesh_repair_plate"]
 size = Vector3(1.25, 0.78, 0.12)
@@ -57,6 +69,9 @@ mesh = SubResource("BoxMesh_panel_left")
 [node name="RecessedCenterBay" type="MeshInstance3D" parent="PrimaryForms"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.02, -0.2)
 mesh = SubResource("BoxMesh_panel_center")
+[node name="DarkAngledCutaway" type="MeshInstance3D" parent="PrimaryForms"]
+transform = Transform3D(0.72, -0.28, 0, 0.24, 0.82, 0, 0, 0, 1, 0.72, 0.3, 0.18)
+mesh = SubResource("PrismMesh_dark_cutaway")
 [node name="SecondaryForms" type="Node3D" parent="."]
 [node name="UpperBrokenStepPanel" type="MeshInstance3D" parent="SecondaryForms"]
 transform = Transform3D(1, 0.08, 0, -0.08, 1, 0, 0, 0, 1, -0.45, 0.98, 0.12)
@@ -92,6 +107,9 @@ mesh = SubResource("BoxMesh_marker")
 [node name="GraphiteGap" type="MeshInstance3D" parent="FunctionalDetails"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, -0.15, 0.26)
 mesh = SubResource("BoxMesh_shadow_gap")
+[node name="ExposedServiceConduit" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(0, 0.86, 0.5, 0, -0.5, 0.86, 1, 0, 0, 1.45, -0.08, 0.38)
+mesh = SubResource("CylinderMesh_service_conduit")
 [node name="OffsetRepairPlate" type="MeshInstance3D" parent="FunctionalDetails"]
 transform = Transform3D(1, -0.12, 0, 0.12, 1, 0, 0, 0, 1, 0.98, -0.22, 0.34)
 mesh = SubResource("BoxMesh_repair_plate")

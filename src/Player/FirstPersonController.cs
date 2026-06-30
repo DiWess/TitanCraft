@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Crafting;
 using TitanCraft.Enemies;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
@@ -10,6 +11,7 @@ namespace TitanCraft.Player;
 public partial class FirstPersonController : CharacterBody3D
 {
     public event Action<string>? InteractionPromptChanged;
+    public event Action<string>? ActionFeedbackChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
     [Export] public float JumpVelocity { get; set; } = 4.5f;
     [Export] public float MouseSensitivity { get; set; } = 0.0025f;
@@ -30,6 +32,7 @@ public partial class FirstPersonController : CharacterBody3D
     private float _gravity;
     private float _cameraPitch;
     private MechanicalArmAttackLogic _mechanicalArmAttack = null!;
+    private MechanicalArmRecipe _mechanicalArmRecipe = null!;
     private string _interactionPrompt = string.Empty;
 
     public override void _Ready()
@@ -39,6 +42,7 @@ public partial class FirstPersonController : CharacterBody3D
         _camera.Current = true;
         _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
         _mechanicalArmAttack = new MechanicalArmAttackLogic(MechanicalArmDamage, AttackCooldownSeconds);
+        _mechanicalArmRecipe = new MechanicalArmRecipe();
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
@@ -68,6 +72,18 @@ public partial class FirstPersonController : CharacterBody3D
 
     public bool TryAttack()
     {
+        if (!Inventory.IsMechanicalArmBuilt)
+        {
+            ShowActionFeedback("Attack blocked: Mk I is not built. Press E at the workbench after collecting resources.");
+            return false;
+        }
+
+        if (_mechanicalArmAttack.IsOnCooldown)
+        {
+            ShowActionFeedback("Mk I recharging — wait a moment before the next punch.");
+            return false;
+        }
+
         var query = PhysicsRayQueryParameters3D.Create(
             _camera.GlobalPosition,
             _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * AttackRange);
@@ -77,17 +93,24 @@ public partial class FirstPersonController : CharacterBody3D
         var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
         if (!hit.TryGetValue("collider", out var colliderVariant))
         {
+            ShowActionFeedback("Attack missed: aim at the Galaxabrain within Mk I range.");
             return false;
         }
 
-        if (colliderVariant.AsGodotObject() is not GalaxabrainScout scout
-            || scout.Brain.IsDead
-            || !_mechanicalArmAttack.TryAttack(Inventory))
+        if (colliderVariant.AsGodotObject() is not GalaxabrainScout scout || scout.Brain.IsDead)
         {
+            ShowActionFeedback("Attack ready: aim at the living Galaxabrain, then left click.");
+            return false;
+        }
+
+        if (!_mechanicalArmAttack.TryAttack(Inventory))
+        {
+            ShowActionFeedback("Mk I cannot strike yet.");
             return false;
         }
 
         scout.ApplyDamage(_mechanicalArmAttack.Damage);
+        ShowActionFeedback($"Mk I punch landed: Galaxabrain took {_mechanicalArmAttack.Damage} damage.");
         return true;
     }
 
@@ -111,8 +134,8 @@ public partial class FirstPersonController : CharacterBody3D
 
     private void UpdateInteractionPrompt()
     {
-        var prompt = TryGetTargetInteractableName(out var interactableName)
-            ? $"Press E to interact with {interactableName}"
+        var prompt = TryGetTargetInteractionPrompt(out var targetPrompt)
+            ? targetPrompt
             : string.Empty;
 
         if (prompt == _interactionPrompt)
@@ -122,9 +145,9 @@ public partial class FirstPersonController : CharacterBody3D
         InteractionPromptChanged?.Invoke(prompt);
     }
 
-    private bool TryGetTargetInteractableName(out string interactableName)
+    private bool TryGetTargetInteractionPrompt(out string prompt)
     {
-        interactableName = string.Empty;
+        prompt = string.Empty;
 
         var query = PhysicsRayQueryParameters3D.Create(
             _camera.GlobalPosition,
@@ -140,8 +163,25 @@ public partial class FirstPersonController : CharacterBody3D
             return false;
         }
 
-        interactableName = node.Name.ToString().Replace("Placeholder_", string.Empty);
+        prompt = node is Workbench ? BuildWorkbenchPrompt() : $"Press E to interact with {node.Name.ToString().Replace("Placeholder_", string.Empty)}";
         return true;
+    }
+
+    private string BuildWorkbenchPrompt()
+    {
+        if (Inventory.IsMechanicalArmBuilt)
+            return "Workbench: Mk I already built. Left click attacks the Galaxabrain.";
+
+        var cost = $"needs {_mechanicalArmRecipe.MetalCost} Metal, {_mechanicalArmRecipe.BiomassCost} Biomass, {_mechanicalArmRecipe.ElectronicComponentsCost} Electronics";
+        return _mechanicalArmRecipe.CanCraft(Inventory) && Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm
+            ? $"Press E to craft Mechanical Arm Mk I ({cost})."
+            : $"Workbench: Mechanical Arm Mk I {cost}. Collect resources first.";
+    }
+
+    private void ShowActionFeedback(string message)
+    {
+        // This explicit HUD feedback proves whether craft/attack input was accepted, blocked, or missed.
+        ActionFeedbackChanged?.Invoke(message);
     }
 
     public override void _PhysicsProcess(double delta)

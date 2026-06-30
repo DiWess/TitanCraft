@@ -21,6 +21,7 @@ public partial class CrashSiteHudBinder : Node
         _player.Inventory.Changed += UpdateInventory;
         _player.Mission.Changed += UpdateMission;
         _player.InteractionPromptChanged += _hud.SetInteractionPrompt;
+        _player.ActionFeedbackChanged += _hud.SetActionFeedback;
         RefreshAll();
     }
 
@@ -33,6 +34,7 @@ public partial class CrashSiteHudBinder : Node
         _player.Inventory.Changed -= UpdateInventory;
         _player.Mission.Changed -= UpdateMission;
         _player.InteractionPromptChanged -= _hud.SetInteractionPrompt;
+        _player.ActionFeedbackChanged -= _hud.SetActionFeedback;
     }
 
     private void RefreshAll()

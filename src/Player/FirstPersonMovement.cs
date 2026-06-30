@@ -10,6 +10,13 @@ public static class FirstPersonMovement
         return Mathf.Clamp(pitchRadians, -maxAngle, maxAngle);
     }
 
+    public static Vector2 ApplyMouseLook(Vector2 currentLookRadians, Vector2 mouseRelative, float mouseSensitivity, float maxLookAngleDegrees)
+    {
+        var yaw = currentLookRadians.X - mouseRelative.X * mouseSensitivity;
+        var pitch = ClampPitch(currentLookRadians.Y - mouseRelative.Y * mouseSensitivity, maxLookAngleDegrees);
+        return new Vector2(yaw, pitch);
+    }
+
     public static Vector3 GetMoveDirection(Basis basis, Vector2 inputDirection)
     {
         return (basis * new Vector3(inputDirection.X, 0.0f, inputDirection.Y)).Normalized();

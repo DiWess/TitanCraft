@@ -21,6 +21,19 @@ public sealed class FirstPersonMovementTests
     }
 
     [TestCase]
+    public void MouseLookUsesStableAbsoluteYawAndClampedPitch()
+    {
+        var look = FirstPersonMovement.ApplyMouseLook(
+            new Vector2(0.25f, 0.0f),
+            new Vector2(10.0f, -1000.0f),
+            0.0025f,
+            85.0f);
+
+        AssertThat(look.X).IsEqual(0.225f);
+        AssertThat(look.Y).IsEqual(Mathf.DegToRad(85.0f));
+    }
+
+    [TestCase]
     public void MoveDirectionIsNormalizedForDiagonalInput()
     {
         var direction = FirstPersonMovement.GetMoveDirection(Basis.Identity, new Vector2(1.0f, 1.0f));

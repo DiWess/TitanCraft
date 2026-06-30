@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using TitanCraft.Player;
 using TitanCraft.Missions;
@@ -29,6 +30,20 @@ public partial class IntegrationTestRunner : Node
         "res://assets/Materials/AlienVioletEmissive.tres",
         "res://assets/Materials/BiomassRed.tres",
     ];
+    private const int MaxStaticCollisionShapes = 19;
+    private static readonly string[] ForbiddenCollisionPrefixes = [
+        "Moon",
+        "Background",
+        "Distant",
+        "Crystal_Decorative",
+        "SmallRock",
+        "Debris_Small",
+        "Puddle",
+        "Banner",
+        "Lamp",
+        "EnergyEffect",
+        "DecorativeMech",
+    ];
     private static readonly string[] RequiredActions = ["move_forward", "move_backward", "move_left", "move_right", "jump", "pause_menu"];
 
     public override async void _Ready()
@@ -39,6 +54,7 @@ public partial class IntegrationTestRunner : Node
             TestInputMap();
             TestVisualMaterialsLoad();
             await TestMainScene();
+            await TestCollisionPolicy();
             await TestPlayerScene();
             await TestUiScenes();
             await TestHudStartTutorial();
@@ -91,7 +107,7 @@ public partial class IntegrationTestRunner : Node
         var player = main.GetNode<CharacterBody3D>("Player");
         var ground = main.GetNode<StaticBody3D>("Ground");
         Require(ground.GetNode<MeshInstance3D>("MeshInstance3D").Mesh is not null, "Ground mesh missing");
-        Require(ground.GetNode<CollisionShape3D>("CollisionShape3D").Shape is not null, "Ground collision missing");
+        Require(ground.GetNode<CollisionShape3D>("Collision_Ground").Shape is not null, "Ground collision missing");
         Require(main.GetNode<DirectionalLight3D>("DirectionalLight3D") is not null, "Light missing");
         Require(player.GlobalPosition.Y > ground.GlobalPosition.Y, "Player is not above ground");
         Require(main.FindChildren("*", "WorldEnvironment", false, false).Count == 1, "Main scene must have one active WorldEnvironment");
@@ -106,6 +122,62 @@ public partial class IntegrationTestRunner : Node
         Require(main.GetNode<Node3D>("AlienCrystal_1") is not null, "Alien crystal route missing");
         main.QueueFree();
         await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestCollisionPolicy()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+
+        var staticCollisionCount = 0;
+        var staticCollisionPositions = new List<Vector3>();
+        foreach (var body in main.FindChildren("*", "StaticBody3D", true, false))
+        {
+            var staticBody = (StaticBody3D)body;
+            var shapes = staticBody.FindChildren("*", "CollisionShape3D", false, false);
+            Require(shapes.Count > 0, $"StaticBody3D has no collision: {staticBody.Name}");
+            foreach (var child in shapes)
+            {
+                var collision = (CollisionShape3D)child;
+                Require(IsAllowedCollisionShape(collision.Shape), $"Unsupported collision shape on {staticBody.Name}/{collision.Name}");
+                staticCollisionCount++;
+                staticCollisionPositions.Add(collision.GlobalPosition);
+            }
+        }
+
+        Require(staticCollisionCount <= MaxStaticCollisionShapes, $"Static collision budget exceeded: {staticCollisionCount}");
+        Require(main.GetNode<CollisionShape3D>("Ground/Collision_Ground").Shape is BoxShape3D, "Ground must use a BoxShape3D");
+        Require(main.GetNode<CollisionShape3D>("C7_Wall_1/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 1 collision missing");
+        Require(main.GetNode<CollisionShape3D>("C7_Wall_2/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 2 collision missing");
+        Require(main.GetNode<CollisionShape3D>("C7_Wall_3/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 3 collision missing");
+        Require(main.GetNode<CollisionShape3D>("C7_Wall_4/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 4 collision missing");
+        Require(main.GetNode<CollisionShape3D>("Placeholder_Workbench/Collision_Workbench").Shape is BoxShape3D, "Workbench interaction collision missing");
+        Require(main.GetNode<CollisionShape3D>("Placeholder_Beacon/Collision_BeaconBase").Shape is BoxShape3D, "Beacon interaction collision missing");
+
+        foreach (var prefix in ForbiddenCollisionPrefixes)
+            foreach (var node in main.FindChildren($"{prefix}*", "CollisionObject3D", true, false))
+                Require(false, $"Forbidden decorative collision object: {node.GetPath()}");
+
+        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        {
+            var pickup = main.GetNode<Node3D>(pickupName);
+            foreach (var collisionPosition in staticCollisionPositions)
+                Require(HorizontalDistance(pickup.GlobalPosition, collisionPosition) > 1.2f, $"{pickupName} overlaps a static collision");
+        }
+
+        var player = main.GetNode<Node3D>("Player");
+        foreach (var collisionPosition in staticCollisionPositions)
+            Require(HorizontalDistance(player.GlobalPosition, collisionPosition) > 1.2f || player.GlobalPosition.Y > collisionPosition.Y + 0.5f, "Player spawn overlaps a static collision");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    private static bool IsAllowedCollisionShape(Shape3D? shape)
+    {
+        return shape is BoxShape3D or CapsuleShape3D or CylinderShape3D or SphereShape3D;
     }
 
     private static void TestVisualMaterialsLoad()

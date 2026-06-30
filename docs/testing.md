@@ -45,6 +45,61 @@ Use this check after visual changes to `scenes/Main/Main.tscn`:
 3. Confirm metal is readable as a grey metallic block, biomass as a green rounded object, electronics as a blue cylinder, the workbench as an orange bench-like block, the save point as a purple low cylinder, and the beacon as a tall yellow marker.
 4. Walk around each object and confirm the simple interaction collisions do not behave like decorative walls or block the route through the crash site.
 
+
+## Windows offline MVP build verification
+
+Use this process before describing a local Windows MVP build as validated. These commands assume the Godot 4 .NET executable is available as `godot` on `PATH`; if the local executable has a versioned name, substitute that exact executable without changing the arguments.
+
+### Automated local checks before export
+
+Run from the repository root:
+
+```bash
+dotnet restore
+dotnet build
+godot --headless --path . --import
+mkdir -p builds/Windows
+godot --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe
+```
+
+Expected automated result:
+
+- `dotnet restore` completes without dependency errors.
+- `dotnet build` completes without compilation errors.
+- `godot --headless --path . --import` imports the project without fatal errors.
+- `mkdir -p builds/Windows` ensures the ignored local export directory exists before export.
+- The Godot Windows export writes `builds/Windows/TitanCraft.exe` using the `Windows Desktop` export preset.
+
+If export templates are missing, install the matching Godot export templates locally and rerun the export command. Do not commit the generated `builds/` output unless a human explicitly changes the project policy.
+
+### Required Windows manual validation
+
+After generating the executable, validate on a Windows PC without using the Godot editor:
+
+1. Disconnect from the Internet or otherwise confirm the game has no active network requirement.
+2. Launch `builds/Windows/TitanCraft.exe` directly from File Explorer or PowerShell.
+3. Confirm the main menu opens.
+4. Select **New Game** and confirm the Crash Site session starts.
+5. Complete the Crash Site victory loop: collect the required resources, craft the Mechanical Arm Mk I, defeat the Galaxabrain Scout, collect the mission component, activate the beacon, and reach the victory screen.
+6. Start or reload a run, trigger player defeat, and confirm the defeat reload returns to the last save/checkpoint instead of blocking progress.
+7. Relaunch the executable while still offline and confirm local save/continue behavior works when a save exists.
+8. Quit the application and confirm it closes cleanly.
+
+### Pass criteria and readiness wording
+
+The Windows offline MVP build passes local verification only when all of these are true on an actual Windows machine:
+
+- the standalone executable opens without the Godot editor;
+- the main menu opens;
+- **New Game** works;
+- the full Crash Site victory loop can be completed;
+- defeat reload works;
+- local save/continue behavior works when applicable;
+- the app works offline with no account, server, key, or Internet connection;
+- quitting closes the app cleanly.
+
+Do not claim Windows readiness, Windows validation, or Windows release suitability until the generated `builds/Windows/TitanCraft.exe` has been run through the manual Windows checklist above on real Windows hardware or a real Windows VM. Linux headless import/export checks can support the build process, but they are not a substitute for the Windows run.
+
 ## CI
 
 GitHub Actions should run the same restore, Debug/Release builds, unit tests, Godot headless integration test, import, export, log scan, and artifact upload on Linux and Windows.

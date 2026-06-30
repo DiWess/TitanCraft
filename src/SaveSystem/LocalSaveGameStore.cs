@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using TitanCraft.Missions;
 using Godot;
 
 namespace TitanCraft.SaveSystem;
@@ -30,12 +31,28 @@ public static class LocalSaveGameStore
         if (file is null)
             return false;
 
-        var loaded = JsonSerializer.Deserialize<CrashSiteSaveData>(file.GetAsText());
-        if (loaded is null || loaded.SaveVersion != 1)
-            return false;
+        try
+        {
+            var loaded = JsonSerializer.Deserialize<CrashSiteSaveData>(file.GetAsText());
+            if (!IsValid(loaded))
+            {
+                GD.PushWarning($"Ignoring invalid Crash Site save data at '{savePath}'. Starting a new run.");
+                return false;
+            }
 
-        saveData = loaded;
-        return true;
+            saveData = loaded!;
+            return true;
+        }
+        catch (JsonException)
+        {
+            GD.PushWarning($"Ignoring unreadable Crash Site save data at '{savePath}'. Starting a new run.");
+            return false;
+        }
+        catch (NotSupportedException)
+        {
+            GD.PushWarning($"Ignoring unsupported Crash Site save data at '{savePath}'. Starting a new run.");
+            return false;
+        }
     }
 
     public static void Save(CrashSiteSaveData saveData, string savePath = DefaultSavePath)
@@ -43,5 +60,16 @@ public static class LocalSaveGameStore
         using var file = FileAccess.Open(savePath, FileAccess.ModeFlags.Write)
             ?? throw new InvalidOperationException($"Could not open local save for writing: {savePath}");
         file.StoreString(JsonSerializer.Serialize(saveData));
+    }
+
+    private static bool IsValid(CrashSiteSaveData? saveData)
+    {
+        return saveData is not null
+            && saveData.SaveVersion == CrashSiteSaveData.CurrentSaveVersion
+            && saveData.Health > 0
+            && saveData.Metal >= 0
+            && saveData.Biomass >= 0
+            && saveData.ElectronicComponents >= 0
+            && Enum.IsDefined(typeof(CrashSiteMissionStep), saveData.MissionStep);
     }
 }

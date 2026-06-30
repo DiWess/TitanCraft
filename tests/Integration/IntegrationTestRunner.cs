@@ -60,6 +60,7 @@ public partial class IntegrationTestRunner : Node
             await TestPlayerScene();
             await TestGalaxabrainScoutDeathPickup();
             await TestUiScenes();
+            await TestMainMenuContinueState();
             await TestHudStartTutorial();
             await TestHudBinding();
             await TestEndScreenNavigation();
@@ -249,6 +250,33 @@ public partial class IntegrationTestRunner : Node
         main.QueueFree();
         await Frames(2);
     }
+
+    private async System.Threading.Tasks.Task TestMainMenuContinueState()
+    {
+        const string testSavePath = "user://crash_site_menu_test_save.json";
+        LocalSaveGameStore.DeleteSave(testSavePath);
+
+        var menuWithoutSave = LoadScene<MainMenu>("res://scenes/UI/MainMenu.tscn");
+        menuWithoutSave.SavePath = testSavePath;
+        AddChild(menuWithoutSave);
+        await Frames(2);
+        Require(menuWithoutSave.GameScenePath == MainScenePath, "Main menu New Game/Continue scene path changed away from Crash Site");
+        Require(menuWithoutSave.GetNode<Button>("Menu/ContinueButton").Disabled, "Continue button should be disabled when no save exists");
+        menuWithoutSave.QueueFree();
+        await Frames(2);
+
+        LocalSaveGameStore.Save(new CrashSiteSaveData(), testSavePath);
+        var menuWithSave = LoadScene<MainMenu>("res://scenes/UI/MainMenu.tscn");
+        menuWithSave.SavePath = testSavePath;
+        AddChild(menuWithSave);
+        await Frames(2);
+        Require(!menuWithSave.GetNode<Button>("Menu/ContinueButton").Disabled, "Continue button should be enabled when a save exists");
+        menuWithSave.QueueFree();
+        await Frames(2);
+
+        LocalSaveGameStore.DeleteSave(testSavePath);
+    }
+
 
 
 

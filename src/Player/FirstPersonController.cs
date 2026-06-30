@@ -80,8 +80,15 @@ public partial class FirstPersonController : CharacterBody3D
             return false;
         }
 
-        return colliderVariant.AsGodotObject() is GalaxabrainScout scout
-            && _mechanicalArmAttack.TryAttack(Inventory, scout.Brain);
+        if (colliderVariant.AsGodotObject() is not GalaxabrainScout scout
+            || scout.Brain.IsDead
+            || !_mechanicalArmAttack.TryAttack(Inventory))
+        {
+            return false;
+        }
+
+        scout.ApplyDamage(_mechanicalArmAttack.Damage);
+        return true;
     }
 
     public bool TryInteract()

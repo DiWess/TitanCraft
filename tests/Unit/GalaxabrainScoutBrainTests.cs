@@ -1,4 +1,5 @@
 using GdUnit4;
+using Godot;
 using TitanCraft.Enemies;
 using static GdUnit4.Assertions;
 
@@ -66,6 +67,35 @@ public sealed class GalaxabrainScoutBrainTests
         brain.ApplyDamage(10);
         AssertThat(brain.CurrentHealth).IsEqual(0);
         AssertThat(brain.State).IsEqual(GalaxabrainScoutState.Dead);
+    }
+
+    [TestCase]
+    [RequireGodotRuntime]
+    public void ScoutApplyDamageKillsEnemyAndExposesMissionComponent()
+    {
+        var scout = new GalaxabrainScout
+        {
+            Health = 100,
+            MissionComponentPath = new NodePath("GalaxabrainComponentPickup"),
+        };
+        var missionComponent = new Area3D
+        {
+            Name = "GalaxabrainComponentPickup",
+            Visible = true,
+            Monitoring = true,
+        };
+        scout.AddChild(missionComponent);
+
+        scout._Ready();
+        AssertThat(missionComponent.Visible).IsFalse();
+        AssertThat(missionComponent.Monitoring).IsFalse();
+
+        scout.ApplyDamage(100);
+
+        AssertThat(scout.Brain.IsDead).IsTrue();
+        AssertThat(scout.Visible).IsFalse();
+        AssertThat(missionComponent.Visible).IsTrue();
+        AssertThat(missionComponent.Monitoring).IsTrue();
     }
 
     private static GalaxabrainScoutBrain CreateBrain()

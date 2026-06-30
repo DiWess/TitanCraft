@@ -1,5 +1,4 @@
 using System;
-using TitanCraft.Enemies;
 using TitanCraft.Resources;
 
 namespace TitanCraft.Player;
@@ -39,17 +38,15 @@ public sealed class MechanicalArmAttackLogic
         _cooldownRemainingSeconds = Math.Max(0f, _cooldownRemainingSeconds - Math.Max(0f, deltaSeconds));
     }
 
-    public bool TryAttack(MvpInventory inventory, GalaxabrainScoutBrain target)
+    public bool TryAttack(MvpInventory inventory)
     {
         ArgumentNullException.ThrowIfNull(inventory);
-        ArgumentNullException.ThrowIfNull(target);
 
-        if (!inventory.IsMechanicalArmBuilt || IsOnCooldown || target.IsDead)
+        if (!inventory.IsMechanicalArmBuilt || IsOnCooldown)
         {
             return false;
         }
 
-        target.ApplyDamage(Damage);
         _cooldownRemainingSeconds = CooldownSeconds;
         return true;
     }

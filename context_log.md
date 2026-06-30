@@ -29,3 +29,5 @@
 - 2026-06-30: Made the main menu the startup scene while preserving Crash Site loading and covering Continue save-state behavior in integration tests.
 
 - 2026-06-30: Wired SavePoint interaction to the local Crash Site save coordinator and covered checkpoint serialization and restore behavior.
+
+- 2026-06-30: Clarified defeat-screen reload fallback and hardened Crash Site checkpoint save loading for missing or invalid save data.

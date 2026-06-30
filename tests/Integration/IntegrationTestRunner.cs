@@ -64,6 +64,7 @@ public partial class IntegrationTestRunner : Node
             await TestHudStartTutorial();
             await TestHudBinding();
             await TestEndScreenNavigation();
+            TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
             await TestBeaconVisualState();
             await TestPhysicsAndMovement();
@@ -371,6 +372,35 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
     }
 
+    private static void TestLocalSaveGameStoreLoadStates()
+    {
+        const string testSavePath = "user://local_store_states_test.json";
+        LocalSaveGameStore.DeleteSave(testSavePath);
+        Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Missing save data should not load");
+
+        var validSaveData = new CrashSiteSaveData
+        {
+            CheckpointId = "crash_site_save_point",
+            PlayerX = 3.0f,
+            PlayerY = 2.0f,
+            PlayerZ = -7.0f,
+            Health = 60,
+            Metal = 6,
+            Biomass = 1,
+            ElectronicComponents = 2,
+            MissionStep = CrashSiteMissionStep.BuildMechanicalArm,
+        };
+        LocalSaveGameStore.Save(validSaveData, testSavePath);
+        Require(LocalSaveGameStore.TryLoad(out var loadedSaveData, testSavePath), "Valid save data should load");
+        Require(loadedSaveData.CheckpointId == "crash_site_save_point", "Valid save checkpoint id mismatch");
+        Require(loadedSaveData.Health == 60, "Valid save health mismatch");
+
+        using (var file = FileAccess.Open(testSavePath, FileAccess.ModeFlags.Write))
+            file?.StoreString("{ invalid json");
+        Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Invalid save data should fail clearly instead of loading");
+        LocalSaveGameStore.DeleteSave(testSavePath);
+    }
+
     private async System.Threading.Tasks.Task TestSaveLoadFlow()
     {
         LocalSaveGameStore.DeleteSave();
@@ -389,6 +419,8 @@ public partial class IntegrationTestRunner : Node
         Require(savePoint.HasSavedCheckpoint, "SavePoint did not mark the checkpoint as saved");
         Require(saveCoordinator.LastSaveSucceeded, "SavePoint interaction did not write a save file");
         Require(LocalSaveGameStore.SaveExists(), "Save file does not exist after SavePoint interaction");
+        Require(LocalSaveGameStore.TryLoad(out var checkpointSave), "SavePoint save data could not be reloaded");
+        Require(checkpointSave.CheckpointId == savePoint.CheckpointId, "SavePoint did not persist the checkpoint reload target");
         main.QueueFree();
         await Frames(2);
 

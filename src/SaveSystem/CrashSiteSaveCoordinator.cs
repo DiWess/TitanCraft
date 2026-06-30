@@ -44,6 +44,7 @@ public partial class CrashSiteSaveCoordinator : Node
         LastSaveSucceeded = false;
         LocalSaveGameStore.Save(new CrashSiteSaveData
         {
+            CheckpointId = _savePoint?.CheckpointId ?? string.Empty,
             PlayerX = position.X,
             PlayerY = position.Y,
             PlayerZ = position.Z,

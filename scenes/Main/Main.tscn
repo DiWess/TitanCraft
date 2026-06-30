@@ -135,9 +135,9 @@ mesh = SubResource("BoxMesh_orange_strip")
 [node name="VisualRoot" type="Node3D" parent="C7_Wall_1"]
 [node name="PanelInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("21_panel_a")]
 [node name="FrameInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("23_frame_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
+transform = Transform3D(1, 0, 0, 0, 1.08, 0, 0, 0, 1, 0, 0, -0.18)
 [node name="TopBeamInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+transform = Transform3D(1.08, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 1.42, -0.34)
 [node name="RailInstance" parent="C7_Wall_1/VisualRoot" instance=ExtResource("25_rail_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_1"]
@@ -157,7 +157,7 @@ mesh = SubResource("BoxMesh_orange_strip")
 [node name="FrameInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("23_frame_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
 [node name="TopBeamInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+transform = Transform3D(0.82, 0, 0, 0, 1, 0, 0, 0, 1, -0.38, 1.43, -0.34)
 [node name="RailInstance" parent="C7_Wall_2/VisualRoot" instance=ExtResource("25_rail_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_2"]
@@ -177,7 +177,7 @@ mesh = SubResource("BoxMesh_orange_strip")
 [node name="FrameInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("23_frame_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
 [node name="TopBeamInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 1.42, -0.34)
 [node name="RailInstance" parent="C7_Wall_3/VisualRoot" instance=ExtResource("25_rail_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_3"]
@@ -197,7 +197,7 @@ mesh = SubResource("BoxMesh_orange_strip")
 [node name="FrameInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("23_frame_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
 [node name="TopBeamInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("24_beam_a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.2)
+transform = Transform3D(0.72, 0, 0, 0, 1, 0, 0, 0, 1, 0.46, 1.43, -0.34)
 [node name="RailInstance" parent="C7_Wall_4/VisualRoot" instance=ExtResource("25_rail_a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, -0.22)
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_4"]

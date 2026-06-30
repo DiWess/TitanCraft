@@ -67,3 +67,6 @@ tests/TestResults/
 
 # GdUnit4 generated runner
 tests/gdunit4_testadapter_v5/
+
+# Local rendered visual-review artifacts
+artifacts/visual-review/

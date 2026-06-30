@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://titancraft_galaxabrain_scout"]
+[gd_scene load_steps=15 format=3 uid="uid://titancraft_galaxabrain_scout"]
 
 [ext_resource type="Script" path="res://src/Enemies/GalaxabrainScout.cs" id="1_scout"]
 [ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="2_component"]
@@ -25,15 +25,24 @@ size = Vector3(0.95, 0.16, 0.62)
 material = ExtResource("4_metal")
 [sub_resource type="CylinderMesh" id="CylinderMesh_eye"]
 radial_segments = 8
-top_radius = 0.16
-bottom_radius = 0.16
-height = 0.08
+top_radius = 0.22
+bottom_radius = 0.22
+height = 0.1
 material = ExtResource("5_cyan")
 [sub_resource type="CylinderMesh" id="CylinderMesh_limb"]
 radial_segments = 6
 top_radius = 0.09
 bottom_radius = 0.14
 height = 0.95
+material = ExtResource("6_black")
+[sub_resource type="SphereMesh" id="SphereMesh_thorax"]
+radial_segments = 9
+rings = 5
+radius = 0.48
+height = 0.8
+material = ExtResource("4_metal")
+[sub_resource type="PrismMesh" id="PrismMesh_mandible"]
+size = Vector3(0.32, 0.42, 0.55)
 material = ExtResource("6_black")
 
 [node name="GalaxabrainScout" type="CharacterBody3D"]
@@ -50,10 +59,14 @@ MissionComponentPath = NodePath("GalaxabrainComponentPickup")
 shape = SubResource("CapsuleShape3D_scout")
 
 [node name="Placeholder_GalaxabrainScout" type="MeshInstance3D" parent="."]
+visible = false
 transform = Transform3D(1,0,0,0,0.75,0,0,0,0.85,0,0.25,0)
 mesh = SubResource("BoxMesh_placeholder")
+[node name="SegmentedThorax" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.45,0,0,0,1.1,0.08,0,-0.08,1.25,0,0.42,0)
+mesh = SubResource("SphereMesh_thorax")
 [node name="OrganicBrainDome" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.1,0,0,0,0.8,0,0,0,1.1,0,0.95,0)
+transform = Transform3D(1.35,0,0,0,0.95,0,0,0,1.35,0,1.03,0)
 mesh = SubResource("SphereMesh_brain")
 [node name="ForeheadArmorPlate" type="MeshInstance3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.12,-0.38)
@@ -61,11 +74,17 @@ mesh = SubResource("BoxMesh_armor_plate")
 [node name="CyanSensorEye" type="MeshInstance3D" parent="."]
 transform = Transform3D(1,0,0,0,0,1,0,-1,0,0,0.98,-0.55)
 mesh = SubResource("CylinderMesh_eye")
+[node name="LeftMandible" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.65,0.1,-0.2,0,0.8,0,0.2,0,0.65,-0.28,0.58,-0.52)
+mesh = SubResource("PrismMesh_mandible")
+[node name="RightMandible" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.65,-0.1,0.2,0,0.8,0,-0.2,0,0.65,0.28,0.58,-0.52)
+mesh = SubResource("PrismMesh_mandible")
 [node name="LeftMetalLeg" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.7,0.2,0,0.1,0.85,0,0,0,1,-0.34,-0.48,-0.18)
+transform = Transform3D(0.85,0.25,0,0.15,1.05,0,0,0,1,-0.42,-0.5,-0.18)
 mesh = SubResource("CylinderMesh_limb")
 [node name="RightMetalLeg" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.7,-0.2,0,-0.1,0.85,0,0,0,1,0.34,-0.48,-0.18)
+transform = Transform3D(0.85,-0.25,0,-0.15,1.05,0,0,0,1,0.42,-0.5,-0.18)
 mesh = SubResource("CylinderMesh_limb")
 
 [node name="GalaxabrainComponentPickup" type="Area3D" parent="."]

@@ -43,3 +43,4 @@
 - 2026-06-30: Added direct HUD craft guidance and Mk I attack feedback so players can see why attacks are blocked, missed, or landed.
 
 - 2026-06-30: Stabilized FPS mouse look with deterministic yaw/pitch math and softened Crash Site cubic placeholders using low-poly silhouettes and accent details.
+- 2026-06-30: Added Phase 3A rendered screenshot harness and stopped after two visual correction cycles because final screenshots remained NOT_GO at 40/70.

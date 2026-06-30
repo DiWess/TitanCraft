@@ -35,3 +35,5 @@
 - 2026-06-30: Aligned resource pickup mission progression with the data-backed Mechanical Arm Mk I recipe cost and covered partial collection order regressions.
 
 - 2026-06-30: Documented the local Windows offline MVP build export and manual validation process without claiming Windows readiness.
+
+- 2026-06-30: Corrected Phase 3A C7 wall visuals with layered, readable industrial assemblies while preserving gameplay collisions.

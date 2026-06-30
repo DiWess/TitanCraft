@@ -33,3 +33,5 @@
 - 2026-06-30: Clarified defeat-screen reload fallback and hardened Crash Site checkpoint save loading for missing or invalid save data.
 
 - 2026-06-30: Aligned resource pickup mission progression with the data-backed Mechanical Arm Mk I recipe cost and covered partial collection order regressions.
+
+- 2026-06-30: Documented the local Windows offline MVP build export and manual validation process without claiming Windows readiness.

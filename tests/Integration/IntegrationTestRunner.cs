@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using TitanCraft.Enemies;
 using TitanCraft.Player;
 using TitanCraft.Missions;
 using TitanCraft.SaveSystem;
@@ -13,6 +14,7 @@ public partial class IntegrationTestRunner : Node
 {
     private const string MainScenePath = "res://scenes/Main/Main.tscn";
     private const string PlayerScenePath = "res://scenes/Player/Player.tscn";
+    private const string GalaxabrainScoutScenePath = "res://scenes/Enemies/GalaxabrainScout.tscn";
     private static readonly string[] UiScenePaths = [
         "res://scenes/UI/HUD.tscn",
         "res://scenes/UI/MainMenu.tscn",
@@ -56,6 +58,7 @@ public partial class IntegrationTestRunner : Node
             await TestMainScene();
             await TestCollisionPolicy();
             await TestPlayerScene();
+            await TestGalaxabrainScoutDeathPickup();
             await TestUiScenes();
             await TestHudStartTutorial();
             await TestHudBinding();
@@ -197,6 +200,29 @@ public partial class IntegrationTestRunner : Node
         Require(player.GetNode<Camera3D>("Head/Camera3D").Current, "Camera inactive");
         Require(FirstPersonMovement.HasValidParameters(player.WalkSpeed, player.JumpVelocity, player.MouseSensitivity, player.MaxLookAngleDegrees), "Player exported parameters invalid");
         player.QueueFree();
+        await Frames(2);
+    }
+
+
+    private async System.Threading.Tasks.Task TestGalaxabrainScoutDeathPickup()
+    {
+        var scout = LoadScene<GalaxabrainScout>(GalaxabrainScoutScenePath);
+        AddChild(scout);
+        await Frames(2);
+
+        var missionComponent = scout.GetNode<Area3D>("GalaxabrainComponentPickup");
+        Require(!missionComponent.Visible, "Galaxabrain component pickup should start hidden");
+        Require(!missionComponent.Monitoring, "Galaxabrain component pickup should start non-monitoring");
+
+        for (var hit = 0; hit < 4; hit++)
+            scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
+
+        Require(scout.Brain.IsDead, "Galaxabrain Scout did not die after four arm hits");
+        Require(!scout.Visible, "Galaxabrain Scout stayed visible after death");
+        Require(missionComponent.Visible, "Galaxabrain component pickup did not become visible after scout death");
+        Require(missionComponent.Monitoring, "Galaxabrain component pickup did not become collectable after scout death");
+
+        scout.QueueFree();
         await Frames(2);
     }
 

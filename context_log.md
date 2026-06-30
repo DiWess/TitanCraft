@@ -21,3 +21,7 @@
 - 2026-06-29: Removed the gameplay quit action from Q, kept Escape pause as the clean exit path, and added integration coverage so left movement cannot trigger quit_game.
 
 - 2026-06-29: Added the short Crash Site start tutorial HUD prompt with mission-progression dismissal and integration coverage.
+
+- 2026-06-30: Routed mechanical arm hits through the GalaxabrainScout node damage path and covered mission component exposure on enemy death.
+
+- 2026-06-30: Moved Galaxabrain Scout pickup exposure coverage out of runtime-dependent unit tests and into the Godot integration runner so CI unit tests stay runtime-free.

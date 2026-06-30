@@ -1,5 +1,4 @@
 using GdUnit4;
-using TitanCraft.Enemies;
 using TitanCraft.Player;
 using TitanCraft.Resources;
 using static GdUnit4.Assertions;
@@ -10,52 +9,40 @@ namespace TitanCraft.Tests.Unit;
 public sealed class MechanicalArmAttackTests
 {
     [TestCase]
-    public void BuiltMechanicalArmDealsConfiguredDamage()
+    public void BuiltMechanicalArmAllowsConfiguredDamageApplication()
     {
         var inventory = new MvpInventory();
         inventory.MarkMechanicalArmBuilt();
-        var target = CreateTarget();
         var attack = new MechanicalArmAttackLogic(damage: 25, cooldownSeconds: 0.8f);
 
-        AssertThat(attack.TryAttack(inventory, target)).IsTrue();
+        AssertThat(attack.TryAttack(inventory)).IsTrue();
 
-        AssertThat(target.CurrentHealth).IsEqual(75);
+        AssertThat(attack.Damage).IsEqual(25);
     }
 
     [TestCase]
-    public void MechanicalArmCooldownBlocksRepeatedDamageUntilElapsed()
+    public void MechanicalArmCooldownBlocksRepeatedAttackUntilElapsed()
     {
         var inventory = new MvpInventory();
         inventory.MarkMechanicalArmBuilt();
-        var target = CreateTarget();
         var attack = new MechanicalArmAttackLogic(damage: 25, cooldownSeconds: 0.8f);
 
-        AssertThat(attack.TryAttack(inventory, target)).IsTrue();
-        AssertThat(attack.TryAttack(inventory, target)).IsFalse();
-        AssertThat(target.CurrentHealth).IsEqual(75);
+        AssertThat(attack.TryAttack(inventory)).IsTrue();
+        AssertThat(attack.TryAttack(inventory)).IsFalse();
 
         attack.Tick(0.79f);
-        AssertThat(attack.TryAttack(inventory, target)).IsFalse();
+        AssertThat(attack.TryAttack(inventory)).IsFalse();
 
         attack.Tick(0.01f);
-        AssertThat(attack.TryAttack(inventory, target)).IsTrue();
-        AssertThat(target.CurrentHealth).IsEqual(50);
+        AssertThat(attack.TryAttack(inventory)).IsTrue();
     }
 
     [TestCase]
     public void UnbuiltMechanicalArmCannotApplyFullDamage()
     {
         var inventory = new MvpInventory();
-        var target = CreateTarget();
         var attack = new MechanicalArmAttackLogic(damage: 25, cooldownSeconds: 0.8f);
 
-        AssertThat(attack.TryAttack(inventory, target)).IsFalse();
-
-        AssertThat(target.CurrentHealth).IsEqual(100);
-    }
-
-    private static GalaxabrainScoutBrain CreateTarget()
-    {
-        return new GalaxabrainScoutBrain(maxHealth: 100, detectionRange: 10f, attackRange: 2f, attackCooldownSeconds: 0.8f);
+        AssertThat(attack.TryAttack(inventory)).IsFalse();
     }
 }

@@ -37,3 +37,5 @@
 - 2026-06-30: Documented the local Windows offline MVP build export and manual validation process without claiming Windows readiness.
 
 - 2026-06-30: Corrected Phase 3A C7 wall visuals with layered, readable industrial assemblies while preserving gameplay collisions.
+
+- 2026-06-30: Reworked Phase 3A human wall panels away from flat box-only silhouettes with canted hull plates, cutaways, service conduits, and integration coverage for production C7 wall visual roots.

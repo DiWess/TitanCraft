@@ -248,6 +248,22 @@ public partial class IntegrationTestRunner : Node
         var pause = main.GetNode<CanvasLayer>("PauseMenu");
         Require(pause.GetNode<Button>("Panel/Menu/ResumeButton") is not null, "Pause resume button missing");
         Require(pause.GetNode<Button>("Panel/Menu/MainMenuButton") is not null, "Pause main menu button missing");
+
+        foreach (var wallName in new[] { "C7_Wall_1", "C7_Wall_2", "C7_Wall_3", "C7_Wall_4" })
+        {
+            var wall = main.GetNode<Node3D>(wallName);
+            Require(wall.GetNode<Node3D>("VisualRoot") is not null, $"{wallName} missing Phase 3A visual root");
+            Require(!wall.GetNode<MeshInstance3D>("MeshInstance3D").Visible, $"{wallName} legacy box panel should stay hidden behind authored visuals");
+        }
+
+        var panel = LoadScene<Node3D>("res://scenes/Props/Human/Panel_A.tscn");
+        AddChild(panel);
+        await Frames(2);
+        Require(panel.GetNode<MeshInstance3D>("PrimaryForms/RightCantedHullPlate").Mesh is PrismMesh, "Phase 3A panel must use a canted non-box hull plate");
+        Require(panel.GetNode<MeshInstance3D>("FunctionalDetails/ExposedServiceConduit").Mesh is CylinderMesh, "Phase 3A panel must expose rounded service conduit detail");
+        panel.QueueFree();
+        await Frames(2);
+
         main.QueueFree();
         await Frames(2);
     }

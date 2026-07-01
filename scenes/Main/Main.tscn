@@ -39,6 +39,80 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="38_rock_ridge"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
 
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
+albedo_color = Color(0.92, 0.90, 0.87, 1)
+metallic = 0.15
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Graphite"]
+albedo_color = Color(0.22, 0.22, 0.24, 1)
+metallic = 0.3
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_WornSteel"]
+albedo_color = Color(0.48, 0.48, 0.50, 1)
+metallic = 0.6
+roughness = 0.58
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_MutedOrange"]
+albedo_color = Color(0.68, 0.50, 0.28, 1)
+metallic = 0.1
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Basalt"]
+albedo_color = Color(0.28, 0.28, 0.32, 1)
+metallic = 0.0
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Ash"]
+albedo_color = Color(0.58, 0.56, 0.52, 1)
+metallic = 0.0
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Scorch"]
+albedo_color = Color(0.15, 0.14, 0.16, 1)
+metallic = 0.05
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_AlienCyan"]
+albedo_color = Color(0.2, 0.8, 0.9, 1)
+metallic = 0.4
+roughness = 0.3
+emission = Color(0.3, 1.0, 1.0, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="BoxMesh" id="PROD_HullMain"]
+size = Vector3(11.0, 3.5, 5.2)
+
+[sub_resource type="CylinderMesh" id="PROD_NoseCrushed"]
+height = 2.2
+bottom_radius = 1.05
+top_radius = 0.35
+
+[sub_resource type="BoxMesh" id="PROD_Wing"]
+size = Vector3(6.2, 0.42, 1.3)
+
+[sub_resource type="CylinderMesh" id="PROD_Engine"]
+height = 2.5
+bottom_radius = 1.15
+top_radius = 1.0
+radial_segments = 10
+
+[sub_resource type="BoxMesh" id="PROD_InternalRib"]
+size = Vector3(3.0, 2.0, 0.25)
+
+[sub_resource type="BoxMesh" id="PROD_Debris"]
+size = Vector3(1.5, 0.5, 1.2)
+
+[sub_resource type="BoxMesh" id="PROD_Basalt"]
+size = Vector3(4.8, 3.2, 2.8)
+
+[sub_resource type="BoxMesh" id="PROD_Ridge"]
+size = Vector3(8.5, 5.0, 3.2)
+
+[sub_resource type="BoxMesh" id="PROD_Ground"]
+size = Vector3(8.0, 0.08, 6.0)
+
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
 material = ExtResource("17_rock")
@@ -419,80 +493,6 @@ surface_material_override/0 = ExtResource("14_graphite")
 
 [node name="ProductionVisualRoot" type="Node3D" parent="."]
 metadata/stage = "Stage A production: bespoke custom meshes and composition."
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
-albedo_color = Color(0.92, 0.90, 0.87, 1)
-metallic = 0.15
-roughness = 0.65
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_Graphite"]
-albedo_color = Color(0.22, 0.22, 0.24, 1)
-metallic = 0.3
-roughness = 0.75
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_WornSteel"]
-albedo_color = Color(0.48, 0.48, 0.50, 1)
-metallic = 0.6
-roughness = 0.58
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_MutedOrange"]
-albedo_color = Color(0.68, 0.50, 0.28, 1)
-metallic = 0.1
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_Basalt"]
-albedo_color = Color(0.28, 0.28, 0.32, 1)
-metallic = 0.0
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_Ash"]
-albedo_color = Color(0.58, 0.56, 0.52, 1)
-metallic = 0.0
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_Scorch"]
-albedo_color = Color(0.15, 0.14, 0.16, 1)
-metallic = 0.05
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="PROD_MAT_AlienCyan"]
-albedo_color = Color(0.2, 0.8, 0.9, 1)
-metallic = 0.4
-roughness = 0.3
-emission = Color(0.3, 1.0, 1.0, 1)
-emission_energy_multiplier = 0.8
-
-[sub_resource type="BoxMesh" id="PROD_HullMain"]
-size = Vector3(11.0, 3.5, 5.2)
-
-[sub_resource type="CylinderMesh" id="PROD_NoseCrushed"]
-height = 2.2
-bottom_radius = 1.05
-top_radius = 0.35
-
-[sub_resource type="BoxMesh" id="PROD_Wing"]
-size = Vector3(6.2, 0.42, 1.3)
-
-[sub_resource type="CylinderMesh" id="PROD_Engine"]
-height = 2.5
-bottom_radius = 1.15
-top_radius = 1.0
-radial_segments = 10
-
-[sub_resource type="BoxMesh" id="PROD_InternalRib"]
-size = Vector3(3.0, 2.0, 0.25)
-
-[sub_resource type="BoxMesh" id="PROD_Debris"]
-size = Vector3(1.5, 0.5, 1.2)
-
-[sub_resource type="BoxMesh" id="PROD_Basalt"]
-size = Vector3(4.8, 3.2, 2.8)
-
-[sub_resource type="BoxMesh" id="PROD_Ridge"]
-size = Vector3(8.5, 5.0, 3.2)
-
-[sub_resource type="BoxMesh" id="PROD_Ground"]
-size = Vector3(8.0, 0.08, 6.0)
 
 [node name="TerrainUnderlay" type="Node3D" parent="ProductionVisualRoot"]
 

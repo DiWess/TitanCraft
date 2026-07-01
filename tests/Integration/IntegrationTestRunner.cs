@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Godot;
 using TitanCraft.Enemies;
 using TitanCraft.Player;
@@ -67,6 +68,7 @@ public partial class IntegrationTestRunner : Node
             TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
             await TestBeaconVisualState();
+            await TestRuntimeSceneContracts();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -125,8 +127,6 @@ public partial class IntegrationTestRunner : Node
         Require(main.GetNode<Area3D>("Placeholder_ElectronicsPickup") is not null, "Electronics pickup missing");
         Require(main.GetNode<Node3D>("Moon") is not null, "Large moon missing");
         Require(main.GetNode<Node3D>("AlienCrystal_1") is not null, "Alien crystal route missing");
-        Require(main.GetNode<MeshInstance3D>("AuthenticatedCrashSiteVisuals/CrashedShip_AuthenticUltimateSpaceKit").Mesh is not null, "Production crashed ship visual missing");
-        Require(main.GetNode<MeshInstance3D>("AuthenticatedCrashSiteVisuals/BuriedHullMass_BaseLarge").Mesh is not null, "Production buried hull visual missing");
         main.QueueFree();
         await Frames(2);
     }
@@ -202,7 +202,6 @@ public partial class IntegrationTestRunner : Node
         Require(player.GetNode<CollisionShape3D>("CollisionShape3D").Shape is CapsuleShape3D capsule && capsule.Radius > 0.0f && capsule.Height > 0.0f, "Player capsule invalid");
         Require(player.GetNode<Node3D>("Head") is not null, "Head missing");
         Require(player.GetNode<Camera3D>("Head/Camera3D").Current, "Camera inactive");
-        Require(player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Mesh is not null, "Production mechanical arm visual missing");
         Require(FirstPersonMovement.HasValidParameters(player.WalkSpeed, player.JumpVelocity, player.MouseSensitivity, player.MaxLookAngleDegrees), "Player exported parameters invalid");
         player.QueueFree();
         await Frames(2);
@@ -215,7 +214,6 @@ public partial class IntegrationTestRunner : Node
         AddChild(scout);
         await Frames(2);
 
-        Require(scout.GetNode<MeshInstance3D>("AuthenticatedRobotGalaxabrainVisual").Mesh is not null, "Production Galaxabrain visual missing");
         var missionComponent = scout.GetNode<Area3D>("GalaxabrainComponentPickup");
         Require(!missionComponent.Visible, "Galaxabrain component pickup should start hidden");
         Require(!missionComponent.Monitoring, "Galaxabrain component pickup should start non-monitoring");
@@ -413,7 +411,7 @@ public partial class IntegrationTestRunner : Node
         Require(loadedSaveData.CheckpointId == "crash_site_save_point", "Valid save checkpoint id mismatch");
         Require(loadedSaveData.Health == 60, "Valid save health mismatch");
 
-        using (var file = FileAccess.Open(testSavePath, FileAccess.ModeFlags.Write))
+        using (var file = Godot.FileAccess.Open(testSavePath, Godot.FileAccess.ModeFlags.Write))
             file?.StoreString("{ invalid json");
         Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Invalid save data should fail clearly instead of loading");
         LocalSaveGameStore.DeleteSave(testSavePath);
@@ -513,6 +511,163 @@ public partial class IntegrationTestRunner : Node
         Require(float.IsFinite(pitch) && float.IsFinite(player.Rotation.Y), "Camera rotation is not finite");
         main.QueueFree();
         await Frames(2);
+    }
+
+    private async System.Threading.Tasks.Task TestRuntimeSceneContracts()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(30);
+
+        var player = main.GetNode<FirstPersonController>("Player");
+        var camera = player.GetNode<Camera3D>("Head/Camera3D");
+        var scout = main.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
+        var arm = player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        var visual = scout.GetNode<MeshInstance3D>("AuthenticatedRobotGalaxabrainVisual");
+        var initialPlayerPosition = player.GlobalPosition;
+        var initialScoutPosition = scout.GlobalPosition;
+        var initialScoutVisualPosition = visual.GlobalPosition;
+
+        Require(camera.Current, "Active camera is not current");
+        Require(IsDescendantOf(camera, player), "Active camera does not belong to Player");
+        Require(!IsDescendantOf(scout, player) && !IsDescendantOf(scout, camera), "Galaxabrain is camera/player-relative");
+        Require(HorizontalDistance(initialPlayerPosition, initialScoutPosition) > 8.0f, "Galaxabrain spawned too close to player");
+        Require(scout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled == false, "Galaxabrain collision disabled");
+        var scoutCapsule = scout.GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
+        Require(scoutCapsule is not null, "Galaxabrain collision capsule missing");
+
+        var before = scout.GlobalPosition;
+        scout.PlayerPath = scout.GetPathTo(player);
+        player.GlobalPosition = scout.GlobalPosition + new Vector3(6.0f, 0.0f, 0.0f);
+        await Frames(90);
+        Require(HorizontalDistance(before, scout.GlobalPosition) > 0.1f, "Galaxabrain did not move during controlled simulation");
+
+        var visualSize = visual.GetAabb().Size * visual.Scale;
+        Require(visualSize.Y / scoutCapsule!.Height < 4.0f, "Galaxabrain visual/collision height mismatch");
+        Require(IsDescendantOf(arm, camera), "Mechanical arm is not under active camera");
+        Require(arm.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Mechanical arm has collision descendants");
+        Require(!IsUnsuitableFirstPersonArmActive(arm), "Complete George mech is active as first-person arm view model");
+
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "AuthenticatedTerrainVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        {
+            var node = main.GetNode<Node>(path);
+            Require(!IsDescendantOf(node, camera), $"{path} is under camera hierarchy");
+        }
+
+        TestTerrainVisualContracts(main, camera);
+        var flags = BuildRuntimeContractFlags(main, player, camera, scout, arm, initialPlayerPosition, initialScoutPosition, visual, scoutCapsule);
+        Require(flags.Count == 0, $"Runtime contract flags present: {string.Join(", ", flags)}");
+
+        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        {
+            var pickup = main.GetNode<ResourcePickup>(pickupName);
+            Require(pickup.FindChildren("*", "CollisionShape3D", true, false).Count > 0, $"{pickupName} collision missing");
+        }
+
+        Require(main.GetNode<Workbench>("Placeholder_Workbench").GetNode<CollisionShape3D>("Collision_Workbench").Shape is not null, "Workbench behavior/collision missing");
+        Require(main.GetNode<SavePoint>("Placeholder_SavePoint").GetNode<CollisionShape3D>("Collision_SavePoint").Shape is not null, "Save point behavior/collision missing");
+        Require(main.GetNode<Beacon>("Placeholder_Beacon").GetNode<CollisionShape3D>("Collision_BeaconBase").Shape is not null, "Beacon behavior/collision missing");
+
+        WriteRuntimeContractReport(main, initialPlayerPosition, initialScoutPosition, initialScoutVisualPosition, camera, scout, visual, scoutCapsule, arm, flags);
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    private static bool IsUnsuitableFirstPersonArmActive(MeshInstance3D arm)
+    {
+        return arm.Visible
+            && arm.Mesh?.ResourcePath?.Contains("George.obj", StringComparison.OrdinalIgnoreCase) == true
+            && arm.GetAabb().Size.Y > 4.0f;
+    }
+
+    private static void TestTerrainVisualContracts(Node3D main, Camera3D camera)
+    {
+        var terrainRoot = main.GetNode<Node3D>("AuthenticatedTerrainVisuals");
+        Require(terrainRoot.GetScript().VariantType == Variant.Type.Nil, "Terrain root must not have gameplay script");
+        Require(terrainRoot.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Decorative terrain must not own collision");
+        Require(!IsDescendantOf(terrainRoot, camera), "Terrain entered active camera hierarchy");
+
+        foreach (var child in terrainRoot.GetChildren())
+        {
+            Require(child is MeshInstance3D, $"Terrain child is not a MeshInstance3D: {child.Name}");
+            var mesh = (MeshInstance3D)child;
+            Require(mesh.GetScript().VariantType == Variant.Type.Nil, $"Terrain visual has a script: {mesh.Name}");
+            Require(mesh.Layers == 1u, $"Terrain visual render layer changed: {mesh.Name}");
+            Require(mesh.GetAabb().Size.Length() > 0.0f, $"Terrain visual AABB is empty: {mesh.Name}");
+            Require(mesh.Scale.Abs().MaxAxisIndex() >= 0 && mesh.Scale.Length() < 12.0f, $"Terrain visual scale is extreme: {mesh.Name}");
+            Require(!IsDescendantOf(mesh, camera), $"Terrain visual is under active camera: {mesh.Name}");
+        }
+
+        foreach (var target in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout" })
+            Require(main.GetNode<Node3D>(target).GlobalPosition.Y >= 0.0f, $"{target} moved below stable ground");
+    }
+
+    private static List<string> BuildRuntimeContractFlags(Node3D main, FirstPersonController player, Camera3D camera, GalaxabrainScout scout, MeshInstance3D arm, Vector3 playerSpawn, Vector3 scoutSpawn, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule)
+    {
+        var flags = new List<string>();
+        if (!camera.Current || !IsDescendantOf(camera, player) || IsDescendantOf(scout, player) || IsDescendantOf(scout, camera))
+            flags.Add("CAMERA_PARENTING_ERROR");
+        if (HorizontalDistance(playerSpawn, scoutSpawn) <= 8.0f)
+            flags.Add("ENEMY_AT_PLAYER_POSITION");
+        if (scoutVisual.GetAabb().Size.Y * scoutVisual.Scale.Y / scoutCapsule.Height >= 4.0f)
+            flags.Add("VISUAL_COLLISION_MISMATCH");
+        if (IsUnsuitableFirstPersonArmActive(arm))
+            flags.Add("BAD_MODEL_ORIGIN");
+        if (!IsDescendantOf(arm, camera))
+            flags.Add("VIEWMODEL_IN_WORLD_LAYER");
+
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "AuthenticatedTerrainVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        {
+            var node = main.GetNodeOrNull<Node>(path);
+            if (node is null)
+                flags.Add("REQUIRED_NODE_PATH_MISSING");
+            else if (IsDescendantOf(node, camera))
+                flags.Add("WORLD_MODEL_IN_VIEWMODEL_LAYER");
+        }
+
+        var terrainRoot = main.GetNodeOrNull<Node3D>("AuthenticatedTerrainVisuals");
+        if (terrainRoot is not null)
+            foreach (var child in terrainRoot.GetChildren())
+                if (child is MeshInstance3D mesh && mesh.Scale.Length() >= 12.0f)
+                    flags.Add("EXTREME_SCALE");
+        return flags;
+    }
+
+    private static bool IsDescendantOf(Node node, Node ancestor)
+    {
+        for (var current = node.GetParent(); current is not null; current = current.GetParent())
+            if (current == ancestor)
+                return true;
+        return false;
+    }
+
+    private static void WriteRuntimeContractReport(Node3D main, Vector3 playerSpawn, Vector3 scoutSpawn, Vector3 scoutVisualSpawn, Camera3D camera, GalaxabrainScout scout, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule, MeshInstance3D arm, List<string> flags)
+    {
+        var ship = main.GetNodeOrNull<MeshInstance3D>("AuthenticatedCrashSiteVisuals/CrashedShip_AuthenticUltimateSpaceKit");
+        var scoutVisualRatio = scoutVisual.GetAabb().Size.Y * scoutVisual.Scale.Y / scoutCapsule.Height;
+        var formattedFlags = string.Join(",", flags.ConvertAll(flag => $"\"{flag}\""));
+        var report = $$"""
+        {
+          "activeCameraPath": "{{camera.GetPath()}}",
+          "playerGlobalPosition": "{{playerSpawn}}",
+          "galaxabrainGlobalPosition": "{{scoutSpawn}}",
+          "playerEnemySpawnDistance": {{HorizontalDistance(playerSpawn, scoutSpawn):0.###}},
+          "galaxabrainParentPath": "{{scout.GetParent().GetPath()}}",
+          "galaxabrainVisualGlobalPosition": "{{scoutVisualSpawn}}",
+          "galaxabrainVisualAabb": "{{scoutVisual.GetAabb()}}",
+          "galaxabrainCollisionSize": "radius={{scoutCapsule.Radius}}, height={{scoutCapsule.Height}}",
+          "galaxabrainVisualToCollisionHeightRatio": {{scoutVisualRatio:0.###}},
+          "mechanicalArmParentPath": "{{arm.GetParent().GetPath()}}",
+          "mechanicalArmVisible": {{arm.Visible.ToString().ToLowerInvariant()}},
+          "mechanicalArmVisualAabb": "{{arm.GetAabb()}}",
+          "shipVisualGlobalPosition": "{{ship?.GlobalPosition.ToString() ?? "missing"}}",
+          "shipVisualAabb": "{{ship?.GetAabb().ToString() ?? "missing"}}",
+          "flags": [{{formattedFlags}}]
+        }
+        """;
+        var artifactDir = ProjectSettings.GlobalizePath("res://artifacts");
+        Directory.CreateDirectory(artifactDir);
+        File.WriteAllText(Path.Combine(artifactDir, "runtime-contract-report.json"), report);
     }
 
     private async System.Threading.Tasks.Task<float> MoveDistance(Node3D main, string action, Vector3 expectedDirection)

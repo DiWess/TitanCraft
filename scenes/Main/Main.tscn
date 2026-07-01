@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=45 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -19,10 +19,14 @@
 [ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Environment/CrashSite/ship_hull_body.obj" id="21_ship"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Environment/CrashSite/damaged_structural_base.obj" id="22_base_large"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Player/MechanicalArm/george_mech_source_arm.obj" id="23_mech_george"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Enemies/Galaxabrain/robot_body_component.obj" id="24_robot"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Spaceship_BarbaraTheBee.obj" id="21_ship"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Base_Large.obj" id="22_base_large"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="23_mech_george"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="24_robot"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_cliff_d.obj" id="25_terrain_cliff_d"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_c.obj" id="26_terrain_irregular_c"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="27_terrain_ridge_f"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="28_terrain_spire_g"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
@@ -354,6 +358,48 @@ surface_material_override/0 = ExtResource("16_orange")
 transform = Transform3D(0.35,0,0,0,0.75,0,0,0,0.35,0,1.35,0)
 mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("14_graphite")
+[node name="AuthenticatedTerrainVisuals" type="Node3D" parent="."]
+metadata/authentication = "Phase 3A Pass 1 terrain-only Quaternius Stylized Nature MegaKit visual children; no collision, no gameplay scripts."
+[node name="ForegroundRockFrame_Left" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(5.5,0,0.8,0,1.8,0,-0.8,0,5.5,-18,0.05,2)
+mesh = ExtResource("25_terrain_cliff_d")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="ForegroundRockFrame_Right" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(4.8,0,-0.6,0,1.6,0,0.6,0,4.8,16,0.05,1)
+mesh = ExtResource("26_terrain_irregular_c")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="RouteEdgeRock_MetalApproach" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(2.2,0,0.2,0,0.9,0,-0.2,0,2.2,5,0.05,-1)
+mesh = ExtResource("28_terrain_spire_g")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="RouteEdgeRock_WorkbenchApproach" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(2.6,0,-0.4,0,0.8,0,0.4,0,2.6,14,0.05,-8)
+mesh = ExtResource("26_terrain_irregular_c")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="MidgroundRidge_CrashLeft" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(6.0,0,0.8,0,1.4,0,-0.8,0,6.0,-22,0.1,-21)
+mesh = ExtResource("27_terrain_ridge_f")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="MidgroundRidge_CrashRight" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(5.5,0,-0.7,0,1.2,0,0.7,0,5.5,8,0.1,-25)
+mesh = ExtResource("27_terrain_ridge_f")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="CombatZoneBackRidge" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(6.5,0,0.4,0,1.5,0,-0.4,0,6.5,26,0.1,-31)
+mesh = ExtResource("25_terrain_cliff_d")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="BackgroundSilhouette_Left" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(8.0,0,1.0,0,2.8,0,-1.0,0,8.0,-38,0.2,-48)
+mesh = ExtResource("25_terrain_cliff_d")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="BackgroundSilhouette_Center" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(7.5,0,-0.8,0,2.4,0,0.8,0,7.5,0,0.2,-54)
+mesh = ExtResource("27_terrain_ridge_f")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="BackgroundSilhouette_Right" type="MeshInstance3D" parent="AuthenticatedTerrainVisuals"]
+transform = Transform3D(8.0,0,0.9,0,2.5,0,-0.9,0,8.0,39,0.2,-47)
+mesh = ExtResource("26_terrain_irregular_c")
+surface_material_override/0 = ExtResource("17_rock")
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)
 [node name="Placeholder_GalaxabrainScout" parent="." instance=ExtResource("7_galaxabrain_scout")]

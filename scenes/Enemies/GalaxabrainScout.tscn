@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/Enemies/GalaxabrainScout.cs" id="1_scout"]
 [ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="2_component"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Enemies/Galaxabrain/robot_body_component.obj" id="3_robot"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="3_robot"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_scout"]
 radius = 0.45

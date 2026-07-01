@@ -46,5 +46,8 @@
 - 2026-06-30: Added Phase 3A rendered screenshot harness and stopped after two visual correction cycles because final screenshots remained NOT_GO at 40/70.
 - 2026-06-30: Ran two asset-based Phase 3A recovery passes with verified Kenney meshes; final screenshots stayed NOT_GO at 41/70 against the required 48/70 target.
 - 2026-06-30: Terminated Phase 3A implementation work, rolled failed visual experiments out of production scenes, preserved the screenshot harness, and prepared asset-selection documents for human approval.
+- 2026-07-01: Restored Phase 3A playable scene resource baseline, documented runtime/visual contracts, and added scene-contract diagnostics/tests before any future visual integration.
+- 2026-07-01: Accepted the restored Phase 3A baseline, disabled the invalid complete-mech first-person visual, and completed terrain-only Pass 1 with contract tests and rendered review screenshots.
+- 2026-07-01: Tightened Phase 3A runtime diagnostics to emit fail-closed contract flags and report the Galaxabrain baseline visual transform before controlled movement simulation.
 
-- 2026-07-01: Promoted authenticated Phase 3A Quaternius OBJ assets into production paths and wired real Crash Site scenes/tests to those resources; visual capture remains environment-blocked by dummy headless rendering.
+- 2026-07-01: Added the Phase 3A Pass 1 GitHub Actions visual-artifact pipeline so terrain screenshots are regenerated and distributed as workflow artifacts instead of tracked PNG binaries.

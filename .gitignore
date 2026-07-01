@@ -70,3 +70,6 @@ tests/gdunit4_testadapter_v5/
 
 # Local rendered visual-review artifacts
 artifacts/visual-review/
+
+# Generated Phase 3A visual-review screenshots are distributed as workflow artifacts.
+/docs/review/phase3a-pass1-terrain/*.png

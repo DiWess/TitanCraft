@@ -15,13 +15,13 @@ public partial class GalaxabrainComponentPickup : Area3D, ICrashSiteInteractable
         ArgumentNullException.ThrowIfNull(mission);
 
         if (_isCollected
-            || mission.CurrentStep != CrashSiteMissionStep.DefeatGalaxabrain
+            || mission.CurrentStep != CrashSiteMissionStep.RecoverGalaxabrainComponent
             || !inventory.IsMechanicalArmBuilt)
         {
             return false;
         }
 
-        if (!mission.TryCompleteGalaxabrainDefeat(true))
+        if (!mission.TryCompleteComponentRecovery())
         {
             return false;
         }
@@ -30,6 +30,6 @@ public partial class GalaxabrainComponentPickup : Area3D, ICrashSiteInteractable
         _isCollected = true;
         Visible = false;
         Monitoring = false;
-        return mission.TryCompleteComponentRecovery();
+        return true;
     }
 }

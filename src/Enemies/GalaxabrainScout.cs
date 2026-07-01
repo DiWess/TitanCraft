@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Missions;
 using TitanCraft.Player;
 
 namespace TitanCraft.Enemies;
@@ -194,6 +195,21 @@ public partial class GalaxabrainScout : CharacterBody3D
         SetPhysicsProcess(false);
         SetMissionComponentVisible(true);
         Visible = false;
+
+        // The corpse's own collider would otherwise sit exactly where the revealed mission
+        // component is and intercept the player's interaction raycast before it ever reaches
+        // the pickup, silently blocking component recovery.
+        if (GetNodeOrNull<CollisionShape3D>("CollisionShape3D") is { } collisionShape)
+        {
+            collisionShape.Disabled = true;
+        }
+
+        // The defeat objective must complete here, at the moment the Galaxabrain actually
+        // dies, so the HUD reflects progress before the player also recovers the component.
+        if (GetConfiguredPlayer() is FirstPersonController controller)
+        {
+            controller.Mission.TryCompleteGalaxabrainDefeat(true);
+        }
     }
 
     private void SetMissionComponentVisible(bool isVisible)

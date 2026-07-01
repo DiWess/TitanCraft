@@ -20,6 +20,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
     public const float MaxSlope = 1.35f;
     public const float MinimumRouteSurfaceArea = 270.0f;
     private const string MeshNodeName = "TerrainMesh";
+    public static readonly string[] RequiredSemanticMeshes = { "RouteSurface", "CentralPlateau", "SpawnBasaltShelf", "ResourceBasaltShelf", "WorkbenchRidge", "CombatRidge", "BeaconShelf", "CraterNorthwest", "CraterSoutheast", "HorizonSegments" };
 
     private static readonly string[] TargetPaths =
     {
@@ -38,7 +39,10 @@ public partial class ProceduralCrashSiteTerrain : Node3D
     {
         Node3D worldRoot = GetParentOrNull<Node3D>() ?? this;
         TerrainBuild build = BuildForWorld(worldRoot);
-        GetNode<MeshInstance3D>(MeshNodeName).Mesh = build.Mesh;
+        MeshInstance3D legacyMesh = GetNode<MeshInstance3D>(MeshNodeName);
+        legacyMesh.Mesh = build.Mesh;
+        legacyMesh.Visible = false;
+        RebuildSemanticChildren(build.Report);
     }
 
     public static TerrainBuild BuildForWorld(Node3D worldRoot)
@@ -48,6 +52,35 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         ArrayMesh mesh = BuildMesh(report);
         return new TerrainBuild(mesh, report);
     }
+
+    private void RebuildSemanticChildren(TerrainReport report)
+    {
+        foreach (string childName in RequiredSemanticMeshes)
+            GetNodeOrNull<Node>(childName)?.QueueFree();
+        foreach ((string name, ArrayMesh mesh, Color color) in BuildSemanticMeshes(report))
+        {
+            if (name == "HorizonSegments")
+                continue;
+            AddSemanticMesh(name, mesh, color);
+        }
+        var horizonRoot = new Node3D { Name = "HorizonSegments" };
+        AddChild(horizonRoot);
+        int index = 1;
+        foreach ((string name, ArrayMesh mesh, Color color) in BuildHorizonSegmentMeshes(report))
+        {
+            var instance = new MeshInstance3D { Name = $"HorizonSegment_{index:00}", Mesh = mesh, MaterialOverride = Material(color) };
+            horizonRoot.AddChild(instance);
+            index++;
+        }
+    }
+
+    private void AddSemanticMesh(string name, ArrayMesh mesh, Color color)
+    {
+        var instance = new MeshInstance3D { Name = name, Mesh = mesh, MaterialOverride = Material(color) };
+        AddChild(instance);
+    }
+
+    private static StandardMaterial3D Material(Color color) => new() { AlbedoColor = color, Roughness = 0.92f };
 
     public static Dictionary<string, Vector3> ReadTargets(Node worldRoot)
     {
@@ -125,6 +158,126 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         var report = new TerrainReport(targets, features, minX, maxX, minZ, maxZ, columns, rows, vertexCount, triangleCount, minHeight, maxHeight, maxRouteDeviation, maxSlope, routeArea, shelfArea, heights, zones, zoneTriangles);
         report.MeshDataHash = ComputeHash(report);
         return report;
+    }
+
+    public static IReadOnlyList<(string Name, ArrayMesh Mesh, Color Color)> BuildSemanticMeshes(TerrainReport report)
+    {
+        Vector3[] route = RoutePoints(report.Targets).ToArray();
+        return new List<(string, ArrayMesh, Color)>
+        {
+            ("RouteSurface", BuildRouteRibbon(route, CorridorWidth * 1.35f, CorridorHeight + 0.012f, ColorFor(TerrainZone.AshRoute, 0)), ColorFor(TerrainZone.AshRoute, 0)),
+            ("CentralPlateau", BuildPrism(IrregularPolygon(new Vector2(8,-12), 28, 14, 0.18f), 0.018f, -0.18f, ColorFor(TerrainZone.CentralPlateau, 0)), ColorFor(TerrainZone.CentralPlateau, 0)),
+            ("SpawnBasaltShelf", BuildPrism(IrregularPolygon(new Vector2(-14,-6), 7, 8, 0.42f), 0.58f, 0.04f, ColorFor(TerrainZone.SpawnBasaltShelf, 0)), ColorFor(TerrainZone.SpawnBasaltShelf, 0)),
+            ("ResourceBasaltShelf", BuildPrism(IrregularPolygon(new Vector2(3,-6), 9, 9, 0.73f), 0.70f, 0.04f, ColorFor(TerrainZone.ResourceBasaltShelf, 0)), ColorFor(TerrainZone.ResourceBasaltShelf, 0)),
+            ("WorkbenchRidge", BuildRidge(new [] { new Vector2(6,-22), new Vector2(11,-25), new Vector2(18,-23) }, 3.8f, 0.04f, 1.50f, ColorFor(TerrainZone.WorkbenchRidge, 0)), ColorFor(TerrainZone.WorkbenchRidge, 0)),
+            ("CombatRidge", BuildRidge(new [] { new Vector2(16,-23), new Vector2(23,-27), new Vector2(31,-24) }, 4.3f, 0.04f, 1.85f, ColorFor(TerrainZone.CombatRidge, 0)), ColorFor(TerrainZone.CombatRidge, 0)),
+            ("BeaconShelf", BuildPrism(IrregularPolygon(new Vector2(33,-24), 8, 9, 1.16f), 1.22f, 0.04f, ColorFor(TerrainZone.BeaconBasaltShelf, 0)), ColorFor(TerrainZone.BeaconBasaltShelf, 0)),
+            ("CraterNorthwest", BuildCrater(new Vector2(-20,-24), 6.5f, ColorFor(TerrainZone.ImpactCrater, 0)), ColorFor(TerrainZone.ImpactCrater, 0)),
+            ("CraterSoutheast", BuildCrater(new Vector2(34,-32), 7.5f, ColorFor(TerrainZone.ImpactCrater, 0)), ColorFor(TerrainZone.ImpactCrater, 0))
+        };
+    }
+
+    public static IReadOnlyList<(string Name, ArrayMesh Mesh, Color Color)> BuildHorizonSegmentMeshes(TerrainReport report)
+    {
+        var centers = new[] { new Vector2(-22,-34), new Vector2(-6,-37), new Vector2(12,-36), new Vector2(31,-35), new Vector2(42,-22), new Vector2(-28,-17) };
+        var result = new List<(string, ArrayMesh, Color)>();
+        for (int i = 0; i < centers.Length; i++)
+        {
+            Vector2 c = centers[i];
+            var poly = new[] { c + new Vector2(-6,-1), c + new Vector2(-2,-2.5f), c + new Vector2(4,-1.5f), c + new Vector2(7,1.2f), c + new Vector2(1,2.4f), c + new Vector2(-5,1.4f) };
+            result.Add(($"HorizonSegment_{i+1:00}", BuildPrism(poly, 1.8f + i * 0.22f, 0.02f, ColorFor(TerrainZone.HorizonRidge, 0)), ColorFor(TerrainZone.HorizonRidge, 0)));
+        }
+        return result;
+    }
+
+    private static IEnumerable<Vector3> RoutePoints(IReadOnlyDictionary<string, Vector3> targets)
+    {
+        foreach (string key in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup", "Placeholder_SavePoint", "Placeholder_Beacon" })
+            yield return new Vector3(targets[key].X, CorridorHeight + 0.012f, targets[key].Z);
+    }
+
+    private static ArrayMesh BuildRouteRibbon(IReadOnlyList<Vector3> points, float width, float y, Color color)
+    {
+        var left = new List<Vector3>(); var right = new List<Vector3>(); float half = width * 0.5f;
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector2 dir = Vector2.Zero;
+            if (i > 0) dir += (Xz(points[i]) - Xz(points[i - 1])).Normalized();
+            if (i < points.Count - 1) dir += (Xz(points[i + 1]) - Xz(points[i])).Normalized();
+            if (dir.LengthSquared() < 0.001f) dir = Vector2.Right; else dir = dir.Normalized();
+            Vector2 n = new(-dir.Y, dir.X);
+            left.Add(new Vector3(points[i].X + n.X * half, y, points[i].Z + n.Y * half));
+            right.Add(new Vector3(points[i].X - n.X * half, y, points[i].Z - n.Y * half));
+        }
+        var v = new List<Vector3>(); var colors = new List<Color>(); var normals = new List<Vector3>();
+        for (int i = 0; i < points.Count - 1; i++) { AddTriangle(v,normals,colors,left[i],left[i+1],right[i+1],TerrainZone.AshRoute); AddTriangle(v,normals,colors,left[i],right[i+1],right[i],TerrainZone.AshRoute); }
+        return MeshFrom(v,normals,colors);
+    }
+
+    private static ArrayMesh BuildPrism(IReadOnlyList<Vector2> polygon, float topY, float baseY, Color color)
+    {
+        var v = new List<Vector3>(); var n = new List<Vector3>(); var c = new List<Color>();
+        Vector2 center = polygon.Aggregate(Vector2.Zero, (a,b) => a + b) / polygon.Count;
+        Vector3 topCenter = new(center.X, topY, center.Y);
+        for (int i = 0; i < polygon.Count; i++)
+        {
+            Vector2 a2 = polygon[i], b2 = polygon[(i+1)%polygon.Count];
+            Vector3 a = new(a2.X, topY, a2.Y), b = new(b2.X, topY, b2.Y), abase = new(a2.X, baseY, a2.Y), bbase = new(b2.X, baseY, b2.Y);
+            AddColored(v,n,c,topCenter,a,b,color); AddColored(v,n,c,a,abase,bbase,color); AddColored(v,n,c,a,bbase,b,color);
+        }
+        return MeshFrom(v,n,c);
+    }
+
+    private static ArrayMesh BuildRidge(IReadOnlyList<Vector2> points, float halfWidth, float baseY, float crestY, Color color)
+    {
+        var v = new List<Vector3>(); var n = new List<Vector3>(); var c = new List<Color>();
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            Vector2 dir = (points[i+1] - points[i]).Normalized(); Vector2 normal = new(-dir.Y, dir.X);
+            Vector3 l0 = V(points[i] + normal * halfWidth, baseY), m0 = V(points[i], crestY), r0 = V(points[i] - normal * halfWidth, baseY);
+            Vector3 l1 = V(points[i+1] + normal * halfWidth, baseY), m1 = V(points[i+1], crestY + 0.18f * i), r1 = V(points[i+1] - normal * halfWidth, baseY);
+            AddColored(v,n,c,l0,l1,m1,color); AddColored(v,n,c,l0,m1,m0,color); AddColored(v,n,c,m0,m1,r1,color); AddColored(v,n,c,m0,r1,r0,color);
+        }
+        return MeshFrom(v,n,c);
+    }
+
+    private static ArrayMesh BuildCrater(Vector2 center, float radius, Color color)
+    {
+        var v = new List<Vector3>(); var n = new List<Vector3>(); var c = new List<Color>(); int count = 13;
+        for (int i = 0; i < count; i++)
+        {
+            float a0 = Mathf.Tau * i / count, a1 = Mathf.Tau * ((i+1)%count) / count;
+            float r0 = radius * (0.88f + 0.16f * Hash01(i, count)), r1 = radius * (0.88f + 0.16f * Hash01(i+1, count));
+            Vector2 o0 = center + new Vector2(MathF.Cos(a0), MathF.Sin(a0)) * r0, o1 = center + new Vector2(MathF.Cos(a1), MathF.Sin(a1)) * r1;
+            Vector2 i0 = center + new Vector2(MathF.Cos(a0), MathF.Sin(a0)) * radius * 0.48f, i1 = center + new Vector2(MathF.Cos(a1), MathF.Sin(a1)) * radius * 0.48f;
+            AddColored(v,n,c,V(o0,0.34f),V(o1,0.30f),V(i1,0.06f),color); AddColored(v,n,c,V(o0,0.34f),V(i1,0.06f),V(i0,0.05f),color); AddColored(v,n,c,V(center,0.025f),V(i0,0.05f),V(i1,0.06f),new Color(0.13f,0.11f,0.095f));
+        }
+        return MeshFrom(v,n,c);
+    }
+
+    private static Vector3 V(Vector2 p, float y) => new(p.X, y, p.Y);
+
+    private static Vector2[] IrregularPolygon(Vector2 center, float radius, int count, float salt)
+    {
+        var pts = new Vector2[count];
+        for (int i = 0; i < count; i++) { float a = Mathf.Tau * i / count + salt; float r = radius * (0.78f + 0.30f * Hash01(i, (int)(salt * 100))); pts[i] = center + new Vector2(MathF.Cos(a), MathF.Sin(a)) * r; }
+        return pts;
+    }
+
+    private static void AddColored(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c, Color color)
+    {
+        Vector3 normal = (b - a).Cross(c - a).Normalized(); vertices.Add(a); vertices.Add(b); vertices.Add(c); normals.Add(normal); normals.Add(normal); normals.Add(normal); colors.Add(color); colors.Add(color); colors.Add(color);
+    }
+
+    private static ArrayMesh MeshFrom(List<Vector3> vertices, List<Vector3> normals, List<Color> colors)
+    {
+        var arrays = new Godot.Collections.Array(); arrays.Resize((int)Mesh.ArrayType.Max); arrays[(int)Mesh.ArrayType.Vertex] = vertices.ToArray(); arrays[(int)Mesh.ArrayType.Normal] = normals.ToArray(); arrays[(int)Mesh.ArrayType.Color] = colors.ToArray(); var mesh = new ArrayMesh(); mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays); return mesh;
+    }
+
+    public static (int Vertices, int Triangles) MeshStats(ArrayMesh mesh)
+    {
+        var vertices = ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>();
+        return (vertices.Length, vertices.Length / 3);
     }
 
     private static ArrayMesh BuildMesh(TerrainReport report)
@@ -380,10 +533,12 @@ public sealed class TerrainReport
     {
         string zonesJson = string.Join(",\n    ", ZoneTriangles.Select(pair => $"{{\"name\":\"{pair.Key}\",\"triangles\":{pair.Value}}}"));
         string featuresJson = string.Join(",\n    ", Features.Select(feature => string.Create(CultureInfo.InvariantCulture, $"{{\"id\":\"{feature.Id}\",\"purpose\":\"{feature.Purpose}\",\"center\":[{feature.Center.X:F2},{feature.Center.Y:F2}],\"radius\":{feature.Radius:F2},\"heightRange\":[{feature.MinHeight:F2},{feature.MaxHeight:F2}]}}")));
+        string semanticJson = string.Join(",\n    ", ProceduralCrashSiteTerrain.BuildSemanticMeshes(this).Select(item => { var stats = ProceduralCrashSiteTerrain.MeshStats(item.Mesh); return $"{{\"name\":\"{item.Name}\",\"vertices\":{stats.Vertices},\"triangles\":{stats.Triangles}}}"; }));
+        string horizonJson = string.Join(",\n    ", ProceduralCrashSiteTerrain.BuildHorizonSegmentMeshes(this).Select(item => { var stats = ProceduralCrashSiteTerrain.MeshStats(item.Mesh); return $"{{\"name\":\"{item.Name}\",\"vertices\":{stats.Vertices},\"triangles\":{stats.Triangles}}}"; }));
         return $$"""
 {
   "seed": {{ProceduralCrashSiteTerrain.Seed}},
-  "generationModel": "Pass 1C directed zone composition",
+  "generationModel": "Pass 1E semantic low-poly landform composition",
   "vertexCount": {{VertexCount}},
   "triangleCount": {{TriangleCount}},
   "aabbMin": "({{MinX}}, {{MinHeight}}, {{MinZ}})",
@@ -408,6 +563,12 @@ public sealed class TerrainReport
   ],
   "features": [
     {{featuresJson}}
+  ],
+  "semanticMeshes": [
+    {{semanticJson}}
+  ],
+  "horizonSegments": [
+    {{horizonJson}}
   ],
   "meshDataHash": "{{MeshDataHash}}"
 }

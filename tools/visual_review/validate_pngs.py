@@ -21,6 +21,24 @@ elif len(sys.argv) > 1 and sys.argv[1] == '--pass1d':
         'pass1d_prod_03_combat_zone.png',
         'pass1d_prod_04_beacon_route.png',
     ]
+elif len(sys.argv) > 1 and sys.argv[1] == '--pass1e':
+    OUTPUT_DIR = Path(sys.argv[2]) if len(sys.argv) > 2 else Path('artifacts/visual-review/phase3a-pass1e-semantic-terrain')
+    REQUIRED_SCREENSHOTS = [
+        'pass1e_zone_id.png',
+        'pass1e_route_topology.png',
+        'pass1e_plateau_and_shelves.png',
+        'pass1e_ridges_and_beacon_shelf.png',
+        'pass1e_craters.png',
+        'pass1e_horizon_segments.png',
+        'pass1e_neutral_lighting.png',
+        'pass1e_wireframe_wide.png',
+        'pass1e_01_spawn_route_terrain_only.png',
+        'pass1e_02_resource_workbench_terrain_only.png',
+        'pass1e_03_combat_ridge_terrain_only.png',
+        'pass1e_04_beacon_shelf_terrain_only.png',
+        'pass1e_05_crater_view.png',
+        'pass1e_06_wide_semantic_terrain.png',
+    ]
 elif len(sys.argv) > 1 and sys.argv[1] == '--pass1c':
     OUTPUT_DIR = Path(sys.argv[2]) if len(sys.argv) > 2 else Path('artifacts/visual-review/phase3a-pass1c-directed-terrain')
     REQUIRED_SCREENSHOTS = [

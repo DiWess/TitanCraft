@@ -1,6 +1,6 @@
 {
   "seed": 31071,
-  "generationModel": "Pass 1C directed zone composition",
+  "generationModel": "Pass 1E semantic low-poly landform composition",
   "vertexCount": 5928,
   "triangleCount": 1976,
   "aabbMin": "(-30, 0.03, -38)",
@@ -42,6 +42,25 @@
     {"id":"crater_southeast","purpose":"shallow impact crater outside route","center":[34.00,-32.00],"radius":7.00,"heightRange":[0.03,0.24]},
     {"id":"beacon_back_shelf","purpose":"raised basalt shelf behind beacon","center":[31.00,-22.00],"radius":9.00,"heightRange":[0.95,1.35]},
     {"id":"irregular_horizon_ridge","purpose":"distant jagged boundary ridge","center":[8.00,-12.00],"radius":38.00,"heightRange":[1.35,4.20]}
+  ],
+  "semanticMeshes": [
+    {"name":"RouteSurface","vertices":48,"triangles":16},
+    {"name":"CentralPlateau","vertices":126,"triangles":42},
+    {"name":"SpawnBasaltShelf","vertices":72,"triangles":24},
+    {"name":"ResourceBasaltShelf","vertices":81,"triangles":27},
+    {"name":"WorkbenchRidge","vertices":24,"triangles":8},
+    {"name":"CombatRidge","vertices":24,"triangles":8},
+    {"name":"BeaconShelf","vertices":81,"triangles":27},
+    {"name":"CraterNorthwest","vertices":117,"triangles":39},
+    {"name":"CraterSoutheast","vertices":117,"triangles":39}
+  ],
+  "horizonSegments": [
+    {"name":"HorizonSegment_01","vertices":54,"triangles":18},
+    {"name":"HorizonSegment_02","vertices":54,"triangles":18},
+    {"name":"HorizonSegment_03","vertices":54,"triangles":18},
+    {"name":"HorizonSegment_04","vertices":54,"triangles":18},
+    {"name":"HorizonSegment_05","vertices":54,"triangles":18},
+    {"name":"HorizonSegment_06","vertices":54,"triangles":18}
   ],
   "meshDataHash": "1868750ef19691e0c38ec0e4d4afdb65408b361616efc16c15c4290eefad2c05"
 }

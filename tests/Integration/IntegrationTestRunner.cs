@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Godot;
 using TitanCraft.Enemies;
 using TitanCraft.Player;
@@ -587,7 +588,17 @@ public partial class IntegrationTestRunner : Node
         Require(terrain is not null, "Procedural terrain is missing");
         Require(!IsDescendantOf(terrain!, camera), "Procedural terrain entered camera hierarchy");
         Require(terrain!.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Procedural terrain must not own collision");
-        Require(terrain.GetNode<MeshInstance3D>("TerrainMesh").Mesh is ArrayMesh, "Procedural terrain mesh missing");
+        Require(terrain.GetNode<MeshInstance3D>("TerrainMesh").Mesh is ArrayMesh, "Procedural terrain legacy diagnostic mesh missing");
+        foreach (string semanticName in ProceduralCrashSiteTerrain.RequiredSemanticMeshes)
+            Require(terrain.GetNodeOrNull<Node>(semanticName) is not null, $"Semantic terrain mesh missing: {semanticName}");
+        foreach (string meshName in ProceduralCrashSiteTerrain.RequiredSemanticMeshes.Where(name => name != "HorizonSegments"))
+        {
+            var semantic = terrain.GetNode<MeshInstance3D>(meshName);
+            Require(!IsDescendantOf(semantic, camera), $"{meshName} entered camera hierarchy");
+            Require(semantic.FindChildren("*", "CollisionObject3D", true, false).Count == 0, $"{meshName} must not own collision");
+            Require(MeshVertexCount(semantic.Mesh) > 0, $"{meshName} mesh has no vertices");
+        }
+        Require(terrain.GetNode<Node3D>("HorizonSegments").FindChildren("HorizonSegment_*", "MeshInstance3D", true, false).Count >= 5, "Semantic horizon requires at least five segments");
 
         foreach (var mesh in main.FindChildren("*", "MeshInstance3D", true, false))
         {
@@ -619,6 +630,12 @@ public partial class IntegrationTestRunner : Node
         Color ridgeColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.CombatRidge);
         Require(ColorDistance(routeColor, plateauColor) > 0.15f && ColorDistance(routeColor, ridgeColor) > 0.20f, "Representative procedural terrain zones do not have materially different vertex colours");
         Require(Luminance(routeColor) > Luminance(plateauColor) + 0.07f, "Procedural terrain route colour is not brighter than surrounding basalt");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("RouteSurface").Mesh).Max <= ProceduralCrashSiteTerrain.CorridorHeight + ProceduralCrashSiteTerrain.CorridorTolerance, "Semantic route height deviates from stable ground");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("SpawnBasaltShelf").Mesh).Range > 0.35f && MeshHeightRange(terrain.GetNode<MeshInstance3D>("ResourceBasaltShelf").Mesh).Range > 0.35f, "Semantic shelves have insufficient side faces");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("WorkbenchRidge").Mesh).Max >= 1.4f && MeshHeightRange(terrain.GetNode<MeshInstance3D>("CombatRidge").Mesh).Max >= 1.6f, "Semantic ridges have insufficient crest height");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("CraterNorthwest").Mesh).Range > 0.25f && MeshHeightRange(terrain.GetNode<MeshInstance3D>("CraterSoutheast").Mesh).Range > 0.25f, "Semantic craters do not contain rim/slope/basin height samples");
+        Require(MeshHorizontalExtent(terrain.GetNode<MeshInstance3D>("CentralPlateau").Mesh).UniqueEdgeCount > 10, "Semantic plateau boundary is too rectangular/simple");
+        Require(ProceduralCrashSiteTerrain.DistanceToRoute(33, -24, report.Targets) > ProceduralCrashSiteTerrain.CorridorWidth * 0.5f, "Semantic beacon shelf overlaps beacon route clearance");
         Directory.CreateDirectory("artifacts");
         File.WriteAllText("artifacts/terrain-generation-report.json", report.ToJson());
 
@@ -634,6 +651,27 @@ public partial class IntegrationTestRunner : Node
     private static float ColorDistance(Color a, Color b) => MathF.Sqrt(MathF.Pow(a.R - b.R, 2.0f) + MathF.Pow(a.G - b.G, 2.0f) + MathF.Pow(a.B - b.B, 2.0f));
 
     private static float Luminance(Color color) => color.R * 0.2126f + color.G * 0.7152f + color.B * 0.0722f;
+
+    private static int MeshVertexCount(Mesh? mesh) => mesh is null ? 0 : ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>().Length;
+
+    private static (float Min, float Max, float Range) MeshHeightRange(Mesh? mesh)
+    {
+        if (mesh is null)
+            return (0, 0, 0);
+        var vertices = ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>();
+        float min = vertices.Min(v => v.Y);
+        float max = vertices.Max(v => v.Y);
+        return (min, max, max - min);
+    }
+
+    private static (int UniqueEdgeCount, float Width, float Depth) MeshHorizontalExtent(Mesh? mesh)
+    {
+        if (mesh is null)
+            return (0, 0, 0);
+        var vertices = ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>();
+        var unique = vertices.Select(v => $"{MathF.Round(v.X, 1)},{MathF.Round(v.Z, 1)}").Distinct().Count();
+        return (unique, vertices.Max(v => v.X) - vertices.Min(v => v.X), vertices.Max(v => v.Z) - vertices.Min(v => v.Z));
+    }
 
     private static List<string> BuildRuntimeContractFlags(Node3D main, FirstPersonController player, Camera3D camera, GalaxabrainScout scout, MeshInstance3D arm, Vector3 playerSpawn, Vector3 scoutSpawn, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule)
     {
@@ -674,10 +712,20 @@ public partial class IntegrationTestRunner : Node
             flags.Add("PROCEDURAL_TERRAIN_CAMERA_PARENTING");
         if (terrain.FindChildren("*", "CollisionObject3D", true, false).Count > 0)
             flags.Add("PROCEDURAL_TERRAIN_COLLISION_FOUND");
+        foreach (string semanticName in ProceduralCrashSiteTerrain.RequiredSemanticMeshes)
+            if (terrain.GetNodeOrNull<Node>(semanticName) is null)
+                flags.Add("SEMANTIC_TERRAIN_MESH_MISSING");
+        if (terrain.FindChildren("*", "CollisionObject3D", true, false).Count > 0)
+            flags.Add("SEMANTIC_TERRAIN_COLLISION_FOUND");
+        if (terrain.GetNodeOrNull<Node3D>("HorizonSegments")?.FindChildren("HorizonSegment_*", "MeshInstance3D", true, false).Count < 5)
+            flags.Add("SEMANTIC_HORIZON_SEGMENTS_INVALID");
         var report = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
         var repeat = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
         if (report.MeshDataHash != repeat.MeshDataHash)
+        {
             flags.Add("PROCEDURAL_TERRAIN_NONDETERMINISTIC");
+            flags.Add("SEMANTIC_TERRAIN_NONDETERMINISTIC");
+        }
         if (report.VertexCount <= 0 || report.TriangleCount <= 0)
             flags.Add("PROCEDURAL_TERRAIN_INVALID_GEOMETRY");
         if (report.MaxHeight > ProceduralCrashSiteTerrain.MaxOutsideHeight || report.EstimatedMaxSlope > ProceduralCrashSiteTerrain.MaxSlope)
@@ -685,12 +733,18 @@ public partial class IntegrationTestRunner : Node
         if (report.MaxRouteHeightDeviation > ProceduralCrashSiteTerrain.CorridorTolerance)
             flags.Add("PROCEDURAL_TERRAIN_ROUTE_HEIGHT_ERROR");
         if (report.RouteSurfaceArea < ProceduralCrashSiteTerrain.MinimumRouteSurfaceArea || !report.ZoneTriangles.ContainsKey(TerrainZone.AshRoute) || report.ZoneTriangles[TerrainZone.AshRoute] <= 0)
+        {
             flags.Add("PROCEDURAL_TERRAIN_ROUTE_DISCONNECTED");
+            flags.Add("SEMANTIC_ROUTE_DISCONNECTED");
+        }
         if (report.Features.Count < 10 || report.BasaltShelfSurfaceArea <= 100.0f)
             flags.Add("PROCEDURAL_TERRAIN_DIRECTED_ZONE_MISSING");
         foreach (var target in report.Targets.Values)
             if (!report.Contains(target))
+            {
                 flags.Add("PROCEDURAL_TERRAIN_TARGET_OUTSIDE_BOUNDS");
+                flags.Add("SEMANTIC_ROUTE_TARGET_MISSED");
+            }
     }
 
     private static bool IsDescendantOf(Node node, Node ancestor)

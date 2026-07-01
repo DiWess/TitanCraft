@@ -61,6 +61,8 @@ public partial class IntegrationTestRunner : Node
             await TestCollisionPolicy();
             await TestPlayerScene();
             await TestGalaxabrainScoutDeathPickup();
+            await TestGalaxabrainDeathAndPickupAdvanceMissionSeparately();
+            await TestMechanicalArmVisualFollowsInventoryState();
             await TestUiScenes();
             await TestMainMenuContinueState();
             await TestHudStartTutorial();
@@ -226,8 +228,72 @@ public partial class IntegrationTestRunner : Node
         Require(!scout.Visible, "Galaxabrain Scout stayed visible after death");
         Require(missionComponent.Visible, "Galaxabrain component pickup did not become visible after scout death");
         Require(missionComponent.Monitoring, "Galaxabrain component pickup did not become collectable after scout death");
+        Require(scout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled, "Galaxabrain corpse collision must be disabled so it cannot block the interaction raycast to the revealed component");
 
         scout.QueueFree();
+        await Frames(2);
+    }
+
+    private async System.Threading.Tasks.Task TestMechanicalArmVisualFollowsInventoryState()
+    {
+        var player = LoadScene<FirstPersonController>(PlayerScenePath);
+        AddChild(player);
+        await Frames(2);
+
+        var arm = player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        Require(!arm.Visible, "Mechanical arm visual must start hidden before crafting");
+
+        player.Inventory.MarkMechanicalArmBuilt();
+        await Frames(2);
+        Require(arm.Visible, "Mechanical arm visual must become visible immediately after crafting");
+
+        player.QueueFree();
+        await Frames(2);
+
+        // Simulate a fresh scene load that restores an already-built arm from a save file.
+        var loadedPlayer = LoadScene<FirstPersonController>(PlayerScenePath);
+        AddChild(loadedPlayer);
+        await Frames(2);
+        loadedPlayer.Inventory.Restore(metal: 0, biomass: 0, electronicComponents: 0, isMechanicalArmBuilt: true, hasGalaxabrainComponent: false);
+        await Frames(2);
+        Require(loadedPlayer.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Visible, "Mechanical arm visual must be restored visible after loading a save with the arm built");
+        loadedPlayer.QueueFree();
+        await Frames(2);
+    }
+
+    private async System.Threading.Tasks.Task TestGalaxabrainDeathAndPickupAdvanceMissionSeparately()
+    {
+        var player = LoadScene<FirstPersonController>(PlayerScenePath);
+        AddChild(player);
+        var scout = LoadScene<GalaxabrainScout>(GalaxabrainScoutScenePath);
+        AddChild(scout);
+        await Frames(2);
+
+        scout.PlayerPath = scout.GetPathTo(player);
+        player.Inventory.AddResources(metal: 10, biomass: 3, electronicComponents: 2);
+        player.Mission.TryCompleteResourceCollection();
+        player.Inventory.MarkMechanicalArmBuilt();
+        player.Mission.TryCompleteMechanicalArmConstruction();
+        await Frames(2);
+
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefeatGalaxabrain, "Mission must be awaiting Galaxabrain defeat before the kill");
+
+        for (var hit = 0; hit < 4; hit++)
+            scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
+
+        Require(scout.Brain.IsDead, "Galaxabrain Scout did not die after four arm hits");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Enemy death must advance the mission to component recovery by itself");
+        Require(!player.Inventory.HasGalaxabrainComponent, "Enemy death must not grant the mission component by itself");
+
+        var missionComponent = scout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
+        Require(missionComponent.Interact(player.Inventory, player.Mission), "Component pickup interaction should succeed once recovery is the active step");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component pickup must advance the mission to beacon activation");
+        Require(player.Inventory.HasGalaxabrainComponent, "Component pickup must grant the mission component");
+
+        Require(!missionComponent.Interact(player.Inventory, player.Mission), "Component pickup must be idempotent after the first successful interaction");
+
+        scout.QueueFree();
+        player.QueueFree();
         await Frames(2);
     }
 
@@ -415,6 +481,33 @@ public partial class IntegrationTestRunner : Node
         using (var file = Godot.FileAccess.Open(testSavePath, Godot.FileAccess.ModeFlags.Write))
             file?.StoreString("{ invalid json");
         Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Invalid save data should fail clearly instead of loading");
+        LocalSaveGameStore.DeleteSave(testSavePath);
+
+        var missionAheadOfArmSave = new CrashSiteSaveData
+        {
+            Health = 60,
+            Metal = 0,
+            Biomass = 0,
+            ElectronicComponents = 0,
+            MechanicalArmBuilt = false,
+            MissionStep = CrashSiteMissionStep.DefeatGalaxabrain,
+        };
+        LocalSaveGameStore.Save(missionAheadOfArmSave, testSavePath);
+        Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Save claiming Galaxabrain-defeat progress without the arm being built must be rejected as an impossible state");
+        LocalSaveGameStore.DeleteSave(testSavePath);
+
+        var missionAheadOfComponentSave = new CrashSiteSaveData
+        {
+            Health = 60,
+            Metal = 0,
+            Biomass = 0,
+            ElectronicComponents = 0,
+            MechanicalArmBuilt = true,
+            GalaxabrainComponentCollected = false,
+            MissionStep = CrashSiteMissionStep.ActivateBeacon,
+        };
+        LocalSaveGameStore.Save(missionAheadOfComponentSave, testSavePath);
+        Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Save claiming beacon-ready progress without the component recovered must be rejected as an impossible state");
         LocalSaveGameStore.DeleteSave(testSavePath);
     }
 

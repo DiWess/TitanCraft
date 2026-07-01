@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=61 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -24,6 +24,20 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="23_mech_george"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="24_robot"]
 [ext_resource type="PackedScene" path="res://scenes/Environment/ProceduralCrashSiteTerrain.tscn" id="25_procedural_terrain"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicAsh.tres" id="26_ash"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicSoil.tres" id="27_soil"]
+[ext_resource type="Material" path="res://assets/Materials/HumanWornSteel.tres" id="28_steel"]
+[ext_resource type="Material" path="res://assets/Materials/HumanSootBurn.tres" id="29_soot"]
+[ext_resource type="Material" path="res://assets/Materials/AlienCyanEmissive.tres" id="30_cyan"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Environment/CrashSite/ship_hull_body.obj" id="31_prod_hull"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_nose_a.obj" id="32_nose"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_wing_b.obj" id="33_wing"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/engine_pod_a.obj" id="34_enginepod"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/ship_panel_d.obj" id="35_ship_panel"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_a.obj" id="36_rock_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_b.obj" id="37_rock_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="38_rock_ridge"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
@@ -107,10 +121,46 @@ fog_enabled = true
 fog_light_color = Color(0.14, 0.17, 0.22, 1)
 fog_density = 0.006
 
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ground"]
+radial_segments = 10
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.08
+material = ExtResource("17_rock")
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ash"]
+radial_segments = 8
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.05
+material = ExtResource("27_soil")
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_soil"]
+radial_segments = 7
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.055
+material = ExtResource("27_soil")
+[sub_resource type="BoxMesh" id="BoxMesh_stage_a_scorch"]
+size = Vector3(2.6, 0.06, 1.4)
+material = ExtResource("29_soot")
+[sub_resource type="BoxMesh" id="BoxMesh_stage_a_patch"]
+size = Vector3(1.8, 0.08, 0.55)
+material = ExtResource("28_steel")
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_marker"]
+radial_segments = 6
+top_radius = 0.12
+bottom_radius = 0.2
+height = 0.75
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_stage_a_cyan_slit"]
+size = Vector3(0.5, 0.06, 0.14)
+material = ExtResource("30_cyan")
+
 [node name="Main" type="Node3D"]
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
 [node name="ProceduralCrashSiteTerrain" parent="." instance=ExtResource("25_procedural_terrain")]
+visible = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
@@ -123,11 +173,13 @@ mesh = SubResource("BoxMesh_ground")
 [node name="Collision_Ground" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_ground")
 [node name="Moon" type="MeshInstance3D" parent="."]
+visible = false
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-42,36,-70)
 mesh = SubResource("SphereMesh_moon")
 [node name="C7_Wall_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_1"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_1"]
@@ -138,6 +190,7 @@ shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_2" type="StaticBody3D" parent="."]
 transform = Transform3D(1.2,0,0,0,1,0,0,0,1,0,1.4,-14)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_2"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_2"]
@@ -148,6 +201,7 @@ shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,10,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_3"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_3"]
@@ -158,6 +212,7 @@ shape = SubResource("BoxShape3D_c7_wall")
 [node name="C7_Wall_4" type="StaticBody3D" parent="."]
 transform = Transform3D(0.8,0,0,0,1,0,0,0,1.4,15,1.4,-16)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_4"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_4"]
@@ -330,18 +385,22 @@ omni_range = 10.0
 [node name="AuthenticatedCrashSiteVisuals" type="Node3D" parent="."]
 metadata/authentication = "Phase 3A file-level authenticated Quaternius Google Drive assets; visual-only children."
 [node name="CrashedShip_AuthenticUltimateSpaceKit" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+visible = false
 transform = Transform3D(-2.8,0,0.7,0,1.15,0,-0.45,0,-3.6,-4,1.0,-13)
 mesh = ExtResource("21_ship")
 surface_material_override/0 = ExtResource("13_ivory")
 [node name="BuriedHullMass_BaseLarge" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+visible = false
 transform = Transform3D(2.4,0,0.35,0,0.75,0,-0.35,0,2.4,-9,0.35,-16)
 mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("14_graphite")
 [node name="ForegroundVolcanicRidge_Left" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+visible = false
 transform = Transform3D(3.0,0,0.4,0,0.9,0,-0.4,0,3.0,-18,0.15,-7)
 mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("17_rock")
 [node name="ForegroundVolcanicRidge_Right" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+visible = false
 transform = Transform3D(2.4,0,-0.7,0,0.8,0,0.7,0,2.4,17,0.1,-9)
 mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("17_rock")
@@ -357,6 +416,89 @@ surface_material_override/0 = ExtResource("16_orange")
 transform = Transform3D(0.35,0,0,0,0.75,0,0,0,0.35,0,1.35,0)
 mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("14_graphite")
+
+[node name="ProductionVisualRoot" type="Node3D" parent="."]
+metadata/stage = "Stage A only: terrain underlay, wreck, spawn route, lighting/atmosphere, background silhouettes."
+[node name="TerrainUnderlay" type="Node3D" parent="ProductionVisualRoot"]
+[node name="VolcanicUnderlay_Main" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(31,0,4.8,0,1,0,-4.8,0,28,1,0.08,-14)
+mesh = SubResource("CylinderMesh_stage_a_ground")
+[node name="VolcanicUnderlay_Foreground" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+visible = false
+transform = Transform3D(12,0,-2.2,0,1,0,2.2,0,10,-5,0.09,1.4)
+mesh = SubResource("CylinderMesh_stage_a_ground")
+[node name="AshRoute_FromSpawn" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(2.0,0,0.35,0,1,0,-0.35,0,5.8,1.3,0.13,-6.6)
+mesh = SubResource("CylinderMesh_stage_a_ash")
+[node name="AshRoute_BendToWorkbench" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(1.6,0,-0.5,0,1,0,0.5,0,3.8,6.7,0.13,-11.2)
+mesh = SubResource("CylinderMesh_stage_a_soil")
+[node name="CrashBurialAsh" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(6.2,0,1.0,0,1,0,-1.0,0,3.6,-4.2,0.2,-13.1)
+mesh = SubResource("CylinderMesh_stage_a_ash")
+[node name="ForegroundBasalt_Left" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(5.2,0,1.4,0,1.2,0,-1.4,0,4.0,-13,0.22,-5.0)
+mesh = SubResource("PrismMesh_crystal")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="MidBasalt_Right" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(4.0,0,-0.7,0,3.0,0,0.7,0,3.2,14,0.18,-15.5)
+mesh = ExtResource("37_rock_b")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="MidBasalt_Left" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
+transform = Transform3D(3.2,0,0.8,0,2.4,0,-0.8,0,3.4,-14,0.18,-18.0)
+mesh = ExtResource("36_rock_a")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="CrashWreck" type="Node3D" parent="ProductionVisualRoot"]
+[node name="MainHull_BuriedIndustrial" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1.15,0,0.84,-0.18,0.42,0.08,-0.84,-0.08,1.15,-4.7,0.55,-13.4)
+mesh = ExtResource("31_prod_hull")
+surface_material_override/0 = ExtResource("13_ivory")
+[node name="SeparatedNose_Downrange" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(2.6,0,-1.7,0.22,1.15,0.07,1.7,-0.08,2.6,-10.0,0.32,-9.8)
+mesh = ExtResource("32_nose")
+surface_material_override/0 = ExtResource("28_steel")
+[node name="ShearedWing_RoutePointer" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(4.4,0,0.9,-0.12,1.05,0.02,-0.9,0,4.4,-1.0,0.28,-10.4)
+mesh = ExtResource("33_wing")
+surface_material_override/0 = ExtResource("14_graphite")
+[node name="ExposedEngine_Heavy" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(0,0,3.4,0,2.2,0,-3.4,0,0,0.3,0.62,-15.7)
+mesh = ExtResource("34_enginepod")
+surface_material_override/0 = ExtResource("28_steel")
+[node name="HullBreachScorch" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1.2,0,1.3,0,1,0,-1.3,0,1.2,-2.5,1.0,-11.2)
+mesh = SubResource("BoxMesh_stage_a_scorch")
+[node name="RepairPatch_OffWhiteBreak" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1.2,0,0.25,0,1,0,-0.25,0,1.2,-6.8,1.55,-11.1)
+mesh = SubResource("BoxMesh_stage_a_patch")
+[node name="EmergencyStripe_Muted" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(0.9,0,0.26,0,1,0,-0.26,0,0.9,-5.0,2.2,-10.4)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="AlienCyanLeak_Secondary" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1,0,0.2,0,1,0,-0.2,0,1,-1.4,1.35,-12.0)
+mesh = SubResource("BoxMesh_stage_a_cyan_slit")
+[node name="SpawnRoute" type="Node3D" parent="ProductionVisualRoot"]
+[node name="RouteMarker_Left" type="MeshInstance3D" parent="ProductionVisualRoot/SpawnRoute"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-1.8,0.52,-4.0)
+mesh = SubResource("CylinderMesh_stage_a_marker")
+[node name="RouteMarker_Right" type="MeshInstance3D" parent="ProductionVisualRoot/SpawnRoute"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,3.4,0.52,-6.5)
+mesh = SubResource("CylinderMesh_stage_a_marker")
+[node name="BackgroundSilhouettes" type="Node3D" parent="ProductionVisualRoot"]
+[node name="DistantRidge_Left" type="MeshInstance3D" parent="ProductionVisualRoot/BackgroundSilhouettes"]
+transform = Transform3D(12,0,2,0,5,0,-2,0,9,-38,0.12,-48)
+mesh = ExtResource("37_rock_b")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="DistantRidge_Right" type="MeshInstance3D" parent="ProductionVisualRoot/BackgroundSilhouettes"]
+transform = Transform3D(10,0,-2.5,0,5.5,0,2.5,0,10,40,0.12,-52)
+mesh = ExtResource("37_rock_b")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="DistantSpire_Asymmetric" type="MeshInstance3D" parent="ProductionVisualRoot/BackgroundSilhouettes"]
+transform = Transform3D(3.0,0,0.5,0,7.0,0,-0.5,0,3.0,24,0.12,-36)
+mesh = ExtResource("36_rock_a")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="AtmosphereVisuals" type="Node3D" parent="ProductionVisualRoot"]
+
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)
 [node name="Placeholder_GalaxabrainScout" parent="." instance=ExtResource("7_galaxabrain_scout")]

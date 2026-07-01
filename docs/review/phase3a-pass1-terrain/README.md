@@ -38,3 +38,7 @@ The computed hash must match the manifest entry for the same filename. The origi
 To regenerate the evidence without opening a new pull request, open **Actions**, select `Phase 3A Visual Review`, choose **Run workflow**, select the target branch, and run `workflow_dispatch`.
 
 Pass 2 remains blocked until a human reviews and approves the Pass 1 terrain visual artifact.
+
+## Terrain asset qualification follow-up
+
+After human review returned `PASS1_TERRAIN_VISUAL_NOT_GO`, the failed `Main/AuthenticatedTerrainVisuals` composition was removed from production. The workflow now also produces a separate asset-qualification artifact named `phase3a-terrain-asset-qualification-<commit-sha>` so reviewers can inspect the audit before any future terrain composition pass. This artifact is diagnostic only and does not unblock Pass 2.

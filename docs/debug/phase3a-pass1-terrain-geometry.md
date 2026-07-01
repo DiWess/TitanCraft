@@ -1,6 +1,8 @@
 # Phase 3A Pass 1 terrain geometry measurements
 
-All nodes are visual-only `MeshInstance3D` children under `Main/AuthenticatedTerrainVisuals`; no collision shapes, gameplay scripts, interaction masks, or gameplay positions are changed.
+> Human review returned `PASS1_TERRAIN_VISUAL_NOT_GO` for this failed composition. `Main/AuthenticatedTerrainVisuals` has been removed from production; the table below is retained only as historical evidence of the rejected transforms and must not be treated as an approved terrain plan.
+
+The rejected nodes were visual-only `MeshInstance3D` children under `Main/AuthenticatedTerrainVisuals`; that production node no longer exists after this removal pass.
 
 | Node | Source asset | Source AABB size | Longest source dimension | Local scale approx | World position | Distance from player spawn | Collision | Render layer |
 |---|---|---|---:|---|---|---:|---|---|

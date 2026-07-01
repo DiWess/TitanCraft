@@ -548,13 +548,13 @@ public partial class IntegrationTestRunner : Node
         Require(arm.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Mechanical arm has collision descendants");
         Require(!IsUnsuitableFirstPersonArmActive(arm), "Complete George mech is active as first-person arm view model");
 
-        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "AuthenticatedTerrainVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
         {
             var node = main.GetNode<Node>(path);
             Require(!IsDescendantOf(node, camera), $"{path} is under camera hierarchy");
         }
 
-        TestTerrainVisualContracts(main, camera);
+        TestFailedTerrainIntegrationRemoved(main);
         var flags = BuildRuntimeContractFlags(main, player, camera, scout, arm, initialPlayerPosition, initialScoutPosition, visual, scoutCapsule);
         Require(flags.Count == 0, $"Runtime contract flags present: {string.Join(", ", flags)}");
 
@@ -580,23 +580,9 @@ public partial class IntegrationTestRunner : Node
             && arm.GetAabb().Size.Y > 4.0f;
     }
 
-    private static void TestTerrainVisualContracts(Node3D main, Camera3D camera)
+    private static void TestFailedTerrainIntegrationRemoved(Node3D main)
     {
-        var terrainRoot = main.GetNode<Node3D>("AuthenticatedTerrainVisuals");
-        Require(terrainRoot.GetScript().VariantType == Variant.Type.Nil, "Terrain root must not have gameplay script");
-        Require(terrainRoot.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Decorative terrain must not own collision");
-        Require(!IsDescendantOf(terrainRoot, camera), "Terrain entered active camera hierarchy");
-
-        foreach (var child in terrainRoot.GetChildren())
-        {
-            Require(child is MeshInstance3D, $"Terrain child is not a MeshInstance3D: {child.Name}");
-            var mesh = (MeshInstance3D)child;
-            Require(mesh.GetScript().VariantType == Variant.Type.Nil, $"Terrain visual has a script: {mesh.Name}");
-            Require(mesh.Layers == 1u, $"Terrain visual render layer changed: {mesh.Name}");
-            Require(mesh.GetAabb().Size.Length() > 0.0f, $"Terrain visual AABB is empty: {mesh.Name}");
-            Require(mesh.Scale.Abs().MaxAxisIndex() >= 0 && mesh.Scale.Length() < 12.0f, $"Terrain visual scale is extreme: {mesh.Name}");
-            Require(!IsDescendantOf(mesh, camera), $"Terrain visual is under active camera: {mesh.Name}");
-        }
+        Require(main.GetNodeOrNull<Node3D>("AuthenticatedTerrainVisuals") is null, "Failed Pass 1 terrain visuals are still present in production Main.tscn");
 
         foreach (var target in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout" })
             Require(main.GetNode<Node3D>(target).GlobalPosition.Y >= 0.0f, $"{target} moved below stable ground");
@@ -616,7 +602,7 @@ public partial class IntegrationTestRunner : Node
         if (!IsDescendantOf(arm, camera))
             flags.Add("VIEWMODEL_IN_WORLD_LAYER");
 
-        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "AuthenticatedTerrainVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
         {
             var node = main.GetNodeOrNull<Node>(path);
             if (node is null)
@@ -625,11 +611,6 @@ public partial class IntegrationTestRunner : Node
                 flags.Add("WORLD_MODEL_IN_VIEWMODEL_LAYER");
         }
 
-        var terrainRoot = main.GetNodeOrNull<Node3D>("AuthenticatedTerrainVisuals");
-        if (terrainRoot is not null)
-            foreach (var child in terrainRoot.GetChildren())
-                if (child is MeshInstance3D mesh && mesh.Scale.Length() >= 12.0f)
-                    flags.Add("EXTREME_SCALE");
         return flags;
     }
 

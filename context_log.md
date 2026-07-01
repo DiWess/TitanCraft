@@ -51,3 +51,5 @@
 - 2026-07-01: Tightened Phase 3A runtime diagnostics to emit fail-closed contract flags and report the Galaxabrain baseline visual transform before controlled movement simulation.
 
 - 2026-07-01: Added the Phase 3A Pass 1 GitHub Actions visual-artifact pipeline so terrain screenshots are regenerated and distributed as workflow artifacts instead of tracked PNG binaries.
+
+- 2026-07-01: Removed the failed Phase 3A Pass 1 terrain production composition and added a terrain asset qualification audit/gallery workflow that marks the current rock placeholders invalid for production.

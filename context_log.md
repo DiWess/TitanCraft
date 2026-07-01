@@ -46,3 +46,5 @@
 - 2026-06-30: Added Phase 3A rendered screenshot harness and stopped after two visual correction cycles because final screenshots remained NOT_GO at 40/70.
 - 2026-06-30: Ran two asset-based Phase 3A recovery passes with verified Kenney meshes; final screenshots stayed NOT_GO at 41/70 against the required 48/70 target.
 - 2026-06-30: Terminated Phase 3A implementation work, rolled failed visual experiments out of production scenes, preserved the screenshot harness, and prepared asset-selection documents for human approval.
+
+- 2026-07-01: Promoted authenticated Phase 3A Quaternius OBJ assets into production paths and wired real Crash Site scenes/tests to those resources; visual capture remains environment-blocked by dummy headless rendering.

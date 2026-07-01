@@ -125,6 +125,8 @@ public partial class IntegrationTestRunner : Node
         Require(main.GetNode<Area3D>("Placeholder_ElectronicsPickup") is not null, "Electronics pickup missing");
         Require(main.GetNode<Node3D>("Moon") is not null, "Large moon missing");
         Require(main.GetNode<Node3D>("AlienCrystal_1") is not null, "Alien crystal route missing");
+        Require(main.GetNode<MeshInstance3D>("AuthenticatedCrashSiteVisuals/CrashedShip_AuthenticUltimateSpaceKit").Mesh is not null, "Production crashed ship visual missing");
+        Require(main.GetNode<MeshInstance3D>("AuthenticatedCrashSiteVisuals/BuriedHullMass_BaseLarge").Mesh is not null, "Production buried hull visual missing");
         main.QueueFree();
         await Frames(2);
     }
@@ -200,6 +202,7 @@ public partial class IntegrationTestRunner : Node
         Require(player.GetNode<CollisionShape3D>("CollisionShape3D").Shape is CapsuleShape3D capsule && capsule.Radius > 0.0f && capsule.Height > 0.0f, "Player capsule invalid");
         Require(player.GetNode<Node3D>("Head") is not null, "Head missing");
         Require(player.GetNode<Camera3D>("Head/Camera3D").Current, "Camera inactive");
+        Require(player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Mesh is not null, "Production mechanical arm visual missing");
         Require(FirstPersonMovement.HasValidParameters(player.WalkSpeed, player.JumpVelocity, player.MouseSensitivity, player.MaxLookAngleDegrees), "Player exported parameters invalid");
         player.QueueFree();
         await Frames(2);
@@ -212,6 +215,7 @@ public partial class IntegrationTestRunner : Node
         AddChild(scout);
         await Frames(2);
 
+        Require(scout.GetNode<MeshInstance3D>("AuthenticatedRobotGalaxabrainVisual").Mesh is not null, "Production Galaxabrain visual missing");
         var missionComponent = scout.GetNode<Area3D>("GalaxabrainComponentPickup");
         Require(!missionComponent.Visible, "Galaxabrain component pickup should start hidden");
         Require(!missionComponent.Monitoring, "Galaxabrain component pickup should start non-monitoring");

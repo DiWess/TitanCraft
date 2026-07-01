@@ -57,3 +57,5 @@
 - 2026-07-01: Implemented Phase 3A Pass 1B deterministic procedural volcanic terrain around real Crash Site mission-route nodes with fail-closed terrain contracts and CI artifact capture support.
 
 - 2026-07-01: Reworked Phase 3A Pass 1C procedural terrain from uniform noise into directed volcanic zones with route readability, terrain-isolation captures, and artifact workflow support.
+
+- 2026-07-01: Added Phase 3A Pass 1D terrain visibility diagnostics to separate geometry, material, lighting, vertex-colour and production-camera obstruction failures without changing gameplay ownership.

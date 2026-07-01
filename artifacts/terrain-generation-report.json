@@ -17,7 +17,7 @@
   "routeSurfaceArea": 700,
   "basaltShelfSurfaceArea": 236,
   "horizonRidgeHeightRange": [1.35, 4.2],
-  "terrainLuminanceInputRange": [0.135, 0.4],
+  "terrainLuminanceInputRange": [0.13, 0.4],
   "normalMode": "flat faceted per triangle",
   "materialAssignments": {"AshRoute":"VolcanicSoil vertex colour","CentralPlateau":"VolcanicRock vertex colour","RidgesAndShelves":"VolcanicRock/DamageScorch dark vertex colour"},
   "zones": [

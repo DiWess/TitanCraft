@@ -165,6 +165,8 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         colors.Add(color); colors.Add(color); colors.Add(color);
     }
 
+    public static Color ColorForZone(TerrainZone zone) => ColorFor(zone, CorridorHeight);
+
     private static Color ColorFor(TerrainZone zone, float height) => zone switch
     {
         TerrainZone.AshRoute => new Color(0.40f, 0.35f, 0.29f),
@@ -366,7 +368,7 @@ public sealed class TerrainReport
     public float EstimatedMaxSlope { get; }
     public float RouteSurfaceArea { get; }
     public float BasaltShelfSurfaceArea { get; }
-    public float TerrainLuminanceMinimum => 0.135f;
+    public float TerrainLuminanceMinimum => 0.13f;
     public float TerrainLuminanceMaximum => 0.40f;
     public float[,] Heights { get; }
     public TerrainZone[,] Zones { get; }

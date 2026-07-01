@@ -614,6 +614,11 @@ public partial class IntegrationTestRunner : Node
         Require(report.ZoneTriangles.ContainsKey(TerrainZone.WorkbenchRidge) && report.ZoneTriangles[TerrainZone.WorkbenchRidge] > 0, "Procedural terrain workbench ridge zone has no triangles");
         Require(report.ZoneTriangles.ContainsKey(TerrainZone.CombatRidge) && report.ZoneTriangles[TerrainZone.CombatRidge] > 0, "Procedural terrain combat ridge zone has no triangles");
         Require(report.ZoneTriangles.ContainsKey(TerrainZone.ImpactCrater) && report.ZoneTriangles[TerrainZone.ImpactCrater] > 0, "Procedural terrain impact crater zone has no triangles");
+        Color routeColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.AshRoute);
+        Color plateauColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.CentralPlateau);
+        Color ridgeColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.CombatRidge);
+        Require(ColorDistance(routeColor, plateauColor) > 0.15f && ColorDistance(routeColor, ridgeColor) > 0.20f, "Representative procedural terrain zones do not have materially different vertex colours");
+        Require(Luminance(routeColor) > Luminance(plateauColor) + 0.07f, "Procedural terrain route colour is not brighter than surrounding basalt");
         Directory.CreateDirectory("artifacts");
         File.WriteAllText("artifacts/terrain-generation-report.json", report.ToJson());
 
@@ -625,6 +630,10 @@ public partial class IntegrationTestRunner : Node
             Require(ProceduralCrashSiteTerrain.DistanceToRoute(node.GlobalPosition.X, node.GlobalPosition.Z, report.Targets) <= ProceduralCrashSiteTerrain.CorridorWidth * 0.5f, $"{target} is outside safe corridor");
         }
     }
+
+    private static float ColorDistance(Color a, Color b) => MathF.Sqrt(MathF.Pow(a.R - b.R, 2.0f) + MathF.Pow(a.G - b.G, 2.0f) + MathF.Pow(a.B - b.B, 2.0f));
+
+    private static float Luminance(Color color) => color.R * 0.2126f + color.G * 0.7152f + color.B * 0.0722f;
 
     private static List<string> BuildRuntimeContractFlags(Node3D main, FirstPersonController player, Camera3D camera, GalaxabrainScout scout, MeshInstance3D arm, Vector3 playerSpawn, Vector3 scoutSpawn, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule)
     {

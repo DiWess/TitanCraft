@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=42 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -19,10 +19,11 @@
 [ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Environment/CrashSite/ship_hull_body.obj" id="21_ship"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Environment/CrashSite/damaged_structural_base.obj" id="22_base_large"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Player/MechanicalArm/george_mech_source_arm.obj" id="23_mech_george"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Enemies/Galaxabrain/robot_body_component.obj" id="24_robot"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Spaceship_BarbaraTheBee.obj" id="21_ship"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Base_Large.obj" id="22_base_large"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="23_mech_george"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="24_robot"]
+[ext_resource type="PackedScene" path="res://scenes/Environment/ProceduralCrashSiteTerrain.tscn" id="25_procedural_terrain"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
@@ -109,6 +110,8 @@ fog_density = 0.006
 [node name="Main" type="Node3D"]
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
+[node name="ProceduralCrashSiteTerrain" parent="." instance=ExtResource("25_procedural_terrain")]
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
 light_energy = 1.05

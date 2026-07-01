@@ -1,0 +1,17 @@
+{
+  "activeCameraPath": "/root/IntegrationTestRunner/Main/Player/Head/Camera3D",
+  "playerGlobalPosition": "(0, 1.0001718, 0)",
+  "galaxabrainGlobalPosition": "(20, 1, -16)",
+  "playerEnemySpawnDistance": 25.613,
+  "galaxabrainParentPath": "/root/IntegrationTestRunner/Main",
+  "galaxabrainVisualGlobalPosition": "(20, 1, -16)",
+  "galaxabrainVisualAabb": "(-1.520695, -0.020304, -1.281765), (3.099459, 4.496815, 2.627872)",
+  "galaxabrainCollisionSize": "radius=0.45, height=1.4",
+  "galaxabrainVisualToCollisionHeightRatio": 2.409,
+  "mechanicalArmParentPath": "/root/IntegrationTestRunner/Main/Player/Head/Camera3D",
+  "mechanicalArmVisible": false,
+  "mechanicalArmVisualAabb": "(-2.078683, -0.033151, -1.153417), (4.1585226, 6.090261, 2.8312511)",
+  "shipVisualGlobalPosition": "(-4, 1, -13)",
+  "shipVisualAabb": "(-3.668456, -2.181561, -3.094228), (7.336912, 5.703383, 4.957836)",
+  "flags": []
+}

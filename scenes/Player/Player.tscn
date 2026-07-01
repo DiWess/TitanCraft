@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://titancraft_player"]
 
 [ext_resource type="Script" path="res://src/Player/FirstPersonController.cs" id="1_controller"]
-[ext_resource type="ArrayMesh" path="res://assets/Production/Player/MechanicalArm/george_mech_source_arm.obj" id="2_mech_george"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="2_mech_george"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.35
@@ -26,6 +26,7 @@ current = true
 fov = 75.0
 
 [node name="MechanicalArmVisual" type="MeshInstance3D" parent="Head/Camera3D"]
+visible = false
 transform = Transform3D(0.18,0,0,0,0.18,0,0,0,0.18,0.55,-0.45,-0.9)
 mesh = ExtResource("2_mech_george")
 metadata/authentication = "Visual-only first-person arm from Quaternius Animated Mech Pack Textured/OBJ/George.obj."

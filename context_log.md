@@ -46,5 +46,18 @@
 - 2026-06-30: Added Phase 3A rendered screenshot harness and stopped after two visual correction cycles because final screenshots remained NOT_GO at 40/70.
 - 2026-06-30: Ran two asset-based Phase 3A recovery passes with verified Kenney meshes; final screenshots stayed NOT_GO at 41/70 against the required 48/70 target.
 - 2026-06-30: Terminated Phase 3A implementation work, rolled failed visual experiments out of production scenes, preserved the screenshot harness, and prepared asset-selection documents for human approval.
+- 2026-07-01: Restored Phase 3A playable scene resource baseline, documented runtime/visual contracts, and added scene-contract diagnostics/tests before any future visual integration.
+- 2026-07-01: Accepted the restored Phase 3A baseline, disabled the invalid complete-mech first-person visual, and completed terrain-only Pass 1 with contract tests and rendered review screenshots.
+- 2026-07-01: Tightened Phase 3A runtime diagnostics to emit fail-closed contract flags and report the Galaxabrain baseline visual transform before controlled movement simulation.
 
-- 2026-07-01: Promoted authenticated Phase 3A Quaternius OBJ assets into production paths and wired real Crash Site scenes/tests to those resources; visual capture remains environment-blocked by dummy headless rendering.
+- 2026-07-01: Added the Phase 3A Pass 1 GitHub Actions visual-artifact pipeline so terrain screenshots are regenerated and distributed as workflow artifacts instead of tracked PNG binaries.
+
+- 2026-07-01: Removed the failed Phase 3A Pass 1 terrain production composition and added a terrain asset qualification audit/gallery workflow that marks the current rock placeholders invalid for production.
+
+- 2026-07-01: Implemented Phase 3A Pass 1B deterministic procedural volcanic terrain around real Crash Site mission-route nodes with fail-closed terrain contracts and CI artifact capture support.
+
+- 2026-07-01: Reworked Phase 3A Pass 1C procedural terrain from uniform noise into directed volcanic zones with route readability, terrain-isolation captures, and artifact workflow support.
+
+- 2026-07-01: Added Phase 3A Pass 1D terrain visibility diagnostics to separate geometry, material, lighting, vertex-colour and production-camera obstruction failures without changing gameplay ownership.
+
+- 2026-07-01: Replaced the visually insufficient Phase 3A terrain height field with semantic visual-only low-poly landform meshes and Pass 1E artifact diagnostics while preserving gameplay contracts.

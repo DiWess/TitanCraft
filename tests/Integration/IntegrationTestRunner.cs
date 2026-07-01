@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Godot;
 using TitanCraft.Enemies;
 using TitanCraft.Player;
@@ -67,6 +69,7 @@ public partial class IntegrationTestRunner : Node
             TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
             await TestBeaconVisualState();
+            await TestRuntimeSceneContracts();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
@@ -125,8 +128,6 @@ public partial class IntegrationTestRunner : Node
         Require(main.GetNode<Area3D>("Placeholder_ElectronicsPickup") is not null, "Electronics pickup missing");
         Require(main.GetNode<Node3D>("Moon") is not null, "Large moon missing");
         Require(main.GetNode<Node3D>("AlienCrystal_1") is not null, "Alien crystal route missing");
-        Require(main.GetNode<MeshInstance3D>("AuthenticatedCrashSiteVisuals/CrashedShip_AuthenticUltimateSpaceKit").Mesh is not null, "Production crashed ship visual missing");
-        Require(main.GetNode<MeshInstance3D>("AuthenticatedCrashSiteVisuals/BuriedHullMass_BaseLarge").Mesh is not null, "Production buried hull visual missing");
         main.QueueFree();
         await Frames(2);
     }
@@ -202,7 +203,6 @@ public partial class IntegrationTestRunner : Node
         Require(player.GetNode<CollisionShape3D>("CollisionShape3D").Shape is CapsuleShape3D capsule && capsule.Radius > 0.0f && capsule.Height > 0.0f, "Player capsule invalid");
         Require(player.GetNode<Node3D>("Head") is not null, "Head missing");
         Require(player.GetNode<Camera3D>("Head/Camera3D").Current, "Camera inactive");
-        Require(player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Mesh is not null, "Production mechanical arm visual missing");
         Require(FirstPersonMovement.HasValidParameters(player.WalkSpeed, player.JumpVelocity, player.MouseSensitivity, player.MaxLookAngleDegrees), "Player exported parameters invalid");
         player.QueueFree();
         await Frames(2);
@@ -215,7 +215,6 @@ public partial class IntegrationTestRunner : Node
         AddChild(scout);
         await Frames(2);
 
-        Require(scout.GetNode<MeshInstance3D>("AuthenticatedRobotGalaxabrainVisual").Mesh is not null, "Production Galaxabrain visual missing");
         var missionComponent = scout.GetNode<Area3D>("GalaxabrainComponentPickup");
         Require(!missionComponent.Visible, "Galaxabrain component pickup should start hidden");
         Require(!missionComponent.Monitoring, "Galaxabrain component pickup should start non-monitoring");
@@ -413,7 +412,7 @@ public partial class IntegrationTestRunner : Node
         Require(loadedSaveData.CheckpointId == "crash_site_save_point", "Valid save checkpoint id mismatch");
         Require(loadedSaveData.Health == 60, "Valid save health mismatch");
 
-        using (var file = FileAccess.Open(testSavePath, FileAccess.ModeFlags.Write))
+        using (var file = Godot.FileAccess.Open(testSavePath, Godot.FileAccess.ModeFlags.Write))
             file?.StoreString("{ invalid json");
         Require(!LocalSaveGameStore.TryLoad(out _, testSavePath), "Invalid save data should fail clearly instead of loading");
         LocalSaveGameStore.DeleteSave(testSavePath);
@@ -513,6 +512,276 @@ public partial class IntegrationTestRunner : Node
         Require(float.IsFinite(pitch) && float.IsFinite(player.Rotation.Y), "Camera rotation is not finite");
         main.QueueFree();
         await Frames(2);
+    }
+
+    private async System.Threading.Tasks.Task TestRuntimeSceneContracts()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(30);
+
+        var player = main.GetNode<FirstPersonController>("Player");
+        var camera = player.GetNode<Camera3D>("Head/Camera3D");
+        var scout = main.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
+        var arm = player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        var visual = scout.GetNode<MeshInstance3D>("AuthenticatedRobotGalaxabrainVisual");
+        var initialPlayerPosition = player.GlobalPosition;
+        var initialScoutPosition = scout.GlobalPosition;
+        var initialScoutVisualPosition = visual.GlobalPosition;
+
+        Require(camera.Current, "Active camera is not current");
+        Require(IsDescendantOf(camera, player), "Active camera does not belong to Player");
+        Require(!IsDescendantOf(scout, player) && !IsDescendantOf(scout, camera), "Galaxabrain is camera/player-relative");
+        Require(HorizontalDistance(initialPlayerPosition, initialScoutPosition) > 8.0f, "Galaxabrain spawned too close to player");
+        Require(scout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled == false, "Galaxabrain collision disabled");
+        var scoutCapsule = scout.GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
+        Require(scoutCapsule is not null, "Galaxabrain collision capsule missing");
+
+        var before = scout.GlobalPosition;
+        scout.PlayerPath = scout.GetPathTo(player);
+        player.GlobalPosition = scout.GlobalPosition + new Vector3(6.0f, 0.0f, 0.0f);
+        await Frames(90);
+        Require(HorizontalDistance(before, scout.GlobalPosition) > 0.1f, "Galaxabrain did not move during controlled simulation");
+
+        var visualSize = visual.GetAabb().Size * visual.Scale;
+        Require(visualSize.Y / scoutCapsule!.Height < 4.0f, "Galaxabrain visual/collision height mismatch");
+        Require(IsDescendantOf(arm, camera), "Mechanical arm is not under active camera");
+        Require(arm.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Mechanical arm has collision descendants");
+        Require(!IsUnsuitableFirstPersonArmActive(arm), "Complete George mech is active as first-person arm view model");
+
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        {
+            var node = main.GetNode<Node>(path);
+            Require(!IsDescendantOf(node, camera), $"{path} is under camera hierarchy");
+        }
+
+        TestProceduralTerrainContracts(main, camera);
+        var flags = BuildRuntimeContractFlags(main, player, camera, scout, arm, initialPlayerPosition, initialScoutPosition, visual, scoutCapsule);
+        Require(flags.Count == 0, $"Runtime contract flags present: {string.Join(", ", flags)}");
+
+        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        {
+            var pickup = main.GetNode<ResourcePickup>(pickupName);
+            Require(pickup.FindChildren("*", "CollisionShape3D", true, false).Count > 0, $"{pickupName} collision missing");
+        }
+
+        Require(main.GetNode<Workbench>("Placeholder_Workbench").GetNode<CollisionShape3D>("Collision_Workbench").Shape is not null, "Workbench behavior/collision missing");
+        Require(main.GetNode<SavePoint>("Placeholder_SavePoint").GetNode<CollisionShape3D>("Collision_SavePoint").Shape is not null, "Save point behavior/collision missing");
+        Require(main.GetNode<Beacon>("Placeholder_Beacon").GetNode<CollisionShape3D>("Collision_BeaconBase").Shape is not null, "Beacon behavior/collision missing");
+
+        WriteRuntimeContractReport(main, initialPlayerPosition, initialScoutPosition, initialScoutVisualPosition, camera, scout, visual, scoutCapsule, arm, flags);
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    private static bool IsUnsuitableFirstPersonArmActive(MeshInstance3D arm)
+    {
+        return arm.Visible
+            && arm.Mesh?.ResourcePath?.Contains("George.obj", StringComparison.OrdinalIgnoreCase) == true
+            && arm.GetAabb().Size.Y > 4.0f;
+    }
+
+    private static void TestProceduralTerrainContracts(Node3D main, Camera3D camera)
+    {
+        Require(main.GetNodeOrNull<Node3D>("AuthenticatedTerrainVisuals") is null, "Failed Pass 1 terrain visuals are still present in production Main.tscn");
+        var terrain = main.GetNodeOrNull<Node3D>("ProceduralCrashSiteTerrain");
+        Require(terrain is not null, "Procedural terrain is missing");
+        Require(!IsDescendantOf(terrain!, camera), "Procedural terrain entered camera hierarchy");
+        Require(terrain!.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Procedural terrain must not own collision");
+        Require(terrain.GetNode<MeshInstance3D>("TerrainMesh").Mesh is ArrayMesh, "Procedural terrain legacy diagnostic mesh missing");
+        foreach (string semanticName in ProceduralCrashSiteTerrain.RequiredSemanticMeshes)
+            Require(terrain.GetNodeOrNull<Node>(semanticName) is not null, $"Semantic terrain mesh missing: {semanticName}");
+        foreach (string meshName in ProceduralCrashSiteTerrain.RequiredSemanticMeshes.Where(name => name != "HorizonSegments"))
+        {
+            var semantic = terrain.GetNode<MeshInstance3D>(meshName);
+            Require(!IsDescendantOf(semantic, camera), $"{meshName} entered camera hierarchy");
+            Require(semantic.FindChildren("*", "CollisionObject3D", true, false).Count == 0, $"{meshName} must not own collision");
+            Require(MeshVertexCount(semantic.Mesh) > 0, $"{meshName} mesh has no vertices");
+        }
+        Require(terrain.GetNode<Node3D>("HorizonSegments").FindChildren("HorizonSegment_*", "MeshInstance3D", true, false).Count >= 5, "Semantic horizon requires at least five segments");
+
+        foreach (var mesh in main.FindChildren("*", "MeshInstance3D", true, false))
+        {
+            var meshInstance = (MeshInstance3D)mesh;
+            var resourcePath = meshInstance.Mesh?.ResourcePath ?? string.Empty;
+            Require(!resourcePath.Contains("rock_cliff_d.obj", StringComparison.OrdinalIgnoreCase)
+                && !resourcePath.Contains("rock_irregular_c.obj", StringComparison.OrdinalIgnoreCase)
+                && !resourcePath.Contains("rock_ridge_f.obj", StringComparison.OrdinalIgnoreCase)
+                && !resourcePath.Contains("rock_spire_g.obj", StringComparison.OrdinalIgnoreCase), "Rejected terrain OBJ is used in production");
+        }
+
+        var report = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        var repeat = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        Require(report.MeshDataHash == repeat.MeshDataHash, "Procedural terrain mesh output is nondeterministic");
+        Require(report.VertexCount > 0 && report.TriangleCount > 0, "Procedural terrain geometry is empty");
+        Require(report.MaxHeight <= ProceduralCrashSiteTerrain.MaxOutsideHeight, "Procedural terrain exceeds max height");
+        Require(report.MaxRouteHeightDeviation <= ProceduralCrashSiteTerrain.CorridorTolerance, "Procedural terrain route height deviation is too high");
+        Require(report.EstimatedMaxSlope <= ProceduralCrashSiteTerrain.MaxSlope, "Procedural terrain slope exceeds limit");
+        Require(report.RouteSurfaceArea >= ProceduralCrashSiteTerrain.MinimumRouteSurfaceArea, "Procedural terrain route surface is too small/readability disconnected");
+        Require(report.BasaltShelfSurfaceArea > 100.0f, "Procedural terrain basalt shelves are missing");
+        Require(report.Features.Count >= 10, "Procedural terrain directed feature map is incomplete");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.AshRoute) && report.ZoneTriangles[TerrainZone.AshRoute] > 0, "Procedural terrain ash route zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.HorizonRidge) && report.ZoneTriangles[TerrainZone.HorizonRidge] > 0, "Procedural terrain horizon ridge zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.WorkbenchRidge) && report.ZoneTriangles[TerrainZone.WorkbenchRidge] > 0, "Procedural terrain workbench ridge zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.CombatRidge) && report.ZoneTriangles[TerrainZone.CombatRidge] > 0, "Procedural terrain combat ridge zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.ImpactCrater) && report.ZoneTriangles[TerrainZone.ImpactCrater] > 0, "Procedural terrain impact crater zone has no triangles");
+        Color routeColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.AshRoute);
+        Color plateauColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.CentralPlateau);
+        Color ridgeColor = ProceduralCrashSiteTerrain.ColorForZone(TerrainZone.CombatRidge);
+        Require(ColorDistance(routeColor, plateauColor) > 0.15f && ColorDistance(routeColor, ridgeColor) > 0.20f, "Representative procedural terrain zones do not have materially different vertex colours");
+        Require(Luminance(routeColor) > Luminance(plateauColor) + 0.07f, "Procedural terrain route colour is not brighter than surrounding basalt");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("RouteSurface").Mesh).Max <= ProceduralCrashSiteTerrain.CorridorHeight + ProceduralCrashSiteTerrain.CorridorTolerance, "Semantic route height deviates from stable ground");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("SpawnBasaltShelf").Mesh).Range > 0.35f && MeshHeightRange(terrain.GetNode<MeshInstance3D>("ResourceBasaltShelf").Mesh).Range > 0.35f, "Semantic shelves have insufficient side faces");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("WorkbenchRidge").Mesh).Max >= 1.4f && MeshHeightRange(terrain.GetNode<MeshInstance3D>("CombatRidge").Mesh).Max >= 1.6f, "Semantic ridges have insufficient crest height");
+        Require(MeshHeightRange(terrain.GetNode<MeshInstance3D>("CraterNorthwest").Mesh).Range > 0.25f && MeshHeightRange(terrain.GetNode<MeshInstance3D>("CraterSoutheast").Mesh).Range > 0.25f, "Semantic craters do not contain rim/slope/basin height samples");
+        Require(MeshHorizontalExtent(terrain.GetNode<MeshInstance3D>("CentralPlateau").Mesh).UniqueEdgeCount > 10, "Semantic plateau boundary is too rectangular/simple");
+        Require(ProceduralCrashSiteTerrain.DistanceToRoute(33, -24, report.Targets) > ProceduralCrashSiteTerrain.CorridorWidth * 0.5f, "Semantic beacon shelf overlaps beacon route clearance");
+        Directory.CreateDirectory("artifacts");
+        File.WriteAllText("artifacts/terrain-generation-report.json", report.ToJson());
+
+        foreach (var target in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup" })
+        {
+            var node = main.GetNode<Node3D>(target);
+            Require(node.GlobalPosition.Y >= 0.0f, $"{target} moved below stable ground");
+            Require(report.Contains(node.GlobalPosition), $"{target} is outside procedural terrain bounds");
+            Require(ProceduralCrashSiteTerrain.DistanceToRoute(node.GlobalPosition.X, node.GlobalPosition.Z, report.Targets) <= ProceduralCrashSiteTerrain.CorridorWidth * 0.5f, $"{target} is outside safe corridor");
+        }
+    }
+
+    private static float ColorDistance(Color a, Color b) => MathF.Sqrt(MathF.Pow(a.R - b.R, 2.0f) + MathF.Pow(a.G - b.G, 2.0f) + MathF.Pow(a.B - b.B, 2.0f));
+
+    private static float Luminance(Color color) => color.R * 0.2126f + color.G * 0.7152f + color.B * 0.0722f;
+
+    private static int MeshVertexCount(Mesh? mesh) => mesh is null ? 0 : ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>().Length;
+
+    private static (float Min, float Max, float Range) MeshHeightRange(Mesh? mesh)
+    {
+        if (mesh is null)
+            return (0, 0, 0);
+        var vertices = ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>();
+        float min = vertices.Min(v => v.Y);
+        float max = vertices.Max(v => v.Y);
+        return (min, max, max - min);
+    }
+
+    private static (int UniqueEdgeCount, float Width, float Depth) MeshHorizontalExtent(Mesh? mesh)
+    {
+        if (mesh is null)
+            return (0, 0, 0);
+        var vertices = ((Godot.Collections.Array)mesh.SurfaceGetArrays(0))[(int)Mesh.ArrayType.Vertex].As<Vector3[]>();
+        var unique = vertices.Select(v => $"{MathF.Round(v.X, 1)},{MathF.Round(v.Z, 1)}").Distinct().Count();
+        return (unique, vertices.Max(v => v.X) - vertices.Min(v => v.X), vertices.Max(v => v.Z) - vertices.Min(v => v.Z));
+    }
+
+    private static List<string> BuildRuntimeContractFlags(Node3D main, FirstPersonController player, Camera3D camera, GalaxabrainScout scout, MeshInstance3D arm, Vector3 playerSpawn, Vector3 scoutSpawn, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule)
+    {
+        var flags = new List<string>();
+        if (!camera.Current || !IsDescendantOf(camera, player) || IsDescendantOf(scout, player) || IsDescendantOf(scout, camera))
+            flags.Add("CAMERA_PARENTING_ERROR");
+        if (HorizontalDistance(playerSpawn, scoutSpawn) <= 8.0f)
+            flags.Add("ENEMY_AT_PLAYER_POSITION");
+        if (scoutVisual.GetAabb().Size.Y * scoutVisual.Scale.Y / scoutCapsule.Height >= 4.0f)
+            flags.Add("VISUAL_COLLISION_MISMATCH");
+        if (IsUnsuitableFirstPersonArmActive(arm))
+            flags.Add("BAD_MODEL_ORIGIN");
+        if (!IsDescendantOf(arm, camera))
+            flags.Add("VIEWMODEL_IN_WORLD_LAYER");
+
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        {
+            var node = main.GetNodeOrNull<Node>(path);
+            if (node is null)
+                flags.Add("REQUIRED_NODE_PATH_MISSING");
+            else if (IsDescendantOf(node, camera))
+                flags.Add("WORLD_MODEL_IN_VIEWMODEL_LAYER");
+        }
+
+        AddProceduralTerrainFlags(main, camera, flags);
+        return flags;
+    }
+
+    private static void AddProceduralTerrainFlags(Node3D main, Camera3D camera, List<string> flags)
+    {
+        var terrain = main.GetNodeOrNull<Node3D>("ProceduralCrashSiteTerrain");
+        if (terrain is null)
+        {
+            flags.Add("PROCEDURAL_TERRAIN_MISSING");
+            return;
+        }
+        if (IsDescendantOf(terrain, camera))
+            flags.Add("PROCEDURAL_TERRAIN_CAMERA_PARENTING");
+        if (terrain.FindChildren("*", "CollisionObject3D", true, false).Count > 0)
+            flags.Add("PROCEDURAL_TERRAIN_COLLISION_FOUND");
+        foreach (string semanticName in ProceduralCrashSiteTerrain.RequiredSemanticMeshes)
+            if (terrain.GetNodeOrNull<Node>(semanticName) is null)
+                flags.Add("SEMANTIC_TERRAIN_MESH_MISSING");
+        if (terrain.FindChildren("*", "CollisionObject3D", true, false).Count > 0)
+            flags.Add("SEMANTIC_TERRAIN_COLLISION_FOUND");
+        if (terrain.GetNodeOrNull<Node3D>("HorizonSegments")?.FindChildren("HorizonSegment_*", "MeshInstance3D", true, false).Count < 5)
+            flags.Add("SEMANTIC_HORIZON_SEGMENTS_INVALID");
+        var report = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        var repeat = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        if (report.MeshDataHash != repeat.MeshDataHash)
+        {
+            flags.Add("PROCEDURAL_TERRAIN_NONDETERMINISTIC");
+            flags.Add("SEMANTIC_TERRAIN_NONDETERMINISTIC");
+        }
+        if (report.VertexCount <= 0 || report.TriangleCount <= 0)
+            flags.Add("PROCEDURAL_TERRAIN_INVALID_GEOMETRY");
+        if (report.MaxHeight > ProceduralCrashSiteTerrain.MaxOutsideHeight || report.EstimatedMaxSlope > ProceduralCrashSiteTerrain.MaxSlope)
+            flags.Add("PROCEDURAL_TERRAIN_EXTREME_HEIGHT");
+        if (report.MaxRouteHeightDeviation > ProceduralCrashSiteTerrain.CorridorTolerance)
+            flags.Add("PROCEDURAL_TERRAIN_ROUTE_HEIGHT_ERROR");
+        if (report.RouteSurfaceArea < ProceduralCrashSiteTerrain.MinimumRouteSurfaceArea || !report.ZoneTriangles.ContainsKey(TerrainZone.AshRoute) || report.ZoneTriangles[TerrainZone.AshRoute] <= 0)
+        {
+            flags.Add("PROCEDURAL_TERRAIN_ROUTE_DISCONNECTED");
+            flags.Add("SEMANTIC_ROUTE_DISCONNECTED");
+        }
+        if (report.Features.Count < 10 || report.BasaltShelfSurfaceArea <= 100.0f)
+            flags.Add("PROCEDURAL_TERRAIN_DIRECTED_ZONE_MISSING");
+        foreach (var target in report.Targets.Values)
+            if (!report.Contains(target))
+            {
+                flags.Add("PROCEDURAL_TERRAIN_TARGET_OUTSIDE_BOUNDS");
+                flags.Add("SEMANTIC_ROUTE_TARGET_MISSED");
+            }
+    }
+
+    private static bool IsDescendantOf(Node node, Node ancestor)
+    {
+        for (var current = node.GetParent(); current is not null; current = current.GetParent())
+            if (current == ancestor)
+                return true;
+        return false;
+    }
+
+    private static void WriteRuntimeContractReport(Node3D main, Vector3 playerSpawn, Vector3 scoutSpawn, Vector3 scoutVisualSpawn, Camera3D camera, GalaxabrainScout scout, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule, MeshInstance3D arm, List<string> flags)
+    {
+        var ship = main.GetNodeOrNull<MeshInstance3D>("AuthenticatedCrashSiteVisuals/CrashedShip_AuthenticUltimateSpaceKit");
+        var scoutVisualRatio = scoutVisual.GetAabb().Size.Y * scoutVisual.Scale.Y / scoutCapsule.Height;
+        var formattedFlags = string.Join(",", flags.ConvertAll(flag => $"\"{flag}\""));
+        var report = $$"""
+        {
+          "activeCameraPath": "{{camera.GetPath()}}",
+          "playerGlobalPosition": "{{playerSpawn}}",
+          "galaxabrainGlobalPosition": "{{scoutSpawn}}",
+          "playerEnemySpawnDistance": {{HorizontalDistance(playerSpawn, scoutSpawn):0.###}},
+          "galaxabrainParentPath": "{{scout.GetParent().GetPath()}}",
+          "galaxabrainVisualGlobalPosition": "{{scoutVisualSpawn}}",
+          "galaxabrainVisualAabb": "{{scoutVisual.GetAabb()}}",
+          "galaxabrainCollisionSize": "radius={{scoutCapsule.Radius}}, height={{scoutCapsule.Height}}",
+          "galaxabrainVisualToCollisionHeightRatio": {{scoutVisualRatio:0.###}},
+          "mechanicalArmParentPath": "{{arm.GetParent().GetPath()}}",
+          "mechanicalArmVisible": {{arm.Visible.ToString().ToLowerInvariant()}},
+          "mechanicalArmVisualAabb": "{{arm.GetAabb()}}",
+          "shipVisualGlobalPosition": "{{ship?.GlobalPosition.ToString() ?? "missing"}}",
+          "shipVisualAabb": "{{ship?.GetAabb().ToString() ?? "missing"}}",
+          "flags": [{{formattedFlags}}]
+        }
+        """;
+        var artifactDir = ProjectSettings.GlobalizePath("res://artifacts");
+        Directory.CreateDirectory(artifactDir);
+        File.WriteAllText(Path.Combine(artifactDir, "runtime-contract-report.json"), report);
     }
 
     private async System.Threading.Tasks.Task<float> MoveDistance(Node3D main, string action, Vector3 expectedDirection)

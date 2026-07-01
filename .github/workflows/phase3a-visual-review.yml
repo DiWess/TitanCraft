@@ -1,0 +1,603 @@
+name: Phase 3A Visual Review
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase3a-pass1-terrain:
+    name: Generate Phase 3A Pass 1 terrain artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: phase3a-pass1-terrain-${{ github.sha }}
+      CAPTURE_COMMAND: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_pass1_terrain.gd
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      GODOT_VERSION: 4.7-stable
+      OUTPUT_DIR: artifacts/visual-review/phase3a-pass1-terrain
+      WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Xvfb, Mesa, X11, and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            curl \
+            jq \
+            libasound2t64 \
+            libgbm1 \
+            libgl1-mesa-dri \
+            libglx-mesa0 \
+            libpulse0 \
+            libvulkan1 \
+            libwayland-cursor0 \
+            libxcursor1 \
+            libxi6 \
+            libxinerama1 \
+            libxkbcommon0 \
+            mesa-utils \
+            mesa-vulkan-drivers \
+            python3-pil \
+            unzip \
+            xauth \
+            xvfb
+
+      - name: Install Godot 4.7 stable mono
+        run: |
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          godot --version | tee godot-version.txt
+
+      - name: Prepare visual evidence directory
+        run: mkdir -p "$OUTPUT_DIR"
+
+      - name: Import Godot assets
+        run: godot --headless --path . --import
+
+      - name: Restore .NET packages
+        run: dotnet restore
+
+      - name: Build .NET project
+        run: dotnet build
+
+      - name: Run unit tests
+        run: |
+          dotnet test --settings tests/TitanCraft.runsettings
+          echo "UNIT_TEST_RESULT=passed" >> "$GITHUB_ENV"
+
+      - name: Run integration contract runner
+        run: |
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn
+          echo "INTEGRATION_TEST_RESULT=passed" >> "$GITHUB_ENV"
+
+      - name: Verify runtime diagnostics contain zero flags
+        run: |
+          test -f artifacts/runtime-contract-report.json
+          FLAG_COUNT="$(jq '.flags | length' artifacts/runtime-contract-report.json)"
+          if [ "$FLAG_COUNT" != "0" ]; then
+            jq '.flags' artifacts/runtime-contract-report.json
+            exit 1
+          fi
+          cp artifacts/runtime-contract-report.json "$OUTPUT_DIR/runtime-contract-report.json"
+          echo "RUNTIME_FLAG_COUNT=$FLAG_COUNT" >> "$GITHUB_ENV"
+
+      - name: Capture terrain review screenshots with Xvfb and OpenGL
+        run: |
+          set -o pipefail
+          $CAPTURE_COMMAND 2>&1 | tee "$OUTPUT_DIR/capture.log"
+          RENDERER_LINE="$(grep -m1 -E 'OpenGL API|Vulkan API' "$OUTPUT_DIR/capture.log" || true)"
+          echo "RENDERER=${RENDERER_LINE:-OpenGL or Vulkan via Xvfb}" >> "$GITHUB_ENV"
+
+      - name: Validate terrain PNG screenshots
+        run: |
+          python3 tools/visual_review/validate_pngs.py "$OUTPUT_DIR"
+          echo "SCREENSHOT_VALIDATION_RESULT=passed" >> "$GITHUB_ENV"
+
+      - name: Generate contact sheet and manifest
+        run: python3 tools/visual_review/build_phase3a_pass1_artifact.py "$OUTPUT_DIR"
+
+      - name: Upload Phase 3A Pass 1 terrain artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          RESULT="FAIL"
+          if [ "$JOB_STATUS" = "success" ]; then
+            RESULT="PASS"
+          fi
+          PR_NUMBER="$(python3 - <<'PY'
+          import json, os
+          path = os.environ.get('GITHUB_EVENT_PATH')
+          number = ''
+          if path and os.path.exists(path):
+              with open(path, encoding='utf-8') as event_file:
+                  event = json.load(event_file)
+              number = str(event.get('pull_request', {}).get('number', ''))
+          print(number)
+          PY
+          )"
+          {
+            echo "## Phase 3A Pass 1 Terrain Visual Review"
+            echo "- Result: $RESULT"
+            echo "- Commit SHA: $GITHUB_SHA"
+            echo "- PR number: ${PR_NUMBER:-not available}"
+            echo "- Workflow run URL: $WORKFLOW_URL"
+            echo "- Renderer: ${RENDERER:-OpenGL via Xvfb}"
+            echo "- Runtime flag count: ${RUNTIME_FLAG_COUNT:-not available}"
+            echo "- Unit-test result: ${UNIT_TEST_RESULT:-not completed}"
+            echo "- Integration-test result: ${INTEGRATION_TEST_RESULT:-not completed}"
+            echo "- Screenshot validation result: ${SCREENSHOT_VALIDATION_RESULT:-not completed}"
+            echo "- Artifact name: $ARTIFACT_NAME"
+            echo ""
+            echo "Open this workflow run and download the visual artifact from the Artifacts section."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  phase3a-terrain-asset-qualification:
+    name: Generate Phase 3A terrain asset qualification artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: phase3a-terrain-asset-qualification-${{ github.sha }}
+      CAPTURE_COMMAND: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_terrain_asset_qualification.gd
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      GODOT_VERSION: 4.7-stable
+      OUTPUT_DIR: artifacts/visual-review/phase3a-terrain-asset-qualification
+      WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Xvfb, Mesa, X11, and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            curl \
+            jq \
+            libasound2t64 \
+            libgbm1 \
+            libgl1-mesa-dri \
+            libglx-mesa0 \
+            libpulse0 \
+            libvulkan1 \
+            libwayland-cursor0 \
+            libxcursor1 \
+            libxi6 \
+            libxinerama1 \
+            libxkbcommon0 \
+            mesa-utils \
+            mesa-vulkan-drivers \
+            python3-pil \
+            unzip \
+            xauth \
+            xvfb
+
+      - name: Install Godot 4.7 stable mono
+        run: |
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          godot --version | tee godot-version.txt
+
+      - name: Prepare visual evidence directory
+        run: mkdir -p "$OUTPUT_DIR"
+
+      - name: Import Godot assets
+        run: godot --headless --path . --import
+
+      - name: Restore .NET packages
+        run: dotnet restore
+
+      - name: Build .NET project
+        run: dotnet build
+
+      - name: Run unit tests
+        run: |
+          dotnet test --settings tests/TitanCraft.runsettings
+          echo "UNIT_TEST_RESULT=passed" >> "$GITHUB_ENV"
+
+      - name: Run integration contract runner
+        run: |
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn
+          echo "INTEGRATION_TEST_RESULT=passed" >> "$GITHUB_ENV"
+
+      - name: Verify runtime diagnostics contain zero flags
+        run: |
+          test -f artifacts/runtime-contract-report.json
+          FLAG_COUNT="$(jq '.flags | length' artifacts/runtime-contract-report.json)"
+          if [ "$FLAG_COUNT" != "0" ]; then
+            jq '.flags' artifacts/runtime-contract-report.json
+            exit 1
+          fi
+          cp artifacts/runtime-contract-report.json "$OUTPUT_DIR/runtime-contract-report.json"
+          echo "RUNTIME_FLAG_COUNT=$FLAG_COUNT" >> "$GITHUB_ENV"
+
+      - name: Validate gallery scene loads
+        run: godot --headless --path . --script tools/visual_review/validate_terrain_asset_qualification_scene.gd
+
+      - name: Capture terrain asset qualification gallery with Xvfb and OpenGL
+        run: |
+          set -o pipefail
+          $CAPTURE_COMMAND 2>&1 | tee "$OUTPUT_DIR/capture.log"
+          RENDERER_LINE="$(grep -m1 -E 'OpenGL API|Vulkan API' "$OUTPUT_DIR/capture.log" || true)"
+          echo "RENDERER=${RENDERER_LINE:-OpenGL or Vulkan via Xvfb}" >> "$GITHUB_ENV"
+
+      - name: Validate terrain qualification PNGs
+        run: |
+          python3 tools/visual_review/validate_pngs.py --qualification "$OUTPUT_DIR"
+          echo "SCREENSHOT_VALIDATION_RESULT=passed" >> "$GITHUB_ENV"
+
+      - name: Generate terrain asset audit, contact sheet, and manifest
+        run: python3 tools/visual_review/terrain_asset_qualification.py "$OUTPUT_DIR"
+
+      - name: Upload Phase 3A terrain asset qualification artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+
+      - name: Write terrain asset qualification summary
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          RESULT="FAIL"
+          if [ "$JOB_STATUS" = "success" ]; then
+            RESULT="PASS"
+          fi
+          PR_NUMBER="$(python3 - <<'PY'
+          import json, os
+          path = os.environ.get('GITHUB_EVENT_PATH')
+          number = ''
+          if path and os.path.exists(path):
+              with open(path, encoding='utf-8') as event_file:
+                  event = json.load(event_file)
+              number = str(event.get('pull_request', {}).get('number', ''))
+          print(number)
+          PY
+          )"
+          {
+            echo "## Phase 3A Terrain Asset Qualification"
+            echo "- Result: $RESULT"
+            echo "- Commit SHA: $GITHUB_SHA"
+            echo "- PR number: ${PR_NUMBER:-not available}"
+            echo "- Workflow run URL: $WORKFLOW_URL"
+            echo "- Renderer: ${RENDERER:-OpenGL via Xvfb}"
+            echo "- Runtime flag count: ${RUNTIME_FLAG_COUNT:-not available}"
+            echo "- Unit-test result: ${UNIT_TEST_RESULT:-not completed}"
+            echo "- Integration-test result: ${INTEGRATION_TEST_RESULT:-not completed}"
+            echo "- Screenshot validation result: ${SCREENSHOT_VALIDATION_RESULT:-not completed}"
+            echo "- Artifact name: $ARTIFACT_NAME"
+            echo ""
+            echo "Open this workflow run and download the visual artifact from the Artifacts section."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  phase3a-pass1b-procedural-terrain:
+    name: Generate Phase 3A Pass 1B procedural terrain artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: phase3a-pass1b-procedural-terrain-${{ github.sha }}
+      CAPTURE_COMMAND: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_pass1b_procedural_terrain.gd
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      OUTPUT_DIR: artifacts/visual-review/phase3a-pass1b-procedural-terrain
+      WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install Xvfb, Mesa, X11, and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 mesa-utils mesa-vulkan-drivers python3-pil unzip xauth xvfb
+      - name: Install Godot 4.7 stable mono
+        run: |
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - run: mkdir -p "$OUTPUT_DIR"
+      - run: godot --headless --path . --import
+      - run: dotnet restore
+      - run: dotnet build
+      - name: Run unit tests
+        run: |
+          dotnet test --settings tests/TitanCraft.runsettings
+          echo "UNIT_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Run integration contract runner
+        run: |
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn
+          echo "INTEGRATION_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Verify runtime diagnostics and copy reports
+        run: |
+          FLAG_COUNT="$(jq '.flags | length' artifacts/runtime-contract-report.json)"
+          test "$FLAG_COUNT" = "0"
+          cp artifacts/runtime-contract-report.json "$OUTPUT_DIR/runtime-contract-report.json"
+          cp artifacts/terrain-generation-report.json "$OUTPUT_DIR/terrain-generation-report.json"
+          echo "RUNTIME_FLAG_COUNT=$FLAG_COUNT" >> "$GITHUB_ENV"
+      - name: Capture procedural terrain screenshots
+        run: |
+          set -o pipefail
+          $CAPTURE_COMMAND 2>&1 | tee "$OUTPUT_DIR/capture.log"
+          RENDERER_LINE="$(grep -m1 -E 'OpenGL API|Vulkan API' "$OUTPUT_DIR/capture.log" || true)"
+          echo "RENDERER=${RENDERER_LINE:-OpenGL or Vulkan via Xvfb}" >> "$GITHUB_ENV"
+      - name: Validate procedural terrain PNGs
+        run: |
+          python3 tools/visual_review/validate_pngs.py --pass1b "$OUTPUT_DIR"
+          echo "SCREENSHOT_VALIDATION_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Generate contact sheet and manifest
+        run: python3 tools/visual_review/build_phase3a_pass1b_artifact.py "$OUTPUT_DIR"
+      - name: Upload Phase 3A Pass 1B procedural terrain artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+      - name: Write Pass 1B summary
+        if: always()
+        run: |
+          echo "## Phase 3A Pass 1B Procedural Terrain" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Result: ${{ job.status == 'success' && 'PASS' || 'FAIL' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit SHA: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Workflow run URL: $WORKFLOW_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Renderer: ${RENDERER:-OpenGL via Xvfb}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Runtime flag count: ${RUNTIME_FLAG_COUNT:-not available}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Unit-test result: ${UNIT_TEST_RESULT:-not completed}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Integration-test result: ${INTEGRATION_TEST_RESULT:-not completed}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Screenshot validation result: ${SCREENSHOT_VALIDATION_RESULT:-not completed}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact name: $ARTIFACT_NAME" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Open this workflow run and download the visual artifact from the Artifacts section." >> "$GITHUB_STEP_SUMMARY"
+
+  phase3a-pass1c-directed-terrain:
+    name: Generate Phase 3A Pass 1C directed terrain artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: phase3a-pass1c-directed-terrain-${{ github.sha }}
+      CAPTURE_COMMAND: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_pass1c_directed_terrain.gd
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      OUTPUT_DIR: artifacts/visual-review/phase3a-pass1c-directed-terrain
+      WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install Xvfb, Mesa, X11, and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 mesa-utils mesa-vulkan-drivers python3-pil unzip xauth xvfb
+      - name: Install Godot 4.7 stable mono
+        run: |
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - run: mkdir -p "$OUTPUT_DIR"
+      - run: godot --headless --path . --import
+      - run: dotnet restore
+      - run: dotnet build
+      - name: Run unit tests
+        run: |
+          dotnet test --settings tests/TitanCraft.runsettings
+          echo "UNIT_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Run integration contract runner
+        run: |
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn
+          echo "INTEGRATION_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Verify runtime diagnostics and copy reports
+        run: |
+          FLAG_COUNT="$(jq '.flags | length' artifacts/runtime-contract-report.json)"
+          test "$FLAG_COUNT" = "0"
+          cp artifacts/runtime-contract-report.json "$OUTPUT_DIR/runtime-contract-report.json"
+          cp artifacts/terrain-generation-report.json "$OUTPUT_DIR/terrain-generation-report.json"
+          echo "RUNTIME_FLAG_COUNT=$FLAG_COUNT" >> "$GITHUB_ENV"
+      - name: Capture Pass 1C production and diagnostic screenshots
+        run: |
+          set -o pipefail
+          $CAPTURE_COMMAND 2>&1 | tee "$OUTPUT_DIR/capture.log"
+          RENDERER_LINE="$(grep -m1 -E 'OpenGL API|Vulkan API' "$OUTPUT_DIR/capture.log" || true)"
+          echo "RENDERER=${RENDERER_LINE:-OpenGL or Vulkan via Xvfb}" >> "$GITHUB_ENV"
+      - name: Validate Pass 1C PNGs
+        run: |
+          python3 tools/visual_review/validate_pngs.py --pass1c "$OUTPUT_DIR"
+          echo "SCREENSHOT_VALIDATION_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Generate Pass 1C contact sheets and manifest
+        run: python3 tools/visual_review/build_phase3a_pass1c_artifact.py "$OUTPUT_DIR"
+      - name: Upload Phase 3A Pass 1C directed terrain artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+      - name: Write Pass 1C summary
+        if: always()
+        run: |
+          echo "## Phase 3A Pass 1C Directed Terrain" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Result: ${{ job.status == 'success' && 'PASS' || 'FAIL' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit SHA: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Workflow run URL: $WORKFLOW_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Renderer: ${RENDERER:-OpenGL via Xvfb}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Runtime flag count: ${RUNTIME_FLAG_COUNT:-not available}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Unit-test result: ${UNIT_TEST_RESULT:-not completed}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Integration-test result: ${INTEGRATION_TEST_RESULT:-not completed}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Screenshot validation result: ${SCREENSHOT_VALIDATION_RESULT:-not completed}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact name: $ARTIFACT_NAME" >> "$GITHUB_STEP_SUMMARY"
+          echo "Open this workflow run and download the visual artifact from the Artifacts section." >> "$GITHUB_STEP_SUMMARY"
+
+  phase3a-pass1d-terrain-visibility:
+    name: Generate Phase 3A Pass 1D terrain visibility artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: phase3a-pass1d-terrain-visibility-${{ github.sha }}
+      CAPTURE_COMMAND: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_pass1d_terrain_visibility.gd
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      OUTPUT_DIR: artifacts/visual-review/phase3a-pass1d-terrain-visibility
+      WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install Xvfb, Mesa, X11, and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 mesa-utils mesa-vulkan-drivers python3-pil unzip xauth xvfb
+      - name: Install Godot 4.7 stable mono
+        run: |
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - run: mkdir -p "$OUTPUT_DIR"
+      - run: godot --headless --path . --import
+      - run: dotnet restore
+      - run: dotnet build
+      - name: Run unit tests
+        run: |
+          dotnet test --settings tests/TitanCraft.runsettings
+          echo "UNIT_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Run integration contract runner
+        run: |
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn
+          echo "INTEGRATION_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Verify runtime diagnostics and copy reports
+        run: |
+          FLAG_COUNT="$(jq '.flags | length' artifacts/runtime-contract-report.json)"
+          test "$FLAG_COUNT" = "0"
+          cp artifacts/runtime-contract-report.json "$OUTPUT_DIR/runtime-contract-report.json"
+          cp artifacts/terrain-generation-report.json "$OUTPUT_DIR/terrain-generation-report.json"
+          echo "RUNTIME_FLAG_COUNT=$FLAG_COUNT" >> "$GITHUB_ENV"
+      - name: Capture Pass 1D terrain visibility diagnostics
+        run: |
+          set -o pipefail
+          $CAPTURE_COMMAND 2>&1 | tee "$OUTPUT_DIR/capture.log"
+      - name: Validate Pass 1D PNGs
+        run: python3 tools/visual_review/validate_pngs.py --pass1d "$OUTPUT_DIR"
+      - name: Generate Pass 1D visibility reports and manifest
+        run: python3 tools/visual_review/build_phase3a_pass1d_artifact.py "$OUTPUT_DIR"
+      - name: Upload Phase 3A Pass 1D terrain visibility artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+      - name: Write Pass 1D summary
+        if: always()
+        run: |
+          echo "## Phase 3A Pass 1D Terrain Visibility" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Result: ${{ job.status == 'success' && 'PASS' || 'FAIL' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit SHA: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Workflow run URL: $WORKFLOW_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Runtime flag count: ${RUNTIME_FLAG_COUNT:-not available}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact name: $ARTIFACT_NAME" >> "$GITHUB_STEP_SUMMARY"
+          echo "Open this workflow run and download the visual artifact from the Artifacts section." >> "$GITHUB_STEP_SUMMARY"
+
+  phase3a-pass1e-semantic-terrain:
+    name: Generate Phase 3A Pass 1E semantic terrain artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: phase3a-pass1e-semantic-terrain-${{ github.sha }}
+      CAPTURE_COMMAND: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_pass1e_semantic_terrain.gd
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      OUTPUT_DIR: artifacts/visual-review/phase3a-pass1e-semantic-terrain
+      WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install Xvfb, Mesa, X11, and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 mesa-utils mesa-vulkan-drivers python3-pil unzip xauth xvfb
+      - name: Install Godot 4.7 stable mono
+        run: |
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - run: mkdir -p "$OUTPUT_DIR"
+      - run: godot --headless --path . --import
+      - run: dotnet restore
+      - run: dotnet build
+      - name: Run unit tests
+        run: |
+          dotnet test --settings tests/TitanCraft.runsettings
+          echo "UNIT_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Run integration contract runner
+        run: |
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn
+          echo "INTEGRATION_TEST_RESULT=passed" >> "$GITHUB_ENV"
+      - name: Verify runtime diagnostics and copy reports
+        run: |
+          FLAG_COUNT="$(jq '.flags | length' artifacts/runtime-contract-report.json)"
+          test "$FLAG_COUNT" = "0"
+          cp artifacts/runtime-contract-report.json "$OUTPUT_DIR/runtime-contract-report.json"
+          cp artifacts/terrain-generation-report.json "$OUTPUT_DIR/terrain-generation-report.json"
+          echo "RUNTIME_FLAG_COUNT=$FLAG_COUNT" >> "$GITHUB_ENV"
+      - name: Capture Pass 1E semantic terrain diagnostics
+        run: |
+          set -o pipefail
+          $CAPTURE_COMMAND 2>&1 | tee "$OUTPUT_DIR/capture.log"
+      - name: Validate Pass 1E PNGs
+        run: python3 tools/visual_review/validate_pngs.py --pass1e "$OUTPUT_DIR"
+      - name: Generate Pass 1E semantic terrain reports and manifest
+        run: python3 tools/visual_review/build_phase3a_pass1e_artifact.py "$OUTPUT_DIR"
+      - name: Upload Phase 3A Pass 1E semantic terrain artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+      - name: Write Pass 1E summary
+        if: always()
+        run: |
+          echo "## Phase 3A Pass 1E Semantic Terrain" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Result: ${{ job.status == 'success' && 'PASS' || 'FAIL' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit SHA: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Workflow run URL: $WORKFLOW_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Runtime flag count: ${RUNTIME_FLAG_COUNT:-not available}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Artifact name: $ARTIFACT_NAME" >> "$GITHUB_STEP_SUMMARY"
+          echo "Open this workflow run and download the visual artifact from the Artifacts section." >> "$GITHUB_STEP_SUMMARY"

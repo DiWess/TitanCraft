@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=41 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -19,6 +19,10 @@
 [ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Spaceship_BarbaraTheBee.obj" id="21_ship"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Base_Large.obj" id="22_base_large"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="23_mech_george"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="24_robot"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
@@ -111,6 +115,7 @@ light_energy = 1.05
 shadow_enabled = true
 [node name="Ground" type="StaticBody3D" parent="."]
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+visible = false
 mesh = SubResource("BoxMesh_ground")
 [node name="Collision_Ground" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_ground")
@@ -319,6 +324,36 @@ transform = Transform3D(1,0,0,0,1,0,0,0,1,24,3,-22)
 light_color = Color(0.45, 0.25, 1, 1)
 light_energy = 0.45
 omni_range = 10.0
+[node name="AuthenticatedCrashSiteVisuals" type="Node3D" parent="."]
+metadata/authentication = "Phase 3A file-level authenticated Quaternius Google Drive assets; visual-only children."
+[node name="CrashedShip_AuthenticUltimateSpaceKit" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+transform = Transform3D(-2.8,0,0.7,0,1.15,0,-0.45,0,-3.6,-4,1.0,-13)
+mesh = ExtResource("21_ship")
+surface_material_override/0 = ExtResource("13_ivory")
+[node name="BuriedHullMass_BaseLarge" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+transform = Transform3D(2.4,0,0.35,0,0.75,0,-0.35,0,2.4,-9,0.35,-16)
+mesh = ExtResource("22_base_large")
+surface_material_override/0 = ExtResource("14_graphite")
+[node name="ForegroundVolcanicRidge_Left" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+transform = Transform3D(3.0,0,0.4,0,0.9,0,-0.4,0,3.0,-18,0.15,-7)
+mesh = ExtResource("22_base_large")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="ForegroundVolcanicRidge_Right" type="MeshInstance3D" parent="AuthenticatedCrashSiteVisuals"]
+transform = Transform3D(2.4,0,-0.7,0,0.8,0,0.7,0,2.4,17,0.1,-9)
+mesh = ExtResource("22_base_large")
+surface_material_override/0 = ExtResource("17_rock")
+[node name="WorkbenchAuthenticMechVisual" type="MeshInstance3D" parent="Placeholder_Workbench"]
+transform = Transform3D(0.55,0,0,0,0.55,0,0,0,0.55,0,0.45,0)
+mesh = ExtResource("23_mech_george")
+surface_material_override/0 = ExtResource("15_bronze")
+[node name="SavePointAuthenticModule" type="MeshInstance3D" parent="Placeholder_SavePoint"]
+transform = Transform3D(0.45,0,0,0,0.45,0,0,0,0.45,0,0.2,0)
+mesh = ExtResource("24_robot")
+surface_material_override/0 = ExtResource("16_orange")
+[node name="BeaconAuthenticMast" type="MeshInstance3D" parent="Placeholder_Beacon"]
+transform = Transform3D(0.35,0,0,0,0.75,0,0,0,0.35,0,1.35,0)
+mesh = ExtResource("22_base_large")
+surface_material_override/0 = ExtResource("14_graphite")
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)
 [node name="Placeholder_GalaxabrainScout" parent="." instance=ExtResource("7_galaxabrain_scout")]

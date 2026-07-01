@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="900" viewBox="0 0 1280 900" role="img" aria-labelledby="title desc">
+  <title id="title">Phase 3A production integration SVG review manifest</title>
+  <desc id="desc">Vector-only manifest for the eight real Main.tscn capture views. Raster files were intentionally removed from the pull request.</desc>
+  <rect width="1280" height="900" fill="#111820"/>
+  <text x="48" y="64" fill="#f4f0e8" font-family="Arial, sans-serif" font-size="34" font-weight="700">TitanCraft Phase 3A — Production Integration Review Manifest</text>
+  <text x="48" y="106" fill="#b7c4d4" font-family="Arial, sans-serif" font-size="20">Vector-only SVG kept in the PR. Raster viewport files are generated artifacts and are intentionally excluded from version control.</text>
+  <text x="48" y="142" fill="#b7c4d4" font-family="Arial, sans-serif" font-size="20">Regenerate local captures with: xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_production_integration.gd</text>
+
+  <g fill="#f4f0e8" font-family="Arial, sans-serif" font-size="24" font-weight="700">
+    <text x="64" y="220">1. Spawn overview</text>
+    <text x="64" y="300">2. Crashed ship hero view</text>
+    <text x="64" y="380">3. Ship rear and engines</text>
+    <text x="64" y="460">4. Resource and workbench zone</text>
+    <text x="64" y="540">5. Save point and beacon zone</text>
+    <text x="64" y="620">6. Galaxabrain combat distance</text>
+    <text x="64" y="700">7. Mechanical arm first-person view</text>
+    <text x="64" y="780">8. Wide terrain composition</text>
+  </g>
+
+  <g fill="none" stroke="#d8843a" stroke-width="3">
+    <rect x="40" y="180" width="1200" height="64" rx="10"/>
+    <rect x="40" y="260" width="1200" height="64" rx="10"/>
+    <rect x="40" y="340" width="1200" height="64" rx="10"/>
+    <rect x="40" y="420" width="1200" height="64" rx="10"/>
+    <rect x="40" y="500" width="1200" height="64" rx="10"/>
+    <rect x="40" y="580" width="1200" height="64" rx="10"/>
+    <rect x="40" y="660" width="1200" height="64" rx="10"/>
+    <rect x="40" y="740" width="1200" height="64" rx="10"/>
+  </g>
+
+  <text x="48" y="858" fill="#8795a8" font-family="Arial, sans-serif" font-size="18">Review artifact only. Do not wire into gameplay. Does not replace human visual review of locally regenerated raster captures.</text>
+</svg>

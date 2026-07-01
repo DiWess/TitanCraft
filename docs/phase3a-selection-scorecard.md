@@ -91,3 +91,17 @@ Asset counts by visible pack: Quaternius 37, KayKit 3, Kenney 0. Visible ratio: 
 | Total | 50/70 | Meets requested minimum threshold. |
 
 Correction cycles used: 0. Final verdict: GO for isolated Phase 3A visual proof only.
+
+
+## Phase 3A asset-authentication recovery attempt (2026-06-30)
+
+Completion state: **BLOCKED_BY_ASSET_AUTHENTICATION**.
+
+Official free archives were downloaded and hashed for Quaternius Modular Sci-Fi MegaKit, Quaternius Sci-Fi Essentials Kit, Quaternius Stylized Nature MegaKit, and KayKit Space Base Bits. The archive cache manifest is tracked at `artifacts/source-archives/README.md`; the large `*.zip` binaries remain uncommitted because repository policy ignores archives.
+
+Authentication could not continue to replacement because these exact currently represented packs did not provide a single downloadable source archive from the official page during this pass: Quaternius Ultimate Space Kit, Quaternius Animated Mech Pack, and Quaternius Animated Robot Pack. Their official pages expose Google Drive folders, which do not satisfy the requested archive filename/size/SHA-256 proof requirement.
+
+No production assets were replaced, no gameplay was changed, and `scenes/Main/Main.tscn` was not modified. The existing Quaternius/KayKit proof OBJs remain unauthenticated and must not be counted as valid Phase 3A visual proof assets.
+## Phase 3A file-level Quaternius Google Drive recovery — 2026-06-30
+
+Human decision accepted official Quaternius Google Drive folder/file provenance for Ultimate Space Kit, Animated Mech Pack, and Animated Robot Pack when reached from the official Quaternius pack pages. Selected OBJ/MTL/FBX files were downloaded directly from those folders and SHA-256 hashed. Text OBJ/MTL files used by Godot are committed; binary FBX originals are not committed and are represented by Drive IDs, byte sizes, and hashes as a binary-file PR workaround. OBJ files were copied without geometry conversion into `assets/ThirdParty/Quaternius/.../Models/` for production scene use. Current completion verdict: `PRODUCTION_VISUAL_SLICE_NOT_GO` because Windows export/playtest and human visual scoring remain incomplete.

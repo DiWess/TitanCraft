@@ -61,3 +61,17 @@ Date: 2026-06-30
 | Animated Robot Pack | Quaternius | https://quaternius.com/packs/animatedrobot.html | CC0/free commercial-use creator page evidence; modification allowed; attribution not required | FBX, OBJ, Blend | 3 OBJ component meshes plus licence/source text under `assets/ThirdParty/Quaternius/AnimatedRobotPack/` |
 | Stylized Nature MegaKit | Quaternius | https://quaternius.itch.io/stylized-nature-megakit | Creative Commons Zero v1.0 Universal; free commercial use; modification allowed; attribution not required | OBJ, FBX, glTF | 8 OBJ rock/cliff meshes plus licence/source text under `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/` |
 | KayKit Space Base Bits | Kay Lousberg / KayKit | https://kaylousberg.itch.io/space-base-bits | CC0; free personal/commercial use; no attribution required; modification allowed | OBJ, FBX, GLTF | 3 supplemental OBJ props plus licence/source text under `assets/ThirdParty/KayKit/SpaceBaseBits/` |
+
+
+## Phase 3A asset-authentication recovery attempt (2026-06-30)
+
+Historical completion state for the archive-only request: **BLOCKED_BY_ASSET_AUTHENTICATION**. This was superseded by the file-level Google Drive recovery below after human approval of official Drive folder provenance.
+
+Official free archives were downloaded and hashed for Quaternius Modular Sci-Fi MegaKit, Quaternius Sci-Fi Essentials Kit, Quaternius Stylized Nature MegaKit, and KayKit Space Base Bits. The archive cache manifest is tracked at `artifacts/source-archives/README.md`; the large `*.zip` binaries remain uncommitted because repository policy ignores archives.
+
+Authentication could not continue to replacement because these exact currently represented packs did not provide a single downloadable source archive from the official page during this pass: Quaternius Ultimate Space Kit, Quaternius Animated Mech Pack, and Quaternius Animated Robot Pack. Their official pages expose Google Drive folders, which do not satisfy the requested archive filename/size/SHA-256 proof requirement.
+
+No production assets were replaced, no gameplay was changed, and `scenes/Main/Main.tscn` was not modified. The existing Quaternius/KayKit proof OBJs remain unauthenticated and must not be counted as valid Phase 3A visual proof assets.
+## Phase 3A file-level Quaternius Google Drive recovery — 2026-06-30
+
+Human decision accepted official Quaternius Google Drive folder/file provenance for Ultimate Space Kit, Animated Mech Pack, and Animated Robot Pack when reached from the official Quaternius pack pages. Selected OBJ/MTL/FBX files were downloaded directly from those folders and SHA-256 hashed. Text OBJ/MTL files used by Godot are committed; binary FBX originals are not committed and are represented by Drive IDs, byte sizes, and hashes as a binary-file PR workaround. OBJ files were copied without geometry conversion into `assets/ThirdParty/Quaternius/.../Models/` for production scene use. Current completion verdict: `PRODUCTION_VISUAL_SLICE_NOT_GO` because Windows export/playtest and human visual scoring remain incomplete.

@@ -70,6 +70,23 @@ public static class LocalSaveGameStore
             && saveData.Metal >= 0
             && saveData.Biomass >= 0
             && saveData.ElectronicComponents >= 0
-            && Enum.IsDefined(typeof(CrashSiteMissionStep), saveData.MissionStep);
+            && Enum.IsDefined(typeof(CrashSiteMissionStep), saveData.MissionStep)
+            && HasConsistentMissionState(saveData);
+    }
+
+    /// <summary>
+    /// Rejects saves where the mission step and the flags it depends on disagree (e.g. a
+    /// hand-edited or corrupted file claiming component recovery without the arm ever being
+    /// built), which would otherwise leave the player in an unwinnable state after reload.
+    /// </summary>
+    private static bool HasConsistentMissionState(CrashSiteSaveData saveData)
+    {
+        if (saveData.MissionStep >= CrashSiteMissionStep.DefeatGalaxabrain && !saveData.MechanicalArmBuilt)
+            return false;
+
+        if (saveData.MissionStep >= CrashSiteMissionStep.ActivateBeacon && !saveData.GalaxabrainComponentCollected)
+            return false;
+
+        return true;
     }
 }

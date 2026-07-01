@@ -20,6 +20,7 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float AttackRange { get; set; } = MechanicalArmAttackLogic.DefaultRange;
     [Export] public int MechanicalArmDamage { get; set; } = MechanicalArmAttackLogic.DefaultMechanicalArmDamage;
     [Export] public float AttackCooldownSeconds { get; set; } = MechanicalArmAttackLogic.DefaultCooldownSeconds;
+    [Export] public NodePath MechanicalArmVisualPath { get; set; } = "Head/Camera3D/MechanicalArmVisual";
 
     public MvpInventory Inventory { get; } = new();
 
@@ -35,6 +36,7 @@ public partial class FirstPersonController : CharacterBody3D
     private MechanicalArmAttackLogic _mechanicalArmAttack = null!;
     private MechanicalArmRecipe _mechanicalArmRecipe = null!;
     private string _interactionPrompt = string.Empty;
+    private MeshInstance3D? _mechanicalArmVisual;
 
     public override void _Ready()
     {
@@ -45,6 +47,23 @@ public partial class FirstPersonController : CharacterBody3D
         _mechanicalArmAttack = new MechanicalArmAttackLogic(MechanicalArmDamage, AttackCooldownSeconds);
         _mechanicalArmRecipe = new MechanicalArmRecipe();
         Input.MouseMode = Input.MouseModeEnum.Captured;
+
+        _mechanicalArmVisual = GetNodeOrNull<MeshInstance3D>(MechanicalArmVisualPath);
+        Inventory.Changed += UpdateMechanicalArmVisual;
+        UpdateMechanicalArmVisual(Inventory);
+    }
+
+    public override void _ExitTree()
+    {
+        Inventory.Changed -= UpdateMechanicalArmVisual;
+    }
+
+    private void UpdateMechanicalArmVisual(MvpInventory inventory)
+    {
+        if (_mechanicalArmVisual is not null)
+        {
+            _mechanicalArmVisual.Visible = inventory.IsMechanicalArmBuilt;
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)

@@ -554,7 +554,7 @@ public partial class IntegrationTestRunner : Node
             Require(!IsDescendantOf(node, camera), $"{path} is under camera hierarchy");
         }
 
-        TestFailedTerrainIntegrationRemoved(main);
+        TestProceduralTerrainContracts(main, camera);
         var flags = BuildRuntimeContractFlags(main, player, camera, scout, arm, initialPlayerPosition, initialScoutPosition, visual, scoutCapsule);
         Require(flags.Count == 0, $"Runtime contract flags present: {string.Join(", ", flags)}");
 
@@ -580,12 +580,42 @@ public partial class IntegrationTestRunner : Node
             && arm.GetAabb().Size.Y > 4.0f;
     }
 
-    private static void TestFailedTerrainIntegrationRemoved(Node3D main)
+    private static void TestProceduralTerrainContracts(Node3D main, Camera3D camera)
     {
         Require(main.GetNodeOrNull<Node3D>("AuthenticatedTerrainVisuals") is null, "Failed Pass 1 terrain visuals are still present in production Main.tscn");
+        var terrain = main.GetNodeOrNull<Node3D>("ProceduralCrashSiteTerrain");
+        Require(terrain is not null, "Procedural terrain is missing");
+        Require(!IsDescendantOf(terrain!, camera), "Procedural terrain entered camera hierarchy");
+        Require(terrain!.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Procedural terrain must not own collision");
+        Require(terrain.GetNode<MeshInstance3D>("TerrainMesh").Mesh is ArrayMesh, "Procedural terrain mesh missing");
 
-        foreach (var target in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout" })
-            Require(main.GetNode<Node3D>(target).GlobalPosition.Y >= 0.0f, $"{target} moved below stable ground");
+        foreach (var mesh in main.FindChildren("*", "MeshInstance3D", true, false))
+        {
+            var meshInstance = (MeshInstance3D)mesh;
+            var resourcePath = meshInstance.Mesh?.ResourcePath ?? string.Empty;
+            Require(!resourcePath.Contains("rock_cliff_d.obj", StringComparison.OrdinalIgnoreCase)
+                && !resourcePath.Contains("rock_irregular_c.obj", StringComparison.OrdinalIgnoreCase)
+                && !resourcePath.Contains("rock_ridge_f.obj", StringComparison.OrdinalIgnoreCase)
+                && !resourcePath.Contains("rock_spire_g.obj", StringComparison.OrdinalIgnoreCase), "Rejected terrain OBJ is used in production");
+        }
+
+        var report = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        var repeat = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        Require(report.MeshDataHash == repeat.MeshDataHash, "Procedural terrain mesh output is nondeterministic");
+        Require(report.VertexCount > 0 && report.TriangleCount > 0, "Procedural terrain geometry is empty");
+        Require(report.MaxHeight <= ProceduralCrashSiteTerrain.MaxOutsideHeight, "Procedural terrain exceeds max height");
+        Require(report.MaxRouteHeightDeviation <= ProceduralCrashSiteTerrain.CorridorTolerance, "Procedural terrain route height deviation is too high");
+        Require(report.EstimatedMaxSlope <= ProceduralCrashSiteTerrain.MaxSlope, "Procedural terrain slope exceeds limit");
+        Directory.CreateDirectory("artifacts");
+        File.WriteAllText("artifacts/terrain-generation-report.json", report.ToJson());
+
+        foreach (var target in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup" })
+        {
+            var node = main.GetNode<Node3D>(target);
+            Require(node.GlobalPosition.Y >= 0.0f, $"{target} moved below stable ground");
+            Require(report.Contains(node.GlobalPosition), $"{target} is outside procedural terrain bounds");
+            Require(ProceduralCrashSiteTerrain.DistanceToRoute(node.GlobalPosition.X, node.GlobalPosition.Z, report.Targets) <= ProceduralCrashSiteTerrain.CorridorWidth * 0.5f, $"{target} is outside safe corridor");
+        }
     }
 
     private static List<string> BuildRuntimeContractFlags(Node3D main, FirstPersonController player, Camera3D camera, GalaxabrainScout scout, MeshInstance3D arm, Vector3 playerSpawn, Vector3 scoutSpawn, MeshInstance3D scoutVisual, CapsuleShape3D scoutCapsule)
@@ -611,7 +641,35 @@ public partial class IntegrationTestRunner : Node
                 flags.Add("WORLD_MODEL_IN_VIEWMODEL_LAYER");
         }
 
+        AddProceduralTerrainFlags(main, camera, flags);
         return flags;
+    }
+
+    private static void AddProceduralTerrainFlags(Node3D main, Camera3D camera, List<string> flags)
+    {
+        var terrain = main.GetNodeOrNull<Node3D>("ProceduralCrashSiteTerrain");
+        if (terrain is null)
+        {
+            flags.Add("PROCEDURAL_TERRAIN_MISSING");
+            return;
+        }
+        if (IsDescendantOf(terrain, camera))
+            flags.Add("PROCEDURAL_TERRAIN_CAMERA_PARENTING");
+        if (terrain.FindChildren("*", "CollisionObject3D", true, false).Count > 0)
+            flags.Add("PROCEDURAL_TERRAIN_COLLISION_FOUND");
+        var report = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        var repeat = ProceduralCrashSiteTerrain.BuildForWorld(main).Report;
+        if (report.MeshDataHash != repeat.MeshDataHash)
+            flags.Add("PROCEDURAL_TERRAIN_NONDETERMINISTIC");
+        if (report.VertexCount <= 0 || report.TriangleCount <= 0)
+            flags.Add("PROCEDURAL_TERRAIN_INVALID_GEOMETRY");
+        if (report.MaxHeight > ProceduralCrashSiteTerrain.MaxOutsideHeight || report.EstimatedMaxSlope > ProceduralCrashSiteTerrain.MaxSlope)
+            flags.Add("PROCEDURAL_TERRAIN_EXTREME_HEIGHT");
+        if (report.MaxRouteHeightDeviation > ProceduralCrashSiteTerrain.CorridorTolerance)
+            flags.Add("PROCEDURAL_TERRAIN_ROUTE_HEIGHT_ERROR");
+        foreach (var target in report.Targets.Values)
+            if (!report.Contains(target))
+                flags.Add("PROCEDURAL_TERRAIN_TARGET_OUTSIDE_BOUNDS");
     }
 
     private static bool IsDescendantOf(Node node, Node ancestor)

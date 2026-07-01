@@ -6,6 +6,15 @@ import sys
 if len(sys.argv) > 1 and sys.argv[1] == '--qualification':
     OUTPUT_DIR = Path(sys.argv[2]) if len(sys.argv) > 2 else Path('artifacts/visual-review/phase3a-terrain-asset-qualification')
     REQUIRED_SCREENSHOTS = ['qualification_summary.png']
+elif len(sys.argv) > 1 and sys.argv[1] == '--pass1b':
+    OUTPUT_DIR = Path(sys.argv[2]) if len(sys.argv) > 2 else Path('artifacts/visual-review/phase3a-pass1b-procedural-terrain')
+    REQUIRED_SCREENSHOTS = [
+        'procedural_terrain_01_spawn_route.png',
+        'procedural_terrain_02_resource_workbench_route.png',
+        'procedural_terrain_03_combat_zone.png',
+        'procedural_terrain_04_beacon_route.png',
+        'procedural_terrain_05_wide_crash_site.png',
+    ]
 else:
     OUTPUT_DIR = Path(sys.argv[1]) if len(sys.argv) > 1 else Path('artifacts/visual-review/phase3a-pass1-terrain')
     REQUIRED_SCREENSHOTS = [

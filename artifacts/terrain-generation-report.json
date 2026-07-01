@@ -1,0 +1,16 @@
+{
+  "seed": 31071,
+  "vertexCount": 5928,
+  "triangleCount": 1976,
+  "aabbMin": "(-30, 0.03, -38)",
+  "aabbMax": "(46, 4.1442614, 14)",
+  "minHeight": 0.03,
+  "maxHeight": 4.1442614,
+  "longestDimension": 76,
+  "gridSpacing": 2,
+  "corridorWidth": 5,
+  "maximumRouteHeightDeviation": 0,
+  "maximumOutsideRouteHeight": 4.1442614,
+  "estimatedMaximumSlope": 0.88058,
+  "meshDataHash": "a4f15096f7a8b33a0df8958c9bcefd7719127ed04a3879e82e65f7813501311d"
+}

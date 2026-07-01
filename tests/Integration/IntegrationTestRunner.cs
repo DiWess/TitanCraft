@@ -606,6 +606,14 @@ public partial class IntegrationTestRunner : Node
         Require(report.MaxHeight <= ProceduralCrashSiteTerrain.MaxOutsideHeight, "Procedural terrain exceeds max height");
         Require(report.MaxRouteHeightDeviation <= ProceduralCrashSiteTerrain.CorridorTolerance, "Procedural terrain route height deviation is too high");
         Require(report.EstimatedMaxSlope <= ProceduralCrashSiteTerrain.MaxSlope, "Procedural terrain slope exceeds limit");
+        Require(report.RouteSurfaceArea >= ProceduralCrashSiteTerrain.MinimumRouteSurfaceArea, "Procedural terrain route surface is too small/readability disconnected");
+        Require(report.BasaltShelfSurfaceArea > 100.0f, "Procedural terrain basalt shelves are missing");
+        Require(report.Features.Count >= 10, "Procedural terrain directed feature map is incomplete");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.AshRoute) && report.ZoneTriangles[TerrainZone.AshRoute] > 0, "Procedural terrain ash route zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.HorizonRidge) && report.ZoneTriangles[TerrainZone.HorizonRidge] > 0, "Procedural terrain horizon ridge zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.WorkbenchRidge) && report.ZoneTriangles[TerrainZone.WorkbenchRidge] > 0, "Procedural terrain workbench ridge zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.CombatRidge) && report.ZoneTriangles[TerrainZone.CombatRidge] > 0, "Procedural terrain combat ridge zone has no triangles");
+        Require(report.ZoneTriangles.ContainsKey(TerrainZone.ImpactCrater) && report.ZoneTriangles[TerrainZone.ImpactCrater] > 0, "Procedural terrain impact crater zone has no triangles");
         Directory.CreateDirectory("artifacts");
         File.WriteAllText("artifacts/terrain-generation-report.json", report.ToJson());
 
@@ -667,6 +675,10 @@ public partial class IntegrationTestRunner : Node
             flags.Add("PROCEDURAL_TERRAIN_EXTREME_HEIGHT");
         if (report.MaxRouteHeightDeviation > ProceduralCrashSiteTerrain.CorridorTolerance)
             flags.Add("PROCEDURAL_TERRAIN_ROUTE_HEIGHT_ERROR");
+        if (report.RouteSurfaceArea < ProceduralCrashSiteTerrain.MinimumRouteSurfaceArea || !report.ZoneTriangles.ContainsKey(TerrainZone.AshRoute) || report.ZoneTriangles[TerrainZone.AshRoute] <= 0)
+            flags.Add("PROCEDURAL_TERRAIN_ROUTE_DISCONNECTED");
+        if (report.Features.Count < 10 || report.BasaltShelfSurfaceArea <= 100.0f)
+            flags.Add("PROCEDURAL_TERRAIN_DIRECTED_ZONE_MISSING");
         foreach (var target in report.Targets.Values)
             if (!report.Contains(target))
                 flags.Add("PROCEDURAL_TERRAIN_TARGET_OUTSIDE_BOUNDS");

@@ -55,3 +55,5 @@
 - 2026-07-01: Removed the failed Phase 3A Pass 1 terrain production composition and added a terrain asset qualification audit/gallery workflow that marks the current rock placeholders invalid for production.
 
 - 2026-07-01: Implemented Phase 3A Pass 1B deterministic procedural volcanic terrain around real Crash Site mission-route nodes with fail-closed terrain contracts and CI artifact capture support.
+
+- 2026-07-01: Reworked Phase 3A Pass 1C procedural terrain from uniform noise into directed volcanic zones with route readability, terrain-isolation captures, and artifact workflow support.

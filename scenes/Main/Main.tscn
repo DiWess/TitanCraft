@@ -39,6 +39,134 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="38_rock_ridge"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
 
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
+albedo_color = Color(0.88, 0.85, 0.80, 1)
+metallic = 0.2
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Graphite"]
+albedo_color = Color(0.22, 0.22, 0.24, 1)
+metallic = 0.3
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_WornSteel"]
+albedo_color = Color(0.48, 0.48, 0.50, 1)
+metallic = 0.6
+roughness = 0.58
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_MutedOrange"]
+albedo_color = Color(0.68, 0.50, 0.28, 1)
+metallic = 0.1
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Basalt"]
+albedo_color = Color(0.28, 0.28, 0.32, 1)
+metallic = 0.0
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Ash"]
+albedo_color = Color(0.72, 0.70, 0.65, 1)
+metallic = 0.15
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Scorch"]
+albedo_color = Color(0.08, 0.07, 0.09, 1)
+metallic = 0.15
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_AlienCyan"]
+albedo_color = Color(0.3, 0.9, 1.0, 1)
+metallic = 0.5
+roughness = 0.2
+emission = Color(0.5, 1.0, 1.0, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="BoxMesh" id="PROD_HullMain"]
+size = Vector3(11.0, 3.5, 5.2)
+
+[sub_resource type="CylinderMesh" id="PROD_NoseCrushed"]
+height = 2.2
+bottom_radius = 1.05
+top_radius = 0.35
+
+[sub_resource type="BoxMesh" id="PROD_Wing"]
+size = Vector3(6.2, 0.42, 1.3)
+
+[sub_resource type="CylinderMesh" id="PROD_Engine"]
+height = 2.5
+bottom_radius = 1.15
+top_radius = 1.0
+radial_segments = 10
+
+[sub_resource type="BoxMesh" id="PROD_InternalRib"]
+size = Vector3(3.0, 2.0, 0.25)
+
+[sub_resource type="BoxMesh" id="PROD_Debris"]
+size = Vector3(1.5, 0.5, 1.2)
+
+[sub_resource type="BoxMesh" id="PROD_Basalt"]
+size = Vector3(4.8, 3.2, 2.8)
+
+[sub_resource type="BoxMesh" id="PROD_Ridge"]
+size = Vector3(8.5, 5.0, 3.2)
+
+[sub_resource type="BoxMesh" id="PROD_Ground"]
+size = Vector3(8.0, 0.08, 6.0)
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Smoke"]
+albedo_color = Color(0.06, 0.06, 0.07, 0.5)
+metallic = 0.0
+roughness = 1.0
+shading_mode = 0
+transparency = 1
+
+[sub_resource type="SphereMesh" id="PROD_SmokePuff"]
+radius = 0.35
+height = 0.7
+radial_segments = 6
+rings = 3
+
+[sub_resource type="SphereMesh" id="PROD_EmberMote"]
+radius = 0.08
+height = 0.16
+radial_segments = 5
+rings = 2
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_CyanEmbers"]
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 0.2
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0.25, 0)
+scale_min = 0.5
+scale_max = 1.3
+color = Color(0.4, 1.0, 1.0, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_CrashSmoke"]
+direction = Vector3(0, 1, 0)
+spread = 15.0
+initial_velocity_min = 0.25
+initial_velocity_max = 0.55
+gravity = Vector3(0, 0.05, 0)
+scale_min = 0.8
+scale_max = 2.0
+color = Color(0.08, 0.08, 0.09, 1)
+
+[sub_resource type="StandardMaterial3D" id="MAT_MetalPickup_Bright"]
+albedo_color = Color(0.7, 0.72, 0.75, 1)
+metallic = 0.8
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="MAT_BiomassPickup_Bright"]
+albedo_color = Color(0.85, 0.25, 0.35, 1)
+metallic = 0.2
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="MAT_ElectronicsPickup_Bright"]
+albedo_color = Color(0.3, 0.3, 0.35, 1)
+metallic = 0.7
+roughness = 0.4
+
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(150, 0.2, 150)
 material = ExtResource("17_rock")
@@ -115,11 +243,11 @@ ambient_light_color = Color(0.18, 0.23, 0.32, 1)
 ambient_light_energy = 0.45
 tonemap_mode = 2
 glow_enabled = true
-glow_intensity = 0.18
-glow_strength = 0.45
+glow_intensity = 0.24
+glow_strength = 0.55
 fog_enabled = true
 fog_light_color = Color(0.14, 0.17, 0.22, 1)
-fog_density = 0.006
+fog_density = 0.009
 
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ground"]
@@ -164,7 +292,7 @@ visible = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
-light_energy = 1.05
+light_energy = 1.35
 shadow_enabled = true
 [node name="Ground" type="StaticBody3D" parent="."]
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
@@ -310,6 +438,7 @@ Quantity = 10
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_metal")
+material_override = SubResource("MAT_MetalPickup_Bright")
 [node name="Collision_MetalPickup" type="CollisionShape3D" parent="Placeholder_MetalPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_BiomassPickup" type="Area3D" parent="."]
@@ -320,6 +449,7 @@ Quantity = 3
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("SphereMesh_biomass")
+material_override = SubResource("MAT_BiomassPickup_Bright")
 [node name="Collision_BiomassPickup" type="CollisionShape3D" parent="Placeholder_BiomassPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_ElectronicsPickup" type="Area3D" parent="."]
@@ -330,6 +460,7 @@ Quantity = 2
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_electronics")
+material_override = SubResource("MAT_ElectronicsPickup_Bright")
 [node name="Collision_ElectronicsPickup" type="CollisionShape3D" parent="Placeholder_ElectronicsPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_Workbench" type="Area3D" parent="."]
@@ -418,85 +549,155 @@ mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("14_graphite")
 
 [node name="ProductionVisualRoot" type="Node3D" parent="."]
-metadata/stage = "Stage A only: terrain underlay, wreck, spawn route, lighting/atmosphere, background silhouettes."
+metadata/stage = "Stage A production: bespoke custom meshes and composition."
+
 [node name="TerrainUnderlay" type="Node3D" parent="ProductionVisualRoot"]
+
 [node name="VolcanicUnderlay_Main" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
 transform = Transform3D(31,0,4.8,0,1,0,-4.8,0,28,1,0.08,-14)
-mesh = SubResource("CylinderMesh_stage_a_ground")
-[node name="VolcanicUnderlay_Foreground" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
-visible = false
-transform = Transform3D(12,0,-2.2,0,1,0,2.2,0,10,-5,0.09,1.4)
-mesh = SubResource("CylinderMesh_stage_a_ground")
+mesh = SubResource("PROD_Ground")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="AshRoute_FromSpawn" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
 transform = Transform3D(2.0,0,0.35,0,1,0,-0.35,0,5.8,1.3,0.13,-6.6)
-mesh = SubResource("CylinderMesh_stage_a_ash")
+mesh = SubResource("PROD_Ground")
+material_override = SubResource("PROD_MAT_Ash")
+
 [node name="AshRoute_BendToWorkbench" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
 transform = Transform3D(1.6,0,-0.5,0,1,0,0.5,0,3.8,6.7,0.13,-11.2)
-mesh = SubResource("CylinderMesh_stage_a_soil")
+mesh = SubResource("PROD_Ground")
+material_override = SubResource("PROD_MAT_Ash")
+
 [node name="CrashBurialAsh" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
 transform = Transform3D(6.2,0,1.0,0,1,0,-1.0,0,3.6,-4.2,0.2,-13.1)
-mesh = SubResource("CylinderMesh_stage_a_ash")
+mesh = SubResource("PROD_Ground")
+material_override = SubResource("PROD_MAT_Ash")
+
 [node name="ForegroundBasalt_Left" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
-transform = Transform3D(5.2,0,1.4,0,1.2,0,-1.4,0,4.0,-13,0.22,-5.0)
-mesh = SubResource("PrismMesh_crystal")
-surface_material_override/0 = ExtResource("17_rock")
+transform = Transform3D(4.2,0.15,1.2,0,1.2,0,-1.2,0,4.2,-13,0.22,-5.0)
+mesh = SubResource("PROD_Basalt")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="MidBasalt_Right" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
 transform = Transform3D(4.0,0,-0.7,0,3.0,0,0.7,0,3.2,14,0.18,-15.5)
-mesh = ExtResource("37_rock_b")
-surface_material_override/0 = ExtResource("17_rock")
+mesh = SubResource("PROD_Basalt")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="MidBasalt_Left" type="MeshInstance3D" parent="ProductionVisualRoot/TerrainUnderlay"]
 transform = Transform3D(3.2,0,0.8,0,2.4,0,-0.8,0,3.4,-14,0.18,-18.0)
-mesh = ExtResource("36_rock_a")
-surface_material_override/0 = ExtResource("17_rock")
+mesh = SubResource("PROD_Basalt")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="CrashWreck" type="Node3D" parent="ProductionVisualRoot"]
+
 [node name="MainHull_BuriedIndustrial" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
-transform = Transform3D(1.15,0,0.84,-0.18,0.42,0.08,-0.84,-0.08,1.15,-4.7,0.55,-13.4)
-mesh = ExtResource("31_prod_hull")
-surface_material_override/0 = ExtResource("13_ivory")
+transform = Transform3D(1.0,0,0.35,-0.15,0.48,0.08,-0.35,-0.08,1.0,-4.7,0.55,-13.4)
+mesh = SubResource("PROD_HullMain")
+material_override = SubResource("PROD_MAT_OffWhite")
+
 [node name="SeparatedNose_Downrange" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
-transform = Transform3D(2.6,0,-1.7,0.22,1.15,0.07,1.7,-0.08,2.6,-10.0,0.32,-9.8)
-mesh = ExtResource("32_nose")
-surface_material_override/0 = ExtResource("28_steel")
+transform = Transform3D(2.0,0,-1.2,0.18,1.1,0.06,1.2,-0.06,2.0,-10.0,0.32,-9.8)
+mesh = SubResource("PROD_NoseCrushed")
+material_override = SubResource("PROD_MAT_WornSteel")
+
 [node name="ShearedWing_RoutePointer" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
-transform = Transform3D(4.4,0,0.9,-0.12,1.05,0.02,-0.9,0,4.4,-1.0,0.28,-10.4)
-mesh = ExtResource("33_wing")
-surface_material_override/0 = ExtResource("14_graphite")
+transform = Transform3D(3.8,0,0.8,-0.1,1.05,0.02,-0.8,0,3.8,-1.0,0.28,-10.4)
+mesh = SubResource("PROD_Wing")
+material_override = SubResource("PROD_MAT_Graphite")
+
 [node name="ExposedEngine_Heavy" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
-transform = Transform3D(0,0,3.4,0,2.2,0,-3.4,0,0,0.3,0.62,-15.7)
-mesh = ExtResource("34_enginepod")
-surface_material_override/0 = ExtResource("28_steel")
+transform = Transform3D(0,0,3.0,0,2.2,0,-3.0,0,0,0.3,0.62,-15.7)
+mesh = SubResource("PROD_Engine")
+material_override = SubResource("PROD_MAT_WornSteel")
+
 [node name="HullBreachScorch" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
 transform = Transform3D(1.2,0,1.3,0,1,0,-1.3,0,1.2,-2.5,1.0,-11.2)
-mesh = SubResource("BoxMesh_stage_a_scorch")
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_Scorch")
+
 [node name="RepairPatch_OffWhiteBreak" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
-transform = Transform3D(1.2,0,0.25,0,1,0,-0.25,0,1.2,-6.8,1.55,-11.1)
-mesh = SubResource("BoxMesh_stage_a_patch")
+transform = Transform3D(1.0,0,0.2,0,1,0,-0.2,0,1.0,-6.8,1.55,-11.1)
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_OffWhite")
+
 [node name="EmergencyStripe_Muted" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
 transform = Transform3D(0.9,0,0.26,0,1,0,-0.26,0,0.9,-5.0,2.2,-10.4)
-mesh = SubResource("BoxMesh_orange_strip")
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_MutedOrange")
+
 [node name="AlienCyanLeak_Secondary" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
-transform = Transform3D(1,0,0.2,0,1,0,-0.2,0,1,-1.4,1.35,-12.0)
-mesh = SubResource("BoxMesh_stage_a_cyan_slit")
+transform = Transform3D(0.6,0,0.15,0,0.8,0,-0.15,0,0.6,-1.4,1.35,-12.0)
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_AlienCyan")
+
+[node name="BreachDebris_Extra" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(0.8,0,0.6,0,0.7,0,-0.6,0,0.8,-5.2,1.2,-10.8)
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_Graphite")
+
+[node name="EngineScorchMark" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(0.7,0,0.4,0,0.45,0,-0.4,0,0.7,0.3,0.35,-15.9)
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_Scorch")
+
+[node name="HullBaseDebris" type="MeshInstance3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(0.55,0,-0.35,0,0.4,0,0.35,0,0.55,-8.0,0.3,-14.6)
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_WornSteel")
+
+[node name="BreachGlowLight" type="OmniLight3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-1.4,1.6,-12.0)
+light_color = Color(0.35, 0.85, 0.95, 1)
+light_energy = 1.1
+omni_range = 4.5
+shadow_enabled = false
+
+[node name="BreachEmberMotes" type="GPUParticles3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-1.4,1.8,-12.0)
+amount = 18
+lifetime = 3.2
+emitting = true
+process_material = SubResource("PPM_CyanEmbers")
+draw_pass_1 = SubResource("PROD_EmberMote")
+material_override = SubResource("PROD_MAT_AlienCyan")
+
+[node name="CrashSiteSmoke_Breach" type="GPUParticles3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-2.5,1.6,-11.2)
+amount = 12
+lifetime = 4.5
+emitting = true
+process_material = SubResource("PPM_CrashSmoke")
+draw_pass_1 = SubResource("PROD_SmokePuff")
+material_override = SubResource("PROD_MAT_Smoke")
+
+[node name="CrashSiteSmoke_Engine" type="GPUParticles3D" parent="ProductionVisualRoot/CrashWreck"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0.3,1.9,-15.7)
+amount = 10
+lifetime = 4.0
+emitting = true
+process_material = SubResource("PPM_CrashSmoke")
+draw_pass_1 = SubResource("PROD_SmokePuff")
+material_override = SubResource("PROD_MAT_Smoke")
+
 [node name="SpawnRoute" type="Node3D" parent="ProductionVisualRoot"]
-[node name="RouteMarker_Left" type="MeshInstance3D" parent="ProductionVisualRoot/SpawnRoute"]
-transform = Transform3D(1,0,0,0,1,0,0,0,1,-1.8,0.52,-4.0)
-mesh = SubResource("CylinderMesh_stage_a_marker")
-[node name="RouteMarker_Right" type="MeshInstance3D" parent="ProductionVisualRoot/SpawnRoute"]
-transform = Transform3D(1,0,0,0,1,0,0,0,1,3.4,0.52,-6.5)
-mesh = SubResource("CylinderMesh_stage_a_marker")
+
 [node name="BackgroundSilhouettes" type="Node3D" parent="ProductionVisualRoot"]
+
 [node name="DistantRidge_Left" type="MeshInstance3D" parent="ProductionVisualRoot/BackgroundSilhouettes"]
-transform = Transform3D(12,0,2,0,5,0,-2,0,9,-38,0.12,-48)
-mesh = ExtResource("37_rock_b")
-surface_material_override/0 = ExtResource("17_rock")
+transform = Transform3D(10.0,0,2.0,0,4.5,0,-2.0,0,9.0,-38,0.12,-48)
+mesh = SubResource("PROD_Ridge")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="DistantRidge_Right" type="MeshInstance3D" parent="ProductionVisualRoot/BackgroundSilhouettes"]
-transform = Transform3D(10,0,-2.5,0,5.5,0,2.5,0,10,40,0.12,-52)
-mesh = ExtResource("37_rock_b")
-surface_material_override/0 = ExtResource("17_rock")
+transform = Transform3D(9.0,0,-2.2,0,5.0,0,2.2,0,9.5,40,0.12,-52)
+mesh = SubResource("PROD_Ridge")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="DistantSpire_Asymmetric" type="MeshInstance3D" parent="ProductionVisualRoot/BackgroundSilhouettes"]
-transform = Transform3D(3.0,0,0.5,0,7.0,0,-0.5,0,3.0,24,0.12,-36)
-mesh = ExtResource("36_rock_a")
-surface_material_override/0 = ExtResource("17_rock")
+transform = Transform3D(4.0,0,0.5,0,6.5,0,-0.5,0,4.0,24,0.12,-36)
+mesh = SubResource("PROD_Ridge")
+material_override = SubResource("PROD_MAT_Basalt")
+
 [node name="AtmosphereVisuals" type="Node3D" parent="ProductionVisualRoot"]
 
 [node name="Player" parent="." instance=ExtResource("1_player")]

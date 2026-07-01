@@ -1,0 +1,168 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="MAT_HumanOffWhite"]
+albedo_color = Color(0.92, 0.90, 0.87, 1)
+metallic = 0.15
+metallic_specular = 0.5
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="MAT_Graphite"]
+albedo_color = Color(0.22, 0.22, 0.24, 1)
+metallic = 0.3
+metallic_specular = 0.5
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="MAT_WornSteel"]
+albedo_color = Color(0.48, 0.48, 0.50, 1)
+metallic = 0.6
+metallic_specular = 0.4
+roughness = 0.58
+
+[sub_resource type="StandardMaterial3D" id="MAT_MutedOrange"]
+albedo_color = Color(0.68, 0.50, 0.28, 1)
+metallic = 0.1
+metallic_specular = 0.5
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="MAT_Basalt"]
+albedo_color = Color(0.28, 0.28, 0.32, 1)
+metallic = 0.0
+metallic_specular = 0.5
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="MAT_Ash"]
+albedo_color = Color(0.58, 0.56, 0.52, 1)
+metallic = 0.0
+metallic_specular = 0.5
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="MAT_Scorch"]
+albedo_color = Color(0.15, 0.14, 0.16, 1)
+metallic = 0.05
+metallic_specular = 0.5
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MAT_AlienCyan"]
+albedo_color = Color(0.2, 0.8, 0.9, 1)
+metallic = 0.4
+metallic_specular = 0.6
+roughness = 0.3
+emission = Color(0.3, 1.0, 1.0, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="BoxMesh" id="HullMainProxy"]
+size = Vector3(11.0, 3.5, 5.2)
+
+[sub_resource type="CylinderMesh" id="NoseCrushedProxy"]
+height = 2.2
+bottom_radius = 1.05
+top_radius = 0.35
+
+[sub_resource type="BoxMesh" id="WingProxy"]
+size = Vector3(6.2, 0.42, 1.3)
+
+[sub_resource type="CylinderMesh" id="EngineProxy"]
+height = 2.5
+bottom_radius = 1.15
+top_radius = 1.0
+radial_segments = 10
+
+[sub_resource type="BoxMesh" id="InternalRibProxy"]
+size = Vector3(3.0, 2.0, 0.25)
+
+[sub_resource type="BoxMesh" id="DebrisProxy"]
+size = Vector3(1.5, 0.5, 1.2)
+
+[sub_resource type="BoxMesh" id="BasaltProxy"]
+size = Vector3(4.8, 3.2, 2.8)
+
+[sub_resource type="BoxMesh" id="RidgeProxy"]
+size = Vector3(8.5, 5.0, 3.2)
+
+[sub_resource type="BoxMesh" id="AshPatchProxy"]
+size = Vector3(2.8, 0.08, 2.0)
+
+[node name="StageA_Production" type="Node3D"]
+
+[node name="TerrainBase" type="Node3D" parent="."]
+
+[node name="FracturedGround" type="MeshInstance3D" parent="TerrainBase"]
+transform = Transform3D(8.2, 0, 0, 0, 1, 0, 0, 0, 6.5, 1, 0.08, -14)
+mesh = SubResource("AshPatchProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="CrashWreck" type="Node3D" parent="."]
+
+[node name="MainHull" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(1.0, 0, 0.35, -0.15, 0.48, 0.08, -0.35, -0.08, 1.0, -4.8, 0.6, -13.5)
+mesh = SubResource("HullMainProxy")
+material_override = SubResource("MAT_HumanOffWhite")
+
+[node name="SeparatedNose" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(2.0, 0, -1.2, 0.18, 1.1, 0.06, 1.2, -0.06, 2.0, -10.0, 0.35, -9.8)
+mesh = SubResource("NoseCrushedProxy")
+material_override = SubResource("MAT_WornSteel")
+
+[node name="ShearedWing" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(3.8, 0, 0.8, -0.1, 1.0, 0.02, -0.8, 0, 3.8, -0.8, 0.3, -10.6)
+mesh = SubResource("WingProxy")
+material_override = SubResource("MAT_Graphite")
+
+[node name="ExposedEngine" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(0, 0, 3.0, 0, 2.0, 0, -3.0, 0, 0, 0.4, 0.65, -15.8)
+mesh = SubResource("EngineProxy")
+material_override = SubResource("MAT_WornSteel")
+
+[node name="HullBreach_Scorch" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(1.0, 0, 1.0, 0, 1, 0, -1.0, 0, 1.0, -2.5, 1.0, -11.2)
+mesh = SubResource("InternalRibProxy")
+material_override = SubResource("MAT_Scorch")
+
+[node name="BreachDebris_1" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(0.8, 0, 0.6, 0, 0.7, 0, -0.6, 0, 0.8, -5.2, 1.2, -10.8)
+mesh = SubResource("DebrisProxy")
+material_override = SubResource("MAT_Graphite")
+
+[node name="BreachDebris_2" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(1.1, 0, 0.3, 0, 0.6, 0, -0.3, 0, 1.1, -3.8, 1.5, -11.5)
+mesh = SubResource("DebrisProxy")
+material_override = SubResource("MAT_WornSteel")
+
+[node name="AlienCyan_Leak" type="MeshInstance3D" parent="CrashWreck"]
+transform = Transform3D(0.6, 0, 0.15, 0, 0.8, 0, -0.15, 0, 0.6, -1.4, 1.35, -12.0)
+mesh = SubResource("DebrisProxy")
+material_override = SubResource("MAT_AlienCyan")
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="BasaltForeground_Left" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(4.2, 0.15, 1.2, 0, 1.2, 0, -1.2, 0, 4.2, -13, 0.3, -5.0)
+mesh = SubResource("BasaltProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="BasaltMidground_Right" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(3.5, 0, -0.6, 0, 2.8, 0, 0.6, 0, 3.5, 14, 0.2, -15.8)
+mesh = SubResource("BasaltProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="BasaltMidground_Left" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(3.0, 0, 0.7, 0, 2.2, 0, -0.7, 0, 3.0, -14, 0.2, -17.8)
+mesh = SubResource("BasaltProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="Ridge_A" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(10.0, 0, 1.8, 0, 4.2, 0, -1.8, 0, 9.0, -38, 0.15, -48)
+mesh = SubResource("RidgeProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="Ridge_B" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(9.0, 0, -2.2, 0, 5.0, 0, 2.2, 0, 9.5, 40, 0.15, -52)
+mesh = SubResource("RidgeProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="Ridge_C" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(4.0, 0, 0.45, 0, 6.5, 0, -0.45, 0, 4.0, 24, 0.15, -36)
+mesh = SubResource("RidgeProxy")
+material_override = SubResource("MAT_Basalt")
+
+[node name="Atmosphere" type="Node3D" parent="."]

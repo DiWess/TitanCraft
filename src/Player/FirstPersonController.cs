@@ -20,6 +20,7 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float AttackRange { get; set; } = MechanicalArmAttackLogic.DefaultRange;
     [Export] public int MechanicalArmDamage { get; set; } = MechanicalArmAttackLogic.DefaultMechanicalArmDamage;
     [Export] public float AttackCooldownSeconds { get; set; } = MechanicalArmAttackLogic.DefaultCooldownSeconds;
+    [Export] public float FallDefeatHeight { get; set; } = -10.0f;
 
     public MvpInventory Inventory { get; } = new();
 
@@ -29,6 +30,7 @@ public partial class FirstPersonController : CharacterBody3D
 
     private Camera3D _camera = null!;
     private Node3D _head = null!;
+    private MeshInstance3D? _mechanicalArmVisual;
     private float _gravity;
     private float _cameraPitch;
     private float _bodyYaw;
@@ -44,7 +46,25 @@ public partial class FirstPersonController : CharacterBody3D
         _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
         _mechanicalArmAttack = new MechanicalArmAttackLogic(MechanicalArmDamage, AttackCooldownSeconds);
         _mechanicalArmRecipe = new MechanicalArmRecipe();
+        _mechanicalArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        Inventory.Changed += UpdateMechanicalArmVisual;
+        UpdateMechanicalArmVisual(Inventory);
         Input.MouseMode = Input.MouseModeEnum.Captured;
+    }
+
+    public override void _ExitTree()
+    {
+        Inventory.Changed -= UpdateMechanicalArmVisual;
+    }
+
+    private void UpdateMechanicalArmVisual(MvpInventory inventory)
+    {
+        // The inventory is the single authority for arm ownership; crafting and
+        // save restoration both flow through its Changed event.
+        if (_mechanicalArmVisual is not null)
+        {
+            _mechanicalArmVisual.Visible = inventory.IsMechanicalArmBuilt;
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -191,6 +211,14 @@ public partial class FirstPersonController : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        // The crash-site slab has no perimeter containment; leaving it must end in
+        // the standard death flow (defeat screen -> reload last save), never an endless fall.
+        if (GlobalPosition.Y < FallDefeatHeight && !Health.IsDead)
+        {
+            Health.ApplyDamage(Health.CurrentHealth);
+            return;
+        }
+
         _mechanicalArmAttack.Tick((float)delta);
         UpdateInteractionPrompt();
 

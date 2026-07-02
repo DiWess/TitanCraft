@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using TitanCraft.Player;
+using TitanCraft.World;
 
 namespace TitanCraft.Enemies;
 
@@ -101,6 +102,12 @@ public sealed class GalaxabrainScoutBrain
             State = GalaxabrainScoutState.Dead;
         }
     }
+
+    public void MarkDefeated()
+    {
+        CurrentHealth = 0;
+        State = GalaxabrainScoutState.Dead;
+    }
 }
 
 public partial class GalaxabrainScout : CharacterBody3D
@@ -192,18 +199,48 @@ public partial class GalaxabrainScout : CharacterBody3D
     {
         Velocity = Vector3.Zero;
         SetPhysicsProcess(false);
+        DisableBodyCollision();
         SetMissionComponentVisible(true);
         Visible = false;
+
+        // Gameplay death is the only event allowed to complete the defeat objective;
+        // the component pickup afterwards completes only component recovery.
+        if (GetConfiguredPlayer() is FirstPersonController controller)
+        {
+            controller.Mission.TryCompleteGalaxabrainDefeat(true);
+        }
+    }
+
+    /// <summary>
+    /// Reconstructs the defeated state from a save without mutating mission progression.
+    /// </summary>
+    public void RestoreDefeated(bool isComponentAvailable)
+    {
+        _brain.MarkDefeated();
+        Velocity = Vector3.Zero;
+        SetPhysicsProcess(false);
+        DisableBodyCollision();
+        SetMissionComponentVisible(isComponentAvailable);
+        Visible = false;
+
+        if (!isComponentAvailable && GetMissionComponent() is GalaxabrainComponentPickup pickup)
+        {
+            pickup.RestoreCollected();
+        }
+    }
+
+    private void DisableBodyCollision()
+    {
+        // The dead body must stop blocking rays: its collider shares the component
+        // pickup's capsule, so an enabled corpse collider can eat the interaction
+        // raycast and soft-lock component recovery.
+        GetNodeOrNull<CollisionShape3D>("CollisionShape3D")?
+            .SetDeferred(CollisionShape3D.PropertyName.Disabled, true);
     }
 
     private void SetMissionComponentVisible(bool isVisible)
     {
-        if (MissionComponentPath is null || MissionComponentPath.IsEmpty)
-        {
-            return;
-        }
-
-        Node3D? missionComponent = GetNodeOrNull<Node3D>(MissionComponentPath);
+        Node3D? missionComponent = GetMissionComponent();
         if (missionComponent is not null)
         {
             missionComponent.Visible = isVisible;
@@ -212,5 +249,12 @@ public partial class GalaxabrainScout : CharacterBody3D
                 area.Monitoring = isVisible;
             }
         }
+    }
+
+    private Node3D? GetMissionComponent()
+    {
+        return MissionComponentPath is null || MissionComponentPath.IsEmpty
+            ? null
+            : GetNodeOrNull<Node3D>(MissionComponentPath);
     }
 }

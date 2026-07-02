@@ -98,4 +98,23 @@ public sealed class MvpInventoryTests
         AssertThat(inventory.IsMechanicalArmBuilt).IsTrue();
         AssertThat(inventory.HasGalaxabrainComponent).IsTrue();
     }
+
+    [TestCase]
+    public void ChangedFiresOnCraftAndRestoreSoBoundVisualsStayInSync()
+    {
+        // The first-person mechanical arm visual subscribes to Changed; both the
+        // crafting path and the save-restoration path must raise it.
+        var inventory = new MvpInventory();
+        var observedArmStates = new System.Collections.Generic.List<bool>();
+        inventory.Changed += changed => observedArmStates.Add(changed.IsMechanicalArmBuilt);
+
+        inventory.MarkMechanicalArmBuilt();
+        inventory.Restore(metal: 0, biomass: 0, electronicComponents: 0, isMechanicalArmBuilt: false, hasGalaxabrainComponent: false);
+        inventory.Restore(metal: 5, biomass: 1, electronicComponents: 1, isMechanicalArmBuilt: true, hasGalaxabrainComponent: false);
+
+        AssertThat(observedArmStates.Count).IsEqual(3);
+        AssertThat(observedArmStates[0]).IsTrue();
+        AssertThat(observedArmStates[1]).IsFalse();
+        AssertThat(observedArmStates[2]).IsTrue();
+    }
 }

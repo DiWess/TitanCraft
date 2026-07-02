@@ -14,22 +14,31 @@ public partial class GalaxabrainComponentPickup : Area3D, ICrashSiteInteractable
         ArgumentNullException.ThrowIfNull(inventory);
         ArgumentNullException.ThrowIfNull(mission);
 
-        if (_isCollected
-            || mission.CurrentStep != CrashSiteMissionStep.DefeatGalaxabrain
-            || !inventory.IsMechanicalArmBuilt)
+        // Defeat is completed by the Galaxabrain's death; this pickup only completes recovery.
+        if (_isCollected || mission.CurrentStep != CrashSiteMissionStep.RecoverGalaxabrainComponent)
         {
             return false;
         }
 
-        if (!mission.TryCompleteGalaxabrainDefeat(true))
+        if (!mission.TryCompleteComponentRecovery())
         {
             return false;
         }
 
         inventory.MarkGalaxabrainComponentCollected();
+        Collect();
+        return true;
+    }
+
+    /// <summary>
+    /// Reconstructs the already-collected state from a save without mutating mission progression.
+    /// </summary>
+    public void RestoreCollected() => Collect();
+
+    private void Collect()
+    {
         _isCollected = true;
         Visible = false;
         Monitoring = false;
-        return mission.TryCompleteComponentRecovery();
     }
 }

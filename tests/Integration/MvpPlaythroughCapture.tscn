@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://titancraft_mvp_capture"]
+
+[ext_resource type="Script" path="res://tests/Integration/MvpPlaythroughCapture.cs" id="1_capture"]
+
+[node name="MvpPlaythroughCapture" type="Node"]
+script = ExtResource("1_capture")

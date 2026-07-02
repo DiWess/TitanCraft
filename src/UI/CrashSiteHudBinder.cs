@@ -12,6 +12,7 @@ public partial class CrashSiteHudBinder : Node
     private FirstPersonController _player = null!;
     private CrashSiteHud _hud = null!;
     private bool _startTutorialDismissed;
+    private bool _armBuiltFeedbackShown;
 
     public override void _Ready()
     {
@@ -51,6 +52,14 @@ public partial class CrashSiteHudBinder : Node
     {
         _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents);
         _hud.SetMechanicalArmBuilt(inventory.IsMechanicalArmBuilt);
+
+        // Replace the startup "not built yet" hint the moment the arm exists,
+        // otherwise the stale hint contradicts the actual state.
+        if (inventory.IsMechanicalArmBuilt && !_armBuiltFeedbackShown)
+        {
+            _armBuiltFeedbackShown = true;
+            _hud.SetActionFeedback("Mechanical Arm Mk I online — left click punches the Galaxabrain.");
+        }
     }
 
     private void UpdateMission(CrashSiteMissionState mission)

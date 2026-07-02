@@ -14,7 +14,7 @@
 | Export template version | 4.7.stable.mono (`windows_release_x86_64.exe` present) |
 | Export preset | `Windows Desktop`, x86_64, `embed_pck=true` |
 | Required adjacent files | `builds/Windows/data_TitanCraft_windows_x86_64/` (187 files: TitanCraft.dll, GodotSharp.dll, .NET runtime assemblies) — must ship next to the exe |
-| Launch result | **ENVIRONMENT_BLOCKED** in this Linux container (no Wine, no Windows host). CI `windows` job (`.github/workflows/ci.yml`) performs a native exported smoke (`TitanCraft.exe --headless --quit-after 120`) on `windows-latest`. |
+| Launch result | **PASS on windows-latest** via CI `windows` job, PR #44 run [28571806529](https://github.com/DiWess/TitanCraft/actions/runs/28571806529) (success, 2026-07-02T07:05:28Z): native exported smoke launched `TitanCraft.exe --headless --quit-after 120` with exit 0. The CI-built export comes from PR head `8ac1c9d`, whose game code is identical to tested commit `eab008ac` (evidence-only delta). Local container launch remains impossible (no Wine/Windows host). |
 
 Offline property: the project contains no network services; the export requires no
 internet access at runtime (verified by code inspection and the offline container run

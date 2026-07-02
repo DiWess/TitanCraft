@@ -1,0 +1,50 @@
+{
+  "verdict": "ENVIRONMENT_BLOCKED",
+  "source_commit_sha": "3b5a7dc61c04c14e1590fb90430371d077538677",
+  "tested_commit_sha": "eab008ac1efc9931c5f6157d9d6165a4e6af1263",
+  "working_tree_clean": true,
+  "restore_pass": true,
+  "build_pass": true,
+  "tests_pass": true,
+  "godot_import_pass": true,
+  "windows_export_pass": true,
+  "windows_launch_pass": false,
+  "playthrough_passed": 15,
+  "playthrough_total": 15,
+  "open_p0_count": 0,
+  "open_p1_count": 0,
+  "mission_sequence_verified": true,
+  "mechanical_arm_visual_verified": true,
+  "save_death_reload_verified": true,
+  "collision_boundary_verified": true,
+  "victory_verified": true,
+  "evidence_paths": [
+    "artifacts/mvp_closure/baseline_report.md",
+    "artifacts/mvp_closure/save_death_reload_policy.md",
+    "artifacts/mvp_closure/runtime_playthrough.md",
+    "artifacts/mvp_closure/playthrough_capture.log",
+    "artifacts/mvp_closure/playthrough/01_initial_spawn.png",
+    "artifacts/mvp_closure/playthrough/02_resources_collected.png",
+    "artifacts/mvp_closure/playthrough/03_arm_crafted_visible.png",
+    "artifacts/mvp_closure/playthrough/04_enemy_defeated_objective_updated.png",
+    "artifacts/mvp_closure/playthrough/05_component_recovered.png",
+    "artifacts/mvp_closure/playthrough/06_beacon_active.png",
+    "artifacts/mvp_closure/playthrough/07_victory_screen.png",
+    "artifacts/mvp_closure/playthrough/08_restored_save_state.png",
+    "artifacts/mvp_closure/build/import.log",
+    "artifacts/mvp_closure/build/integration.log",
+    "artifacts/mvp_closure/build/integration_prefix_boundary_failure.log",
+    "artifacts/mvp_closure/build/smoke.log",
+    "artifacts/mvp_closure/build/export.log",
+    "artifacts/mvp_closure/export/export_evidence.md"
+  ],
+  "environment_blockers": [
+    "Windows-native launch of builds/Windows/TitanCraft.exe (SHA-256 84d47d8668a06159c4b305c5efa919b6b09b8eb3b3ecace919b271d785a0bacf) cannot be executed in this Linux container: no Wine and no Windows host. All 15 playthrough checks passed against the identical project through the Godot 4.7 runtime on Linux. Proof path: CI windows job on windows-latest runs 'TitanCraft.exe --headless --quit-after 120' as an exported smoke; a human Windows playthrough for feel validation remains the final manual gate."
+  ],
+  "remaining_non_blocking_work": [
+    "P2: temporary audio cues (README marks audio non-priority; none exist).",
+    "P2: cosmetic replacement of Placeholder_* naming and primitive interactable meshes (load-bearing for NodePaths and tests; deferred deliberately).",
+    "P2: player look direction is not persisted in saves (position/health/inventory/mission/enemy/beacon are).",
+    "Manual: human Windows playthrough for feel, readability, and performance validation on target hardware."
+  ]
+}

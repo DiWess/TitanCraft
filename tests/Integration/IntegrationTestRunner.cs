@@ -229,6 +229,8 @@ public partial class IntegrationTestRunner : Node
         Require(!scout.Visible, "Galaxabrain Scout stayed visible after death");
         Require(missionComponent.Visible, "Galaxabrain component pickup did not become visible after scout death");
         Require(missionComponent.Monitoring, "Galaxabrain component pickup did not become collectable after scout death");
+        await Frames(2);
+        Require(scout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled, "Dead Galaxabrain Scout collider stayed enabled");
 
         scout.QueueFree();
         await Frames(2);
@@ -513,7 +515,14 @@ public partial class IntegrationTestRunner : Node
         Require(component.Visible && component.Monitoring, "Component pickup was not revealed by Galaxabrain death");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated before component recovery");
 
-        Require(component.Interact(player.Inventory, player.Mission), "Component recovery failed after Galaxabrain death");
+        // Recover through the real interaction raycast: the dead scout's collider must
+        // not eat the ray, or the recovery objective soft-locks (Codex review finding).
+        await Frames(2);
+        Require(scout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled, "Dead Galaxabrain body collider stayed enabled");
+        player.GlobalPosition = component.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(component.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Interaction raycast could not reach the revealed component pickup");
         Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
         Require(!component.Visible && !component.Monitoring, "Component pickup stayed interactable after recovery");
@@ -560,6 +569,7 @@ public partial class IntegrationTestRunner : Node
         Require(reloaded.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastLoadSucceeded, "Reload did not restore the defeat-state save");
         Require(reloadedScout.Brain.IsDead, "Defeated Galaxabrain came back to life after reload");
         Require(!reloadedScout.Visible, "Defeated Galaxabrain became visible again after reload");
+        Require(reloadedScout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled, "Restored dead Galaxabrain body collider stayed enabled");
         Require(reloadedComponent.Visible && reloadedComponent.Monitoring, "Unrecovered component was not available after reload");
         Require(reloadedPlayer.Inventory.IsMechanicalArmBuilt, "Mechanical arm ownership was lost across reload");
         Require(reloadedPlayer.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Visible, "Mechanical arm visual was not restored after reload");

@@ -68,6 +68,9 @@ public partial class IntegrationTestRunner : Node
             await TestEndScreenNavigation();
             TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
+            await TestFullMissionPlaythrough();
+            await TestDefeatedScoutPersistenceAcrossReload();
+            await TestFallingOutOfBoundsLeadsToDefeatFlow();
             await TestBeaconVisualState();
             await TestRuntimeSceneContracts();
             await TestPhysicsAndMovement();
@@ -454,6 +457,153 @@ public partial class IntegrationTestRunner : Node
         loadedMain.QueueFree();
         await Frames(2);
         LocalSaveGameStore.DeleteSave();
+    }
+
+    private async System.Threading.Tasks.Task TestFullMissionPlaythrough()
+    {
+        LocalSaveGameStore.DeleteSave();
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+
+        var player = main.GetNode<FirstPersonController>("Player");
+        var navigator = main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        navigator.EnableSceneChanges = false;
+        var arm = player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        var scout = main.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
+        var component = scout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
+        var workbench = main.GetNode<Workbench>("Placeholder_Workbench");
+        var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+
+        Require(!arm.Visible, "Mechanical arm visual should start hidden");
+        Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench must reject crafting before resources are collected");
+        Require(!component.Interact(player.Inventory, player.Mission), "Component must reject recovery before Galaxabrain defeat");
+        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon must reject activation before component recovery");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.CollectResources, "Invalid early interactions mutated mission state");
+
+        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        {
+            var pickup = main.GetNode<ResourcePickup>(pickupName);
+            Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} could not be collected");
+            Require(!pickup.Interact(player.Inventory, player.Mission), $"{pickupName} was collectable twice");
+        }
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm, "Collecting all resources did not advance to crafting");
+
+        Require(workbench.Interact(player.Inventory, player.Mission), "Workbench crafting failed with full resources");
+        Require(player.Inventory.IsMechanicalArmBuilt, "Crafting did not build the mechanical arm");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefeatGalaxabrain, "Crafting did not advance to the defeat step");
+        Require(arm.Visible, "Mechanical arm visual did not appear after crafting");
+        Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench crafted the arm twice");
+        Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
+
+        for (var hit = 0; hit < 4; hit++)
+            scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
+        Require(scout.Brain.IsDead, "Galaxabrain survived four arm hits");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Galaxabrain death did not advance to component recovery");
+        Require(!player.Mission.IsVictory && player.Mission.CurrentStep != CrashSiteMissionStep.ActivateBeacon, "Galaxabrain death skipped the component recovery step");
+        Require(component.Visible && component.Monitoring, "Component pickup was not revealed by Galaxabrain death");
+        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated before component recovery");
+
+        Require(component.Interact(player.Inventory, player.Mission), "Component recovery failed after Galaxabrain death");
+        Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
+        Require(!component.Visible && !component.Monitoring, "Component pickup stayed interactable after recovery");
+        Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable twice");
+
+        Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed with recovered component");
+        Require(player.Mission.IsVictory, "Beacon activation did not produce victory");
+        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
+        await Frames(2);
+        Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after beacon activation");
+
+        main.QueueFree();
+        await Frames(2);
+        LocalSaveGameStore.DeleteSave();
+    }
+
+    private async System.Threading.Tasks.Task TestDefeatedScoutPersistenceAcrossReload()
+    {
+        LocalSaveGameStore.DeleteSave();
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator").EnableSceneChanges = false;
+        var scout = main.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
+        player.Inventory.AddResources(metal: 10, biomass: 3, electronicComponents: 2);
+        player.Mission.TryCompleteResourceCollection();
+        player.Inventory.TrySpendResources(metal: 10, biomass: 3, electronicComponents: 2);
+        player.Inventory.MarkMechanicalArmBuilt();
+        player.Mission.TryCompleteMechanicalArmConstruction();
+        for (var hit = 0; hit < 4; hit++)
+            scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Setup: defeat step not reached");
+        Require(main.GetNode<SavePoint>("Placeholder_SavePoint").Interact(player.Inventory, player.Mission), "Setup: save failed after defeat");
+        main.QueueFree();
+        await Frames(2);
+
+        var reloaded = LoadScene<Node3D>(MainScenePath);
+        AddChild(reloaded);
+        await Frames(2);
+        var reloadedPlayer = reloaded.GetNode<FirstPersonController>("Player");
+        var reloadedScout = reloaded.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
+        var reloadedComponent = reloadedScout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
+        Require(reloaded.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastLoadSucceeded, "Reload did not restore the defeat-state save");
+        Require(reloadedScout.Brain.IsDead, "Defeated Galaxabrain came back to life after reload");
+        Require(!reloadedScout.Visible, "Defeated Galaxabrain became visible again after reload");
+        Require(reloadedComponent.Visible && reloadedComponent.Monitoring, "Unrecovered component was not available after reload");
+        Require(reloadedPlayer.Inventory.IsMechanicalArmBuilt, "Mechanical arm ownership was lost across reload");
+        Require(reloadedPlayer.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Visible, "Mechanical arm visual was not restored after reload");
+        Require(reloadedPlayer.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Mission step was not restored");
+
+        Require(reloadedComponent.Interact(reloadedPlayer.Inventory, reloadedPlayer.Mission), "Component recovery failed after reload");
+        Require(reloaded.GetNode<SavePoint>("Placeholder_SavePoint").Interact(reloadedPlayer.Inventory, reloadedPlayer.Mission), "Second checkpoint save failed");
+        reloaded.QueueFree();
+        await Frames(2);
+
+        var finalRun = LoadScene<Node3D>(MainScenePath);
+        AddChild(finalRun);
+        await Frames(2);
+        var finalPlayer = finalRun.GetNode<FirstPersonController>("Player");
+        var finalNavigator = finalRun.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        finalNavigator.EnableSceneChanges = false;
+        var finalScout = finalRun.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
+        var finalComponent = finalScout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
+        var finalBeacon = finalRun.GetNode<Beacon>("Placeholder_Beacon");
+        Require(finalScout.Brain.IsDead && !finalScout.Visible, "Defeated Galaxabrain revived on the second reload");
+        Require(!finalComponent.Visible && !finalComponent.Monitoring, "Recovered component became interactable again after reload");
+        Require(!finalComponent.Interact(finalPlayer.Inventory, finalPlayer.Mission), "Recovered component could be collected twice across reloads");
+        Require(finalPlayer.Inventory.HasGalaxabrainComponent, "Recovered component was lost across reload");
+        Require(!finalBeacon.IsActivated, "Beacon restored as active before activation");
+        Require(finalPlayer.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Mission step after recovery was not restored");
+        Require(finalBeacon.Interact(finalPlayer.Inventory, finalPlayer.Mission), "Beacon activation failed after reload");
+        Require(finalPlayer.Mission.IsVictory, "Victory was not reached after reloads");
+        await Frames(2);
+        Require(finalNavigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after reloaded beacon activation");
+        finalRun.QueueFree();
+        await Frames(2);
+        LocalSaveGameStore.DeleteSave();
+    }
+
+    private async System.Threading.Tasks.Task TestFallingOutOfBoundsLeadsToDefeatFlow()
+    {
+        LocalSaveGameStore.DeleteSave();
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var navigator = main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        navigator.EnableSceneChanges = false;
+
+        // The ground slab is 150x150 with no perimeter containment; leaving it must
+        // route through the standard death flow instead of an endless fall.
+        player.GlobalPosition = new Vector3(80.0f, 2.0f, 0.0f);
+        await Frames(240);
+
+        Require(player.Health.IsDead, "Falling out of bounds did not kill the player");
+        Require(navigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Out-of-bounds fall did not request the defeat screen");
+        main.QueueFree();
+        await Frames(2);
     }
 
     private async System.Threading.Tasks.Task TestPhysicsAndMovement()

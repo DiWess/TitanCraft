@@ -20,6 +20,7 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float AttackRange { get; set; } = MechanicalArmAttackLogic.DefaultRange;
     [Export] public int MechanicalArmDamage { get; set; } = MechanicalArmAttackLogic.DefaultMechanicalArmDamage;
     [Export] public float AttackCooldownSeconds { get; set; } = MechanicalArmAttackLogic.DefaultCooldownSeconds;
+    [Export] public float FallDefeatHeight { get; set; } = -10.0f;
 
     public MvpInventory Inventory { get; } = new();
 
@@ -210,6 +211,14 @@ public partial class FirstPersonController : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        // The crash-site slab has no perimeter containment; leaving it must end in
+        // the standard death flow (defeat screen -> reload last save), never an endless fall.
+        if (GlobalPosition.Y < FallDefeatHeight && !Health.IsDead)
+        {
+            Health.ApplyDamage(Health.CurrentHealth);
+            return;
+        }
+
         _mechanicalArmAttack.Tick((float)delta);
         UpdateInteractionPrompt();
 

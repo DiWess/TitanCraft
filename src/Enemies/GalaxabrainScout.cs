@@ -234,8 +234,14 @@ public partial class GalaxabrainScout : CharacterBody3D
         // The dead body must stop blocking rays: its collider shares the component
         // pickup's capsule, so an enabled corpse collider can eat the interaction
         // raycast and soft-lock component recovery.
-        GetNodeOrNull<CollisionShape3D>("CollisionShape3D")?
-            .SetDeferred(CollisionShape3D.PropertyName.Disabled, true);
+        CollisionShape3D? bodyCollider = GetNodeOrNull<CollisionShape3D>("CollisionShape3D");
+        if (bodyCollider is null)
+        {
+            return;
+        }
+
+        bodyCollider.Disabled = true;
+        bodyCollider.SetDeferred(CollisionShape3D.PropertyName.Disabled, true);
     }
 
     private void SetMissionComponentVisible(bool isVisible)

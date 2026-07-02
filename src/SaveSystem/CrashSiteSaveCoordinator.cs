@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.Enemies;
 using TitanCraft.Player;
 using TitanCraft.UI;
 using TitanCraft.World;
@@ -10,6 +11,8 @@ public partial class CrashSiteSaveCoordinator : Node
     [Export] public NodePath PlayerPath { get; set; } = "../Player";
     [Export] public NodePath PauseMenuPath { get; set; } = "../PauseMenu";
     [Export] public NodePath SavePointPath { get; set; } = "../Placeholder_SavePoint";
+    [Export] public NodePath GalaxabrainPath { get; set; } = "../Placeholder_GalaxabrainScout";
+    [Export] public NodePath BeaconPath { get; set; } = "../Placeholder_Beacon";
     [Export] public string SavePath { get; set; } = LocalSaveGameStore.DefaultSavePath;
 
     public bool LastSaveSucceeded { get; private set; }
@@ -18,12 +21,16 @@ public partial class CrashSiteSaveCoordinator : Node
     private FirstPersonController _player = null!;
     private PauseMenu _pauseMenu = null!;
     private SavePoint? _savePoint;
+    private GalaxabrainScout? _galaxabrain;
+    private Beacon? _beacon;
 
     public override void _Ready()
     {
         _player = GetNode<FirstPersonController>(PlayerPath);
         _pauseMenu = GetNode<PauseMenu>(PauseMenuPath);
         _savePoint = GetNodeOrNull<SavePoint>(SavePointPath);
+        _galaxabrain = GetNodeOrNull<GalaxabrainScout>(GalaxabrainPath);
+        _beacon = GetNodeOrNull<Beacon>(BeaconPath);
         _pauseMenu.SaveRequested += SaveGame;
         if (_savePoint is not null)
             _savePoint.SaveRequested += SaveGame;
@@ -41,6 +48,7 @@ public partial class CrashSiteSaveCoordinator : Node
     public void SaveGame()
     {
         var position = _player.GlobalPosition;
+        var missionStep = _player.Mission.CurrentStep;
         LastSaveSucceeded = false;
         LocalSaveGameStore.Save(new CrashSiteSaveData
         {
@@ -54,7 +62,9 @@ public partial class CrashSiteSaveCoordinator : Node
             ElectronicComponents = _player.Inventory.ElectronicComponents,
             MechanicalArmBuilt = _player.Inventory.IsMechanicalArmBuilt,
             GalaxabrainComponentCollected = _player.Inventory.HasGalaxabrainComponent,
-            MissionStep = _player.Mission.CurrentStep,
+            IsGalaxabrainDefeated = CrashSiteStateReconciler.RequiresGalaxabrainDefeated(missionStep),
+            IsBeaconActivated = CrashSiteStateReconciler.RequiresBeaconActivated(missionStep),
+            MissionStep = missionStep,
         }, SavePath);
         LastSaveSucceeded = true;
     }
@@ -65,10 +75,21 @@ public partial class CrashSiteSaveCoordinator : Node
         if (!LocalSaveGameStore.TryLoad(out var saveData, SavePath))
             return false;
 
+        var missionStep = saveData.MissionStep;
         _player.GlobalPosition = new Vector3(saveData.PlayerX, saveData.PlayerY, saveData.PlayerZ);
         _player.Health.Restore(saveData.Health);
-        _player.Inventory.Restore(saveData.Metal, saveData.Biomass, saveData.ElectronicComponents, saveData.MechanicalArmBuilt, saveData.GalaxabrainComponentCollected);
-        _player.Mission.Restore(saveData.MissionStep);
+        _player.Inventory.Restore(
+            saveData.Metal,
+            saveData.Biomass,
+            saveData.ElectronicComponents,
+            CrashSiteStateReconciler.RequiresMechanicalArmBuilt(missionStep),
+            CrashSiteStateReconciler.RequiresComponentCollected(missionStep));
+        _player.Mission.Restore(missionStep);
+
+        if (CrashSiteStateReconciler.RequiresGalaxabrainDefeated(missionStep))
+            _galaxabrain?.RestoreDefeated(CrashSiteStateReconciler.IsComponentAvailable(missionStep));
+        _beacon?.RestoreActivated(CrashSiteStateReconciler.RequiresBeaconActivated(missionStep));
+
         LastLoadSucceeded = true;
         return true;
     }

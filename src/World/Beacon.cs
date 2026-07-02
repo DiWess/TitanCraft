@@ -32,6 +32,15 @@ public partial class Beacon : Area3D, ICrashSiteInteractable
         return IsActivated;
     }
 
+    /// <summary>
+    /// Reconstructs the activation state from a save without mutating mission progression.
+    /// </summary>
+    public void RestoreActivated(bool isActivated)
+    {
+        IsActivated = isActivated;
+        UpdateVisualState();
+    }
+
     private void UpdateVisualState()
     {
         if (!ClosedVisualPath.IsEmpty && GetNodeOrNull<Node3D>(ClosedVisualPath) is { } closedVisual)

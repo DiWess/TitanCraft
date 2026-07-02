@@ -83,6 +83,86 @@ public sealed class CrashSiteMissionStateTests
     }
 
     [TestCase]
+    public void EachCompletionMethodSucceedsExactlyOnce()
+    {
+        var mission = new CrashSiteMissionState();
+
+        AssertThat(mission.TryCompleteResourceCollection()).IsTrue();
+        AssertThat(mission.TryCompleteResourceCollection()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.BuildMechanicalArm);
+
+        AssertThat(mission.TryCompleteMechanicalArmConstruction()).IsTrue();
+        AssertThat(mission.TryCompleteMechanicalArmConstruction()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
+
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsTrue();
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
+
+        AssertThat(mission.TryCompleteComponentRecovery()).IsTrue();
+        AssertThat(mission.TryCompleteComponentRecovery()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.ActivateBeacon);
+
+        AssertThat(mission.TryCompleteBeaconActivation()).IsTrue();
+        AssertThat(mission.TryCompleteBeaconActivation()).IsFalse();
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.Victory);
+    }
+
+    [TestCase]
+    public void GalaxabrainDefeatDoesNotAutomaticallyCompleteComponentRecovery()
+    {
+        var mission = new CrashSiteMissionState();
+        mission.TryCompleteResourceCollection();
+        mission.TryCompleteMechanicalArmConstruction();
+
+        AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsTrue();
+
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
+        AssertThat(mission.CurrentObjectiveText).Contains("Recover");
+        AssertThat(mission.IsVictory).IsFalse();
+    }
+
+    [TestCase]
+    public void ComponentRecoveryIsBlockedBeforeGalaxabrainDefeat()
+    {
+        var mission = new CrashSiteMissionState();
+        mission.TryCompleteResourceCollection();
+        mission.TryCompleteMechanicalArmConstruction();
+
+        AssertThat(mission.TryCompleteComponentRecovery()).IsFalse();
+
+        AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
+    }
+
+    [TestCase]
+    public void RestoreReconstructsEverySupportedStepWithAdvanceableState()
+    {
+        foreach (var step in new[]
+                 {
+                     CrashSiteMissionStep.CollectResources,
+                     CrashSiteMissionStep.BuildMechanicalArm,
+                     CrashSiteMissionStep.DefeatGalaxabrain,
+                     CrashSiteMissionStep.RecoverGalaxabrainComponent,
+                     CrashSiteMissionStep.ActivateBeacon,
+                     CrashSiteMissionStep.Victory,
+                 })
+        {
+            var mission = new CrashSiteMissionState();
+            mission.Restore(step);
+
+            AssertThat(mission.CurrentStep).IsEqual(step);
+            AssertThat(mission.CurrentObjectiveText).IsNotEqual("Unknown Objective");
+        }
+
+        // A restored intermediate step must remain completable, not softlocked.
+        var restoredMission = new CrashSiteMissionState();
+        restoredMission.Restore(CrashSiteMissionStep.RecoverGalaxabrainComponent);
+        AssertThat(restoredMission.TryCompleteComponentRecovery()).IsTrue();
+        AssertThat(restoredMission.TryCompleteBeaconActivation()).IsTrue();
+        AssertThat(restoredMission.IsVictory).IsTrue();
+    }
+
+    [TestCase]
     public void VictoryDoesNotAdvancePastFinalStep()
     {
         var mission = new CrashSiteMissionState();

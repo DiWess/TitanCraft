@@ -497,7 +497,15 @@ public partial class IntegrationTestRunner : Node
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench crafted the arm twice");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
 
-        for (var hit = 0; hit < 4; hit++)
+        // First hit goes through the real input path: aim the camera at the scout
+        // and raycast-attack, proving the fight works end to end, not just ApplyDamage.
+        player.GlobalPosition = scout.GlobalPosition + new Vector3(2.0f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(scout.GlobalPosition, Vector3.Up);
+        Require(player.TryAttack(), "Aimed mechanical arm attack did not hit the Galaxabrain");
+        Require(scout.Brain.CurrentHealth == scout.Brain.MaxHealth - MechanicalArmAttackLogic.DefaultMechanicalArmDamage, "Aimed attack did not damage the Galaxabrain");
+
+        for (var hit = 0; hit < 3; hit++)
             scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
         Require(scout.Brain.IsDead, "Galaxabrain survived four arm hits");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Galaxabrain death did not advance to component recovery");

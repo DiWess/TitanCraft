@@ -442,26 +442,26 @@ transform = Transform3D(4,0.15,0,0,3,0,-0.08,0,2,0,1.0,-72)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_rock")
-[node name="Placeholder_Crate1" type="StaticBody3D" parent="."]
+[node name="CrashSiteCargoCrate1" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,4,0.85,-5)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate1"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CrashSiteCargoCrate1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-[node name="Collision_Crate" type="CollisionShape3D" parent="Placeholder_Crate1"]
+[node name="Collision_Crate" type="CollisionShape3D" parent="CrashSiteCargoCrate1"]
 shape = SubResource("BoxShape3D_crate")
-[node name="Placeholder_Crate2" type="StaticBody3D" parent="."]
+[node name="CrashSiteCargoCrate2" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,-6,0.85,-8)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CrashSiteCargoCrate2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-[node name="Collision_Crate" type="CollisionShape3D" parent="Placeholder_Crate2"]
+[node name="Collision_Crate" type="CollisionShape3D" parent="CrashSiteCargoCrate2"]
 shape = SubResource("BoxShape3D_crate")
-[node name="Placeholder_Crate3" type="StaticBody3D" parent="."]
+[node name="CrashSiteCargoCrate3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,1.5,0.85,-12)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Crate3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CrashSiteCargoCrate3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-[node name="Collision_Crate" type="CollisionShape3D" parent="Placeholder_Crate3"]
+[node name="Collision_Crate" type="CollisionShape3D" parent="CrashSiteCargoCrate3"]
 shape = SubResource("BoxShape3D_crate")
 [node name="Placeholder_MetalPickup" type="Area3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,8,0.85,-4)

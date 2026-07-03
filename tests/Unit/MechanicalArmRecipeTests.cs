@@ -110,4 +110,29 @@ public sealed class MechanicalArmRecipeTests
         AssertThat(inventory.Biomass).IsEqual(recipe.BiomassCost);
         AssertThat(inventory.ElectronicComponents).IsEqual(recipe.ElectronicComponentsCost);
     }
+
+    [TestCase]
+    public void ProgressTextShowsTrackableMechanicalArmSubObjectives()
+    {
+        var inventory = new MvpInventory();
+        var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(metal: 4, biomass: 1, electronicComponents: 0);
+
+        var progressText = recipe.GetProgressText(inventory);
+
+        AssertThat(progressText).Contains("Metal 4/10");
+        AssertThat(progressText).Contains("Biomass 1/3");
+        AssertThat(progressText).Contains("Electronics 0/2");
+    }
+
+    [TestCase]
+    public void ProgressTextReportsOnlineWhenMechanicalArmIsBuilt()
+    {
+        var inventory = new MvpInventory();
+        var recipe = new MechanicalArmRecipe();
+        inventory.AddResources(metal: 10, biomass: 3, electronicComponents: 2);
+        recipe.TryCraft(inventory);
+
+        AssertThat(recipe.GetProgressText(inventory)).Contains("ONLINE");
+    }
 }

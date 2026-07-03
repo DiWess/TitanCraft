@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.Crafting;
 using TitanCraft.Missions;
 using TitanCraft.Player;
 
@@ -11,6 +12,7 @@ public partial class CrashSiteHudBinder : Node
 
     private FirstPersonController _player = null!;
     private CrashSiteHud _hud = null!;
+    private readonly MechanicalArmRecipe _mechanicalArmRecipe = new();
     private bool _startTutorialDismissed;
     private bool _armBuiltFeedbackShown;
 
@@ -51,7 +53,7 @@ public partial class CrashSiteHudBinder : Node
     private void UpdateInventory(TitanCraft.Resources.MvpInventory inventory)
     {
         _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents);
-        _hud.SetMechanicalArmBuilt(inventory.IsMechanicalArmBuilt);
+        _hud.SetMechanicalArmProgress(_mechanicalArmRecipe.GetProgressText(inventory));
 
         // Replace the startup "not built yet" hint the moment the arm exists,
         // otherwise the stale hint contradicts the actual state.
@@ -64,7 +66,7 @@ public partial class CrashSiteHudBinder : Node
 
     private void UpdateMission(CrashSiteMissionState mission)
     {
-        _hud.SetObjective(mission.CurrentObjectiveText);
+        _hud.SetObjective(mission.HudBreadcrumb);
 
         if (_startTutorialDismissed || mission.CurrentStep == CrashSiteMissionStep.CollectResources)
             return;

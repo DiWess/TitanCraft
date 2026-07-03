@@ -14,6 +14,8 @@ public sealed class CrashSiteMissionStateTests
 
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.CollectResources);
         AssertThat(mission.CurrentObjectiveText).Contains("Collect");
+        AssertThat(mission.CurrentPhase).IsEqual(CrashSiteMissionPhase.Scavenge);
+        AssertThat(mission.HudBreadcrumb).Contains("Phase 2");
     }
 
     [TestCase]
@@ -25,6 +27,7 @@ public sealed class CrashSiteMissionStateTests
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.BuildMechanicalArm);
         AssertThat(mission.TryCompleteMechanicalArmConstruction()).IsTrue();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
+        AssertThat(mission.CurrentPhase).IsEqual(CrashSiteMissionPhase.ExtractConquer);
         AssertThat(mission.TryCompleteGalaxabrainDefeat(isGalaxabrainDefeated: true)).IsTrue();
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
         AssertThat(mission.TryCompleteComponentRecovery()).IsTrue();

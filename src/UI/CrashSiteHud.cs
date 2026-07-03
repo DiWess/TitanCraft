@@ -27,14 +27,14 @@ public partial class CrashSiteHud : CanvasLayer
         SetObjective("Collect resources near the crash site.");
         SetResources(0, 0, 0);
         SetInteractionPrompt(string.Empty);
-        SetMechanicalArmBuilt(false);
+        SetMechanicalArmProgress("Mechanical Arm Mk I: Metal 0/10 | Biomass 0/3 | Electronics 0/2");
         SetStartTutorialVisible(true);
         SetActionFeedback("Left click: Mk I not built yet — craft it at the workbench first.");
     }
 
     public void SetHealth(int current, int maximum) => _health.Text = $"Health: {current}/{maximum}";
 
-    public void SetObjective(string objective) => _objective.Text = $"Objective: {objective}";
+    public void SetObjective(string objective) => _objective.Text = objective;
 
     public void SetResources(int metal, int biomass, int electronicComponents)
     {
@@ -53,11 +53,9 @@ public partial class CrashSiteHud : CanvasLayer
         _startTutorial.Visible = visible;
     }
 
-    public void SetMechanicalArmBuilt(bool isBuilt)
+    public void SetMechanicalArmProgress(string progressText)
     {
-        _armState.Text = isBuilt
-            ? "Mechanical Arm: Online — Left click punches Galaxabrain"
-            : "Mechanical Arm: Not built — collect resources, then press E at Workbench";
+        _armState.Text = progressText;
     }
 
     public void SetActionFeedback(string message)

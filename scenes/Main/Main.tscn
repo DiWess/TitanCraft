@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://src/World/SavePoint.cs" id="5_save_point"]
 [ext_resource type="Script" path="res://src/World/Beacon.cs" id="6_beacon"]
 [ext_resource type="PackedScene" path="res://scenes/Enemies/GalaxabrainScout.tscn" id="7_galaxabrain_scout"]
+[ext_resource type="PackedScene" path="res://scenes/Resources/ResourceDrop.tscn" id="43_resource_drop"]
+[ext_resource type="PackedScene" path="res://scenes/World/Workbench.tscn" id="44_workbench_scene"]
+[ext_resource type="PackedScene" path="res://scenes/World/Beacon.tscn" id="45_beacon_scene"]
 [ext_resource type="PackedScene" path="res://scenes/UI/HUD.tscn" id="8_hud"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PauseMenu.tscn" id="9_pause"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
@@ -442,98 +445,92 @@ transform = Transform3D(4,0.15,0,0,3,0,-0.08,0,2,0,1.0,-72)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_rock")
-[node name="CrashSiteCargoCrate1" type="StaticBody3D" parent="."]
+[node name="Environment" type="Node3D" parent="."]
+metadata/layout = "StaticClutter creates the spawn-to-resource-to-workbench breadcrumb trail; CoverElements owns solid navigational scrap."
+
+[node name="StaticClutter" type="Node3D" parent="Environment"]
+
+[node name="CoverElements" type="Node3D" parent="Environment"]
+
+[node name="BurnTrail_SpawnToMetal_A" type="MeshInstance3D" parent="Environment/StaticClutter"]
+transform = Transform3D(1.6,0,0.25,0,1,0,-0.25,0,1.1,3.2,0.16,-3.8)
+mesh = SubResource("PROD_Ground")
+material_override = SubResource("PROD_MAT_Scorch")
+
+[node name="BurnTrail_SpawnToMetal_B" type="MeshInstance3D" parent="Environment/StaticClutter"]
+transform = Transform3D(1.2,0,-0.3,0,1,0,0.3,0,1.0,5.6,0.16,-4.1)
+mesh = SubResource("PROD_Ground")
+material_override = SubResource("PROD_MAT_Ash")
+
+[node name="DebrisBreadcrumb_ToWorkbench" type="MeshInstance3D" parent="Environment/StaticClutter"]
+transform = Transform3D(1.4,0,0.42,0,1,0,-0.42,0,1.0,9.5,0.16,-8.7)
+mesh = SubResource("PROD_Debris")
+material_override = SubResource("PROD_MAT_WornSteel")
+
+[node name="CrashSiteCargoCrate1" type="StaticBody3D" parent="Environment/CoverElements"]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,4,0.85,-5)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CrashSiteCargoCrate1"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/CoverElements/CrashSiteCargoCrate1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-[node name="Collision_Crate" type="CollisionShape3D" parent="CrashSiteCargoCrate1"]
+[node name="Collision_Crate" type="CollisionShape3D" parent="Environment/CoverElements/CrashSiteCargoCrate1"]
 shape = SubResource("BoxShape3D_crate")
-[node name="CrashSiteCargoCrate2" type="StaticBody3D" parent="."]
+[node name="CrashSiteCargoCrate2" type="StaticBody3D" parent="Environment/CoverElements"]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,-6,0.85,-8)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CrashSiteCargoCrate2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/CoverElements/CrashSiteCargoCrate2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-[node name="Collision_Crate" type="CollisionShape3D" parent="CrashSiteCargoCrate2"]
+[node name="Collision_Crate" type="CollisionShape3D" parent="Environment/CoverElements/CrashSiteCargoCrate2"]
 shape = SubResource("BoxShape3D_crate")
-[node name="CrashSiteCargoCrate3" type="StaticBody3D" parent="."]
+[node name="CrashSiteCargoCrate3" type="StaticBody3D" parent="Environment/CoverElements"]
 transform = Transform3D(1,0.05,0,0,1,0,0,0,1,1.5,0.85,-12)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CrashSiteCargoCrate3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/CoverElements/CrashSiteCargoCrate3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_crate")
-[node name="Collision_Crate" type="CollisionShape3D" parent="CrashSiteCargoCrate3"]
+[node name="Collision_Crate" type="CollisionShape3D" parent="Environment/CoverElements/CrashSiteCargoCrate3"]
 shape = SubResource("BoxShape3D_crate")
-[node name="Placeholder_MetalPickup" type="Area3D" parent="."]
+[node name="ResourceDrop_MetalPickup" parent="." instance=ExtResource("43_resource_drop")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,8,0.85,-4)
-script = ExtResource("2_resource_pickup")
-ResourceKind = 0
 Quantity = 10
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ItemMesh" parent="ResourceDrop_MetalPickup/VisualGroup" index="0"]
 mesh = SubResource("BoxMesh_metal")
 material_override = SubResource("MAT_MetalPickup_Bright")
-[node name="MetalInteractionBand" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, -0.46)
-mesh = SubResource("BoxMesh_pickup_orange_band")
-[node name="Collision_MetalPickup" type="CollisionShape3D" parent="Placeholder_MetalPickup"]
-shape = SubResource("BoxShape3D_crate")
-[node name="CollectionAudio" type="AudioStreamPlayer" parent="Placeholder_MetalPickup"]
+
+[node name="SpatialPickupPlayer" parent="ResourceDrop_MetalPickup/AudioPlayers" index="0"]
 stream = ExtResource("40_pickup_audio")
 volume_db = -8.0
-[node name="Placeholder_BiomassPickup" type="Area3D" parent="."]
+
+[node name="ResourceDrop_BiomassPickup" parent="." instance=ExtResource("43_resource_drop")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-8,0.85,-4)
-script = ExtResource("2_resource_pickup")
-ResourceKind = 1
+Type = 1
 Quantity = 3
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ItemMesh" parent="ResourceDrop_BiomassPickup/VisualGroup" index="0"]
 mesh = SubResource("SphereMesh_biomass")
 material_override = SubResource("MAT_BiomassPickup_Bright")
-[node name="BiomassInteractionStem" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
-transform = Transform3D(0.82, 0, 0.25, 0, 1, 0, -0.25, 0, 0.82, 0, 0.52, 0)
-mesh = SubResource("CylinderMesh_biomass_stem")
-[node name="Collision_BiomassPickup" type="CollisionShape3D" parent="Placeholder_BiomassPickup"]
-shape = SubResource("BoxShape3D_crate")
-[node name="CollectionAudio" type="AudioStreamPlayer" parent="Placeholder_BiomassPickup"]
+
+[node name="SpatialPickupPlayer" parent="ResourceDrop_BiomassPickup/AudioPlayers" index="0"]
 stream = ExtResource("40_pickup_audio")
 volume_db = -8.0
-[node name="Placeholder_ElectronicsPickup" type="Area3D" parent="."]
+
+[node name="ResourceDrop_ElectronicsPickup" parent="." instance=ExtResource("43_resource_drop")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0.85,-10)
-script = ExtResource("2_resource_pickup")
-ResourceKind = 2
+Type = 2
 Quantity = 2
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ItemMesh" parent="ResourceDrop_ElectronicsPickup/VisualGroup" index="0"]
 mesh = SubResource("CylinderMesh_electronics")
 material_override = SubResource("MAT_ElectronicsPickup_Bright")
-[node name="ElectronicsReadableScreen" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
-transform = Transform3D(1, 0, 0, 0, 0.45, -0.893, 0, 0.893, 0.45, 0, 0.34, -0.56)
-mesh = SubResource("BoxMesh_electronics_cyan_screen")
-[node name="Collision_ElectronicsPickup" type="CollisionShape3D" parent="Placeholder_ElectronicsPickup"]
-shape = SubResource("BoxShape3D_crate")
-[node name="CollectionAudio" type="AudioStreamPlayer" parent="Placeholder_ElectronicsPickup"]
+
+[node name="SpatialPickupPlayer" parent="ResourceDrop_ElectronicsPickup/AudioPlayers" index="0"]
 stream = ExtResource("40_pickup_audio")
 volume_db = -8.0
-[node name="Placeholder_Workbench" type="Area3D" parent="."]
+[node name="Placeholder_Workbench" parent="." instance=ExtResource("44_workbench_scene")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,12,0.85,-12)
-script = ExtResource("3_workbench")
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_workbench")
-[node name="ControlPanel" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.8)
-mesh = SubResource("BoxMesh_orange_strip")
-[node name="Collision_Workbench" type="CollisionShape3D" parent="Placeholder_Workbench"]
-shape = SubResource("BoxShape3D_crate")
-[node name="CraftAudio" type="AudioStreamPlayer" parent="Placeholder_Workbench"]
+
+[node name="CraftAudio" parent="Placeholder_Workbench" index="4"]
 stream = ExtResource("41_craft_audio")
 volume_db = -7.0
-[node name="WorkbenchReadabilityPylon" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 1.0, -0.62)
-mesh = SubResource("BoxMesh_readability_pylon")
-[node name="WorkbenchInteractionMarker" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1.35, 1.28, -0.62)
-mesh = SubResource("BoxMesh_readability_marker")
 [node name="Placeholder_SavePoint" type="Area3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,0.85,-12)
 script = ExtResource("5_save_point")
@@ -548,29 +545,12 @@ mesh = SubResource("CylinderMesh_save_core")
 [node name="SavePointInteractionMarker" type="MeshInstance3D" parent="Placeholder_SavePoint"]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 1.22, 0)
 mesh = SubResource("BoxMesh_readability_marker")
-[node name="Placeholder_Beacon" type="Area3D" parent="."]
+[node name="Placeholder_Beacon" parent="." instance=ExtResource("45_beacon_scene")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,28,0.85,-20)
-script = ExtResource("6_beacon")
-[node name="ClosedVisual" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("CylinderMesh_beacon")
-[node name="ActiveVisual" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0.35, 0)
-mesh = SubResource("PrismMesh_crystal")
-[node name="Collision_BeaconBase" type="CollisionShape3D" parent="Placeholder_Beacon"]
-shape = SubResource("BoxShape3D_crate")
-[node name="ActivationAudio" type="AudioStreamPlayer" parent="Placeholder_Beacon"]
+
+[node name="ActivationAudio" parent="Placeholder_Beacon" index="5"]
 stream = ExtResource("42_beacon_audio")
 volume_db = -6.0
-[node name="BeaconReadabilityWingA" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
-mesh = SubResource("BoxMesh_beacon_wing")
-[node name="BeaconReadabilityWingB" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 1.55, 0)
-mesh = SubResource("BoxMesh_beacon_wing")
-[node name="BeaconCrownMarker" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
-mesh = SubResource("BoxMesh_beacon_crown")
 [node name="AlienCrystal_1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.2, -18)
 mesh = SubResource("PrismMesh_crystal")
@@ -613,19 +593,10 @@ visible = false
 transform = Transform3D(2.4,0,-0.7,0,0.8,0,0.7,0,2.4,17,0.1,-9)
 mesh = ExtResource("22_base_large")
 surface_material_override/0 = ExtResource("17_rock")
-[node name="WorkbenchAuthenticMechVisual" type="MeshInstance3D" parent="Placeholder_Workbench"]
-transform = Transform3D(0.55,0,0,0,0.55,0,0,0,0.55,0,0.45,0)
-mesh = ExtResource("23_mech_george")
-surface_material_override/0 = ExtResource("15_bronze")
 [node name="SavePointAuthenticModule" type="MeshInstance3D" parent="Placeholder_SavePoint"]
 transform = Transform3D(0.45,0,0,0,0.45,0,0,0,0.45,0,0.2,0)
 mesh = ExtResource("24_robot")
 surface_material_override/0 = ExtResource("16_orange")
-[node name="BeaconAuthenticMast" type="MeshInstance3D" parent="Placeholder_Beacon"]
-transform = Transform3D(0.35,0,0,0,0.75,0,0,0,0.35,0,1.35,0)
-mesh = ExtResource("22_base_large")
-surface_material_override/0 = ExtResource("14_graphite")
-
 [node name="ProductionVisualRoot" type="Node3D" parent="."]
 metadata/stage = "Stage A production: bespoke custom meshes and composition."
 

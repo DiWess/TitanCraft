@@ -4,10 +4,16 @@
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/BeaconDormant.tres" id="2_dormant"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/BeaconActive.tres" id="3_active"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/ResourceItemHighlight.tres" id="4_highlight"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/KayKit/SpaceBaseBits/Models/antenna_a.obj" id="5_beacon_mesh"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/alien_orb_a.obj" id="6_beacon_core"]
 
+[sub_resource type="CylinderMesh" id="MESH_BeaconMast"]
+top_radius = 0.45
+bottom_radius = 0.8
+height = 3.0
+radial_segments = 10
 
+[sub_resource type="PrismMesh" id="MESH_BeaconCore"]
+left_to_right = 1.1
+size = Vector3(1.1, 1.35, 1.1)
 
 [sub_resource type="BoxShape3D" id="SHAPE_Body"]
 size = Vector3(1.8, 3.1, 1.8)
@@ -41,14 +47,13 @@ HighlightMaterial = ExtResource("4_highlight")
 
 [node name="ClosedVisual" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-mesh = ExtResource("5_beacon_mesh")
-metadata/art_pass_asset = "Fallback authenticated CC0 mesh; swap to assets/models/beacon.glb once the user-supplied GLB is present."
+mesh = SubResource("MESH_BeaconMast")
 material_override = ExtResource("2_dormant")
 
 [node name="ActiveVisual" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 0, 2.65, 0)
 visible = false
-mesh = ExtResource("6_beacon_core")
+mesh = SubResource("MESH_BeaconCore")
 material_override = ExtResource("3_active")
 
 [node name="LandmarkVfx" type="Node3D" parent="."]

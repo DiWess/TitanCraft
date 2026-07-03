@@ -2,18 +2,16 @@
 
 [ext_resource type="Script" path="res://src/World/ProceduralCrashSiteTerrain.cs" id="1_terrain_script"]
 
-[sub_resource type="StandardMaterial3D" id="MAT_TerrainPbrArtPass"]
-albedo_color = Color(0.52, 0.5, 0.46, 1)
-roughness = 0.88
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_directed_terrain"]
+albedo_color = Color(1, 1, 1, 1)
+roughness = 0.92
 vertex_color_use_as_albedo = true
-uv1_scale = Vector3(0.12, 0.12, 0.12)
-metadata/pbr_texture_slots = "User-supplied assets/textures terrain Albedo, Normal, and ORM are expected here; fallback keeps deterministic vertex-colour terrain when binaries are absent."
 
 [node name="ProceduralCrashSiteTerrain" type="Node3D"]
 script = ExtResource("1_terrain_script")
 metadata/pass = "Phase 3A Pass 1C visual-only deterministic directed volcanic terrain; no collision generated."
-metadata/material = "Phase 1 PBR-ready terrain material with vertex-colour fallback; UV tiling set for broad volcanic texture scale."
+metadata/material = "Vertex-colour albedo enabled; ash route uses lighter volcanic-soil values, shelves/ridges use restrained basalt values."
 
 [node name="TerrainMesh" type="MeshInstance3D" parent="."]
-material_override = SubResource("MAT_TerrainPbrArtPass")
+material_override = SubResource("StandardMaterial3D_directed_terrain")
 metadata/collision = "none"

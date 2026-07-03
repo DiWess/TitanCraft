@@ -25,9 +25,9 @@ public partial class ProceduralCrashSiteTerrain : Node3D
     private static readonly string[] TargetPaths =
     {
         "Player",
-        "Placeholder_MetalPickup",
-        "Placeholder_BiomassPickup",
-        "Placeholder_ElectronicsPickup",
+        "ResourceDrop_MetalPickup",
+        "ResourceDrop_BiomassPickup",
+        "ResourceDrop_ElectronicsPickup",
         "Placeholder_Workbench",
         "Placeholder_GalaxabrainScout",
         "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup",
@@ -192,7 +192,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     private static IEnumerable<Vector3> RoutePoints(IReadOnlyDictionary<string, Vector3> targets)
     {
-        foreach (string key in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        foreach (string key in new[] { "Player", "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup", "Placeholder_SavePoint", "Placeholder_Beacon" })
             yield return new Vector3(targets[key].X, CorridorHeight + 0.012f, targets[key].Z);
     }
 
@@ -439,8 +439,8 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         Vector2 p = new(x, z);
         string[][] routes =
         {
-            new[] { "Player", "Placeholder_MetalPickup" }, new[] { "Player", "Placeholder_BiomassPickup" }, new[] { "Player", "Placeholder_ElectronicsPickup" },
-            new[] { "Placeholder_MetalPickup", "Placeholder_Workbench" }, new[] { "Placeholder_BiomassPickup", "Placeholder_Workbench" }, new[] { "Placeholder_ElectronicsPickup", "Placeholder_Workbench" },
+            new[] { "Player", "ResourceDrop_MetalPickup" }, new[] { "Player", "ResourceDrop_BiomassPickup" }, new[] { "Player", "ResourceDrop_ElectronicsPickup" },
+            new[] { "ResourceDrop_MetalPickup", "Placeholder_Workbench" }, new[] { "ResourceDrop_BiomassPickup", "Placeholder_Workbench" }, new[] { "ResourceDrop_ElectronicsPickup", "Placeholder_Workbench" },
             new[] { "Placeholder_Workbench", "Placeholder_GalaxabrainScout" }, new[] { "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup" },
             new[] { "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup", "Placeholder_SavePoint" }, new[] { "Placeholder_SavePoint", "Placeholder_Beacon" }
         };

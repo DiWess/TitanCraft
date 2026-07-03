@@ -122,13 +122,13 @@ public partial class IntegrationTestRunner : Node
         Require(main.GetNode<DirectionalLight3D>("DirectionalLight3D") is not null, "Light missing");
         Require(player.GlobalPosition.Y > ground.GlobalPosition.Y, "Player is not above ground");
         Require(main.FindChildren("*", "WorldEnvironment", false, false).Count == 1, "Main scene must have one active WorldEnvironment");
-        Require(main.GetNode<Area3D>("Placeholder_Workbench") is not null, "Workbench missing");
+        Require(main.GetNode<Workbench>("Placeholder_Workbench") is not null, "Workbench missing");
         var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
         Require(beacon.GetNode<Node3D>("ClosedVisual").Visible, "Closed beacon visual missing");
         Require(!beacon.GetNode<Node3D>("ActiveVisual").Visible, "Active beacon visual should start hidden");
-        Require(main.GetNode<Area3D>("Placeholder_MetalPickup") is not null, "Metal pickup missing");
-        Require(main.GetNode<Area3D>("Placeholder_BiomassPickup") is not null, "Biomass pickup missing");
-        Require(main.GetNode<Area3D>("Placeholder_ElectronicsPickup") is not null, "Electronics pickup missing");
+        Require(main.GetNode<Area3D>("ResourceDrop_MetalPickup") is not null, "Metal pickup missing");
+        Require(main.GetNode<Area3D>("ResourceDrop_BiomassPickup") is not null, "Biomass pickup missing");
+        Require(main.GetNode<Area3D>("ResourceDrop_ElectronicsPickup") is not null, "Electronics pickup missing");
         Require(main.GetNode<Node3D>("Moon") is not null, "Large moon missing");
         Require(main.GetNode<Node3D>("AlienCrystal_1") is not null, "Alien crystal route missing");
         main.QueueFree();
@@ -144,6 +144,7 @@ public partial class IntegrationTestRunner : Node
 
         var staticCollisionCount = 0;
         var staticCollisionPositions = new List<Vector3>();
+        var staticCollisionNodes = new List<CollisionShape3D>();
         foreach (var body in main.FindChildren("*", "StaticBody3D", true, false))
         {
             var staticBody = (StaticBody3D)body;
@@ -155,6 +156,7 @@ public partial class IntegrationTestRunner : Node
                 Require(IsAllowedCollisionShape(collision.Shape), $"Unsupported collision shape on {staticBody.Name}/{collision.Name}");
                 staticCollisionCount++;
                 staticCollisionPositions.Add(collision.GlobalPosition);
+                staticCollisionNodes.Add(collision);
             }
         }
 
@@ -164,18 +166,22 @@ public partial class IntegrationTestRunner : Node
         Require(main.GetNode<CollisionShape3D>("C7_Wall_2/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 2 collision missing");
         Require(main.GetNode<CollisionShape3D>("C7_Wall_3/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 3 collision missing");
         Require(main.GetNode<CollisionShape3D>("C7_Wall_4/Collision_C7Wall").Shape is BoxShape3D, "C7 wall 4 collision missing");
-        Require(main.GetNode<CollisionShape3D>("Placeholder_Workbench/Collision_Workbench").Shape is BoxShape3D, "Workbench interaction collision missing");
-        Require(main.GetNode<CollisionShape3D>("Placeholder_Beacon/Collision_BeaconBase").Shape is BoxShape3D, "Beacon interaction collision missing");
+        Require(main.GetNode<CollisionShape3D>("Placeholder_Workbench/CollisionShape3D").Shape is BoxShape3D, "Workbench interaction collision missing");
+        Require(main.GetNode<CollisionShape3D>("Placeholder_Beacon/CollisionShape3D").Shape is BoxShape3D, "Beacon interaction collision missing");
 
         foreach (var prefix in ForbiddenCollisionPrefixes)
             foreach (var node in main.FindChildren($"{prefix}*", "CollisionObject3D", true, false))
                 Require(false, $"Forbidden decorative collision object: {node.GetPath()}");
 
-        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup" })
         {
             var pickup = main.GetNode<Node3D>(pickupName);
-            foreach (var collisionPosition in staticCollisionPositions)
-                Require(HorizontalDistance(pickup.GlobalPosition, collisionPosition) > 1.2f, $"{pickupName} overlaps a static collision");
+            foreach (var collision in staticCollisionNodes)
+            {
+                if (IsDescendantOf(collision, pickup))
+                    continue;
+                Require(HorizontalDistance(pickup.GlobalPosition, collision.GlobalPosition) > 1.2f, $"{pickupName} overlaps a static collision");
+            }
         }
 
         var player = main.GetNode<Node3D>("Player");
@@ -484,9 +490,9 @@ public partial class IntegrationTestRunner : Node
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon must reject activation before component recovery");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.CollectResources, "Invalid early interactions mutated mission state");
 
-        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup" })
         {
-            var pickup = main.GetNode<ResourcePickup>(pickupName);
+            var pickup = main.GetNode<ResourceDrop>(pickupName);
             Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} could not be collected");
             Require(!pickup.Interact(player.Inventory, player.Mission), $"{pickupName} was collectable twice");
         }
@@ -718,7 +724,7 @@ public partial class IntegrationTestRunner : Node
         Require(arm.FindChildren("*", "CollisionObject3D", true, false).Count == 0, "Mechanical arm has collision descendants");
         Require(!IsUnsuitableFirstPersonArmActive(arm), "Complete George mech is active as first-person arm view model");
 
-        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "ResourceDrop_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
         {
             var node = main.GetNode<Node>(path);
             Require(!IsDescendantOf(node, camera), $"{path} is under camera hierarchy");
@@ -728,22 +734,22 @@ public partial class IntegrationTestRunner : Node
         var flags = BuildRuntimeContractFlags(main, player, camera, scout, arm, initialPlayerPosition, initialScoutPosition, visual, scoutCapsule);
         Require(flags.Count == 0, $"Runtime contract flags present: {string.Join(", ", flags)}");
 
-        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup" })
         {
-            var pickup = main.GetNode<ResourcePickup>(pickupName);
+            var pickup = main.GetNode<ResourceDrop>(pickupName);
             Require(pickup.FindChildren("*", "CollisionShape3D", true, false).Count > 0, $"{pickupName} collision missing");
         }
 
-        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_MetalPickup/MetalInteractionBand") is not null, "Metal pickup readability band missing");
-        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_BiomassPickup/BiomassInteractionStem") is not null, "Biomass pickup readability stem missing");
-        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_ElectronicsPickup/ElectronicsReadableScreen") is not null, "Electronics pickup readable screen missing");
-        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_Workbench/WorkbenchReadabilityPylon") is not null, "Workbench readability pylon missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("ResourceDrop_MetalPickup/VisualGroup/HighlightRing") is not null, "Metal pickup readability ring missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("ResourceDrop_BiomassPickup/VisualGroup/HighlightRing") is not null, "Biomass pickup readability ring missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("ResourceDrop_ElectronicsPickup/VisualGroup/HighlightRing") is not null, "Electronics pickup readability ring missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_Workbench/VisualBase/ControlPanel") is not null, "Workbench readable control panel missing");
         Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_SavePoint/SavePointReadabilityCore") is not null, "Save point readability core missing");
-        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_Beacon/BeaconCrownMarker") is not null, "Beacon crown marker missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_Beacon/ActiveVisual") is not null, "Beacon active visual missing");
 
-        Require(main.GetNode<Workbench>("Placeholder_Workbench").GetNode<CollisionShape3D>("Collision_Workbench").Shape is not null, "Workbench behavior/collision missing");
+        Require(main.GetNode<Workbench>("Placeholder_Workbench").GetNode<CollisionShape3D>("CollisionShape3D").Shape is not null, "Workbench behavior/collision missing");
         Require(main.GetNode<SavePoint>("Placeholder_SavePoint").GetNode<CollisionShape3D>("Collision_SavePoint").Shape is not null, "Save point behavior/collision missing");
-        Require(main.GetNode<Beacon>("Placeholder_Beacon").GetNode<CollisionShape3D>("Collision_BeaconBase").Shape is not null, "Beacon behavior/collision missing");
+        Require(main.GetNode<Beacon>("Placeholder_Beacon").GetNode<CollisionShape3D>("CollisionShape3D").Shape is not null, "Beacon behavior/collision missing");
 
         WriteRuntimeContractReport(main, initialPlayerPosition, initialScoutPosition, initialScoutVisualPosition, camera, scout, visual, scoutCapsule, arm, flags);
         main.QueueFree();
@@ -815,7 +821,7 @@ public partial class IntegrationTestRunner : Node
         Directory.CreateDirectory("artifacts");
         File.WriteAllText("artifacts/terrain-generation-report.json", report.ToJson());
 
-        foreach (var target in new[] { "Player", "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup" })
+        foreach (var target in new[] { "Player", "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon", "Placeholder_GalaxabrainScout", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup" })
         {
             var node = main.GetNode<Node3D>(target);
             Require(node.GlobalPosition.Y >= 0.0f, $"{target} moved below stable ground");
@@ -863,7 +869,7 @@ public partial class IntegrationTestRunner : Node
         if (!IsDescendantOf(arm, camera))
             flags.Add("VIEWMODEL_IN_WORLD_LAYER");
 
-        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "Placeholder_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        foreach (var path in new[] { "Ground", "AuthenticatedCrashSiteVisuals", "ResourceDrop_MetalPickup", "Placeholder_Workbench", "Placeholder_SavePoint", "Placeholder_Beacon" })
         {
             var node = main.GetNodeOrNull<Node>(path);
             if (node is null)

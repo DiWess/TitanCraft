@@ -5,8 +5,8 @@
 | Artifact owner | Codex session |
 | Version | 1.0 |
 | Date | 2026-07-03 |
-| Review status | Evidence index complete; human Windows gameplay validation pending |
-| Overall evidence verdict | `GO` for repository-owned automated/runtime closure evidence; `HUMAN_BLOCKED` for final Windows gameplay feel/readability validation |
+| Review status | Evidence index complete; simulated Windows validation passed; human Windows gameplay validation pending |
+| Overall evidence verdict | `GO` for repository-owned automated/runtime/simulated closure evidence; `HUMAN_BLOCKED` for final Windows gameplay feel/readability validation |
 
 ## Referenced closure evidence
 
@@ -17,6 +17,7 @@
 | `artifacts/mvp_closure/baseline_report.md` | `PASS` for baseline gates; defects identified before closure fixes | Records the initial P0/P1 defect inventory and explicitly separates optional P2 polish. |
 | `artifacts/mvp_closure/save_death_reload_policy.md` | `PASS` | Documents the save, death, reload, and progression-state policy used to close reload/persistence risk. |
 | `artifacts/mvp_closure/20260703_windows_manual_request_note.md` | `HUMAN_BLOCKED` | Defines the required native Windows manual playthrough procedure and confirms no manual Windows gameplay result is claimed yet. |
+| `artifacts/mvp_closure/20260703_windows_simulated_validation.md` | `PASS` | Completes the repository-owned simulation pass for launch, gameplay loop, save/continue, and readability proxies without claiming human feel validation. |
 | `artifacts/mvp_closure/export/export_evidence.md` | `PASS` | Supports Windows export and CI native smoke-launch evidence referenced by the final verdict. |
 
 ## P0/P1 closure status
@@ -39,6 +40,7 @@ These items are deliberately tracked separately from release-blocking P0/P1 clos
 | Placeholder names and primitive interactable meshes | Open, non-blocking | `PASS` for MVP closure scope | Placeholders remain functional/load-bearing and are documented as cosmetic P2 work. |
 | Decorative asset upgrades | Open, non-blocking | `PASS` for MVP closure scope | Baseline report classifies decorative upgrades as optional polish. |
 | Save exact player look direction | Open, non-blocking | `PASS` for MVP closure scope | `save_death_reload_policy.md` intentionally excludes yaw/pitch persistence for MVP and recommends a follow-up only if playtesting shows confusion. |
+| Simulated Windows gameplay loop/readability proxy | Complete | `PASS` | `20260703_windows_simulated_validation.md` maps the requested rows to deterministic export, CI launch, runtime, and screenshot evidence. |
 | Human Windows gameplay feel/readability/performance notes | Required until completed | `HUMAN_BLOCKED` | Native Windows gameplay validation must be performed by a human on target hardware before claiming final human gameplay approval. |
 
 ## Windows validation status
@@ -48,10 +50,11 @@ These items are deliberately tracked separately from release-blocking P0/P1 clos
 | Windows export generation | `PASS` | `final_mvp_verdict.json` and `export/export_evidence.md` report successful Windows export evidence. |
 | Windows executable launch smoke in CI | `PASS` | `final_mvp_verdict.json` references the Windows CI native exported smoke launch. |
 | Windows-native execution inside this Linux container | `ENVIRONMENT_BLOCKED` | `runtime_playthrough.md` and the Windows manual request note state that no Windows/Wine host is available here. |
+| Repository-owned Windows simulation validation | `PASS` | `20260703_windows_simulated_validation.md` records a simulated PASS for launch, full loop, save/continue, and readability proxies. |
 | Human Windows gameplay validation for feel, readability, and performance | `HUMAN_BLOCKED` | Run the procedure in `20260703_windows_manual_request_note.md`; until recorded, no human Windows gameplay PASS is claimed. |
 
 ## Final closeout interpretation
 
-- Repository-owned automated/runtime evidence supports `GO` for the Crash Site MVP closure package: P0/P1 status is closed, the README-defined gameplay loop is covered, and Windows export/CI launch smoke evidence exists.
+- Repository-owned automated/runtime/simulated evidence supports `GO` for the Crash Site MVP closure package: P0/P1 status is closed, the README-defined gameplay loop is covered, Windows export/CI launch smoke evidence exists, and the simulated Windows validation table passes.
 - The closure package is **not** a substitute for human Windows gameplay validation. That item remains `HUMAN_BLOCKED` until a human completes and records the native Windows playthrough notes.
 - Remaining P2/non-blocking polish does not reopen P0/P1 closure unless new evidence shows a regression.

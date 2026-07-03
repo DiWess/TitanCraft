@@ -68,3 +68,5 @@
 
 - 2026-07-03: Refined MVP pickup material contrast and added scene-contract coverage for visual-only readability markers without renaming gameplay nodes.
 - 2026-07-03: Décision MVP explicite — la sauvegarde Crash Site persiste la position du joueur mais pas le yaw/pitch caméra; aucune modification du contrat de données nécessaire.
+
+- 2026-07-03: Added repository-owned simulated Windows validation evidence while keeping human Windows gameplay feel validation explicitly open.

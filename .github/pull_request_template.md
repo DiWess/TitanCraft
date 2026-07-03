@@ -10,6 +10,18 @@
 - Gameplay files changed: Yes / No
 - Forbidden MVP features introduced: Yes / No
 
+## Agent Studio Task Packet
+
+- Task category:
+- Primary agent:
+- Required memories:
+- Required skills:
+- Required evidence:
+- Validation commands run:
+- Final verdict:
+
+- [ ] I ran or generated an Agent Studio task packet before editing files.
+
 ## Tests and Checks
 
 | Command | Result | Evidence |

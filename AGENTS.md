@@ -32,11 +32,12 @@ All agents must operate as conservative repo maintainers:
 1. read the task;
 2. read relevant files;
 3. verify `README.md` constraints;
-4. produce a plan of three to seven steps;
-5. modify the minimum necessary files;
-6. avoid gameplay code unless explicitly requested and permitted by `README.md`;
-7. run applicable validation commands;
-8. report evidence, tests, manual checks, limitations, and final verdict.
+4. run or simulate `python3 tools/agent_preflight.py "<task description>"` and read the packet before editing files;
+5. produce a plan of three to seven steps;
+6. modify the minimum necessary files;
+7. avoid gameplay code unless explicitly requested and permitted by `README.md`;
+8. run applicable validation commands;
+9. report the task packet summary, evidence, tests, manual checks, limitations, and final verdict.
 
 Agents must not invent requirements, claim exhaustive knowledge, fake evidence, bypass failing gates, or mark release readiness without machine-readable proof.
 
@@ -98,7 +99,27 @@ Every file in `studio/skills/` must define a repeatable workflow with:
 - validation;
 - verdict.
 
-## 8. Validation
+## 8. Agent Studio Preflight
+
+Before editing files, agents must run or simulate the Agent Studio preflight packet:
+
+```bash
+python3 tools/agent_preflight.py "<task description>"
+```
+
+If command execution is unavailable, agents must generate the same packet by using `tools/agent_task_router.py` and the checked-in Studio indexes. Agents may not ignore scope warnings from the packet. Missing packet evidence requires a blocking verdict rather than speculative implementation.
+
+The final report must include a task packet summary with task category, primary agent, required memories, required skills, required evidence, validation commands run, and final verdict.
+
+Packet evidence rules:
+
+- Visual tasks must require PNG evidence and visual diagnosis before visual success is claimed.
+- Gameplay tasks must require gameplay validation, including relevant integration or smoke test evidence.
+- Asset-related tasks must require provenance evidence, including source, licence, hash, and audition evidence.
+- Agents may not use vague verdicts such as `done`, `improved`, `looks good`, `should be fine`, or `tests passed`.
+- Final verdicts must use only the approved verdict vocabulary in this file and the routed packet.
+
+## 9. Validation
 
 Run only commands applicable to the files changed. Preferred checks are:
 
@@ -115,6 +136,6 @@ For markdown-only governance changes, run markdown lint if available. If markdow
 git diff --check
 ```
 
-## 9. Pull Request Rule
+## 10. Pull Request Rule
 
 Pull requests must include evidence, tests, manual verification, risks, and a final verdict. A PR must not claim memories are exhaustive or imply gameplay scope has changed.

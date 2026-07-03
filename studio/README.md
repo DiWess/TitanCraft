@@ -47,6 +47,63 @@ Examples:
 
 Forbidden vague verdicts are defined in `studio/indexes/verdicts.yml` and include `done`, `improved`, `looks good`, `should be fine`, and `tests passed`.
 
+## Mandatory Agent Preflight
+
+Agents must run or generate an Agent Studio preflight packet before editing files for any future task:
+
+```bash
+python3 tools/agent_preflight.py "Review Stage A screenshots before Stage B starts"
+```
+
+For deterministic machine-readable output, run:
+
+```bash
+python3 tools/agent_preflight.py "Review Stage A screenshots before Stage B starts" --json
+```
+
+The preflight command imports the checked-in router logic from `tools/agent_task_router.py`, then adds the before-editing checklist, forbidden actions, forbidden scope, validation expectations, and final-report requirements. It does not call a network service and does not replace `README.md` review.
+
+### When Preflight Is Mandatory
+
+Preflight is mandatory before real work begins, including documentation-only governance tasks. If an agent cannot run the command, it must simulate the packet from `tools/agent_task_router.py` and the files in `studio/indexes/` before editing. Agents may not ignore scope warnings; if required evidence cannot be produced, use an approved blocking verdict.
+
+### How to Paste the Packet into PRs
+
+1. Run the preflight command before editing files.
+2. Copy the packet summary into the PR template section `Agent Studio Task Packet`.
+3. Include task category, primary agent, required memories, required skills, required evidence, validation commands run, and final verdict.
+4. Keep the final verdict inside the approved packet vocabulary and avoid vague verdicts.
+
+### How Codex Should Use the Packet
+
+Codex should treat the packet as a pre-edit gate: read `README.md`, generate the packet, load the listed memories and skills, apply the listed checklists, and only then modify the minimum necessary files. The final report must summarize the packet and show how validation satisfied the packet.
+
+### Preflight Examples
+
+Visual task:
+
+```bash
+python3 tools/agent_preflight.py "Review visual screenshot PNG route slab composition before Stage A approval"
+```
+
+Expected evidence includes PNG screenshots and a visual diagnosis naming focal point, route readability, silhouette, scale, and material coherence.
+
+Gameplay task:
+
+```bash
+python3 tools/agent_preflight.py "Fix gameplay bug where player inventory mission pickup fails"
+```
+
+Expected evidence includes gameplay validation such as integration tests when systems interact or a mission smoke test/manual procedure.
+
+Asset task:
+
+```bash
+python3 tools/agent_preflight.py "Import asset OBJ with provenance licence source URL hash and audition"
+```
+
+Expected evidence includes source URL, licence, file hash, audition screenshot, and production/placeholder/rejected/reference-only classification.
+
 ## How to Add a New Memory
 
 1. Add one atomic card to the most specific file in `studio/memory/`, or create a new pack if no pack fits.
@@ -76,6 +133,8 @@ Run:
 
 ```bash
 python3 tools/validate_agent_studio.py
+python3 tools/test_agent_task_router.py
+python3 tools/test_agent_preflight.py
 git diff --check
 ```
 

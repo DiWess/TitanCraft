@@ -47,6 +47,16 @@ Use this check after visual changes to `scenes/Main/Main.tscn`:
 
 
 
+## Generated temporary audio cues
+
+The MVP keeps temporary WAV cues as generated artifacts instead of tracked binary assets. Before opening scenes directly in the Godot editor or running any direct Godot import command outside `tools/test.sh`, materialize the local cues from the repository root:
+
+```bash
+python3 tools/prepare_audio_assets.py
+```
+
+`tools/test.sh` and `tools/test.ps1` run this setup automatically for normal validation. Do not commit `assets/audio/temp/*.wav` unless a human explicitly decides to replace the generated-audio approach with tracked WAV assets and records their license/source notes.
+
 ## Reusable visual validation procedure
 
 Use this procedure after any future phase that changes visible scenes, UI, materials, VFX, lighting, props, or environment composition. It complements automated tests; it does not replace gameplay review.

@@ -1,9 +1,29 @@
-[gd_scene load_steps=7 format=3 uid="uid://titancraft_galaxabrain_scout"]
+[gd_scene load_steps=11 format=3 uid="uid://titancraft_galaxabrain_scout"]
 
 [ext_resource type="Script" path="res://src/Enemies/GalaxabrainScout.cs" id="1_scout"]
 [ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="2_component"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="3_robot"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/galaxabrain_down.wav" id="4_death_audio"]
+
+[sub_resource type="StandardMaterial3D" id="MAT_Galaxabrain_AlienCyan"]
+albedo_color = Color(0.25, 0.95, 1.0, 1)
+emission = Color(0.25, 0.95, 1.0, 1)
+emission_energy_multiplier = 1.4
+
+[sub_resource type="StandardMaterial3D" id="MAT_Galaxabrain_Biomass"]
+albedo_color = Color(0.55, 0.08, 0.18, 1)
+roughness = 0.72
+
+[sub_resource type="SphereMesh" id="SphereMesh_galaxabrain_core"]
+radial_segments = 8
+rings = 4
+radius = 0.32
+height = 0.52
+material = SubResource("MAT_Galaxabrain_Biomass")
+
+[sub_resource type="BoxMesh" id="BoxMesh_galaxabrain_eye"]
+size = Vector3(0.42, 0.12, 0.08)
+material = SubResource("MAT_Galaxabrain_AlienCyan")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_scout"]
 radius = 0.45
@@ -32,6 +52,14 @@ mesh = SubResource("BoxMesh_placeholder")
 transform = Transform3D(0.75,0,0,0,0.75,0,0,0,0.75,0,0,0)
 mesh = ExtResource("3_robot")
 metadata/authentication = "Visual-only Quaternius Animated Robot Pack OBJ/Robot.obj; placeholder cube hidden, gameplay collision unchanged."
+
+[node name="GalaxabrainOrganicCore" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.15, 0, 0, 0, 0.9, 0, 0, 0, 1.15, 0, 0.92, -0.08)
+mesh = SubResource("SphereMesh_galaxabrain_core")
+
+[node name="GalaxabrainCyanEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.43)
+mesh = SubResource("BoxMesh_galaxabrain_eye")
 
 [node name="GalaxabrainComponentPickup" type="Area3D" parent="."]
 visible = false

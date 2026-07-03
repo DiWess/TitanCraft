@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=69 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -222,6 +222,24 @@ height = 2.4
 material = ExtResource("14_graphite")
 [sub_resource type="PrismMesh" id="PrismMesh_crystal"]
 size = Vector3(1, 2.4, 1)
+material = ExtResource("19_violet")
+[sub_resource type="BoxMesh" id="BoxMesh_readability_pylon"]
+size = Vector3(0.24, 1.4, 0.24)
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_readability_marker"]
+size = Vector3(0.42, 0.42, 0.08)
+material = ExtResource("16_orange")
+[sub_resource type="CylinderMesh" id="CylinderMesh_save_core"]
+radial_segments = 8
+top_radius = 0.28
+bottom_radius = 0.36
+height = 1.05
+material = ExtResource("30_cyan")
+[sub_resource type="BoxMesh" id="BoxMesh_beacon_wing"]
+size = Vector3(1.6, 0.18, 0.22)
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_beacon_crown"]
+size = Vector3(0.72, 0.16, 0.72)
 material = ExtResource("19_violet")
 [sub_resource type="BoxMesh" id="BoxMesh_rock"]
 size = Vector3(3, 2, 2.3)
@@ -489,6 +507,12 @@ shape = SubResource("BoxShape3D_crate")
 [node name="CraftAudio" type="AudioStreamPlayer" parent="Placeholder_Workbench"]
 stream = ExtResource("41_craft_audio")
 volume_db = -7.0
+[node name="WorkbenchReadabilityPylon" type="MeshInstance3D" parent="Placeholder_Workbench"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 1.0, -0.62)
+mesh = SubResource("BoxMesh_readability_pylon")
+[node name="WorkbenchInteractionMarker" type="MeshInstance3D" parent="Placeholder_Workbench"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1.35, 1.28, -0.62)
+mesh = SubResource("BoxMesh_readability_marker")
 [node name="Placeholder_SavePoint" type="Area3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,0.85,-12)
 script = ExtResource("5_save_point")
@@ -497,6 +521,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_save")
 [node name="Collision_SavePoint" type="CollisionShape3D" parent="Placeholder_SavePoint"]
 shape = SubResource("BoxShape3D_crate")
+[node name="SavePointReadabilityCore" type="MeshInstance3D" parent="Placeholder_SavePoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+mesh = SubResource("CylinderMesh_save_core")
+[node name="SavePointInteractionMarker" type="MeshInstance3D" parent="Placeholder_SavePoint"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 1.22, 0)
+mesh = SubResource("BoxMesh_readability_marker")
 [node name="Placeholder_Beacon" type="Area3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,28,0.85,-20)
 script = ExtResource("6_beacon")
@@ -511,6 +541,15 @@ shape = SubResource("BoxShape3D_crate")
 [node name="ActivationAudio" type="AudioStreamPlayer" parent="Placeholder_Beacon"]
 stream = ExtResource("42_beacon_audio")
 volume_db = -6.0
+[node name="BeaconReadabilityWingA" type="MeshInstance3D" parent="Placeholder_Beacon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+mesh = SubResource("BoxMesh_beacon_wing")
+[node name="BeaconReadabilityWingB" type="MeshInstance3D" parent="Placeholder_Beacon"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 1.55, 0)
+mesh = SubResource("BoxMesh_beacon_wing")
+[node name="BeaconCrownMarker" type="MeshInstance3D" parent="Placeholder_Beacon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+mesh = SubResource("BoxMesh_beacon_crown")
 [node name="AlienCrystal_1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.2, -18)
 mesh = SubResource("PrismMesh_crystal")

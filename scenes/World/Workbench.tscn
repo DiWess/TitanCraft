@@ -1,20 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://workbench_landmark_scene"]
+[gd_scene load_steps=8 format=3 uid="uid://workbench_landmark_scene"]
 
 [ext_resource type="Script" path="res://src/World/Workbench.cs" id="1_script"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/WorkbenchChassis.tres" id="2_chassis"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/WorkbenchHighlight.tres" id="3_highlight"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/machine_console_a.obj" id="4_workbench_mesh"]
+[ext_resource type="Material" path="res://assets/Materials/HumanScreenCyan.tres" id="5_screen"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/SciFiEssentialsKit/Models/screen_prop_c.obj" id="6_screen_mesh"]
 
-[sub_resource type="BoxMesh" id="MESH_Chassis"]
-size = Vector3(2.4, 0.9, 1.4)
 
-[sub_resource type="BoxMesh" id="MESH_ControlPanel"]
-size = Vector3(1.4, 0.12, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="MAT_ControlPanel"]
-albedo_color = Color(0.1, 0.7, 0.95, 1)
-emission_enabled = true
-emission = Color(0.1, 0.65, 1, 1)
-emission_energy_multiplier = 0.9
 
 [sub_resource type="BoxShape3D" id="SHAPE_Body"]
 size = Vector3(2.4, 0.9, 1.4)
@@ -31,14 +25,16 @@ HighlightMaterial = ExtResource("3_highlight")
 [node name="VisualBase" type="Node3D" parent="."]
 
 [node name="WorkbenchChassis" type="MeshInstance3D" parent="VisualBase"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
-mesh = SubResource("MESH_Chassis")
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 0, 0.45, 0)
+mesh = ExtResource("4_workbench_mesh")
+metadata/art_pass_asset = "Fallback authenticated CC0 mesh; swap to assets/models/workbench.glb once the user-supplied GLB is present."
 material_override = ExtResource("2_chassis")
 
 [node name="ControlPanel" type="MeshInstance3D" parent="VisualBase"]
 transform = Transform3D(1, 0, 0, 0, 0.75, -0.66, 0, 0.66, 0.75, 0, 1.0, -0.42)
-mesh = SubResource("MESH_ControlPanel")
-material_override = SubResource("MAT_ControlPanel")
+mesh = ExtResource("6_screen_mesh")
+metadata/art_pass_affordance = "Readable interaction sub-mesh preserved for tests and workbench highlight targeting."
+material_override = ExtResource("5_screen")
 
 [node name="LandmarkVfx" type="Node3D" parent="."]
 

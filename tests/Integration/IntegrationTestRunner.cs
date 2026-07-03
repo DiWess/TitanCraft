@@ -734,6 +734,13 @@ public partial class IntegrationTestRunner : Node
             Require(pickup.FindChildren("*", "CollisionShape3D", true, false).Count > 0, $"{pickupName} collision missing");
         }
 
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_MetalPickup/MetalInteractionBand") is not null, "Metal pickup readability band missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_BiomassPickup/BiomassInteractionStem") is not null, "Biomass pickup readability stem missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_ElectronicsPickup/ElectronicsReadableScreen") is not null, "Electronics pickup readable screen missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_Workbench/WorkbenchReadabilityPylon") is not null, "Workbench readability pylon missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_SavePoint/SavePointReadabilityCore") is not null, "Save point readability core missing");
+        Require(main.GetNodeOrNull<MeshInstance3D>("Placeholder_Beacon/BeaconCrownMarker") is not null, "Beacon crown marker missing");
+
         Require(main.GetNode<Workbench>("Placeholder_Workbench").GetNode<CollisionShape3D>("Collision_Workbench").Shape is not null, "Workbench behavior/collision missing");
         Require(main.GetNode<SavePoint>("Placeholder_SavePoint").GetNode<CollisionShape3D>("Collision_SavePoint").Shape is not null, "Save point behavior/collision missing");
         Require(main.GetNode<Beacon>("Placeholder_Beacon").GetNode<CollisionShape3D>("Collision_BeaconBase").Shape is not null, "Beacon behavior/collision missing");

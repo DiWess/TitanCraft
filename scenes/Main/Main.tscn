@@ -161,12 +161,12 @@ metallic = 0.8
 roughness = 0.35
 
 [sub_resource type="StandardMaterial3D" id="MAT_BiomassPickup_Bright"]
-albedo_color = Color(0.85, 0.25, 0.35, 1)
-metallic = 0.2
-roughness = 0.65
+albedo_color = Color(0.24, 0.37, 0.27, 1)
+metallic = 0.05
+roughness = 0.68
 
 [sub_resource type="StandardMaterial3D" id="MAT_ElectronicsPickup_Bright"]
-albedo_color = Color(0.3, 0.3, 0.35, 1)
+albedo_color = Color(0.145, 0.165, 0.188, 1)
 metallic = 0.7
 roughness = 0.4
 
@@ -193,18 +193,30 @@ material = ExtResource("16_orange")
 [sub_resource type="BoxMesh" id="BoxMesh_metal"]
 size = Vector3(1.8, 0.45, 1.2)
 material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_pickup_orange_band"]
+size = Vector3(1.95, 0.12, 0.18)
+material = ExtResource("16_orange")
 [sub_resource type="SphereMesh" id="SphereMesh_biomass"]
 radial_segments = 8
 rings = 4
 radius = 0.75
 height = 1.1
-material = ExtResource("20_biomass")
+material = SubResource("MAT_BiomassPickup_Bright")
+[sub_resource type="CylinderMesh" id="CylinderMesh_biomass_stem"]
+radial_segments = 5
+top_radius = 0.16
+bottom_radius = 0.22
+height = 0.72
+material = ExtResource("16_orange")
 [sub_resource type="CylinderMesh" id="CylinderMesh_electronics"]
 radial_segments = 6
 top_radius = 0.55
 bottom_radius = 0.65
 height = 1.1
 material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_electronics_cyan_screen"]
+size = Vector3(0.72, 0.08, 0.36)
+material = ExtResource("30_cyan")
 [sub_resource type="BoxMesh" id="BoxMesh_workbench"]
 size = Vector3(3.2, 0.8, 1.5)
 material = ExtResource("13_ivory")
@@ -460,6 +472,9 @@ Quantity = 10
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_metal")
 material_override = SubResource("MAT_MetalPickup_Bright")
+[node name="MetalInteractionBand" type="MeshInstance3D" parent="Placeholder_MetalPickup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, -0.46)
+mesh = SubResource("BoxMesh_pickup_orange_band")
 [node name="Collision_MetalPickup" type="CollisionShape3D" parent="Placeholder_MetalPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="CollectionAudio" type="AudioStreamPlayer" parent="Placeholder_MetalPickup"]
@@ -474,6 +489,9 @@ Quantity = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("SphereMesh_biomass")
 material_override = SubResource("MAT_BiomassPickup_Bright")
+[node name="BiomassInteractionStem" type="MeshInstance3D" parent="Placeholder_BiomassPickup"]
+transform = Transform3D(0.82, 0, 0.25, 0, 1, 0, -0.25, 0, 0.82, 0, 0.52, 0)
+mesh = SubResource("CylinderMesh_biomass_stem")
 [node name="Collision_BiomassPickup" type="CollisionShape3D" parent="Placeholder_BiomassPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="CollectionAudio" type="AudioStreamPlayer" parent="Placeholder_BiomassPickup"]
@@ -488,6 +506,9 @@ Quantity = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_electronics")
 material_override = SubResource("MAT_ElectronicsPickup_Bright")
+[node name="ElectronicsReadableScreen" type="MeshInstance3D" parent="Placeholder_ElectronicsPickup"]
+transform = Transform3D(1, 0, 0, 0, 0.45, -0.893, 0, 0.893, 0.45, 0, 0.34, -0.56)
+mesh = SubResource("BoxMesh_electronics_cyan_screen")
 [node name="Collision_ElectronicsPickup" type="CollisionShape3D" parent="Placeholder_ElectronicsPickup"]
 shape = SubResource("BoxShape3D_crate")
 [node name="CollectionAudio" type="AudioStreamPlayer" parent="Placeholder_ElectronicsPickup"]

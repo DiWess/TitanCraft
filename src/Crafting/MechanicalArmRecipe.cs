@@ -33,7 +33,7 @@ public sealed class MechanicalArmRecipe
 
         if (inventory.IsMechanicalArmBuilt)
         {
-            return "Mechanical Arm Mk I: ONLINE";
+            return "Mechanical Arm Mk I: ONLINE | Left click to attack";
         }
 
         return $"Mechanical Arm Mk I: Metal {ClampToCost(inventory.Metal, MetalCost)}/{MetalCost} | "

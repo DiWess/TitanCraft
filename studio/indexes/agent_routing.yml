@@ -1,0 +1,29 @@
+version: 1
+routes:
+  visual_scene_composition:
+    primary: art_director
+    secondary: [visual_reviewer, technical_director, qa_lead]
+  gameplay_bug:
+    primary: gameplay_engineer
+    secondary: [qa_lead, technical_director]
+  build_failure:
+    primary: build_release_engineer
+    secondary: [tools_engineer, qa_lead]
+  asset_import:
+    primary: asset_librarian
+    secondary: [art_director, technical_director, qa_lead]
+  godot_scene_change:
+    primary: technical_director
+    secondary: [engine_architect, qa_lead, visual_reviewer]
+  csharp_runtime_change:
+    primary: gameplay_engineer
+    secondary: [engine_architect, qa_lead]
+  release_readiness:
+    primary: build_release_engineer
+    secondary: [producer, qa_lead, technical_director]
+  stage_gate:
+    primary: producer
+    secondary: [qa_lead, game_director, technical_director]
+  prompt_or_agent_governance:
+    primary: producer
+    secondary: [qa_lead, technical_director]

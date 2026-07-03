@@ -1,0 +1,37 @@
+version: 1
+requirements:
+  visual:
+    - PNG screenshots
+    - visual diagnosis naming focal point, route readability, silhouette, scale, material coherence
+    - before/after comparison
+    - human-review or visual-reviewer verdict
+  gameplay:
+    - unit tests when behavior changes
+    - integration tests when systems interact
+    - mission smoke test or documented manual procedure
+    - runtime flags or logs when applicable
+  asset:
+    - source URL
+    - licence
+    - file hash
+    - audition screenshot
+    - classification as production, placeholder, rejected, or reference-only
+  build:
+    - exact command output
+    - artifact path
+    - failure class
+    - environment limitation if blocked
+  release:
+    - fresh artifact metadata
+    - hash
+    - lane classification
+    - explicit NOT_GO unless all release gates pass
+  documentation:
+    - requested doc objective
+    - files changed
+    - validation command
+  architecture:
+    - changed scene or architecture files
+    - runtime safety evidence
+    - collision or node contract notes when applicable
+    - visual screenshot when scene readability is claimed

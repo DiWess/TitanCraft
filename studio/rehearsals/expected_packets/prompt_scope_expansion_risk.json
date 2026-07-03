@@ -1,0 +1,53 @@
+{
+  "approved_final_verdicts": [
+    "PASS",
+    "FAIL_REPO_OWNED",
+    "HUMAN_BLOCKED",
+    "NOT_GO"
+  ],
+  "detected_task_category": "prompt_or_agent_governance",
+  "evidence_category": "documentation",
+  "forbidden_verdicts": [
+    "done",
+    "improved",
+    "looks good",
+    "should be fine",
+    "tests passed"
+  ],
+  "minimum_validation_commands": [
+    "python3 tools/validate_agent_studio.py",
+    "git diff --check"
+  ],
+  "primary_agent": "producer",
+  "required_checklists": [
+    "before_task",
+    "before_pr"
+  ],
+  "required_evidence": [
+    "requested doc objective",
+    "files changed",
+    "validation command"
+  ],
+  "required_memory_packs_cards": [
+    "MEM-PROMPT-009",
+    "MEM-PROMPT-FAILURE-PATTERNS-002",
+    "MEM-STAGE-008",
+    "MEM-PRODUCTION-STAGE-GATES-001",
+    "MEM-GOV-001",
+    "MEM-GOV-002"
+  ],
+  "required_skills": [
+    "prompt_design",
+    "pull_request_review",
+    "evidence_reporting"
+  ],
+  "scope_warnings": [
+    "Do not submit documentation-only PRs for implementation requests.",
+    "Block prompt scope expansion beyond README."
+  ],
+  "secondary_agents": [
+    "qa_lead",
+    "technical_director"
+  ],
+  "task_description": "Codex prompt asks for documentation-only PR after an implementation request and suggests adding multiplayer, grappling hook, and Stage B work even though Stage A failed."
+}

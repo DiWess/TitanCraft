@@ -1,0 +1,30 @@
+name: Agent Studio
+
+on:
+  pull_request:
+    paths:
+      - 'studio/**'
+      - 'tools/agent_task_router.py'
+      - 'tools/test_agent_task_router.py'
+      - 'tools/validate_agent_studio.py'
+      - '.github/workflows/agent-studio.yml'
+  push:
+    paths:
+      - 'studio/**'
+      - 'tools/agent_task_router.py'
+      - 'tools/test_agent_task_router.py'
+      - 'tools/validate_agent_studio.py'
+      - '.github/workflows/agent-studio.yml'
+
+jobs:
+  validate-agent-studio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Validate Agent Studio structure
+        run: python3 tools/validate_agent_studio.py
+      - name: Rehearse task routing
+        run: python3 tools/test_agent_task_router.py
+      - name: Check whitespace
+        run: git diff --check

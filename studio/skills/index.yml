@@ -1,0 +1,53 @@
+version: 2
+skills:
+  - id: SKILL-ASSET-AUDITION
+    path: asset_audition.md
+    purpose: Asset Audition workflow.
+  - id: SKILL-ASSET-PROVENANCE
+    path: asset_provenance.md
+    purpose: Asset Provenance workflow.
+  - id: SKILL-CI-CD-VALIDATION
+    path: ci_cd_validation.md
+    purpose: Ci Cd Validation workflow.
+  - id: SKILL-CSHARP-GAMEPLAY-VALIDATION
+    path: csharp_gameplay_validation.md
+    purpose: Csharp Gameplay Validation workflow.
+  - id: SKILL-EVIDENCE-REPORTING
+    path: evidence_reporting.md
+    purpose: Evidence Reporting workflow.
+  - id: SKILL-FAILURE-POSTMORTEM
+    path: failure_postmortem.md
+    purpose: Failure Postmortem workflow.
+  - id: SKILL-GODOT-RUNTIME-CONTRACTS
+    path: godot_runtime_contracts.md
+    purpose: Godot Runtime Contracts workflow.
+  - id: SKILL-GODOT-SCENE-EDITING
+    path: godot_scene_editing.md
+    purpose: Godot Scene Editing workflow.
+  - id: SKILL-PRODUCTION-DEBUGGING
+    path: production_debugging.md
+    purpose: Production Debugging workflow.
+  - id: SKILL-PROMPT-DESIGN
+    path: prompt_design.md
+    purpose: Prompt Design workflow.
+  - id: SKILL-PULL-REQUEST-REVIEW
+    path: pull_request_review.md
+    purpose: Pull Request Review workflow.
+  - id: SKILL-REVIEW-WORKFLOW
+    path: review_workflow.md
+    purpose: Review Workflow workflow.
+  - id: SKILL-SCREENSHOT-CRITIQUE
+    path: screenshot_critique.md
+    purpose: Screenshot Critique workflow.
+  - id: SKILL-STAGE-GATE-EXECUTION
+    path: stage_gate_execution.md
+    purpose: Stage Gate Execution workflow.
+  - id: SKILL-VALIDATION-WORKFLOW
+    path: validation_workflow.md
+    purpose: Validation Workflow workflow.
+  - id: SKILL-VISUAL-ART-DIRECTION
+    path: visual_art_direction.md
+    purpose: Visual Art Direction workflow.
+  - id: SKILL-WINDOWS-EXPORT-VALIDATION
+    path: windows_export_validation.md
+    purpose: Windows Export Validation workflow.

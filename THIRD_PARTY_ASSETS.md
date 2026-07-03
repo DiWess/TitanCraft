@@ -91,3 +91,14 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
   - `assets/audio/temp/galaxabrain_down.wav`
   - `assets/audio/temp/beacon_activate.wav`
   - `assets/audio/temp/victory_sting.wav`
+
+## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
+
+Placeholder provenance records for the final Crash Site art pass assets expected under `assets/models/` and `assets/textures/`. These files are not committed in this pass; before distribution, replace each TBD with the exact creator, source URL, license file, filename, and checksum. Intended scope: Terrain PBR texture set, Sci-Fi Workbench GLB, Beacon GLB, and Crashed Ship GLB.
+
+| Asset role | Expected local path | License | Source / creator | Status |
+|---|---|---|---|---|
+| Terrain PBR Albedo/Normal/ORM | `assets/textures/terrain_*` | CC0 required | TBD by asset provider | Placeholder provenance only |
+| Sci-Fi Workbench | `assets/models/workbench.glb` | CC0 required | TBD by asset provider | Placeholder provenance only |
+| Beacon | `assets/models/beacon.glb` | CC0 required | TBD by asset provider | Placeholder provenance only |
+| Crashed Ship | `assets/models/crashed_ship.glb` | CC0 required | TBD by asset provider | Placeholder provenance only |

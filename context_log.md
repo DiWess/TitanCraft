@@ -70,3 +70,5 @@
 - 2026-07-03: Décision MVP explicite — la sauvegarde Crash Site persiste la position du joueur mais pas le yaw/pitch caméra; aucune modification du contrat de données nécessaire.
 
 - 2026-07-03: Added repository-owned simulated Windows validation evidence while keeping human Windows gameplay feel validation explicitly open.
+- 2026-07-03: Authenticated the first visual-only Crash Site asset subset and added isolated prop/environment structure scenes for future greybox closure without touching production gameplay scenes.
+- 2026-07-03: Instanced the authenticated visual-only rock and wreckage props into the production Crash Site scene, preserved gameplay collision contracts, and captured deterministic Phase 3A review screenshots.

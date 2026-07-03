@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=71 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/Resources/ResourceDrop.tscn" id="43_resource_drop"]
 [ext_resource type="PackedScene" path="res://scenes/World/Workbench.tscn" id="44_workbench_scene"]
 [ext_resource type="PackedScene" path="res://scenes/World/Beacon.tscn" id="45_beacon_scene"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Environment/VolcanicRockCluster_A.tscn" id="46_rock_cluster"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Wreckage/ShipWreckageShard_A.tscn" id="47_wreckage_shard"]
 [ext_resource type="PackedScene" path="res://scenes/UI/HUD.tscn" id="8_hud"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PauseMenu.tscn" id="9_pause"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
@@ -599,6 +601,18 @@ mesh = ExtResource("24_robot")
 surface_material_override/0 = ExtResource("16_orange")
 [node name="ProductionVisualRoot" type="Node3D" parent="."]
 metadata/stage = "Stage A production: bespoke custom meshes and composition."
+[node name="VisualOnlyAuthenticatedProps" type="Node3D" parent="ProductionVisualRoot"]
+metadata/source = "VG-01 authenticated prop scenes; no collision or gameplay scripts."
+
+[node name="CrashLipRockCluster_A" parent="ProductionVisualRoot/VisualOnlyAuthenticatedProps" instance=ExtResource("46_rock_cluster")]
+transform = Transform3D(1.4,0,0.25,0,1.0,0,-0.25,0,1.4,-8.5,0.12,-9.4)
+
+[node name="CrashLipRockCluster_B" parent="ProductionVisualRoot/VisualOnlyAuthenticatedProps" instance=ExtResource("46_rock_cluster")]
+transform = Transform3D(1.15,0,-0.45,0,0.9,0,0.45,0,1.15,3.2,0.12,-17.4)
+
+[node name="ShipWreckageShard_A" parent="ProductionVisualRoot/VisualOnlyAuthenticatedProps" instance=ExtResource("47_wreckage_shard")]
+transform = Transform3D(1.2,0,0.42,0,1.0,0,-0.42,0,1.2,-8.2,0.2,-12.8)
+
 
 [node name="TerrainUnderlay" type="Node3D" parent="ProductionVisualRoot"]
 

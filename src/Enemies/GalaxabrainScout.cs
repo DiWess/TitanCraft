@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Player;
 using TitanCraft.World;
 
@@ -132,6 +133,8 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public NodePath? PlayerPath { get; set; }
 
+    [Export] public NodePath DeathAudioPath { get; set; } = "DeathAudio";
+
     [Export] public NodePath? MissionComponentPath { get; set; }
 
     public GalaxabrainScoutBrain Brain => _brain;
@@ -201,6 +204,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         SetPhysicsProcess(false);
         DisableBodyCollision();
         SetMissionComponentVisible(true);
+        AudioCue.Play(this, DeathAudioPath);
         Visible = false;
 
         // Gameplay death is the only event allowed to complete the defeat objective;

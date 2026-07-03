@@ -65,6 +65,9 @@ jobs:
       - name: Prepare visual evidence directory
         run: mkdir -p "$OUTPUT_DIR"
 
+      - name: Prepare temporary audio assets
+        run: python3 tools/prepare_audio_assets.py
+
       - name: Import Godot assets
         run: godot --headless --path . --import
 

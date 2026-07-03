@@ -75,3 +75,19 @@ No production assets were replaced, no gameplay was changed, and `scenes/Main/Ma
 ## Phase 3A file-level Quaternius Google Drive recovery — 2026-06-30
 
 Human decision accepted official Quaternius Google Drive folder/file provenance for Ultimate Space Kit, Animated Mech Pack, and Animated Robot Pack when reached from the official Quaternius pack pages. Selected OBJ/MTL/FBX files were downloaded directly from those folders and SHA-256 hashed. Text OBJ/MTL files used by Godot are committed; binary FBX originals are not committed and are represented by Drive IDs, byte sizes, and hashes as a binary-file PR workaround. OBJ files were copied without geometry conversion into `assets/ThirdParty/Quaternius/.../Models/` for production scene use. Current completion verdict: `PRODUCTION_VISUAL_SLICE_NOT_GO` because Windows export/playtest and human visual scoring remain incomplete.
+
+## TitanCraft temporary MVP audio cues — self-created
+
+- Date: 2026-07-03
+- Creator: OpenAI Codex for TitanCraft
+- License: Project-owned temporary assets; no third-party source material used
+- Generation method: deterministic Python sine-wave synthesis into short mono WAV files
+- Scope: lightweight feedback cues only; not music, voice, or a final audio direction
+- Generated local files, materialized by `tools/prepare_audio_assets.py` during CI/local validation and intentionally not committed as binary assets:
+  - `assets/audio/temp/pickup_chime.wav`
+  - `assets/audio/temp/craft_confirm.wav`
+  - `assets/audio/temp/arm_hit.wav`
+  - `assets/audio/temp/player_damage.wav`
+  - `assets/audio/temp/galaxabrain_down.wav`
+  - `assets/audio/temp/beacon_activate.wav`
+  - `assets/audio/temp/victory_sting.wav`

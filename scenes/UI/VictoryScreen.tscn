@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://titancraft_victory_screen"]
+[gd_scene load_steps=3 format=3 uid="uid://titancraft_victory_screen"]
 
 [ext_resource type="Script" path="res://src/UI/EndScreen.cs" id="1_end"]
+[ext_resource type="AudioStream" path="res://assets/audio/temp/victory_sting.wav" id="2_victory_audio"]
 
 [node name="VictoryScreen" type="Control"]
 layout_mode = 3
@@ -34,3 +35,8 @@ autowrap_mode = 3
 text = "Return to Main Menu"
 
 [connection signal="pressed" from="Menu/MainMenuButton" to="." method="ReturnToMainMenu"]
+
+[node name="VictoryAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_victory_audio")
+autoplay = true
+volume_db = -7.0

@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Crafting;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
@@ -24,6 +25,8 @@ public partial class ResourcePickup : Area3D, ICrashSiteInteractable
 
     [Export] public int Quantity { get; set; } = 1;
 
+    [Export] public NodePath CollectionAudioPath { get; set; } = "CollectionAudio";
+
     private bool _isCollected;
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
@@ -38,6 +41,7 @@ public partial class ResourcePickup : Area3D, ICrashSiteInteractable
 
         AddResource(inventory);
         _isCollected = true;
+        AudioCue.Play(this, CollectionAudioPath);
         Visible = false;
         Monitoring = false;
         TryAdvanceResourceObjective(inventory, mission);

@@ -16,6 +16,9 @@ function Assert-LastExitCode {
     }
 }
 
+python tools/prepare_audio_assets.py
+Assert-LastExitCode "prepare audio assets"
+
 if ($env:GODOT_BIN) {
     if (Test-Path $env:GODOT_BIN) {
         $godotExe = (Resolve-Path $env:GODOT_BIN).Path

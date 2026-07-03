@@ -23,6 +23,8 @@ jobs:
           chmod +x "$GODOT_EXE"
           sudo ln -sf "$GODOT_EXE" /usr/local/bin/godot
           "$GODOT_EXE" --headless --version | grep '4.7.stable.mono.official.5b4e0cb0f'
+      - name: Prepare temporary audio assets
+        run: python3 tools/prepare_audio_assets.py
       - name: Install Godot export templates
         run: |
           curl -L -o templates.tpz https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_export_templates.tpz
@@ -57,6 +59,9 @@ jobs:
           "GODOT_BIN=$($godotExe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
           & $godotExe.FullName --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
           if ($LASTEXITCODE -ne 0) { throw "Godot version check failed with exit code $LASTEXITCODE" }
+      - name: Prepare temporary audio assets
+        shell: pwsh
+        run: python tools/prepare_audio_assets.py
       - name: Install Godot export templates
         shell: pwsh
         run: |

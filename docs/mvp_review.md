@@ -2,31 +2,36 @@
 
 Cette liste sert à choisir une seule amélioration par tâche future. Elle reste limitée au MVP **Crash Site** défini dans `README.md` et ne remplace pas les tests humains de gameplay.
 
-## Priorités immédiates
+État de référence : `artifacts/mvp_closure/final_mvp_verdict.json` conclut `GO` avec 15/15 contrôles de playthrough réussis, aucun P0/P1 ouvert, et une chaîne restore/build/tests/import/export/launch validée par les preuves listées. `artifacts/mvp_closure/runtime_playthrough.md` détaille les résultats runtime associés.
+
+## Priorités actives restantes
 
 | Priorité | Catégorie | Tâche | Résultat attendu |
 |---:|---|---|---|
-| 1 | bug bloquant | Corriger et valider la touche gauche/Q. | Le déplacement gauche fonctionne en AZERTY avec `Q` sans déclencher une action critique comme quitter la partie. |
-| 2 | lisibilité gameplay | Ajouter un tutoriel HUD court. | Le joueur comprend rapidement les contrôles et l'objectif actuel sans lire un long tutoriel. |
-| 3 | lisibilité gameplay | Différencier visuellement les interactables. | Les ressources, l'établi, le point de sauvegarde et la balise sont distinguables à distance des éléments décoratifs. |
+| 1 | validation humaine | Réaliser un playthrough humain Windows sur matériel cible. | Confirmer les sensations de déplacement/combat, la lisibilité et les performances ressenties hors automatisation headless/CI. |
+| 2 | polish non bloquant | Ajouter des sons temporaires uniquement si nécessaire à la compréhension. | Les actions clés peuvent être mieux comprises sans transformer l'audio en objectif MVP prioritaire. |
+| 3 | polish non bloquant | Nettoyer les noms `Placeholder_*` et les primitives d'interactables quand ils ne sont plus nécessaires aux tests. | Les éléments restent compatibles avec les NodePaths et tests existants tout en réduisant les libellés temporaires visibles côté développement. |
+| 4 | sauvegarde non bloquante | Étudier la persistance de la direction du regard du joueur. | Le chargement conserve déjà position, santé, inventaire, mission, ennemi et balise ; la direction du regard peut être améliorée sans bloquer le GO MVP. |
 
-## Bug bloquant
+## Éléments résolus ou complétés
 
-- Vérifier que les entrées clavier QWERTY/WASD et AZERTY/ZQSD restent compatibles avec le déplacement minimal du MVP.
-- Confirmer que les actions critiques ne réutilisent pas `Q`, car `Q` est réservé au déplacement gauche en AZERTY.
-- Valider que le joueur ne peut pas sortir facilement des limites de la petite zone jouable.
+Ces points ne doivent plus rester dans la liste active sauf régression prouvée par un nouveau test ou un nouveau playthrough.
 
-## Lisibilité gameplay
+| Catégorie | Point résolu | Preuve actuelle |
+|---|---|---|
+| Entrées clavier | Compatibilité QWERTY/WASD et AZERTY/ZQSD, y compris `Q` pour le déplacement gauche sans action critique de sortie. | `runtime_playthrough.md` indique que les déplacements WASD/ZQSD, diagonaux, la souris et le saut sont PASS dans `TestPhysicsAndMovement` et `TestJumpAndCamera`. |
+| Tutoriel HUD | Couverture HUD courte pour l'état du bras, les indications obsolètes et l'objectif courant. | `runtime_playthrough.md` indique que le HUD passe l'état du bras à "Online" et que l'indice obsolète de démarrage a été remplacé. |
+| Séquence mission | Boucle collecter → fabriquer → vaincre → récupérer → activer → victoire. | `final_mvp_verdict.json` confirme `mission_sequence_verified: true`, `victory_verified: true` et 15/15 contrôles de playthrough réussis. |
+| Bras mécanique visible | Visuel du bras après fabrication/chargement. | `final_mvp_verdict.json` confirme `mechanical_arm_visual_verified: true`; `runtime_playthrough.md` marque le correctif P1 comme régressé-testé. |
+| Sauvegarde, mort et rechargement | Restauration de l'état de mission, inventaire, ennemi, composant et balise après la mort/recharge. | `final_mvp_verdict.json` confirme `save_death_reload_verified: true`; le playthrough marque les tests de sauvegarde/rechargement PASS. |
+| Limites de carte | Sortie de zone et chute hors limites récupérées par le flux de mort standard. | `final_mvp_verdict.json` confirme `collision_boundary_verified: true`; le playthrough marque le correctif P0 comme régressé-testé. |
+| Défauts P0/P1 | Aucun P0/P1 ouvert dans l'état de clôture MVP. | `final_mvp_verdict.json` indique `open_p0_count: 0` et `open_p1_count: 0`. |
 
-- Afficher un message HUD très court pour guider la boucle : collecter les ressources, fabriquer le bras, vaincre le Galaxabrain, activer la balise.
-- Rendre les interactables lisibles avec des silhouettes, couleurs ou marqueurs simples cohérents avec la direction artistique.
-- Vérifier que l'objectif actuel reste identifiable pendant toute la session MVP.
+## Règles de maintien
 
-## Polish non bloquant
-
-- Ajuster les couleurs et matériaux temporaires des placeholders sans remplacer les assets par des contenus définitifs prématurés.
-- Ajouter ou ajuster des sons temporaires uniquement si cela améliore la compréhension des actions clés.
-- Améliorer les textes courts du HUD, du menu pause et de l'écran de victoire sans étendre la boucle de gameplay.
+- Ne rouvrir un point résolu que si une preuve actuelle démontre une régression.
+- Garder les priorités actives limitées au périmètre **Crash Site** : une petite carte, un joueur FPS, un Galaxabrain, trois ressources, un bras mécanique, une balise, une mission, sauvegarde locale et menus minimaux.
+- Ne pas introduire de nouvelle fonctionnalité MVP pour traiter le polish restant.
 
 ## Exclusions explicites du périmètre MVP
 
@@ -34,4 +39,4 @@ Les tâches de cette revue ne doivent pas introduire les éléments hors périm�
 
 ## Règle d'utilisation
 
-Pour chaque tâche future, sélectionner une seule ligne ou un seul point de cette liste, définir le test pertinent avant modification, puis vérifier que l'amélioration ne déborde pas du MVP **Crash Site**.
+Pour chaque tâche future, sélectionner une seule ligne ou un seul point actif de cette liste, définir le test pertinent avant modification, puis vérifier que l'amélioration ne déborde pas du MVP **Crash Site**.

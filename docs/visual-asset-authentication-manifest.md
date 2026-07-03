@@ -27,8 +27,8 @@ The selected files come from asset packs already recorded in `THIRD_PARTY_ASSETS
 | Asset file | Bytes | SHA-256 |
 |---|---:|---|
 | `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_a.obj` | 340 | `e12747df6f0b72795da33dcaf39d36fa7c95945ab2c6dc6aae89f61483689d68` |
-| `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_cliff_d.obj` | 340 | `8d4dbac0e98173cb7a1532c74b65b038ebd19cac49bbad24002c6c6e4efb026c` |
-| `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj` | 340 | `02214a95b758b785a6b20b1a54c3e5fcaca9fd186b451653e94e4dd50fc37460` |
+| `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_b.obj` | 340 | `0f62977d07376487127856944691d598d13b994cd8cd79ae3d9416e0ecd12544` |
+| `assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_slab_h.obj` | 340 | `7f50b7387dbe286441409414e28d08f4c340d3fe7599051da5028f484efd3c74` |
 | `assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_nose_a.obj` | 340 | `e12747df6f0b72795da33dcaf39d36fa7c95945ab2c6dc6aae89f61483689d68` |
 | `assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/ship_panel_d.obj` | 340 | `8d4dbac0e98173cb7a1532c74b65b038ebd19cac49bbad24002c6c6e4efb026c` |
 | `assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/engine_pod_a.obj` | 340 | `07af55a9074041714a5223f7844e1c0fc691a31497319de54bea555633e6a4aa` |

@@ -16,6 +16,27 @@ public sealed class CrashSiteMissionState
 
     public event Action<CrashSiteMissionState>? Changed;
 
+    public CrashSiteMissionPhase CurrentPhase => _currentStep switch
+    {
+        CrashSiteMissionStep.CollectResources => CrashSiteMissionPhase.Scavenge,
+        CrashSiteMissionStep.BuildMechanicalArm => CrashSiteMissionPhase.Craft,
+        CrashSiteMissionStep.DefeatGalaxabrain => CrashSiteMissionPhase.ExtractConquer,
+        CrashSiteMissionStep.RecoverGalaxabrainComponent => CrashSiteMissionPhase.ExtractConquer,
+        CrashSiteMissionStep.ActivateBeacon => CrashSiteMissionPhase.ExtractConquer,
+        CrashSiteMissionStep.Victory => CrashSiteMissionPhase.Complete,
+        _ => CrashSiteMissionPhase.SurviveAndOrient
+    };
+
+    public string CurrentPhaseTitle => CurrentPhase switch
+    {
+        CrashSiteMissionPhase.SurviveAndOrient => "Phase 1 — Survive & Orient",
+        CrashSiteMissionPhase.Scavenge => "Phase 2 — Scavenge",
+        CrashSiteMissionPhase.Craft => "Phase 3 — Craft",
+        CrashSiteMissionPhase.ExtractConquer => "Phase 4 — Extract/Conquer",
+        CrashSiteMissionPhase.Complete => "Mission Complete",
+        _ => "Crash Site"
+    };
+
     /// <summary>
     /// Gets the current mission step.
     /// </summary>
@@ -36,14 +57,16 @@ public sealed class CrashSiteMissionState
     /// </summary>
     public string CurrentObjectiveText => _currentStep switch
     {
-        CrashSiteMissionStep.CollectResources => "Collect Resources",
-        CrashSiteMissionStep.BuildMechanicalArm => "Build Mechanical Arm Mk I",
-        CrashSiteMissionStep.ActivateBeacon => "Activate Beacon",
-        CrashSiteMissionStep.DefeatGalaxabrain => "Defeat Galaxabrain",
-        CrashSiteMissionStep.RecoverGalaxabrainComponent => "Recover Galaxabrain Component",
-        CrashSiteMissionStep.Victory => "Mission complete: Beacon activated",
+        CrashSiteMissionStep.CollectResources => "Collect Metal, Biomass, and Electronics near the debris trail.",
+        CrashSiteMissionStep.BuildMechanicalArm => "Return to the lit Workbench and build Mechanical Arm Mk I.",
+        CrashSiteMissionStep.ActivateBeacon => "Activate the beacon beam to call for extraction.",
+        CrashSiteMissionStep.DefeatGalaxabrain => "Defeat the red-core Galaxabrain Scout.",
+        CrashSiteMissionStep.RecoverGalaxabrainComponent => "Recover the Galaxabrain component from the crash arena.",
+        CrashSiteMissionStep.Victory => "Mission complete: beacon activated.",
         _ => "Unknown Objective"
     };
+
+    public string HudBreadcrumb => $"{CurrentPhaseTitle}: {CurrentObjectiveText}";
 
     /// <summary>
     /// Attempts to complete the resource collection objective.

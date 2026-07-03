@@ -27,6 +27,20 @@ public sealed class MechanicalArmRecipe
 
     public int ElectronicComponentsCost => cost.ElectronicComponents;
 
+    public string GetProgressText(MvpInventory inventory)
+    {
+        ArgumentNullException.ThrowIfNull(inventory);
+
+        if (inventory.IsMechanicalArmBuilt)
+        {
+            return "Mechanical Arm Mk I: ONLINE";
+        }
+
+        return $"Mechanical Arm Mk I: Metal {ClampToCost(inventory.Metal, MetalCost)}/{MetalCost} | "
+            + $"Biomass {ClampToCost(inventory.Biomass, BiomassCost)}/{BiomassCost} | "
+            + $"Electronics {ClampToCost(inventory.ElectronicComponents, ElectronicComponentsCost)}/{ElectronicComponentsCost}";
+    }
+
     public bool CanCraft(MvpInventory inventory)
     {
         ArgumentNullException.ThrowIfNull(inventory);
@@ -97,6 +111,8 @@ public sealed class MechanicalArmRecipe
 
         throw new FileNotFoundException($"Mechanical arm recipe data file was not found: {RecipeRelativePath}");
     }
+
+    private static int ClampToCost(int current, int cost) => Math.Min(current, cost);
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {

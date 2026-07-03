@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Material" path="res://assets/Materials/HumanWornSteel.tres" id="1_steel"]
+[ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="2_graphite"]
+[ext_resource type="Material" path="res://assets/Materials/HumanOrangeInteractive.tres" id="3_orange"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_nose_a.obj" id="4_hull"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/ship_panel_d.obj" id="5_panel"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/engine_pod_a.obj" id="6_engine"]
+
+[node name="ShipWreckageShard_A" type="Node3D"]
+metadata/visual_only = true
+metadata/collision_policy = "No collision; production placement must preserve existing ship/wall collision contracts."
+metadata/scope_guard = "Damaged crash-site set dressing only; not a flyable ship or complete rocket."
+
+[node name="PrimaryForms" type="Node3D" parent="."]
+
+[node name="BuriedHullNose" type="MeshInstance3D" parent="PrimaryForms"]
+transform = Transform3D(1.7, 0, -0.25, 0, 0.85, 0, 0.25, 0, 1.2, -0.6, 0.25, 0)
+mesh = ExtResource("4_hull")
+surface_material_override/0 = ExtResource("1_steel")
+
+[node name="TornPanel" type="MeshInstance3D" parent="PrimaryForms"]
+transform = Transform3D(1.35, 0.18, 0, -0.18, 1.0, 0, 0, 0, 1.1, 0.6, 0.45, -0.15)
+mesh = ExtResource("5_panel")
+surface_material_override/0 = ExtResource("2_graphite")
+
+[node name="BrokenEnginePod" type="MeshInstance3D" parent="PrimaryForms"]
+transform = Transform3D(0.95, 0, 0.3, 0, 0.95, 0, -0.3, 0, 0.95, 1.15, 0.35, 0.2)
+mesh = ExtResource("6_engine")
+surface_material_override/0 = ExtResource("1_steel")
+
+[node name="FunctionalDetails" type="Node3D" parent="."]
+
+[node name="RescuePaintStripe" type="MeshInstance3D" parent="FunctionalDetails"]
+transform = Transform3D(0.55, 0, 0, 0, 0.08, 0, 0, 0, 0.02, 0.15, 0.85, -0.35)
+mesh = ExtResource("5_panel")
+surface_material_override/0 = ExtResource("3_orange")

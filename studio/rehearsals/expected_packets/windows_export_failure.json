@@ -1,0 +1,55 @@
+{
+  "approved_final_verdicts": [
+    "PASS",
+    "FAIL_REPO_OWNED",
+    "ENVIRONMENT_BLOCKED",
+    "EXTERNAL_SECRET_BLOCKED",
+    "INTENTIONAL_GATE",
+    "DRY_RUN_ONLY",
+    "NOT_GO"
+  ],
+  "detected_task_category": "build_failure",
+  "evidence_category": "build",
+  "forbidden_verdicts": [
+    "done",
+    "improved",
+    "looks good",
+    "should be fine",
+    "tests passed"
+  ],
+  "minimum_validation_commands": [
+    "python3 tools/validate_agent_studio.py",
+    "git diff --check"
+  ],
+  "primary_agent": "build_release_engineer",
+  "required_checklists": [
+    "before_task",
+    "release_readiness",
+    "before_pr"
+  ],
+  "required_evidence": [
+    "exact command output",
+    "artifact path",
+    "failure class",
+    "environment limitation if blocked"
+  ],
+  "required_memory_packs_cards": [
+    "MEM-CI-RELEASE-LESSONS-004",
+    "MEM-PRODUCTION-STAGE-GATES-002",
+    "MEM-CI-013"
+  ],
+  "required_skills": [
+    "ci_cd_validation",
+    "production_debugging",
+    "evidence_reporting"
+  ],
+  "scope_warnings": [
+    "Do not treat dummy or local artifacts as production readiness.",
+    "No gameplay tests are required for Agent Studio routing changes."
+  ],
+  "secondary_agents": [
+    "tools_engineer",
+    "qa_lead"
+  ],
+  "task_description": "Windows export build failure in CI: artifact metadata is missing and the report tries to use dummy local output as production readiness evidence."
+}

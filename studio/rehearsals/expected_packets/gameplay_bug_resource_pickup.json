@@ -1,0 +1,54 @@
+{
+  "approved_final_verdicts": [
+    "PASS",
+    "FAIL_REPO_OWNED",
+    "HUMAN_BLOCKED",
+    "ENVIRONMENT_BLOCKED",
+    "NOT_GO"
+  ],
+  "detected_task_category": "gameplay_bug",
+  "evidence_category": "gameplay",
+  "forbidden_verdicts": [
+    "done",
+    "improved",
+    "looks good",
+    "should be fine",
+    "tests passed"
+  ],
+  "minimum_validation_commands": [
+    "unit tests when behavior changes",
+    "integration or mission smoke test",
+    "git diff --check"
+  ],
+  "primary_agent": "gameplay_engineer",
+  "required_checklists": [
+    "before_task",
+    "gameplay_validation",
+    "before_commit",
+    "before_pr"
+  ],
+  "required_evidence": [
+    "unit tests when behavior changes",
+    "integration tests when systems interact",
+    "mission smoke test or documented manual procedure",
+    "runtime flags or logs when applicable"
+  ],
+  "required_memory_packs_cards": [
+    "MEM-PRODUCT-001",
+    "MEM-GAMEPLAY-MVP-SCOPE-001"
+  ],
+  "required_skills": [
+    "csharp_gameplay_validation",
+    "production_debugging",
+    "evidence_reporting"
+  ],
+  "scope_warnings": [
+    "Do not add forbidden MVP features while fixing the bug.",
+    "Runtime tests do not replace manual mission smoke evidence."
+  ],
+  "secondary_agents": [
+    "qa_lead",
+    "technical_director"
+  ],
+  "task_description": "Fix a gameplay bug where resource pickup updates the inventory counter but the mission objective does not advance during the Crash Site resource collection loop."
+}

@@ -1,0 +1,58 @@
+{
+  "approved_final_verdicts": [
+    "PASS",
+    "FAIL_REPO_OWNED",
+    "HUMAN_BLOCKED",
+    "EXTERNAL_SECRET_BLOCKED",
+    "NOT_GO"
+  ],
+  "detected_task_category": "asset_import",
+  "evidence_category": "asset",
+  "forbidden_verdicts": [
+    "done",
+    "improved",
+    "looks good",
+    "should be fine",
+    "tests passed"
+  ],
+  "minimum_validation_commands": [
+    "python3 tools/validate_agent_studio.py",
+    "git diff --check"
+  ],
+  "primary_agent": "asset_librarian",
+  "required_checklists": [
+    "before_task",
+    "asset_import",
+    "before_pr"
+  ],
+  "required_evidence": [
+    "source URL",
+    "licence",
+    "file hash",
+    "audition screenshot",
+    "classification as production, placeholder, rejected, or reference-only"
+  ],
+  "required_memory_packs_cards": [
+    "MEM-VISFAIL-002",
+    "MEM-SCREENSHOT-REVIEW-LESSONS-003",
+    "MEM-CI-010",
+    "MEM-ASSET-006",
+    "MEM-ASSET-007",
+    "MEM-ASSET-PROVENANCE-001"
+  ],
+  "required_skills": [
+    "asset_provenance",
+    "asset_audition",
+    "evidence_reporting"
+  ],
+  "scope_warnings": [
+    "Do not import assets without source URL, licence, hash, and audition evidence.",
+    "Fake placeholder OBJ files are forbidden."
+  ],
+  "secondary_agents": [
+    "art_director",
+    "technical_director",
+    "qa_lead"
+  ],
+  "task_description": "Import an OBJ crash ship asset for audition, but the submitted asset lacks source URL, licence text, hash, and in-engine audition screenshot."
+}

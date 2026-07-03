@@ -1,0 +1,61 @@
+{
+  "approved_final_verdicts": [
+    "PASS",
+    "FAIL_REPO_OWNED",
+    "HUMAN_BLOCKED",
+    "ENVIRONMENT_BLOCKED",
+    "INTENTIONAL_GATE",
+    "NOT_GO"
+  ],
+  "detected_task_category": "visual_scene_composition",
+  "evidence_category": "visual",
+  "forbidden_verdicts": [
+    "done",
+    "improved",
+    "looks good",
+    "should be fine",
+    "tests passed"
+  ],
+  "minimum_validation_commands": [
+    "python3 tools/validate_agent_studio.py",
+    "git diff --check"
+  ],
+  "primary_agent": "art_director",
+  "required_checklists": [
+    "before_task",
+    "before_visual_claim",
+    "visual_review",
+    "before_pr"
+  ],
+  "required_evidence": [
+    "PNG screenshots",
+    "visual diagnosis naming focal point, route readability, silhouette, scale, material coherence",
+    "before/after comparison",
+    "human-review or visual-reviewer verdict"
+  ],
+  "required_memory_packs_cards": [
+    "MEM-VISFAIL-002",
+    "MEM-SCREENSHOT-REVIEW-LESSONS-003",
+    "MEM-CI-010",
+    "MEM-VISFAIL-001",
+    "MEM-VISFAIL-003",
+    "MEM-SCREEN-012",
+    "MEM-VISFAIL-004",
+    "MEM-VISFAIL-005"
+  ],
+  "required_skills": [
+    "screenshot_critique",
+    "visual_art_direction",
+    "evidence_reporting"
+  ],
+  "scope_warnings": [
+    "Do not claim visual success without opened PNGs and visual diagnosis.",
+    "Do not decorate toy-like hulls or call route slabs terrain."
+  ],
+  "secondary_agents": [
+    "visual_reviewer",
+    "technical_director",
+    "qa_lead"
+  ],
+  "task_description": "Review a visual review PR that says looks good and tests passed, but provides no PNG before/after screenshots, no focal point diagnosis, and no comparison to rejected screenshots."
+}

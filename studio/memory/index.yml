@@ -1,0 +1,45 @@
+version: 2
+note: "Curated, non-exhaustive memory packs. README.md remains authoritative."
+files:
+  - id: AGENT-GOVERNANCE
+    path: agent_governance.md
+    topic: Agent Governance
+  - id: ARCHITECTURE-CONTRACTS
+    path: architecture_contracts.md
+    topic: Architecture Contracts
+  - id: ASSET-PROVENANCE
+    path: asset_provenance.md
+    topic: Asset Provenance
+  - id: CI-RELEASE-LESSONS
+    path: ci_release_lessons.md
+    topic: Ci Release Lessons
+  - id: CSHARP-RUNTIME-SAFETY
+    path: csharp_runtime_safety.md
+    topic: Csharp Runtime Safety
+  - id: DEBUGGING-LESSONS
+    path: debugging_lessons.md
+    topic: Debugging Lessons
+  - id: GAMEPLAY-MVP-SCOPE
+    path: gameplay_mvp_scope.md
+    topic: Gameplay Mvp Scope
+  - id: GODOT-SCENE-SAFETY
+    path: godot_scene_safety.md
+    topic: Godot Scene Safety
+  - id: PRODUCT-SCOPE
+    path: product_scope.md
+    topic: Product Scope
+  - id: PRODUCTION-STAGE-GATES
+    path: production_stage_gates.md
+    topic: Production Stage Gates
+  - id: PROMPT-FAILURE-PATTERNS
+    path: prompt_failure_patterns.md
+    topic: Prompt Failure Patterns
+  - id: SCREENSHOT-REVIEW-LESSONS
+    path: screenshot_review_lessons.md
+    topic: Screenshot Review Lessons
+  - id: TITANCRAFT-VISUAL-IDENTITY
+    path: titanCraft_visual_identity.md
+    topic: Titancraft Visual Identity
+  - id: VISUAL-FAILURE-PATTERNS
+    path: visual_failure_patterns.md
+    topic: Visual Failure Patterns

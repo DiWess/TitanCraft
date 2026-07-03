@@ -63,3 +63,5 @@
 - 2026-07-01: Replaced the visually insufficient Phase 3A terrain height field with semantic visual-only low-poly landform meshes and Pass 1E artifact diagnostics while preserving gameplay contracts.
 - 2026-07-03: Added self-created temporary MVP audio cues for collection, crafting, combat, death, beacon activation, and victory feedback.
 - 2026-07-03: Moved temporary MVP audio WAV binaries out of git and into deterministic CI/local asset preparation.
+
+- 2026-07-03: Improved Crash Site interactable readability with visual-only marker meshes while preserving gameplay node paths and validation checks.

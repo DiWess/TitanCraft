@@ -1,6 +1,6 @@
 # Visual Placeholder Inventory — Crash Site Main Route
 
-Date: 2026-06-30
+Date: 2026-07-03
 Scope: current visible placeholder and primitive inventory before final visual vertical slice work.
 
 ## Summary
@@ -22,11 +22,11 @@ The Crash Site mission route is playable, but the visible presentation is still 
 | `Placeholder_MetalPickup` | Grey/graphite rectangular block | Required resource pickup, Metal 10 | Keep root Area3D, `ResourceKind`, `Quantity`, and collision stable. | Phase 6A |
 | `Placeholder_BiomassPickup` | Low-poly red sphere | Required resource pickup, Biomass 3 | Keep root Area3D, `ResourceKind`, `Quantity`, and collision stable. | Phase 6A |
 | `Placeholder_ElectronicsPickup` | Low-poly graphite cylinder | Required resource pickup, Electronics 2 | Keep root Area3D, `ResourceKind`, `Quantity`, and collision stable. | Phase 6A |
-| `Placeholder_Workbench` | Ivory rectangular bench plus orange strip | Required crafting interactable | Keep root Area3D and `Collision_Workbench` stable. | Phase 6B |
-| `Placeholder_SavePoint` | Low orange cylinder | Optional local save interactable | Keep root Area3D and save signal contract stable. | Phase 6B |
-| `Placeholder_Beacon` | Graphite cylinder with hidden/active violet prism | Required final beacon interactable | Keep `ClosedVisual` and `ActiveVisual` paths unless tests/scripts migrate. | Phase 6B / 11B |
+| `Placeholder_Workbench` | Ivory bench with orange strip plus small orange pylon/marker readability meshes | Required crafting interactable | Keep root Area3D and `Collision_Workbench` stable; new marker meshes are visual-only children. | Phase 6B |
+| `Placeholder_SavePoint` | Low orange cylinder plus cyan core and orange marker | Optional local save interactable | Keep root Area3D and save signal contract stable; new marker meshes are visual-only children. | Phase 6B |
+| `Placeholder_Beacon` | Graphite cylinder with hidden/active violet prism plus orange antenna wings and violet crown marker | Required final beacon interactable | Keep `ClosedVisual` and `ActiveVisual` paths unless tests/scripts migrate; new marker meshes are visual-only children. | Phase 6B / 11B |
 | `Placeholder_GalaxabrainScout` in `Main.tscn` | Instanced enemy root at alien zone | Single required MVP enemy | Keep `PlayerPath`, root instance, and mission role stable. | Phase 8 |
-| `Placeholder_GalaxabrainScout` in enemy scene | Box mesh child | Enemy visible body | Replace visually under root without changing root/collision/brain contracts. | Phase 8A |
+| `Placeholder_GalaxabrainScout` in enemy scene | Hidden box mesh plus robot visual, red organic core, and cyan eye marker | Enemy visible body | Keep hidden placeholder mesh/root, collision, component pickup, and brain contracts stable. | Phase 8A |
 | `GalaxabrainComponentPickup` | Hidden until enemy death; no distinct final visual yet | Required mission component after enemy death | Must remain accessible after enemy death. | Phase 9B |
 | `VolcanicRock_1` | Stretched/tilted box rock | Blocking terrain element | Keep collision predictable; avoid blocking route. | Phase 4A |
 | `VolcanicRock_2` | Stretched/tilted box rock | Blocking terrain element | Keep collision predictable; avoid blocking route. | Phase 4A |
@@ -45,12 +45,10 @@ The Crash Site mission route is playable, but the visible presentation is still 
 
 ## Missing final-presentation elements observed
 
-- No clearly identifiable crashed ship silhouette yet.
 - No visible first-person mechanical arm yet.
 - No dedicated `VisualRoot`, `CollisionRoot`, `VFXRoot`, or `AudioRoot` structure on gameplay objects yet.
 - No `GPUParticles3D` environmental or combat VFX observed.
 - No `AnimationPlayer`-driven combat or idle animation observed.
-- No `AudioStreamPlayer` or `AudioStreamPlayer3D` audio observed.
 - No decals or scorch/damage system observed.
 - No modular human prop library observed under `scenes/Props`.
 - No terrain module library observed under `scenes/Environment`.

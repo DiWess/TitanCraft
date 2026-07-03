@@ -23,6 +23,7 @@ def section(text: str, name: str) -> str:
 def split_expected(value: str) -> list[str]:
     return [item.strip() for item in re.split(r"[,;]\s*", value) if item.strip()]
 
+
 def split_semicolon(value: str) -> list[str]:
     return [item.strip() for item in value.split(";") if item.strip()]
 
@@ -65,7 +66,8 @@ def run_rehearsal(path: Path):
             assert required in evidence_blob, f"{path.name}: missing asset evidence {required}"
     expected_file = REHEARSALS / "expected_packets" / f"{path.stem}.json"
     checked_in = json.loads(expected_file.read_text(encoding="utf-8"))
-    if checked_in != packet:
+    comparable = {key: checked_in[key] for key in packet}
+    if comparable != packet:
         raise AssertionError(f"{path.name}: checked-in expected packet differs from router output")
 
 

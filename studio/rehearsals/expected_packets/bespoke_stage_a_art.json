@@ -1,0 +1,82 @@
+{
+  "approved_final_verdicts": [
+    "PASS",
+    "FAIL_REPO_OWNED",
+    "HUMAN_BLOCKED",
+    "ENVIRONMENT_BLOCKED",
+    "INTENTIONAL_GATE",
+    "NOT_GO"
+  ],
+  "before_editing_files_checklist": [
+    "Read README.md and confirm the task does not conflict with MVP Crash Site scope.",
+    "Read root AGENTS.md and any scoped AGENTS.md files for touched paths.",
+    "Load the required memories listed in this packet.",
+    "Review the required skills and checklists listed in this packet.",
+    "Confirm forbidden actions, forbidden scope, and scope warnings are understood.",
+    "Confirm required evidence can be produced; otherwise stop with a blocking verdict.",
+    "Plan three to seven steps before modifying the minimum necessary files."
+  ],
+  "detected_task_category": "visual_scene_composition",
+  "evidence_category": "visual",
+  "forbidden_actions": [
+    "Do not edit files before reading README.md and this preflight packet.",
+    "Do not expand MVP gameplay scope beyond README.md.",
+    "Do not ignore scope warnings or missing evidence gates.",
+    "Do not use vague verdicts or non-approved final verdict language.",
+    "Do not claim PASS without required evidence and validation output."
+  ],
+  "forbidden_scope": [
+    "gameplay code unless explicitly requested and permitted by README.md",
+    "production scenes, Godot project settings, C# runtime code, tests, assets, or visual content unless explicitly in scope",
+    "forbidden MVP features listed in README.md and AGENTS.md"
+  ],
+  "forbidden_verdicts": [
+    "done",
+    "improved",
+    "looks good",
+    "should be fine",
+    "tests passed"
+  ],
+  "minimum_validation_commands": [
+    "python3 tools/validate_agent_studio.py",
+    "git diff --check"
+  ],
+  "primary_agent": "art_director",
+  "required_checklists": [
+    "before_task",
+    "before_visual_claim",
+    "visual_review",
+    "before_pr"
+  ],
+  "required_evidence": [
+    "PNG screenshots",
+    "visual diagnosis naming focal point, route readability, silhouette, scale, material coherence",
+    "before/after comparison",
+    "human-review or visual-reviewer verdict"
+  ],
+  "required_memory_packs_cards": [
+    "MEM-VISFAIL-002",
+    "MEM-SCREENSHOT-REVIEW-LESSONS-003",
+    "MEM-CI-010",
+    "MEM-STAGE-008",
+    "MEM-PRODUCTION-STAGE-GATES-001",
+    "MEM-VISFAIL-001",
+    "MEM-VISFAIL-004",
+    "MEM-VISFAIL-005"
+  ],
+  "required_skills": [
+    "screenshot_critique",
+    "visual_art_direction",
+    "evidence_reporting"
+  ],
+  "scope_warnings": [
+    "Do not claim visual success without opened PNGs and visual diagnosis.",
+    "Do not decorate toy-like hulls or call route slabs terrain."
+  ],
+  "secondary_agents": [
+    "visual_reviewer",
+    "technical_director",
+    "qa_lead"
+  ],
+  "task_description": "Create bespoke static Stage A crash-site art for TitanCraft after free assets failed, preserving gameplay and requiring screenshots before approval."
+}

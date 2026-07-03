@@ -14,7 +14,7 @@ Flow: `PlayerHealth` reaches 0 → `CrashSiteEndScreenNavigator` → `DefeatScre
 
 | State | Persisted | Restoration policy |
 | --- | --- | --- |
-| Player transform | Position (X/Y/Z) | Restored exactly. Look direction not persisted (respawn reorientation acceptable for MVP). |
+| Player transform | Position (X/Y/Z) | Restored exactly. Camera yaw/pitch intentionally not persisted for the MVP; reloads may use the scene default look direction after returning to the saved position. |
 | Player health | Yes | Restored to the value at save time. Saves with `Health <= 0` are rejected by `LocalSaveGameStore.IsValid`, so a reload can never spawn a dead player. |
 | Inventory quantities | Yes | Restored exactly. |
 | Mechanical arm ownership | Yes (written) | **Derived from mission step on load** (`step >= DefeatGalaxabrain`). |
@@ -23,6 +23,13 @@ Flow: `PlayerHealth` reaches 0 → `CrashSiteEndScreenNavigator` → `DefeatScre
 | Component recovered/available | Yes (`GalaxabrainComponentCollected`, written) | Collected derived from `step >= ActivateBeacon`; pickup available only at `RecoverGalaxabrainComponent`. |
 | Beacon activated | Yes (`IsBeaconActivated`, written) | Derived from `step >= Victory`; applied via `Beacon.RestoreActivated`. |
 | Save-point identity | Yes (`CheckpointId`) | Recorded for diagnostics/reload target. |
+
+## Camera/look persistence decision
+
+Crash Site intentionally does **not** persist exact camera yaw or pitch in the MVP.
+Reloading a save restores the player to the saved position, health, inventory, and mission-derived world state, but allows the camera to return to the scene default orientation. This keeps the local save contract focused on progression-critical state and avoids treating moment-to-moment aim direction as a required checkpoint guarantee.
+
+If playtesting later shows that reorientation after death or reload is confusing, the follow-up decision should add explicit yaw/pitch fields to `CrashSiteSaveData`, write them in `CrashSiteSaveCoordinator.SaveGame`, and restore them through a dedicated `FirstPersonController` method with unit/integration coverage.
 
 ## Why load-time flags derive from the mission step
 

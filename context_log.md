@@ -67,3 +67,4 @@
 - 2026-07-03: Improved Crash Site interactable readability with visual-only marker meshes while preserving gameplay node paths and validation checks.
 
 - 2026-07-03: Refined MVP pickup material contrast and added scene-contract coverage for visual-only readability markers without renaming gameplay nodes.
+- 2026-07-03: Décision MVP explicite — la sauvegarde Crash Site persiste la position du joueur mais pas le yaw/pitch caméra; aucune modification du contrat de données nécessaire.

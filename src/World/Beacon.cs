@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
 
@@ -10,6 +11,8 @@ public partial class Beacon : Area3D, ICrashSiteInteractable
     [Export] public NodePath ClosedVisualPath { get; set; } = "ClosedVisual";
 
     [Export] public NodePath ActiveVisualPath { get; set; } = "ActiveVisual";
+
+    [Export] public NodePath ActivationAudioPath { get; set; } = "ActivationAudio";
 
     public bool IsActivated { get; private set; }
 
@@ -29,6 +32,11 @@ public partial class Beacon : Area3D, ICrashSiteInteractable
 
         IsActivated = mission.TryCompleteBeaconActivation();
         UpdateVisualState();
+        if (IsActivated)
+        {
+            AudioCue.Play(this, ActivationAudioPath);
+        }
+
         return IsActivated;
     }
 

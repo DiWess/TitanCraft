@@ -73,3 +73,6 @@ artifacts/visual-review/
 
 # Generated Phase 3A visual-review screenshots are distributed as workflow artifacts.
 /docs/review/phase3a-pass1-terrain/*.png
+
+# Generated temporary audio cues are materialized by tools/prepare_audio_assets.py in CI/local validation.
+/assets/audio/temp/*.wav

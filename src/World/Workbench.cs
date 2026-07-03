@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Crafting;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
@@ -9,6 +10,8 @@ namespace TitanCraft.World;
 public partial class Workbench : Area3D, ICrashSiteInteractable
 {
     private readonly MechanicalArmRecipe _mechanicalArmRecipe = new();
+
+    [Export] public NodePath CraftAudioPath { get; set; } = "CraftAudio";
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
     {
@@ -25,6 +28,12 @@ public partial class Workbench : Area3D, ICrashSiteInteractable
             return false;
         }
 
-        return mission.TryCompleteMechanicalArmConstruction();
+        bool crafted = mission.TryCompleteMechanicalArmConstruction();
+        if (crafted)
+        {
+            AudioCue.Play(this, CraftAudioPath);
+        }
+
+        return crafted;
     }
 }

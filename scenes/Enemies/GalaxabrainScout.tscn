@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://titancraft_galaxabrain_scout"]
+[gd_scene load_steps=7 format=3 uid="uid://titancraft_galaxabrain_scout"]
 
 [ext_resource type="Script" path="res://src/Enemies/GalaxabrainScout.cs" id="1_scout"]
 [ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="2_component"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="3_robot"]
+[ext_resource type="AudioStream" path="res://assets/audio/temp/galaxabrain_down.wav" id="4_death_audio"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_scout"]
 radius = 0.45
@@ -39,3 +40,7 @@ script = ExtResource("2_component")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GalaxabrainComponentPickup"]
 shape = SubResource("CapsuleShape3D_scout")
+
+[node name="DeathAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_death_audio")
+volume_db = -6.0

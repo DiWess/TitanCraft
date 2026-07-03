@@ -61,3 +61,5 @@
 - 2026-07-01: Added Phase 3A Pass 1D terrain visibility diagnostics to separate geometry, material, lighting, vertex-colour and production-camera obstruction failures without changing gameplay ownership.
 
 - 2026-07-01: Replaced the visually insufficient Phase 3A terrain height field with semantic visual-only low-poly landform meshes and Pass 1E artifact diagnostics while preserving gameplay contracts.
+- 2026-07-03: Added self-created temporary MVP audio cues for collection, crafting, combat, death, beacon activation, and victory feedback.
+- 2026-07-03: Moved temporary MVP audio WAV binaries out of git and into deterministic CI/local asset preparation.

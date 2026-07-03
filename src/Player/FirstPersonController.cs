@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Crafting;
 using TitanCraft.Enemies;
 using TitanCraft.Missions;
@@ -21,6 +22,8 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public int MechanicalArmDamage { get; set; } = MechanicalArmAttackLogic.DefaultMechanicalArmDamage;
     [Export] public float AttackCooldownSeconds { get; set; } = MechanicalArmAttackLogic.DefaultCooldownSeconds;
     [Export] public float FallDefeatHeight { get; set; } = -10.0f;
+    [Export] public NodePath ArmHitAudioPath { get; set; } = "Head/Camera3D/ArmHitAudio";
+    [Export] public NodePath DamageAudioPath { get; set; } = "Head/Camera3D/DamageAudio";
 
     public MvpInventory Inventory { get; } = new();
 
@@ -48,6 +51,7 @@ public partial class FirstPersonController : CharacterBody3D
         _mechanicalArmRecipe = new MechanicalArmRecipe();
         _mechanicalArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
         Inventory.Changed += UpdateMechanicalArmVisual;
+        Health.Changed += OnHealthChanged;
         UpdateMechanicalArmVisual(Inventory);
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
@@ -55,6 +59,16 @@ public partial class FirstPersonController : CharacterBody3D
     public override void _ExitTree()
     {
         Inventory.Changed -= UpdateMechanicalArmVisual;
+        Health.Changed -= OnHealthChanged;
+    }
+
+
+    private void OnHealthChanged(PlayerHealth health)
+    {
+        if (health.IsDead)
+        {
+            AudioCue.Play(this, DamageAudioPath);
+        }
     }
 
     private void UpdateMechanicalArmVisual(MvpInventory inventory)
@@ -135,6 +149,7 @@ public partial class FirstPersonController : CharacterBody3D
         }
 
         scout.ApplyDamage(_mechanicalArmAttack.Damage);
+        AudioCue.Play(this, ArmHitAudioPath);
         ShowActionFeedback($"Mk I punch landed: Galaxabrain took {_mechanicalArmAttack.Damage} damage.");
         return true;
     }

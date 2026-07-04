@@ -39,6 +39,7 @@ dotnet build --configuration Release
 dotnet test tests/TitanCraft.Tests.csproj --settings tests/TitanCraft.runsettings --logger "trx;LogFileName=unit.trx" --results-directory "$RESULTS"
 "$REAL_GODOT_BIN" --headless --path . --import --quit 2>&1 | tee "$RESULTS/import.log"
 "$REAL_GODOT_BIN" --headless --path . tests/Integration/IntegrationTestRunner.tscn 2>&1 | tee "$RESULTS/integration.log"
+python3 tools/testing/verify_mvp_smoke_log.py "$RESULTS/integration.log"
 "$REAL_GODOT_BIN" --headless --path . --quit-after 300 2>&1 | tee "$RESULTS/smoke.log"
 "$REAL_GODOT_BIN" --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe 2>&1 | tee "$RESULTS/export.log"
 test -f builds/Windows/TitanCraft.exe

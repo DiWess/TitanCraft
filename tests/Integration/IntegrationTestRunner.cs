@@ -482,9 +482,12 @@ public partial class IntegrationTestRunner : Node
         var scout = main.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
         var component = scout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
         var workbench = main.GetNode<Workbench>("Placeholder_Workbench");
+        var savePoint = main.GetNode<SavePoint>("Placeholder_SavePoint");
         var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
 
+        Require(player.IsInsideTree(), "Player did not spawn into the Crash Site scene");
         Require(!arm.Visible, "Mechanical arm visual should start hidden");
+        LogMvpSmokeMilestone(1, "player spawned");
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench must reject crafting before resources are collected");
         Require(!component.Interact(player.Inventory, player.Mission), "Component must reject recovery before Galaxabrain defeat");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon must reject activation before component recovery");
@@ -497,11 +500,13 @@ public partial class IntegrationTestRunner : Node
             Require(!pickup.Interact(player.Inventory, player.Mission), $"{pickupName} was collectable twice");
         }
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm, "Collecting all resources did not advance to crafting");
+        LogMvpSmokeMilestone(2, "resources collected");
 
         Require(workbench.Interact(player.Inventory, player.Mission), "Workbench crafting failed with full resources");
         Require(player.Inventory.IsMechanicalArmBuilt, "Crafting did not build the mechanical arm");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefeatGalaxabrain, "Crafting did not advance to the defeat step");
         Require(arm.Visible, "Mechanical arm visual did not appear after crafting");
+        LogMvpSmokeMilestone(3, "Mechanical Arm Mk I crafted");
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench crafted the arm twice");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
 
@@ -512,6 +517,7 @@ public partial class IntegrationTestRunner : Node
         player.GetNode<Node3D>("Head").LookAt(scout.GlobalPosition, Vector3.Up);
         Require(player.TryAttack(), "Aimed mechanical arm attack did not hit the Galaxabrain");
         Require(scout.Brain.CurrentHealth == scout.Brain.MaxHealth - MechanicalArmAttackLogic.DefaultMechanicalArmDamage, "Aimed attack did not damage the Galaxabrain");
+        LogMvpSmokeMilestone(4, "Galaxabrain Scout engaged");
 
         for (var hit = 0; hit < 3; hit++)
             scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
@@ -519,6 +525,7 @@ public partial class IntegrationTestRunner : Node
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Galaxabrain death did not advance to component recovery");
         Require(!player.Mission.IsVictory && player.Mission.CurrentStep != CrashSiteMissionStep.ActivateBeacon, "Galaxabrain death skipped the component recovery step");
         Require(component.Visible && component.Monitoring, "Component pickup was not revealed by Galaxabrain death");
+        LogMvpSmokeMilestone(5, "Galaxabrain Scout defeated");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated before component recovery");
 
         // Recover through the real interaction raycast: the dead scout's collider must
@@ -532,17 +539,56 @@ public partial class IntegrationTestRunner : Node
         Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
         Require(!component.Visible && !component.Monitoring, "Component pickup stayed interactable after recovery");
+        LogMvpSmokeMilestone(6, "component retrieved");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable twice");
+
+        Require(savePoint.Interact(player.Inventory, player.Mission), "Save point failed before beacon activation");
+        await Frames(2);
+        Require(savePoint.HasSavedCheckpoint, "Save point did not record checkpoint usage");
+        Require(main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastSaveSucceeded, "Save point did not write the continuation save");
+        LogMvpSmokeMilestone(7, "save point used");
 
         Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed with recovered component");
         Require(player.Mission.IsVictory, "Beacon activation did not produce victory");
+        LogMvpSmokeMilestone(8, "beacon activated");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
         await Frames(2);
         Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after beacon activation");
+        LogMvpSmokeMilestone(9, "victory reached");
 
         main.QueueFree();
         await Frames(2);
+
+        var defeatMain = LoadScene<Node3D>(MainScenePath);
+        AddChild(defeatMain);
+        await Frames(2);
+        var defeatedPlayer = defeatMain.GetNode<FirstPersonController>("Player");
+        var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        defeatNavigator.EnableSceneChanges = false;
+        defeatedPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
+        await Frames(2);
+        Require(defeatedPlayer.Health.IsDead, "Defeat path did not kill the player");
+        Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat path did not request the defeat screen");
+        LogMvpSmokeMilestone(10, "defeat path verified");
+        defeatMain.QueueFree();
+        await Frames(2);
+
+        var continuation = LoadScene<Node3D>(MainScenePath);
+        AddChild(continuation);
+        await Frames(2);
+        var continuationPlayer = continuation.GetNode<FirstPersonController>("Player");
+        Require(continuation.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastLoadSucceeded, "Save continuation did not load the checkpoint");
+        Require(continuationPlayer.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Save continuation did not restore beacon objective");
+        Require(continuationPlayer.Inventory.IsMechanicalArmBuilt && continuationPlayer.Inventory.HasGalaxabrainComponent, "Save continuation did not restore MVP inventory state");
+        LogMvpSmokeMilestone(11, "save continuation verified");
+        continuation.QueueFree();
+        await Frames(2);
         LocalSaveGameStore.DeleteSave();
+    }
+
+    private static void LogMvpSmokeMilestone(int number, string milestone)
+    {
+        GD.Print($"MVP_SMOKE_MILESTONE_{number:00}: {milestone}");
     }
 
     private async System.Threading.Tasks.Task TestDefeatedScoutPersistenceAcrossReload()

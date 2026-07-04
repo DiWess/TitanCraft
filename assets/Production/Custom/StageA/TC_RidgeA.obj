@@ -1,0 +1,23 @@
+# TitanCraft custom Stage A static mesh: TC_RidgeA
+# Offline-authored by tools/art_generation/build_stage_a_assets.py
+o TC_RidgeA
+v -4.7500 0.0000 -2.0000
+v 3.8000 0.0000 -1.8000
+v 4.7500 0.0000 1.1000
+v -3.5625 0.0000 2.0000
+v -2.8500 2.9400 -1.2000
+v 2.3750 4.2000 -0.5000
+v 3.0875 2.3100 0.9000
+v -1.9000 3.5700 1.2000
+v 0.0000 5.6700 -0.3000
+v -1.1875 4.8300 0.4000
+f 1 2 3 4
+f 5 8 7 6
+f 1 5 6 2
+f 2 6 7 3
+f 3 7 8 4
+f 4 8 5 1
+f 5 9 6
+f 6 9 7
+f 7 10 8
+f 8 10 5

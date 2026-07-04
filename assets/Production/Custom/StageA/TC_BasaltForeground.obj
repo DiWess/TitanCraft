@@ -1,0 +1,23 @@
+# TitanCraft custom Stage A static mesh: TC_BasaltForeground
+# Offline-authored by tools/art_generation/build_stage_a_assets.py
+o TC_BasaltForeground
+v -2.6000 0.0000 -1.7500
+v 2.0800 0.0000 -1.5750
+v 2.6000 0.0000 0.9625
+v -1.9500 0.0000 1.7500
+v -1.5600 1.1900 -1.0500
+v 1.3000 1.7000 -0.4375
+v 1.6900 0.9350 0.7875
+v -1.0400 1.4450 1.0500
+v 0.0000 2.2950 -0.2625
+v -0.6500 1.9550 0.3500
+f 1 2 3 4
+f 5 8 7 6
+f 1 5 6 2
+f 2 6 7 3
+f 3 7 8 4
+f 4 8 5 1
+f 5 9 6
+f 6 9 7
+f 7 10 8
+f 8 10 5

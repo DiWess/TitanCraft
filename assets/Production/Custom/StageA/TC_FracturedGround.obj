@@ -1,0 +1,14 @@
+# TitanCraft custom Stage A static mesh: TC_FracturedGround
+# Offline-authored by tools/art_generation/build_stage_a_assets.py
+o TC_FracturedGround
+v -7.0000 0.0000 -4.2500
+v -1.0500 0.0000 -3.6125
+v 7.0000 0.0000 -2.7625
+v 5.7400 0.0000 3.1875
+v 1.4000 0.0000 4.2500
+v -6.3000 0.0000 2.6350
+v -1.0500 0.0400 -0.2125
+v 1.9600 0.0400 0.5100
+f 1 2 7 6
+f 2 3 4 8 7
+f 7 8 5 6

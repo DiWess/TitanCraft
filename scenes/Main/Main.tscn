@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=92 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -27,6 +27,27 @@
 [ext_resource type="AudioStream" path="res://assets/audio/temp/craft_confirm.wav" id="41_craft_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/beacon_activate.wav" id="42_beacon_audio"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_HullMain.obj" id="50_tc_hull"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_NoseCrushed.obj" id="51_tc_nose"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_WingSheared.obj" id="52_tc_wing"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_EngineExposed.obj" id="53_tc_engine"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_InternalRibs.obj" id="54_tc_ribs"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BreachDebris.obj" id="55_tc_debris"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltForeground.obj" id="56_tc_basalt_fg"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltMidgroundA.obj" id="57_tc_basalt_mid_a"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltMidgroundB.obj" id="58_tc_basalt_mid_b"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_RidgeA.obj" id="59_tc_ridge_a"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_RidgeB.obj" id="60_tc_ridge_b"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_RidgeC.obj" id="61_tc_ridge_c"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_FracturedGround.obj" id="62_tc_fractured_ground"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_AshPatch.obj" id="63_tc_ash_patch"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_HullOffWhite.tres" id="64_tc_hull_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_WornSteel.tres" id="65_tc_steel_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Graphite.tres" id="66_tc_graphite_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Basalt.tres" id="67_tc_basalt_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Ash.tres" id="68_tc_ash_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Scorch.tres" id="69_tc_scorch_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_CyanBreach.tres" id="70_tc_cyan_mat"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Spaceship_BarbaraTheBee.obj" id="21_ship"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Base_Large.obj" id="22_base_large"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="23_mech_george"]
@@ -600,7 +621,8 @@ transform = Transform3D(0.45,0,0,0,0.45,0,0,0,0.45,0,0.2,0)
 mesh = ExtResource("24_robot")
 surface_material_override/0 = ExtResource("16_orange")
 [node name="ProductionVisualRoot" type="Node3D" parent="."]
-metadata/stage = "Stage A production: bespoke custom meshes and composition."
+visible = false
+metadata/stage = "Archived pre-kit Stage A production visuals; disabled so custom kit owns Stage A review."
 [node name="VisualOnlyAuthenticatedProps" type="Node3D" parent="ProductionVisualRoot"]
 metadata/source = "VG-01 authenticated prop scenes; no collision or gameplay scripts."
 
@@ -771,6 +793,117 @@ mesh = SubResource("PROD_Ridge")
 material_override = SubResource("PROD_MAT_Basalt")
 
 [node name="AtmosphereVisuals" type="Node3D" parent="ProductionVisualRoot"]
+
+[node name="StageAVisualRoot" type="Node3D" parent="."]
+metadata/stage = "Stage A custom art kit integration; visual-only and collisionless."
+metadata/source = "assets/Production/Custom/StageA generated offline by tools/art_generation/build_stage_a_assets.py"
+
+[node name="GroundVisuals" type="Node3D" parent="StageAVisualRoot"]
+
+[node name="FracturedGround_Main" type="MeshInstance3D" parent="StageAVisualRoot/GroundVisuals"]
+transform = Transform3D(2.2,0,0.2,0,1,0,-0.2,0,2.0,0,0.12,-13.0)
+mesh = ExtResource("62_tc_fractured_ground")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="AshPatch_SpawnRoute" type="MeshInstance3D" parent="StageAVisualRoot/GroundVisuals"]
+transform = Transform3D(1.2,0,0.28,0,1,0,-0.28,0,2.0,2.0,0.18,-7.0)
+mesh = ExtResource("63_tc_ash_patch")
+material_override = ExtResource("68_tc_ash_mat")
+
+[node name="AshPatch_WorkbenchBend" type="MeshInstance3D" parent="StageAVisualRoot/GroundVisuals"]
+transform = Transform3D(1.0,0,-0.42,0,1,0,0.42,0,1.55,8.2,0.18,-11.0)
+mesh = ExtResource("63_tc_ash_patch")
+material_override = ExtResource("68_tc_ash_mat")
+
+[node name="CrashWreck" type="Node3D" parent="StageAVisualRoot"]
+
+[node name="TC_HullMain" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(0.95,0,0.28,-0.08,0.85,0.02,-0.28,-0.02,0.95,-4.8,1.12,-13.5)
+mesh = ExtResource("50_tc_hull")
+material_override = ExtResource("64_tc_hull_mat")
+
+[node name="TC_NoseCrushed" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(1.1,0,-0.45,0.08,0.9,0.02,0.45,-0.02,1.1,-10.1,0.92,-9.9)
+mesh = ExtResource("51_tc_nose")
+material_override = ExtResource("65_tc_steel_mat")
+
+[node name="TC_WingSheared" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(1.1,0,0.42,-0.02,0.8,0.02,-0.42,0,1.1,-1.2,0.52,-10.2)
+mesh = ExtResource("52_tc_wing")
+material_override = ExtResource("66_tc_graphite_mat")
+
+[node name="TC_EngineExposed" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(0,0,1.15,0,1.15,0,-1.15,0,0,0.2,0.98,-15.5)
+mesh = ExtResource("53_tc_engine")
+material_override = ExtResource("65_tc_steel_mat")
+
+[node name="TC_InternalRibs" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(0.78,0,0.15,0,0.78,0,-0.15,0,0.78,-5.4,0.42,-12.3)
+mesh = ExtResource("54_tc_ribs")
+material_override = ExtResource("65_tc_steel_mat")
+
+[node name="TC_BreachDebris_A" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(0.9,0,0.3,0,0.72,0,-0.3,0,0.9,-2.0,0.58,-11.5)
+mesh = ExtResource("55_tc_debris")
+material_override = ExtResource("69_tc_scorch_mat")
+
+[node name="TC_BreachGlowDebris" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(0.55,0,0.15,0,0.55,0,-0.15,0,0.55,-1.25,1.0,-12.1)
+mesh = ExtResource("55_tc_debris")
+material_override = ExtResource("70_tc_cyan_mat")
+
+[node name="RouteOpening" type="Node3D" parent="StageAVisualRoot"]
+
+[node name="DirectionalDebris_ToWorkbench" type="MeshInstance3D" parent="StageAVisualRoot/RouteOpening"]
+transform = Transform3D(0.55,0,-0.22,0,0.48,0,0.22,0,0.55,5.8,0.42,-8.6)
+mesh = ExtResource("55_tc_debris")
+material_override = ExtResource("65_tc_steel_mat")
+
+[node name="DirectionalDebris_ToBeacon" type="MeshInstance3D" parent="StageAVisualRoot/RouteOpening"]
+transform = Transform3D(0.45,0,-0.35,0,0.4,0,0.35,0,0.45,14.0,0.4,-14.0)
+mesh = ExtResource("52_tc_wing")
+material_override = ExtResource("66_tc_graphite_mat")
+
+[node name="ForegroundFraming" type="Node3D" parent="StageAVisualRoot"]
+
+[node name="BasaltForeground_Left" type="MeshInstance3D" parent="StageAVisualRoot/ForegroundFraming"]
+transform = Transform3D(1.15,0,0.35,0,0.75,0,-0.35,0,1.15,-11.5,0.12,-5.0)
+mesh = ExtResource("56_tc_basalt_fg")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="BasaltForeground_Right" type="MeshInstance3D" parent="StageAVisualRoot/ForegroundFraming"]
+transform = Transform3D(0.95,0,-0.4,0,0.65,0,0.4,0,0.95,9.5,0.12,-6.4)
+mesh = ExtResource("56_tc_basalt_fg")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="MidgroundFraming" type="Node3D" parent="StageAVisualRoot"]
+
+[node name="BasaltMidground_A" type="MeshInstance3D" parent="StageAVisualRoot/MidgroundFraming"]
+transform = Transform3D(1.1,0,0.3,0,0.8,0,-0.3,0,1.1,-14.0,0.1,-18.0)
+mesh = ExtResource("57_tc_basalt_mid_a")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="BasaltMidground_B" type="MeshInstance3D" parent="StageAVisualRoot/MidgroundFraming"]
+transform = Transform3D(1.15,0,-0.3,0,0.9,0,0.3,0,1.15,14.2,0.1,-16.4)
+mesh = ExtResource("58_tc_basalt_mid_b")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="BackgroundRidge" type="Node3D" parent="StageAVisualRoot"]
+
+[node name="RidgeA_Left" type="MeshInstance3D" parent="StageAVisualRoot/BackgroundRidge"]
+transform = Transform3D(2.3,0,0.5,0,1.0,0,-0.5,0,2.3,-38,0.05,-48)
+mesh = ExtResource("59_tc_ridge_a")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="RidgeB_Right" type="MeshInstance3D" parent="StageAVisualRoot/BackgroundRidge"]
+transform = Transform3D(2.1,0,-0.65,0,1.1,0,0.65,0,2.1,40,0.05,-52)
+mesh = ExtResource("60_tc_ridge_b")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="RidgeC_Spire" type="MeshInstance3D" parent="StageAVisualRoot/BackgroundRidge"]
+transform = Transform3D(1.4,0,0.15,0,1.0,0,-0.15,0,1.4,24,0.05,-36)
+mesh = ExtResource("61_tc_ridge_c")
+material_override = ExtResource("67_tc_basalt_mat")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)

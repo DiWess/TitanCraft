@@ -1,5 +1,22 @@
 # TitanCraft
 
+## Project Director Entry Point
+
+TitanCraft is a solo, offline-first, Windows-first Godot 4 .NET FPS about an astronaut surviving a hostile crash site, collecting three resource types, crafting a first mechanical arm, defeating one Galaxabrain Scout, recovering a component, and activating a rescue beacon. The current engine/runtime stack is Godot 4 .NET with C# gameplay code, local generated-support tooling in Python, Blender Asset Forge for standalone asset production candidates, and GitHub Actions for repeatable validation and visual artifact bundles.
+
+**Current MVP status:** the locked MVP is **Crash Site**, a short 10-30 minute single-player loop with one small map, FPS player movement/combat, resource pickups, workbench crafting, a mechanical arm, one Galaxabrain Scout encounter, a component retrieval step, a save point, a beacon, victory/defeat/save flow, and Windows offline export target. Passing automated tests, import checks, or artifact generation does **not** mean visual approval; visual work needs PNG evidence and human or visual-reviewer verdicts.
+
+**Current production phase:** governance and pipelines are usable; gameplay MVP work should remain conservative and locked; visual production is still gated because Stage A generated art is not approved and production asset candidates require standalone review artifacts before scene replacement.
+
+**Blocked:** Stage A visual replacement, marketing screenshots, Stage B work, and any claim of art readiness until approved review PNGs and human/visual-reviewer verdicts exist. **Unblocked:** governance/doc tasks, gameplay bug fixes inside the Crash Site MVP scope, CI/build maintenance, Agent Studio routing, Blender Asset Forge standalone asset candidate generation, Art Taste Pack checks, and Visual Artifact Factory review-bundle requests.
+
+**How to start any task:** read this README, read [`AGENTS.md`](AGENTS.md), run `python3 tools/agent_preflight.py "<exact task>"`, follow the routed packet, state forbidden scope, make the smallest safe change, run applicable validation, and report evidence with an approved verdict. Future autonomous project directors should begin with [`PROJECT_DIRECTOR_START_HERE.md`](PROJECT_DIRECTOR_START_HERE.md).
+
+Key operating links: [`PROJECT_DIRECTOR_START_HERE.md`](PROJECT_DIRECTOR_START_HERE.md), [Agent Studio](studio/README.md), [Blender Asset Forge](docs/pipeline/blender-asset-forge.md), [Art Taste Pack / Visual Identity](docs/art/titancraft-visual-identity.md), [Visual Artifact Factory](docs/pipeline/visual-artifact-factory.md), [gameplay validation commands](docs/testing.md), and the [visual review artifact workflow](.github/workflows/visual-artifact-factory.yml). Production status, scope, roadmap, blockers, start procedure, and done criteria live under [`docs/production/`](docs/production/current-status.md).
+
+---
+
+
 > **Source de vérité**  
 > «Le README est la source de vérité du projet. En cas de contradiction entre une suggestion, un ticket, un prompt ou une implémentation et ce document, le README prévaut jusqu’à décision humaine explicite.»
 

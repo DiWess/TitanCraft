@@ -374,11 +374,15 @@ public partial class IntegrationTestRunner : Node
         AddChild(defeatMain);
         await Frames(2);
         var defeatPlayer = defeatMain.GetNode<FirstPersonController>("Player");
+        var defeatHud = defeatMain.GetNode<CrashSiteHud>("HUD");
         var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
         defeatNavigator.EnableSceneChanges = false;
         defeatPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
         await Frames(2);
+        Require(defeatPlayer.Health.IsDead, "Lethal damage did not put the player in defeat health state");
         Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat screen was not requested after player death");
+        Require(defeatHud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.DefeatRetryFeedback, "HUD did not show defeat retry feedback after player death");
+        Require(!defeatPlayer.Mission.IsVictory, "Player defeat should not set victory state");
         defeatMain.QueueFree();
         await Frames(2);
     }
@@ -587,12 +591,15 @@ public partial class IntegrationTestRunner : Node
         AddChild(defeatMain);
         await Frames(2);
         var defeatedPlayer = defeatMain.GetNode<FirstPersonController>("Player");
+        var defeatHud = defeatMain.GetNode<CrashSiteHud>("HUD");
         var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
         defeatNavigator.EnableSceneChanges = false;
         defeatedPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
         await Frames(2);
         Require(defeatedPlayer.Health.IsDead, "Defeat path did not kill the player");
         Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat path did not request the defeat screen");
+        Require(defeatHud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.DefeatRetryFeedback, "Defeat path did not emit retry feedback through the HUD");
+        Require(!defeatedPlayer.Mission.IsVictory, "Defeat path incorrectly set victory state");
         LogMvpSmokeMilestone(10, "defeat path verified");
         defeatMain.QueueFree();
         await Frames(2);

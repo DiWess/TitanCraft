@@ -2,6 +2,19 @@
 
 These indexed atomic memory cards are curated and non-exhaustive. `README.md` remains authoritative.
 
+### MEM-STAGE-008
+
+- id: MEM-STAGE-008
+- title: Stage A visual gate blocks stage advance
+- tags: [stage,visual,gate, production_stage_gates]
+- applies_when: Stage A, visual scene composition, or crash-site art is reviewed.
+- memory: Stage A cannot advance or be treated as visually ready until required PNG evidence exists, has been opened, and the visual diagnosis is recorded.
+- avoid: Do not merge, approve, or continue to later stage work from code checks alone.
+- required_action: Generate and inspect required review screenshots; return a blocking or NOT_GO verdict if evidence is missing or visual failures remain.
+- evidence_required: PNG screenshot paths, opened-image diagnosis, validation commands, and gate verdict.
+- related_agents: [art_director,visual_reviewer,qa_lead]
+- related_skills: [screenshot_critique,visual_art_direction,evidence_reporting]
+
 ### MEM-PRODUCTION-STAGE-GATES-001
 
 - id: MEM-PRODUCTION-STAGE-GATES-001

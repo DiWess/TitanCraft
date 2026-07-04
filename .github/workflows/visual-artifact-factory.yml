@@ -1,0 +1,182 @@
+name: TitanCraft Visual Artifact Factory
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/blender/**'
+      - 'tools/visual_review/**'
+      - 'assets/Production/**'
+      - 'assets/Source/Blender/**'
+      - 'docs/art/**'
+      - 'docs/pipeline/**'
+      - 'scenes/Main/**'
+      - 'scenes/Debug/VisualReview/**'
+      - '.github/workflows/visual-artifact-factory.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  blender_asset_reviews:
+    name: Blender asset review artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Blender tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 xvfb
+          mkdir -p artifacts/asset-review/logs
+          blender --version 2>&1 | tee artifacts/asset-review/logs/blender-version.log
+
+      - name: Build Blender asset review bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/asset-review/logs
+          run_logged() {
+            local log_name="$1"
+            shift
+            echo "+ $*" | tee "artifacts/asset-review/logs/${log_name}.log"
+            "$@" 2>&1 | tee -a "artifacts/asset-review/logs/${log_name}.log"
+          }
+          run_logged create_test_crate blender --background --python tools/blender/create_test_crate.py
+          run_logged validate_test_crate python3 tools/blender/validate_blender_asset.py assets/Source/Blender/_templates/TC_TestCrate.blend
+          run_logged export_test_crate blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/_templates/TC_TestCrate.blend assets/Production/Generated/Test/TC_TestCrate.glb
+          run_logged render_test_crate_neutral blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/neutral_turntable.png neutral
+          run_logged render_test_crate_material blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/material_turntable.png material
+          run_logged create_heavy_crash_hull blender --background --python tools/blender/create_heavy_crash_hull_v1.py
+          run_logged validate_heavy_crash_hull python3 tools/blender/validate_blender_asset.py assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
+          run_logged export_heavy_crash_hull blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
+          run_logged render_heavy_crash_hull blender --background --python tools/blender/render_heavy_crash_hull_v1_reviews.py
+          run_logged build_asset_manifest python3 tools/blender/build_asset_manifest.py
+
+      - name: Verify required heavy hull PNGs
+        run: |
+          set -euo pipefail
+          for png in \
+            artifacts/asset-review/TC_HeavyCrashHull_V1/neutral_front_three_quarter.png \
+            artifacts/asset-review/TC_HeavyCrashHull_V1/neutral_side_silhouette.png \
+            artifacts/asset-review/TC_HeavyCrashHull_V1/neutral_rear_engine.png \
+            artifacts/asset-review/TC_HeavyCrashHull_V1/material_front_three_quarter.png \
+            artifacts/asset-review/TC_HeavyCrashHull_V1/material_side_silhouette.png \
+            artifacts/asset-review/TC_HeavyCrashHull_V1/material_rear_engine.png; do
+            test -s "$png"
+          done
+
+      - name: Upload Blender asset review bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-asset-review-bundle
+          if-no-files-found: error
+          path: |
+            assets/Source/Blender/_templates/TC_TestCrate.blend
+            assets/Production/Generated/Test/TC_TestCrate.glb
+            assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
+            assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
+            assets/Production/Generated/asset_manifest.json
+            artifacts/asset-review/test-crate/neutral_turntable.png
+            artifacts/asset-review/test-crate/material_turntable.png
+            artifacts/asset-review/TC_HeavyCrashHull_V1/neutral_front_three_quarter.png
+            artifacts/asset-review/TC_HeavyCrashHull_V1/neutral_side_silhouette.png
+            artifacts/asset-review/TC_HeavyCrashHull_V1/neutral_rear_engine.png
+            artifacts/asset-review/TC_HeavyCrashHull_V1/material_front_three_quarter.png
+            artifacts/asset-review/TC_HeavyCrashHull_V1/material_side_silhouette.png
+            artifacts/asset-review/TC_HeavyCrashHull_V1/material_rear_engine.png
+            artifacts/asset-review/logs/*.log
+
+  godot_scene_reviews:
+    name: Godot scene review artifacts
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_VERSION: 8.0.x
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Godot capture tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 mesa-utils mesa-vulkan-drivers unzip xauth xvfb
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+          mkdir -p artifacts/visual-review/logs
+          godot --version 2>&1 | tee artifacts/visual-review/logs/godot-version.log
+          dotnet --version 2>&1 | tee artifacts/visual-review/logs/dotnet-version.log
+
+      - name: Import Godot assets
+        run: godot --headless --path . --import 2>&1 | tee artifacts/visual-review/logs/godot-import.log
+
+      - name: Capture allowlisted Godot visual reviews
+        run: python3 tools/visual_review/run_visual_artifact_factory.py
+
+      - name: Upload Godot scene review bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-scene-review-bundle
+          if-no-files-found: error
+          path: |
+            artifacts/visual-review/**
+            artifacts/runtime-contract-report.json
+            artifacts/**/contact_sheet*.png
+            artifacts/**/manifest.json
+
+  visual_artifact_factory_report:
+    name: Visual artifact factory report
+    runs-on: ubuntu-latest
+    needs:
+      - blender_asset_reviews
+      - godot_scene_reviews
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Blender bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: blender-asset-review-bundle
+          path: .
+
+      - name: Download Godot bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: godot-scene-review-bundle
+          path: .
+
+      - name: Build combined Visual Artifact Factory report
+        run: |
+          set -euo pipefail
+          python3 tools/visual_review/build_visual_artifact_factory_manifest.py
+          {
+            echo "# TitanCraft Visual Artifact Factory"
+            echo
+            echo "Generated bundles:"
+            echo "- blender-asset-review-bundle"
+            echo "- godot-scene-review-bundle"
+            echo "- visual-artifact-factory-report"
+            echo
+            echo "Generated file count: $(wc -l < artifacts/visual-artifact-factory/generated_file_list.txt)"
+          } > artifacts/visual-artifact-factory/workflow_summary.md
+          cat artifacts/visual-artifact-factory/workflow_summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Visual Artifact Factory report
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-artifact-factory-report
+          if-no-files-found: error
+          path: |
+            artifacts/visual-artifact-factory/**
+            artifacts/asset-review/logs/*.log
+            artifacts/visual-review/logs/*.log

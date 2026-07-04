@@ -443,10 +443,13 @@ public partial class IntegrationTestRunner : Node
         player.Health.ApplyDamage(40);
         player.Inventory.AddResources(metal: 6, biomass: 1, electronicComponents: 2);
         player.Mission.TryCompleteResourceCollection();
+        var saveFeedback = string.Empty;
+        player.ActionFeedbackChanged += message => saveFeedback = message;
         Require(savePoint.Interact(player.Inventory, player.Mission), "SavePoint interaction failed");
         await Frames(2);
         Require(savePoint.HasSavedCheckpoint, "SavePoint did not mark the checkpoint as saved");
         Require(saveCoordinator.LastSaveSucceeded, "SavePoint interaction did not write a save file");
+        Require(saveFeedback == string.Empty, "Direct SavePoint persistence should not bypass the player HUD feedback path");
         Require(LocalSaveGameStore.SaveExists(), "Save file does not exist after SavePoint interaction");
         Require(LocalSaveGameStore.TryLoad(out var checkpointSave), "SavePoint save data could not be reloaded");
         Require(checkpointSave.CheckpointId == savePoint.CheckpointId, "SavePoint did not persist the checkpoint reload target");
@@ -484,6 +487,7 @@ public partial class IntegrationTestRunner : Node
         var workbench = main.GetNode<Workbench>("Placeholder_Workbench");
         var savePoint = main.GetNode<SavePoint>("Placeholder_SavePoint");
         var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+        var hud = main.GetNode<CrashSiteHud>("HUD");
         var lastActionFeedback = string.Empty;
         player.ActionFeedbackChanged += message => lastActionFeedback = message;
 
@@ -547,10 +551,16 @@ public partial class IntegrationTestRunner : Node
         LogMvpSmokeMilestone(6, "component retrieved");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable twice");
 
-        Require(savePoint.Interact(player.Inventory, player.Mission), "Save point failed before beacon activation");
+        player.GlobalPosition = savePoint.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(savePoint.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Player interaction raycast could not use the save point before beacon activation");
         await Frames(2);
         Require(savePoint.HasSavedCheckpoint, "Save point did not record checkpoint usage");
         Require(main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastSaveSucceeded, "Save point did not write the continuation save");
+        Require(lastActionFeedback == FirstPersonController.SavePointSuccessFeedback, "Save point did not emit player-facing checkpoint feedback");
+        Require(lastActionFeedback.Contains("Checkpoint saved") && lastActionFeedback.Contains("continue to the beacon"), "Save point feedback did not confirm the save and next objective");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.SavePointSuccessFeedback, "HUD did not show the checkpoint save feedback text");
         LogMvpSmokeMilestone(7, "save point used");
 
         Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed with recovered component");

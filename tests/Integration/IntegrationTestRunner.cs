@@ -484,6 +484,8 @@ public partial class IntegrationTestRunner : Node
         var workbench = main.GetNode<Workbench>("Placeholder_Workbench");
         var savePoint = main.GetNode<SavePoint>("Placeholder_SavePoint");
         var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+        var lastActionFeedback = string.Empty;
+        player.ActionFeedbackChanged += message => lastActionFeedback = message;
 
         Require(player.IsInsideTree(), "Player did not spawn into the Crash Site scene");
         Require(!arm.Visible, "Mechanical arm visual should start hidden");
@@ -538,6 +540,9 @@ public partial class IntegrationTestRunner : Node
         Require(player.TryInteract(), "Interaction raycast could not reach the revealed component pickup");
         Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
+        Require(!player.Mission.IsVictory, "Component recovery skipped required beacon activation");
+        Require(lastActionFeedback == FirstPersonController.GalaxabrainComponentRecoveryFeedback, "Component recovery did not emit beacon activation action feedback");
+        Require(lastActionFeedback.Contains("component recovered") && lastActionFeedback.Contains("activate the beacon beam"), "Component recovery action feedback did not explain the next beacon step");
         Require(!component.Visible && !component.Monitoring, "Component pickup stayed interactable after recovery");
         LogMvpSmokeMilestone(6, "component retrieved");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable twice");

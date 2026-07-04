@@ -79,8 +79,55 @@ def test_gameplay_qa_keywords_outrank_agent_studio_governance():
     assert "qa_lead" in packet["secondary_agents"]
 
 
+
+def test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets():
+    packet = route("Audit and harden Crash Site MVP objective HUD consistency")
+    memories = " | ".join(packet["required_memory_packs_cards"])
+    assert packet["detected_task_category"] == "gameplay_bug"
+    assert packet["evidence_category"] == "gameplay"
+    assert packet["primary_agent"] in {"gameplay_engineer", "qa_lead"}
+    assert packet["primary_agent"] != "asset_librarian"
+    assert "asset_librarian" not in packet["secondary_agents"]
+    assert "MEM-ASSET-PROVENANCE-001" not in packet["required_memory_packs_cards"]
+    assert "MEM-GAMEPLAY-MVP-SCOPE-001" in packet["required_memory_packs_cards"]
+    assert "MEM-PRODUCT-001" in packet["required_memory_packs_cards"]
+    assert "gameplay" in memories.lower() or "product" in memories.lower()
+    assert "asset_provenance" not in packet["required_skills"]
+    assert "asset_audition" not in packet["required_skills"]
+    assert "csharp_gameplay_validation" in packet["required_skills"]
+    assert "production_debugging" in packet["required_skills"]
+    assert "evidence_reporting" in packet["required_skills"]
+    evidence_blob = " | ".join(packet["required_evidence"]).lower()
+    assert "source url" not in evidence_blob
+    assert "licence" not in evidence_blob
+    assert "audition screenshot" not in evidence_blob
+
+
+def test_hud_objective_search_terms_route_to_gameplay_qa():
+    phrases = [
+        "HUD objective",
+        "objective HUD",
+        "objective consistency",
+        "HudBreadcrumb",
+        "Crash Site HUD",
+        "mission objective text",
+        "MVP objective text",
+        "gameplay HUD assertion",
+        "integration HUD objective",
+        "smoke objective assertion",
+    ]
+    for phrase in phrases:
+        packet = route(f"Audit Crash Site MVP {phrase}")
+        assert packet["detected_task_category"] == "gameplay_bug", phrase
+        assert packet["evidence_category"] == "gameplay", phrase
+        assert packet["primary_agent"] in {"gameplay_engineer", "qa_lead"}, phrase
+        assert packet["primary_agent"] != "asset_librarian", phrase
+        assert "MEM-ASSET-PROVENANCE-001" not in packet["required_memory_packs_cards"], phrase
+
 def main() -> int:
     test_gameplay_qa_keywords_outrank_agent_studio_governance()
+    test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets()
+    test_hud_objective_search_terms_route_to_gameplay_qa()
     files = sorted(p for p in REHEARSALS.glob("*.md") if p.is_file())
     if not files:
         raise AssertionError("No rehearsals found")

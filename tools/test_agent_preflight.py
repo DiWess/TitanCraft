@@ -124,6 +124,27 @@ def test_bespoke_stage_a_art_prompt_uses_packet_gates():
     assert "preserve" in lowered and "gameplay" in lowered
 
 
+
+def test_crash_site_hud_objective_preflight_routes_to_gameplay_qa_not_assets():
+    data = packet("Audit and harden Crash Site MVP objective HUD consistency")
+    blob = evidence_blob(data)
+    assert data["detected_task_category"] == "gameplay_bug"
+    assert data["evidence_category"] == "gameplay"
+    assert data["primary_agent"] in {"gameplay_engineer", "qa_lead"}
+    assert data["primary_agent"] != "asset_librarian"
+    assert "asset_librarian" not in data["secondary_agents"]
+    assert "MEM-ASSET-PROVENANCE-001" not in data["required_memory_packs_cards"]
+    assert "MEM-GAMEPLAY-MVP-SCOPE-001" in data["required_memory_packs_cards"]
+    assert "asset_provenance" not in data["required_skills"]
+    assert "asset_audition" not in data["required_skills"]
+    assert "csharp_gameplay_validation" in data["required_skills"]
+    assert "production_debugging" in data["required_skills"]
+    assert "evidence_reporting" in data["required_skills"]
+    assert "source url" not in blob
+    assert "licence" not in blob
+    assert "audition screenshot" not in blob
+    assert "integration tests" in blob or "mission smoke test" in blob
+
 def main() -> int:
     for test in [
         test_human_output,
@@ -132,6 +153,7 @@ def main() -> int:
         test_gameplay_evidence,
         test_gameplay_mvp_loop_smoke_routes_to_gameplay_qa,
         test_agent_studio_gameplay_smoke_not_governance,
+        test_crash_site_hud_objective_preflight_routes_to_gameplay_qa_not_assets,
         test_asset_evidence,
         test_vague_verdicts_not_approved,
         test_deterministic_output,
@@ -139,7 +161,7 @@ def main() -> int:
         test_bespoke_stage_a_art_prompt_uses_packet_gates,
     ]:
         test()
-    print("Agent preflight tests passed: 11 checks")
+    print("Agent preflight tests passed: 12 checks")
     return 0
 
 

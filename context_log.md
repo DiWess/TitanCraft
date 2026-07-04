@@ -78,3 +78,4 @@
 - 2026-07-04: Added beacon activation rescue-signal action feedback through the existing HUD pathway and integration coverage for the Crash Site victory smoke loop.
 
 - 2026-07-04: Added Galaxabrain Scout landed-hit and defeat feedback through the existing Crash Site HUD action-feedback path with integration smoke assertions.
+- 2026-07-04: Added HUD mission-component inventory feedback and gameplay mouse recapture so Crash Site pickups and screen-edge turning remain clear.

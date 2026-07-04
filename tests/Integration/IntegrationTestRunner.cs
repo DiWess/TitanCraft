@@ -586,6 +586,7 @@ public partial class IntegrationTestRunner : Node
         player.GetNode<Node3D>("Head").LookAt(component.GlobalPosition, Vector3.Up);
         Require(player.TryInteract(), "Interaction raycast could not reach the revealed component pickup");
         Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Galaxabrain Component: Recovered"), "HUD resource dashboard did not count the recovered Galaxabrain component");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
         Require(!player.Mission.IsVictory, "Component recovery skipped required beacon activation");
         Require(lastActionFeedback == FirstPersonController.GalaxabrainComponentRecoveryFeedback, "Component recovery did not emit beacon activation action feedback");

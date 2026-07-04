@@ -52,7 +52,9 @@ public partial class CrashSiteHudBinder : Node
 
     private void UpdateInventory(TitanCraft.Resources.MvpInventory inventory)
     {
-        _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents);
+        // Inventory.Changed is the single HUD refresh trigger for both generic
+        // resources and the mission component pickup.
+        _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents, inventory.HasGalaxabrainComponent);
         _hud.SetMechanicalArmProgress(_mechanicalArmRecipe.GetProgressText(inventory));
 
         // Replace the startup "not built yet" hint the moment the arm exists,

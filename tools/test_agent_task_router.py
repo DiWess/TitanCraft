@@ -71,7 +71,16 @@ def run_rehearsal(path: Path):
         raise AssertionError(f"{path.name}: checked-in expected packet differs from router output")
 
 
+def test_gameplay_qa_keywords_outrank_agent_studio_governance():
+    packet = route("Agent Studio routing for gameplay smoke test and integration test tasks")
+    assert packet["detected_task_category"] == "gameplay_bug"
+    assert packet["evidence_category"] == "gameplay"
+    assert packet["primary_agent"] == "gameplay_engineer"
+    assert "qa_lead" in packet["secondary_agents"]
+
+
 def main() -> int:
+    test_gameplay_qa_keywords_outrank_agent_studio_governance()
     files = sorted(p for p in REHEARSALS.glob("*.md") if p.is_file())
     if not files:
         raise AssertionError("No rehearsals found")

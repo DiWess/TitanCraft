@@ -15,7 +15,12 @@ CATEGORY_RULES = [
     ("asset_import", "asset", ["asset", "provenance", "licence", "license", "source url", "obj", "hash", "audition"]),
     ("build_failure", "build", ["windows export", "export", "build failure", "ci", "artifact", "release failure"]),
     ("godot_scene_change", "architecture", ["godot scene", "scene edit", "collision", ".tscn", "node", "import"]),
-    ("gameplay_bug", "gameplay", ["gameplay", "resource pickup", "pickup", "inventory", "mission", "player", "enemy", "bug"]),
+    ("gameplay_bug", "gameplay", [
+        "gameplay", "resource pickup", "pickup", "inventory", "mission", "player", "enemy", "bug",
+        "mvp loop", "smoke test", "integration test", "crash site gameplay", "playthrough",
+        "save continuation", "victory", "defeat", "resource collection", "crafting", "combat",
+        "beacon", "galaxabrain",
+    ]),
     ("prompt_or_agent_governance", "documentation", ["prompt", "scope expansion", "documentation-only", "docs-only", "agent studio"]),
     ("stage_gate", "release", ["stage b", "stage gate", "stage a failed", "go/no-go", "readiness"]),
 ]

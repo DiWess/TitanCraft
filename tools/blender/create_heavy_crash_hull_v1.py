@@ -73,6 +73,7 @@ def _cylinder(
     obj = bpy.context.object
     obj.name = name
     obj.data.name = f"{name}Mesh"
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     obj.data.materials.append(material)
     obj["titancraft_collision"] = "none"
     obj["titancraft_visual_only"] = True

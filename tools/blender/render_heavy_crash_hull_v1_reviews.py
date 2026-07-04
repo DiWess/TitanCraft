@@ -29,17 +29,20 @@ def _apply_neutral_material() -> None:
             obj.data.materials.append(neutral)
 
 
-def _render(name: str, camera_location: tuple[float, float, float], neutral: bool) -> None:
+def _render(name: str, camera_location: tuple[float, float, float], neutral: bool, target: tuple[float, float, float] = (0, 0, 1.2), lens: float = 35) -> None:
     bpy.ops.wm.open_mainfile(filepath=str(SOURCE))
     if neutral:
         _apply_neutral_material()
     bpy.ops.object.light_add(type="AREA", location=(0, -5, 6))
     bpy.context.object.data.energy = 650
     bpy.context.object.data.size = 5
+    bpy.ops.object.light_add(type="AREA", location=camera_location)
+    bpy.context.object.data.energy = 450
+    bpy.context.object.data.size = 4
     bpy.ops.object.camera_add(location=camera_location)
     camera = bpy.context.object
-    _look_at(camera, (0, 0, 1.2))
-    camera.data.lens = 35
+    _look_at(camera, target)
+    camera.data.lens = lens
     bpy.context.scene.camera = camera
     bpy.context.scene.render.resolution_x = 1280
     bpy.context.scene.render.resolution_y = 720
@@ -55,9 +58,9 @@ def main() -> None:
     if not SOURCE.exists():
         raise SystemExit(f"missing generated source blend: {SOURCE}")
     for prefix, neutral in (("neutral", True), ("material", False)):
-        _render(f"{prefix}_front_three_quarter.png", (-8, -6, 4), neutral)
-        _render(f"{prefix}_side_silhouette.png", (0, -10, 2.4), neutral)
-        _render(f"{prefix}_rear_engine.png", (8, 5, 3.6), neutral)
+        _render(f"{prefix}_front_three_quarter.png", (-8, -6, 4), neutral, (-1.2, -1.0, 1.35), 34)
+        _render(f"{prefix}_side_silhouette.png", (0, -10, 2.4), neutral, (0, -2.5, 1.25), 38)
+        _render(f"{prefix}_rear_engine.png", (13.0, -1.8, 2.4), neutral, (6.35, 0, 1.25), 30)
 
 
 if __name__ == "__main__":

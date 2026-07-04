@@ -212,6 +212,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         if (GetConfiguredPlayer() is FirstPersonController controller)
         {
             controller.Mission.TryCompleteGalaxabrainDefeat(true);
+            controller.ShowGalaxabrainScoutDefeatFeedback();
         }
     }
 

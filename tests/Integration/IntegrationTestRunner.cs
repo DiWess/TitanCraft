@@ -538,19 +538,25 @@ public partial class IntegrationTestRunner : Node
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench crafted the arm twice");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
 
-        // First hit goes through the real input path: aim the camera at the scout
-        // and raycast-attack, proving the fight works end to end, not just ApplyDamage.
+        // The first combat hit goes through the real player attack path: aim the
+        // camera at the scout and raycast-attack so landed-hit HUD feedback is proven.
         player.GlobalPosition = scout.GlobalPosition + new Vector3(2.0f, 0.0f, 0.0f);
         await Frames(2);
         player.GetNode<Node3D>("Head").LookAt(scout.GlobalPosition, Vector3.Up);
         Require(player.TryAttack(), "Aimed mechanical arm attack did not hit the Galaxabrain");
         Require(scout.Brain.CurrentHealth == scout.Brain.MaxHealth - MechanicalArmAttackLogic.DefaultMechanicalArmDamage, "Aimed attack did not damage the Galaxabrain");
+        Require(lastActionFeedback == FirstPersonController.GalaxabrainScoutHitFeedback, "Landed Galaxabrain hit did not emit hit feedback");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.GalaxabrainScoutHitFeedback, "HUD did not show landed Galaxabrain hit feedback");
         LogMvpSmokeMilestone(4, "Galaxabrain Scout engaged");
 
         for (var hit = 0; hit < 3; hit++)
             scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
+
         Require(scout.Brain.IsDead, "Galaxabrain survived four arm hits");
+        Require(lastActionFeedback == FirstPersonController.GalaxabrainScoutDefeatFeedback, "Galaxabrain defeat did not emit recover-component feedback");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.GalaxabrainScoutDefeatFeedback, "HUD did not show Galaxabrain defeat feedback");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Galaxabrain death did not advance to component recovery");
+        Require(!player.Inventory.HasGalaxabrainComponent, "Galaxabrain death granted the component before pickup interaction");
         Require(!player.Mission.IsVictory && player.Mission.CurrentStep != CrashSiteMissionStep.ActivateBeacon, "Galaxabrain death skipped the component recovery step");
         Require(component.Visible && component.Monitoring, "Component pickup was not revealed by Galaxabrain death");
         LogMvpSmokeMilestone(5, "Galaxabrain Scout defeated");

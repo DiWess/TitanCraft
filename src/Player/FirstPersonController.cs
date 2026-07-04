@@ -12,6 +12,8 @@ namespace TitanCraft.Player;
 public partial class FirstPersonController : CharacterBody3D
 {
     public event Action<string>? InteractionPromptChanged;
+    public const string GalaxabrainScoutHitFeedback = "Mechanical Arm strike landed.";
+    public const string GalaxabrainScoutDefeatFeedback = "Galaxabrain Scout disabled — recover the component.";
     public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — activate the beacon beam.";
     public const string SavePointSuccessFeedback = "Checkpoint saved — continue to the beacon.";
     public const string BeaconActivationFeedback = "Beacon activated — rescue signal online.";
@@ -192,7 +194,10 @@ public partial class FirstPersonController : CharacterBody3D
         _timeManager?.TriggerDefaultHitStop();
         _cameraShaker?.AddTrauma(0.22f);
         AudioCue.Play(this, ArmHitAudioPath);
-        ShowActionFeedback($"Mk I punch landed: Galaxabrain took {_mechanicalArmAttack.Damage} damage.");
+        if (!scout.Brain.IsDead)
+        {
+            ShowActionFeedback(GalaxabrainScoutHitFeedback);
+        }
         return true;
     }
 
@@ -380,6 +385,13 @@ public partial class FirstPersonController : CharacterBody3D
         return _mechanicalArmRecipe.CanCraft(Inventory) && Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm
             ? $"Press E to craft Mechanical Arm Mk I ({cost})."
             : $"Workbench: Mechanical Arm Mk I {cost}. Collect resources first.";
+    }
+
+    public void ShowGalaxabrainScoutDefeatFeedback()
+    {
+        // Scout defeat remains separate from component pickup and victory; this
+        // only clarifies the existing recovery objective through the HUD channel.
+        ShowActionFeedback(GalaxabrainScoutDefeatFeedback);
     }
 
     private void ShowActionFeedback(string message)

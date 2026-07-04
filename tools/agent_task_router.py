@@ -19,7 +19,9 @@ CATEGORY_RULES = [
         "gameplay", "resource pickup", "pickup", "inventory", "mission", "player", "enemy", "bug",
         "mvp loop", "smoke test", "integration test", "crash site gameplay", "playthrough",
         "save continuation", "victory", "defeat", "resource collection", "crafting", "combat",
-        "beacon", "galaxabrain",
+        "beacon", "galaxabrain", "hud objective", "objective hud", "objective consistency",
+        "hudbreadcrumb", "crash site hud", "mission objective text", "mvp objective text",
+        "gameplay hud assertion", "integration hud objective", "smoke objective assertion",
     ]),
     ("prompt_or_agent_governance", "documentation", ["prompt", "scope expansion", "documentation-only", "docs-only", "agent studio"]),
     ("stage_gate", "release", ["stage b", "stage gate", "stage a failed", "go/no-go", "readiness"]),
@@ -118,11 +120,25 @@ def parse_verdicts(text: str) -> tuple[list[str], dict]:
     return forbidden, approved
 
 
+def keyword_matches(text: str, keyword: str) -> bool:
+    """Match routing signals as words/phrases, not accidental substrings.
+
+    This prevents terms such as ``hash`` from matching ``Crash`` while still
+    allowing symbolic signals like ``.tscn`` to match as literal substrings.
+    """
+    if not re.search(r"[a-z0-9]", keyword):
+        return keyword in text
+    if keyword.startswith("."):
+        return keyword in text
+    pattern = rf"(?<![a-z0-9]){re.escape(keyword)}(?![a-z0-9])"
+    return re.search(pattern, text) is not None
+
+
 def detect_category(description: str) -> tuple[str, str]:
     text = description.lower()
     scores = []
     for route_key, evidence_key, keywords in CATEGORY_RULES:
-        score = sum(1 for keyword in keywords if keyword in text)
+        score = sum(1 for keyword in keywords if keyword_matches(text, keyword))
         scores.append((score, route_key, evidence_key))
     score, route_key, evidence_key = max(scores, key=lambda item: item[0])
     return (route_key, evidence_key) if score else ("prompt_or_agent_governance", "documentation")

@@ -23,6 +23,11 @@ obj/
 *.userosscache
 *.sln.docstates
 
+
+# Python caches
+__pycache__/
+*.pyc
+
 # IDE caches
 .vs/
 .vscode/.ropeproject/

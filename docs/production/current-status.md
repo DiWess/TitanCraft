@@ -25,3 +25,9 @@
 - Agent Studio routing and evidence improvements.
 - Blender Asset Forge standalone candidate generation.
 - Visual Artifact Factory review-bundle generation.
+
+## Verification Environment Notes
+
+- Local Codex/checkouts may not have `origin` or a local `main` branch configured. Inability to fetch `origin/main` in that environment is an environment limitation, not a repository production defect.
+- Authoritative post-merge verification should run in GitHub Actions or in a full clone with `origin` configured.
+- Local production-cockpit verification may use `python3 tools/blender/build_asset_manifest.py --check` to inspect generated asset availability without rewriting `assets/Production/Generated/asset_manifest.json`. Full manifest generation still belongs in GitHub Actions or local environments where generated Blender/GLB artifacts are present.

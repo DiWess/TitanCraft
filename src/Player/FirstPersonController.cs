@@ -16,6 +16,7 @@ public partial class FirstPersonController : CharacterBody3D
     public const string SavePointSuccessFeedback = "Checkpoint saved — continue to the beacon.";
     public const string BeaconActivationFeedback = "Beacon activated — rescue signal online.";
     public const string DefeatRetryFeedback = "Suit integrity failed — reload from checkpoint.";
+    public const string ResourceCompletionFeedback = "Resources secured — craft the Mechanical Arm Mk I at the workbench.";
 
     public event Action<string>? ActionFeedbackChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
@@ -213,10 +214,18 @@ public partial class FirstPersonController : CharacterBody3D
             return false;
         }
 
+        var previousMissionStep = Mission.CurrentStep;
         var interacted = interactable.Interact(Inventory, Mission);
         if (interacted && interactable is ResourceDrop)
         {
             ClearResourceLookTarget();
+            if (previousMissionStep == CrashSiteMissionStep.CollectResources
+                && Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm
+                && _mechanicalArmRecipe.CanCraft(Inventory)
+                && !Inventory.IsMechanicalArmBuilt)
+            {
+                ShowActionFeedback(ResourceCompletionFeedback);
+            }
         }
         else if (interacted && interactable is GalaxabrainComponentPickup)
         {

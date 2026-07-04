@@ -503,13 +503,25 @@ public partial class IntegrationTestRunner : Node
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon must reject activation before component recovery");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.CollectResources, "Invalid early interactions mutated mission state");
 
-        foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup" })
+        foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup" })
         {
             var pickup = main.GetNode<ResourceDrop>(pickupName);
-            Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} could not be collected");
+            Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} could not be collected through the real pickup path");
             Require(!pickup.Interact(player.Inventory, player.Mission), $"{pickupName} was collectable twice");
         }
+
+        var finalPickup = main.GetNode<ResourceDrop>("ResourceDrop_ElectronicsPickup");
+        player.GlobalPosition = finalPickup.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(finalPickup.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Final resource could not be collected through the player interaction pickup path");
+        Require(!finalPickup.Interact(player.Inventory, player.Mission), "Final resource was collectable twice");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm, "Collecting all resources did not advance to crafting");
+        Require(lastActionFeedback == FirstPersonController.ResourceCompletionFeedback, "Final resource pickup did not emit resource completion feedback");
+        Require(lastActionFeedback.Contains("Resources secured") && lastActionFeedback.Contains("craft") && lastActionFeedback.Contains("workbench"), "Resource completion feedback did not explain resource completion and workbench crafting guidance");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.ResourceCompletionFeedback, "HUD did not show resource completion feedback text");
+        Require(!player.Inventory.IsMechanicalArmBuilt, "Mechanical Arm Mk I was granted before workbench crafting");
+        Require(!arm.Visible, "Mechanical arm visual appeared before workbench crafting");
         LogMvpSmokeMilestone(2, "resources collected");
 
         Require(workbench.Interact(player.Inventory, player.Mission), "Workbench crafting failed with full resources");

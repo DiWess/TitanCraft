@@ -13,6 +13,7 @@ public partial class FirstPersonController : CharacterBody3D
 {
     public event Action<string>? InteractionPromptChanged;
     public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — activate the beacon beam.";
+    public const string SavePointSuccessFeedback = "Checkpoint saved — continue to the beacon.";
 
     public event Action<string>? ActionFeedbackChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
@@ -211,6 +212,10 @@ public partial class FirstPersonController : CharacterBody3D
         else if (interacted && interactable is GalaxabrainComponentPickup)
         {
             ShowActionFeedback(GalaxabrainComponentRecoveryFeedback);
+        }
+        else if (interacted && interactable is SavePoint)
+        {
+            ShowActionFeedback(SavePointSuccessFeedback);
         }
 
         return interacted;

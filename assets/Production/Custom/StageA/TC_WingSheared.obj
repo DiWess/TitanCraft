@@ -1,0 +1,21 @@
+# TitanCraft custom Stage A static mesh: TC_WingSheared
+# Offline-authored by tools/art_generation/build_stage_a_assets.py
+o TC_WingSheared
+v -3.6000 -0.3600 -0.4550
+v -0.3600 -0.3600 -1.3000
+v 3.6000 -0.3600 -0.5850
+v 2.3400 -0.3600 0.9750
+v -2.8800 -0.3600 1.3000
+v -3.6000 0.3600 -0.2860
+v -0.1800 0.2520 -1.0660
+v 3.6000 0.1980 -0.3250
+v 1.6200 0.3600 0.6760
+v -3.1680 0.3600 1.0140
+v 0.6480 0.6480 0.2600
+f 1 2 3 4 5
+f 6 10 9 8 7
+f 1 6 7 2
+f 2 7 8 3
+f 3 8 11 4
+f 4 11 9 5
+f 5 10 6 1

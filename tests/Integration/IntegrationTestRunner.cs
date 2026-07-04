@@ -563,8 +563,17 @@ public partial class IntegrationTestRunner : Node
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.SavePointSuccessFeedback, "HUD did not show the checkpoint save feedback text");
         LogMvpSmokeMilestone(7, "save point used");
 
-        Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed with recovered component");
+        // Activate through the player raycast so the same action-feedback signal
+        // that drives the HUD confirms the final rescue beacon interaction.
+        player.GlobalPosition = beacon.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(beacon.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Player interaction raycast could not activate the beacon with recovered component");
+        Require(beacon.IsActivated, "Beacon activation did not update the beacon state");
         Require(player.Mission.IsVictory, "Beacon activation did not produce victory");
+        Require(lastActionFeedback == FirstPersonController.BeaconActivationFeedback, "Beacon activation did not emit rescue signal action feedback");
+        Require(lastActionFeedback.Contains("Beacon activated") && lastActionFeedback.Contains("rescue signal online"), "Beacon activation feedback did not confirm the rescue signal");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.BeaconActivationFeedback, "HUD did not show beacon activation feedback text");
         LogMvpSmokeMilestone(8, "beacon activated");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
         await Frames(2);

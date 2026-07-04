@@ -14,6 +14,7 @@ public partial class FirstPersonController : CharacterBody3D
     public event Action<string>? InteractionPromptChanged;
     public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — activate the beacon beam.";
     public const string SavePointSuccessFeedback = "Checkpoint saved — continue to the beacon.";
+    public const string BeaconActivationFeedback = "Beacon activated — rescue signal online.";
 
     public event Action<string>? ActionFeedbackChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
@@ -216,6 +217,12 @@ public partial class FirstPersonController : CharacterBody3D
         else if (interacted && interactable is SavePoint)
         {
             ShowActionFeedback(SavePointSuccessFeedback);
+        }
+        else if (interacted && interactable is Beacon)
+        {
+            // Beacon success uses the existing controller-to-HUD action feedback
+            // pathway so victory confirmation appears without a new UI system.
+            ShowActionFeedback(BeaconActivationFeedback);
         }
 
         return interacted;

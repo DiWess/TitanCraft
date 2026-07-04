@@ -74,3 +74,4 @@
 - 2026-07-03: Instanced the authenticated visual-only rock and wreckage props into the production Crash Site scene, preserved gameplay collision contracts, and captured deterministic Phase 3A review screenshots.
 - 2026-07-03: Fixed the visual prop CI failure by replacing rejected terrain OBJ references in the production-instanced rock cluster with authenticated non-rejected rock meshes and re-running CI plus Phase 3A screenshot validation.
 - 2026-07-03: Reduced Phase 3A visual slab dominance by flattening visual-only basalt and hull masses, then adding authenticated rock and wreckage breakup props around existing capture angles without changing gameplay collisions.
+- 2026-07-04: Added TitanCraft MVP gameplay evidence CI workflow and documentation for Crash Site smoke milestone artifacts.

@@ -22,23 +22,38 @@ jobs:
           sudo apt-get install -y blender python3-numpy libegl1 xvfb
           blender --version
 
+      - name: Prepare validation logs
+        run: mkdir -p artifacts/asset-review/blender-asset-forge-logs
+
       - name: Create Blender source
-        run: blender --background --python tools/blender/create_test_crate.py
+        run: |
+          set -o pipefail
+          blender --background --python tools/blender/create_test_crate.py 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/create-source.log
 
       - name: Validate Blender source
-        run: python3 tools/blender/validate_blender_asset.py assets/Source/Blender/_templates/TC_TestCrate.blend
+        run: |
+          set -o pipefail
+          python3 tools/blender/validate_blender_asset.py assets/Source/Blender/_templates/TC_TestCrate.blend 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/validate-source.log
 
       - name: Export GLB
-        run: blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/_templates/TC_TestCrate.blend assets/Production/Generated/Test/TC_TestCrate.glb
+        run: |
+          set -o pipefail
+          blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/_templates/TC_TestCrate.blend assets/Production/Generated/Test/TC_TestCrate.glb 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/export-glb.log
 
       - name: Build asset manifest
-        run: python3 tools/blender/build_asset_manifest.py
+        run: |
+          set -o pipefail
+          python3 tools/blender/build_asset_manifest.py 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/build-manifest.log
 
       - name: Render neutral turntable
-        run: blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/neutral_turntable.png neutral
+        run: |
+          set -o pipefail
+          blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/neutral_turntable.png neutral 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/render-neutral.log
 
       - name: Render material turntable
-        run: blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/material_turntable.png material
+        run: |
+          set -o pipefail
+          blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/material_turntable.png material 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/render-material.log
 
       - name: Upload downloadable asset forge bundle
         uses: actions/upload-artifact@v4
@@ -51,3 +66,4 @@ jobs:
             assets/Production/Generated/asset_manifest.json
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png
+            artifacts/asset-review/blender-asset-forge-logs/*.log

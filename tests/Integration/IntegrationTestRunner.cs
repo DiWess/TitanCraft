@@ -524,10 +524,16 @@ public partial class IntegrationTestRunner : Node
         Require(!arm.Visible, "Mechanical arm visual appeared before workbench crafting");
         LogMvpSmokeMilestone(2, "resources collected");
 
-        Require(workbench.Interact(player.Inventory, player.Mission), "Workbench crafting failed with full resources");
+        player.GlobalPosition = workbench.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(workbench.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Workbench crafting failed through the player interaction path with full resources");
         Require(player.Inventory.IsMechanicalArmBuilt, "Crafting did not build the mechanical arm");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefeatGalaxabrain, "Crafting did not advance to the defeat step");
         Require(arm.Visible, "Mechanical arm visual did not appear after crafting");
+        Require(lastActionFeedback == FirstPersonController.MechanicalArmCraftSuccessFeedback, "Workbench crafting did not emit Mechanical Arm Mk I success feedback");
+        Require(lastActionFeedback.Contains("Mechanical Arm Mk I online") && lastActionFeedback.Contains("defeat the Galaxabrain Scout"), "Mechanical Arm Mk I success feedback did not confirm arm readiness and Galaxabrain guidance");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.MechanicalArmCraftSuccessFeedback, "HUD did not show Mechanical Arm Mk I success feedback text");
         LogMvpSmokeMilestone(3, "Mechanical Arm Mk I crafted");
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench crafted the arm twice");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");

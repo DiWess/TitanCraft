@@ -60,7 +60,7 @@ public partial class CrashSiteHudBinder : Node
         if (inventory.IsMechanicalArmBuilt && !_armBuiltFeedbackShown)
         {
             _armBuiltFeedbackShown = true;
-            _hud.SetActionFeedback("Mechanical Arm Mk I online — left click punches the Galaxabrain.");
+            _hud.SetActionFeedback(FirstPersonController.MechanicalArmCraftSuccessFeedback);
         }
     }
 

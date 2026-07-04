@@ -55,6 +55,27 @@ def test_gameplay_evidence():
     assert "integration tests" in blob or "smoke test" in blob
 
 
+def test_gameplay_mvp_loop_smoke_routes_to_gameplay_qa():
+    data = packet(
+        "Add or harden full playable Crash Site MVP loop smoke test covering spawn, "
+        "resource collection, crafting, Galaxabrain Scout combat, component retrieval, "
+        "save point, beacon activation, victory, defeat, and save continuation"
+    )
+    blob = evidence_blob(data)
+    assert data["detected_task_category"] == "gameplay_bug"
+    assert data["evidence_category"] == "gameplay"
+    assert data["primary_agent"] == "gameplay_engineer"
+    assert "qa_lead" in data["secondary_agents"]
+    assert "integration tests" in blob
+    assert "mission smoke test" in blob
+
+
+def test_agent_studio_gameplay_smoke_not_governance():
+    data = packet("Agent Studio routing for gameplay smoke test and integration test tasks")
+    assert data["detected_task_category"] == "gameplay_bug"
+    assert data["evidence_category"] == "gameplay"
+    assert data["primary_agent"] == "gameplay_engineer"
+
 def test_asset_evidence():
     data = packet("Import asset OBJ with provenance licence source URL hash and audition")
     blob = evidence_blob(data)
@@ -109,6 +130,8 @@ def main() -> int:
         test_json_parses,
         test_visual_evidence,
         test_gameplay_evidence,
+        test_gameplay_mvp_loop_smoke_routes_to_gameplay_qa,
+        test_agent_studio_gameplay_smoke_not_governance,
         test_asset_evidence,
         test_vague_verdicts_not_approved,
         test_deterministic_output,
@@ -116,7 +139,7 @@ def main() -> int:
         test_bespoke_stage_a_art_prompt_uses_packet_gates,
     ]:
         test()
-    print("Agent preflight tests passed: 9 checks")
+    print("Agent preflight tests passed: 11 checks")
     return 0
 
 

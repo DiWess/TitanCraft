@@ -66,3 +66,21 @@ These indexed atomic memory cards are curated and non-exhaustive. `README.md` re
 - evidence_required: Opened image list and critique
 - related_agents: [visual_reviewer,qa_lead]
 - related_skills: [screenshot_critique]
+
+### MEM-GODOT-011
+
+- id: MEM-GODOT-011
+- title: Scene edits require explicit safety boundaries
+- tags: [godot,scene,safety,scope]
+- applies_when: A workflow routes Godot scene edits, collision changes, node changes, or .tscn review.
+- memory: Godot scene changes can alter gameplay, collision, visuals, imports, and serialized references, so scene work must be explicitly scoped and validated separately from governance or documentation tasks.
+- avoid: Do not edit Main.tscn, production scenes, art/assets/scenes, or gameplay-affecting nodes during governance-only work.
+- required_action: Identify touched scene paths, confirm they are in scope, and run relevant import/build or diff checks before claiming safety.
+- evidence_required: Changed scene file list, validation command output, and screenshot or gameplay evidence when visual or gameplay behavior changes.
+- related_agents: [technical_director,qa_lead,level_designer]
+- related_skills: [godot_scene_editing,godot_runtime_contracts,evidence_reporting]
+- topic: Godot scene safety
+- atomic_statement: Routed Godot scene work must define scene scope and prove safety without leaking into forbidden gameplay or visual claims.
+- source_reference: README.md current production phase and AGENTS.md forbidden scope and validation rules.
+- confidence: high
+- last_reviewed: 2026-07-04

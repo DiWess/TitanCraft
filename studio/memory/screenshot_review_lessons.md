@@ -66,3 +66,21 @@ These indexed atomic memory cards are curated and non-exhaustive. `README.md` re
 - evidence_required: Before/after route screenshot
 - related_agents: [level_designer,art_director]
 - related_skills: [visual_art_direction]
+
+### MEM-SCREEN-012
+
+- id: MEM-SCREEN-012
+- title: Screenshot evidence must be diagnosed, not merely attached
+- tags: [screenshot,visual,evidence,review]
+- applies_when: A workflow routes screenshot, visual review, PR visual claim, or PNG evidence requirements.
+- memory: A screenshot only supports a visual claim when it is opened and diagnosed for focal point, route readability, silhouette, scale, material coherence, and visible regressions.
+- avoid: Do not cite PNG existence, artifact upload, or filename as a visual verdict.
+- required_action: Open relevant screenshots, describe what is visible, compare against baseline when available, and separate visual diagnosis from automated test status.
+- evidence_required: PNG path list, opened-image diagnosis, comparison notes, and independent reviewer or human verdict when approval is required.
+- related_agents: [visual_reviewer,art_director,qa_lead]
+- related_skills: [screenshot_critique,pull_request_review,evidence_reporting]
+- topic: Screenshot review evidence
+- atomic_statement: Routed screenshot evidence requires opened-image diagnosis before it can support visual claims.
+- source_reference: README.md visual approval warning and AGENTS.md packet evidence rules for visual tasks.
+- confidence: high
+- last_reviewed: 2026-07-04

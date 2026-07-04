@@ -66,3 +66,21 @@ These indexed atomic memory cards are curated and non-exhaustive. `README.md` re
 - evidence_required: URL, license text, hash
 - related_agents: [asset_librarian]
 - related_skills: [asset_provenance]
+
+### MEM-PROMPT-009
+
+- id: MEM-PROMPT-009
+- title: Prompt discipline preserves requested scope
+- tags: [prompt,scope,planning,governance]
+- applies_when: A task prompt asks for governance, planning, review, documentation, or Agent Studio routing changes.
+- memory: Task prompts must preserve the requested scope; planning tasks must not silently become implementation, final reports must distinguish requested docs or planning work from production claims, and missing evidence must be reported instead of hidden.
+- avoid: Do not expand a prompt into gameplay, scene, asset, CI, release, or production-readiness work unless the user explicitly requested that scope and the README permits it.
+- required_action: Restate the requested scope, keep edits limited to the routed governance/planning objective, and mark absent evidence as a limitation or blocking condition rather than implying readiness.
+- evidence_required: Task quote or packet summary, changed-file list, validation command output, and explicit distinction between documentation/planning evidence and production evidence.
+- related_agents: [producer,qa_lead,technical_director]
+- related_skills: [prompt_design,evidence_reporting,pull_request_review]
+- topic: Prompt discipline and scope control
+- atomic_statement: Planning and governance prompts preserve scope and report missing evidence rather than converting into implementation or production claims.
+- source_reference: README.md "How to start any task" and AGENTS.md sections 3 and 8.
+- confidence: high
+- last_reviewed: 2026-07-04

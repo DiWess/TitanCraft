@@ -15,6 +15,7 @@ public partial class FirstPersonController : CharacterBody3D
     public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — activate the beacon beam.";
     public const string SavePointSuccessFeedback = "Checkpoint saved — continue to the beacon.";
     public const string BeaconActivationFeedback = "Beacon activated — rescue signal online.";
+    public const string DefeatRetryFeedback = "Suit integrity failed — reload from checkpoint.";
 
     public event Action<string>? ActionFeedbackChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
@@ -88,6 +89,13 @@ public partial class FirstPersonController : CharacterBody3D
         {
             _cameraShaker?.AddTrauma(0.4f);
             AudioCue.Play(this, DamageAudioPath);
+        }
+
+        if (health.IsDead && _lastHealth > 0)
+        {
+            // Use the existing controller-to-HUD action feedback channel so the
+            // current defeat flow clarifies retry without adding another UI path.
+            ShowActionFeedback(DefeatRetryFeedback);
         }
 
         _lastHealth = health.CurrentHealth;

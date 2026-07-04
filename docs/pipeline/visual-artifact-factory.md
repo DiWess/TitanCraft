@@ -79,6 +79,12 @@ blender --background --python tools/blender/render_heavy_crash_hull_v1_reviews.p
 python3 tools/blender/build_asset_manifest.py
 ```
 
+For production-cockpit verification without local Blender artifacts, use the safe manifest check so local validation does not overwrite the checked-in manifest:
+
+```bash
+python3 tools/blender/build_asset_manifest.py --check
+```
+
 Godot scene review commands can be run locally when Godot and Xvfb are installed:
 
 ```bash

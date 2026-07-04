@@ -2,6 +2,7 @@
 """Build the generated-asset manifest for Blender Asset Forge outputs."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -72,7 +73,7 @@ def asset_overrides(name: str) -> dict[str, object]:
     return {}
 
 
-def main() -> None:
+def build_manifest() -> dict[str, object]:
     entries = []
     for glb in sorted(PROD_ROOT.glob("**/*.glb")):
         name = glb.stem
@@ -99,12 +100,48 @@ def main() -> None:
         }
         entry.update(asset_overrides(name))
         entries.append(entry)
-    MANIFEST.parent.mkdir(parents=True, exist_ok=True)
-    MANIFEST.write_text(json.dumps({
+    return {
         "schema": "titancraft.blender_asset_forge.manifest.v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "entries": entries,
-    }, indent=2) + "\n", encoding="utf-8")
+    }
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="discover generated asset entries and report status without writing asset_manifest.json",
+    )
+    parser.add_argument(
+        "--allow-empty",
+        action="store_true",
+        help="allow overwriting an existing manifest with zero discovered generated assets",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    manifest = build_manifest()
+    entries = manifest["entries"]
+
+    if args.check:
+        print(f"ASSET_MANIFEST_CHECK {MANIFEST} entries={len(entries)} write=skipped")
+        if not entries:
+            print("ASSET_MANIFEST_CHECK_WARNING no generated .glb artifacts discovered; existing manifest was not modified")
+        return
+
+    if not entries and MANIFEST.exists() and not args.allow_empty:
+        print(
+            f"ASSET_MANIFEST_PRESERVED {MANIFEST} entries=0 "
+            "reason=no_generated_artifacts use --allow-empty to overwrite"
+        )
+        return
+
+    MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"ASSET_MANIFEST_WRITTEN {MANIFEST} entries={len(entries)}")
 
 

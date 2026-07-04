@@ -55,3 +55,7 @@ Phase 1 is documentation-only: it does not modify existing material resources, s
 ## Phase 2 material implementation note
 
 The Phase 2 master material library is documented in `docs/material-library.md`. Existing material resource filenames are preserved for scene-reference stability, and new master materials remain shared `StandardMaterial3D` resources under `assets/Materials/`.
+
+## Canonical entrypoint note
+
+`docs/art/titancraft-visual-identity.md` is the canonical Project Director entrypoint for TitanCraft visual identity. This file remains a legacy/supporting reference for palette and Crash Site vertical-slice style details.

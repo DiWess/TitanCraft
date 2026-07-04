@@ -86,6 +86,7 @@ Run from the repository root:
 ```bash
 dotnet restore
 dotnet build
+python3 tools/prepare_audio_assets.py
 godot --headless --path . --import
 mkdir -p builds/Windows
 godot --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe
@@ -95,6 +96,7 @@ Expected automated result:
 
 - `dotnet restore` completes without dependency errors.
 - `dotnet build` completes without compilation errors.
+- `python3 tools/prepare_audio_assets.py` materializes generated temporary audio cues before direct Godot import/export commands.
 - `godot --headless --path . --import` imports the project without fatal errors.
 - `mkdir -p builds/Windows` ensures the ignored local export directory exists before export.
 - The Godot Windows export writes `builds/Windows/TitanCraft.exe` using the `Windows Desktop` export preset.

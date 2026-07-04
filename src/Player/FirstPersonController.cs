@@ -12,6 +12,8 @@ namespace TitanCraft.Player;
 public partial class FirstPersonController : CharacterBody3D
 {
     public event Action<string>? InteractionPromptChanged;
+    public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — activate the beacon beam.";
+
     public event Action<string>? ActionFeedbackChanged;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
     [Export] public float JumpVelocity { get; set; } = 4.5f;
@@ -205,6 +207,10 @@ public partial class FirstPersonController : CharacterBody3D
         if (interacted && interactable is ResourceDrop)
         {
             ClearResourceLookTarget();
+        }
+        else if (interacted && interactable is GalaxabrainComponentPickup)
+        {
+            ShowActionFeedback(GalaxabrainComponentRecoveryFeedback);
         }
 
         return interacted;

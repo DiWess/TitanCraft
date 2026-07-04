@@ -5,12 +5,14 @@ on:
     paths:
       - 'tools/blender/**'
       - 'docs/pipeline/**'
+      - 'docs/art/briefs/**'
+      - 'assets/Production/Generated/asset_manifest.json'
       - '.github/workflows/blender-asset-forge.yml'
   workflow_dispatch:
 
 jobs:
-  test-crate-artifacts:
-    name: Build downloadable Blender test-crate artifacts
+  asset-forge-artifacts:
+    name: Build downloadable Blender Asset Forge artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -55,14 +57,31 @@ jobs:
           set -o pipefail
           blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/material_turntable.png material 2>&1 | tee artifacts/asset-review/blender-asset-forge-logs/render-material.log
 
+      - name: Create TC_HeavyCrashHull_V1 source
+        run: blender --background --python tools/blender/create_heavy_crash_hull_v1.py
+
+      - name: Validate TC_HeavyCrashHull_V1 source
+        run: python3 tools/blender/validate_blender_asset.py assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
+
+      - name: Export TC_HeavyCrashHull_V1 GLB
+        run: blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
+
+      - name: Render TC_HeavyCrashHull_V1 reviews
+        run: blender --background --python tools/blender/render_heavy_crash_hull_v1_reviews.py
+
+      - name: Rebuild manifest with TC_HeavyCrashHull_V1
+        run: python3 tools/blender/build_asset_manifest.py
+
       - name: Upload downloadable asset forge bundle
         uses: actions/upload-artifact@v4
         with:
-          name: blender-asset-forge-test-crate
+          name: blender-asset-forge-assets
           if-no-files-found: error
           path: |
             assets/Source/Blender/_templates/TC_TestCrate.blend
             assets/Production/Generated/Test/TC_TestCrate.glb
+            assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
+            assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
             assets/Production/Generated/asset_manifest.json
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png

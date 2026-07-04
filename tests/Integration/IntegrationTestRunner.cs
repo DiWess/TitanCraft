@@ -376,6 +376,7 @@ public partial class IntegrationTestRunner : Node
         var defeatPlayer = defeatMain.GetNode<FirstPersonController>("Player");
         var defeatHud = defeatMain.GetNode<CrashSiteHud>("HUD");
         var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        RequireHudObjective(defeatHud, CrashSiteMissionStep.CollectResources, "defeat path before death");
         defeatNavigator.EnableSceneChanges = false;
         defeatPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
         await Frames(2);
@@ -475,6 +476,16 @@ public partial class IntegrationTestRunner : Node
         LocalSaveGameStore.DeleteSave();
     }
 
+    private static void RequireHudObjective(CrashSiteHud hud, CrashSiteMissionStep expectedStep, string checkpoint)
+    {
+        var expectedText = new CrashSiteMissionState();
+        expectedText.Restore(expectedStep);
+        var actualText = hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text;
+        Require(actualText == expectedText.HudBreadcrumb, $"HUD objective mismatch at {checkpoint}. Expected '{expectedText.HudBreadcrumb}', got '{actualText}'");
+        Require(!string.IsNullOrWhiteSpace(actualText), $"HUD objective missing at {checkpoint}");
+        Require(!actualText.Contains("Unknown Objective", StringComparison.Ordinal), $"HUD objective is unknown at {checkpoint}");
+    }
+
     private async System.Threading.Tasks.Task TestFullMissionPlaythrough()
     {
         LocalSaveGameStore.DeleteSave();
@@ -495,6 +506,7 @@ public partial class IntegrationTestRunner : Node
         var lastActionFeedback = string.Empty;
         player.ActionFeedbackChanged += message => lastActionFeedback = message;
 
+        RequireHudObjective(hud, CrashSiteMissionStep.CollectResources, "initial spawn");
         Require(player.IsInsideTree(), "Player did not spawn into the Crash Site scene");
         Require(!arm.Visible, "Mechanical arm visual should start hidden");
         LogMvpSmokeMilestone(1, "player spawned");
@@ -520,6 +532,7 @@ public partial class IntegrationTestRunner : Node
         Require(lastActionFeedback == FirstPersonController.ResourceCompletionFeedback, "Final resource pickup did not emit resource completion feedback");
         Require(lastActionFeedback.Contains("Resources secured") && lastActionFeedback.Contains("craft") && lastActionFeedback.Contains("workbench"), "Resource completion feedback did not explain resource completion and workbench crafting guidance");
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.ResourceCompletionFeedback, "HUD did not show resource completion feedback text");
+        RequireHudObjective(hud, CrashSiteMissionStep.BuildMechanicalArm, "after resources complete");
         Require(!player.Inventory.IsMechanicalArmBuilt, "Mechanical Arm Mk I was granted before workbench crafting");
         Require(!arm.Visible, "Mechanical arm visual appeared before workbench crafting");
         LogMvpSmokeMilestone(2, "resources collected");
@@ -534,6 +547,7 @@ public partial class IntegrationTestRunner : Node
         Require(lastActionFeedback == FirstPersonController.MechanicalArmCraftSuccessFeedback, "Workbench crafting did not emit Mechanical Arm Mk I success feedback");
         Require(lastActionFeedback.Contains("Mechanical Arm Mk I online") && lastActionFeedback.Contains("defeat the Galaxabrain Scout"), "Mechanical Arm Mk I success feedback did not confirm arm readiness and Galaxabrain guidance");
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.MechanicalArmCraftSuccessFeedback, "HUD did not show Mechanical Arm Mk I success feedback text");
+        RequireHudObjective(hud, CrashSiteMissionStep.DefeatGalaxabrain, "after arm crafted");
         LogMvpSmokeMilestone(3, "Mechanical Arm Mk I crafted");
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench crafted the arm twice");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
@@ -559,6 +573,7 @@ public partial class IntegrationTestRunner : Node
         Require(!player.Inventory.HasGalaxabrainComponent, "Galaxabrain death granted the component before pickup interaction");
         Require(!player.Mission.IsVictory && player.Mission.CurrentStep != CrashSiteMissionStep.ActivateBeacon, "Galaxabrain death skipped the component recovery step");
         Require(component.Visible && component.Monitoring, "Component pickup was not revealed by Galaxabrain death");
+        RequireHudObjective(hud, CrashSiteMissionStep.RecoverGalaxabrainComponent, "after Scout defeated");
         LogMvpSmokeMilestone(5, "Galaxabrain Scout defeated");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated before component recovery");
 
@@ -576,6 +591,7 @@ public partial class IntegrationTestRunner : Node
         Require(lastActionFeedback == FirstPersonController.GalaxabrainComponentRecoveryFeedback, "Component recovery did not emit beacon activation action feedback");
         Require(lastActionFeedback.Contains("component recovered") && lastActionFeedback.Contains("activate the beacon beam"), "Component recovery action feedback did not explain the next beacon step");
         Require(!component.Visible && !component.Monitoring, "Component pickup stayed interactable after recovery");
+        RequireHudObjective(hud, CrashSiteMissionStep.ActivateBeacon, "after component recovered");
         LogMvpSmokeMilestone(6, "component retrieved");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable twice");
 
@@ -589,6 +605,7 @@ public partial class IntegrationTestRunner : Node
         Require(lastActionFeedback == FirstPersonController.SavePointSuccessFeedback, "Save point did not emit player-facing checkpoint feedback");
         Require(lastActionFeedback.Contains("Checkpoint saved") && lastActionFeedback.Contains("continue to the beacon"), "Save point feedback did not confirm the save and next objective");
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.SavePointSuccessFeedback, "HUD did not show the checkpoint save feedback text");
+        RequireHudObjective(hud, CrashSiteMissionStep.ActivateBeacon, "after save point use");
         LogMvpSmokeMilestone(7, "save point used");
 
         // Activate through the player raycast so the same action-feedback signal
@@ -602,6 +619,7 @@ public partial class IntegrationTestRunner : Node
         Require(lastActionFeedback == FirstPersonController.BeaconActivationFeedback, "Beacon activation did not emit rescue signal action feedback");
         Require(lastActionFeedback.Contains("Beacon activated") && lastActionFeedback.Contains("rescue signal online"), "Beacon activation feedback did not confirm the rescue signal");
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.BeaconActivationFeedback, "HUD did not show beacon activation feedback text");
+        RequireHudObjective(hud, CrashSiteMissionStep.Victory, "after beacon activation/victory");
         LogMvpSmokeMilestone(8, "beacon activated");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
         await Frames(2);
@@ -617,12 +635,14 @@ public partial class IntegrationTestRunner : Node
         var defeatedPlayer = defeatMain.GetNode<FirstPersonController>("Player");
         var defeatHud = defeatMain.GetNode<CrashSiteHud>("HUD");
         var defeatNavigator = defeatMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        RequireHudObjective(defeatHud, CrashSiteMissionStep.ActivateBeacon, "defeat path before death after checkpoint continuation");
         defeatNavigator.EnableSceneChanges = false;
         defeatedPlayer.Health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
         await Frames(2);
         Require(defeatedPlayer.Health.IsDead, "Defeat path did not kill the player");
         Require(defeatNavigator.LastRequestedScenePath == "res://scenes/UI/DefeatScreen.tscn", "Defeat path did not request the defeat screen");
         Require(defeatHud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.DefeatRetryFeedback, "Defeat path did not emit retry feedback through the HUD");
+        RequireHudObjective(defeatHud, CrashSiteMissionStep.ActivateBeacon, "after defeat/retry feedback from checkpoint continuation");
         Require(!defeatedPlayer.Mission.IsVictory, "Defeat path incorrectly set victory state");
         LogMvpSmokeMilestone(10, "defeat path verified");
         defeatMain.QueueFree();
@@ -632,9 +652,11 @@ public partial class IntegrationTestRunner : Node
         AddChild(continuation);
         await Frames(2);
         var continuationPlayer = continuation.GetNode<FirstPersonController>("Player");
+        var continuationHud = continuation.GetNode<CrashSiteHud>("HUD");
         Require(continuation.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastLoadSucceeded, "Save continuation did not load the checkpoint");
         Require(continuationPlayer.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Save continuation did not restore beacon objective");
         Require(continuationPlayer.Inventory.IsMechanicalArmBuilt && continuationPlayer.Inventory.HasGalaxabrainComponent, "Save continuation did not restore MVP inventory state");
+        RequireHudObjective(continuationHud, CrashSiteMissionStep.ActivateBeacon, "after save continuation");
         LogMvpSmokeMilestone(11, "save continuation verified");
         continuation.QueueFree();
         await Frames(2);

@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Build the generated-asset manifest for Blender Asset Forge outputs."""
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE_ROOT = ROOT / "assets/Source/Blender"
+PROD_ROOT = ROOT / "assets/Production/Generated"
+REVIEW_ROOT = ROOT / "artifacts/asset-review"
+MANIFEST = PROD_ROOT / "asset_manifest.json"
+INSPECT = r'''
+import json, sys, bpy
+path = sys.argv[sys.argv.index('--') + 1]
+bpy.ops.wm.open_mainfile(filepath=path)
+meshes = [o for o in bpy.context.scene.objects if o.type == 'MESH']
+materials = sorted({slot.material.name for o in meshes for slot in o.material_slots if slot.material})
+triangles = 0
+issues = []
+for obj in meshes:
+    if not obj.name: issues.append('empty object name')
+    if not obj.material_slots: issues.append(f'missing material slot: {obj.name}')
+    if obj.get('titancraft_collision', 'none') != 'none': issues.append(f'collision metadata is not none: {obj.name}')
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    mesh = obj.evaluated_get(depsgraph).to_mesh()
+    for poly in mesh.polygons: triangles += max(1, len(poly.vertices) - 2)
+    obj.evaluated_get(depsgraph).to_mesh_clear()
+print(json.dumps({'material_slots': materials, 'triangle_count': triangles, 'validation_status': 'PASS' if meshes and not issues else 'FAIL', 'issues': issues}, sort_keys=True))
+if issues or not meshes: raise SystemExit(2)
+'''
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def inspect_blend(path: Path) -> dict[str, object]:
+    result = subprocess.run(["blender", "--background", "--python-expr", INSPECT, "--", str(path)], text=True, capture_output=True)
+    if result.returncode != 0:
+        return {"material_slots": [], "triangle_count": None, "validation_status": "FAIL", "issues": [result.stderr.strip() or result.stdout.strip()]}
+    lines = [line for line in result.stdout.splitlines() if line.startswith("{")]
+    return json.loads(lines[-1]) if lines else {"material_slots": [], "triangle_count": None, "validation_status": "FAIL", "issues": ["missing inspect json"]}
+
+
+def review_paths(asset_name: str) -> list[str]:
+    slug = asset_name.removeprefix("TC_").replace("_", "-").lower()
+    folder = REVIEW_ROOT / slug
+    return [str(path.relative_to(ROOT)) for path in sorted(folder.glob("*.png"))]
+
+
+def main() -> None:
+    entries = []
+    for glb in sorted(PROD_ROOT.glob("**/*.glb")):
+        name = glb.stem
+        candidates = sorted(SOURCE_ROOT.glob(f"**/{name}.blend"))
+        source = candidates[0] if candidates else None
+        inspection = inspect_blend(source) if source else {"material_slots": [], "triangle_count": None, "validation_status": "FAIL", "issues": ["missing source blend"]}
+        entries.append({
+            "asset_name": name,
+            "classification": "pipeline-test" if name == "TC_TestCrate" else "generated",
+            "source_blend": str(source.relative_to(ROOT)) if source else None,
+            "source_sha256": sha256(source) if source else None,
+            "production_export": str(glb.relative_to(ROOT)),
+            "production_sha256": sha256(glb),
+            "export_format": "GLB",
+            "created_by_tool": "tools/blender/create_test_crate.py" if name == "TC_TestCrate" else "tools/blender/export_asset.py",
+            "material_slots": inspection["material_slots"],
+            "validation_status": inspection["validation_status"],
+            "triangle_count": inspection["triangle_count"],
+            "review_artifacts": review_paths(name),
+            "collision_policy": "none",
+            "runtime_mesh_generation": False,
+            "license": "project-authored",
+            "notes": "Non-production Blender Asset Forge test crate; do not use as final TitanCraft art." if name == "TC_TestCrate" else "Generated asset entry.",
+        })
+    MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+    MANIFEST.write_text(json.dumps({
+        "schema": "titancraft.blender_asset_forge.manifest.v1",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "entries": entries,
+    }, indent=2) + "\n", encoding="utf-8")
+    print(f"ASSET_MANIFEST_WRITTEN {MANIFEST} entries={len(entries)}")
+
+
+if __name__ == "__main__":
+    main()

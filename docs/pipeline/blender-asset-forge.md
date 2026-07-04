@@ -15,6 +15,19 @@ This pipeline is for authored assets only. It must not add gameplay code, runtim
 - Local review render root: `artifacts/asset-review/`.
 - Downloadable CI artifact bundle: `blender-asset-forge-test-crate` from `.github/workflows/blender-asset-forge.yml`.
 
+## Required Art Taste Reading
+
+Before any production asset task, the agent must read:
+
+- `docs/art/titancraft-visual-identity.md`
+- `docs/art/shape-language.md`
+- `docs/art/material-palette.md`
+- `docs/art/asset-silhouette-scorecards.md`
+- `docs/pipeline/asset-quality-gates.md`
+- `docs/pipeline/asset-brief-template.md`
+
+These documents define the art taste, silhouette, material, and evidence gates for production-candidate assets. Technical export success is not visual approval.
+
 ## Standard Asset Loop
 
 1. Create an asset brief from `docs/pipeline/asset-brief-template.md`.

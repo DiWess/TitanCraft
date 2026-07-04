@@ -34,6 +34,19 @@ public sealed class FirstPersonMovementTests
     }
 
     [TestCase]
+    public void MouseLookCanAccumulateBeyondOneFullTurn()
+    {
+        var look = FirstPersonMovement.ApplyMouseLook(
+            new Vector2(Mathf.Tau - 0.01f, 0.0f),
+            new Vector2(-1000.0f, 0.0f),
+            0.0025f,
+            85.0f);
+
+        AssertThat(look.X).IsGreater(Mathf.Tau);
+        AssertThat(look.Y).IsEqual(0.0f);
+    }
+
+    [TestCase]
     public void MoveDirectionIsNormalizedForDiagonalInput()
     {
         var direction = FirstPersonMovement.GetMoveDirection(Basis.Identity, new Vector2(1.0f, 1.0f));

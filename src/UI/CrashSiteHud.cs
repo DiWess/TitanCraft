@@ -25,7 +25,7 @@ public partial class CrashSiteHud : CanvasLayer
         _actionFeedback = GetNode<Label>("ActionFeedback");
         SetHealth(100, 100);
         SetObjective("Collect resources near the crash site.");
-        SetResources(0, 0, 0);
+        SetResources(0, 0, 0, false);
         SetInteractionPrompt(string.Empty);
         SetMechanicalArmProgress("Mechanical Arm Mk I: Metal 0/10 | Biomass 0/3 | Electronics 0/2");
         SetStartTutorialVisible(true);
@@ -36,9 +36,12 @@ public partial class CrashSiteHud : CanvasLayer
 
     public void SetObjective(string objective) => _objective.Text = objective;
 
-    public void SetResources(int metal, int biomass, int electronicComponents)
+    public void SetResources(int metal, int biomass, int electronicComponents, bool hasGalaxabrainComponent)
     {
-        _resources.Text = $"Metal: {metal}  Biomass: {biomass}  Electronics: {electronicComponents}";
+        // Surface both craft electronics and the later mission component so the HUD
+        // confirms every pickup required by the Crash Site loop.
+        var missionComponent = hasGalaxabrainComponent ? "Recovered" : "Missing";
+        _resources.Text = $"Metal: {metal}  Biomass: {biomass}  Electronics: {electronicComponents}  Galaxabrain Component: {missionComponent}";
     }
 
     public void SetInteractionPrompt(string prompt)

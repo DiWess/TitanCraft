@@ -76,7 +76,7 @@ public partial class FirstPersonController : CharacterBody3D
         Health.Changed += OnHealthChanged;
         UpdateMechanicalArmVisual(Inventory);
         _lastHealth = Health.CurrentHealth;
-        Input.MouseMode = Input.MouseModeEnum.Captured;
+        CaptureMouseForGameplay();
     }
 
     public override void _ExitTree()
@@ -125,6 +125,9 @@ public partial class FirstPersonController : CharacterBody3D
 
         if (@event.IsActionPressed("attack"))
         {
+            // Recapture on attack so returning from window focus loss or a menu
+            // cannot leave mouse-look clamped by the visible OS cursor.
+            CaptureMouseForGameplay();
             TryAttack();
             return;
         }
@@ -139,6 +142,9 @@ public partial class FirstPersonController : CharacterBody3D
 
         if (@event is InputEventMouseMotion mouseMotion)
         {
+            // Mouse-look depends on Godot's captured relative motion; forcing the
+            // mode here preserves unlimited horizontal turning at screen edges.
+            CaptureMouseForGameplay();
             var look = FirstPersonMovement.ApplyMouseLook(
                 new Vector2(_bodyYaw, _cameraPitch),
                 mouseMotion.Relative,
@@ -148,6 +154,26 @@ public partial class FirstPersonController : CharacterBody3D
             _cameraPitch = look.Y;
             Rotation = new Vector3(0.0f, _bodyYaw, 0.0f);
             _head.Rotation = new Vector3(_cameraPitch, 0.0f, 0.0f);
+        }
+    }
+
+    public override void _Notification(int what)
+    {
+        // Regain captured input after the game window returns to focus so mouse
+        // motion stays relative instead of stopping at desktop screen limits.
+        if (what == NotificationApplicationFocusIn)
+        {
+            CaptureMouseForGameplay();
+        }
+    }
+
+    private static void CaptureMouseForGameplay()
+    {
+        // Avoid redundant engine calls while still making captured mode the
+        // controller's invariant during active gameplay.
+        if (Input.MouseMode != Input.MouseModeEnum.Captured)
+        {
+            Input.MouseMode = Input.MouseModeEnum.Captured;
         }
     }
 

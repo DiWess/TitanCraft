@@ -36,7 +36,7 @@ blender --background --python tools/blender/create_terrain_crash_basin_v1.py
 **What this does:**
 - Generates 9,000–12,000 poly terrain mesh
 - Creates 6 material zones (Ash Floor, Basalt rocks, Ridge Rim, Scorch/Dust)
-- Exports to GLB: `assets/models/terrain/TC_TERRAIN_CrashBasin_V1.glb`
+- Exports to GLB: `assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb`
 - Generates manifest entry with SHA256 hash
 - Reports status and next steps
 
@@ -58,7 +58,7 @@ Generating basalt foreground...
 
 === Exporting to GLB ===
 
-✓ Exported: assets/models/terrain/TC_TERRAIN_CrashBasin_V1.glb
+✓ Exported: assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
 
 === Generating Manifest Entry ===
 
@@ -89,7 +89,7 @@ godot --headless --path . --import
 
 **Expected output:**
 ```
-[INFO] Importing scene: res://assets/models/terrain/TC_TERRAIN_CrashBasin_V1.glb
+[INFO] Importing scene: res://assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
 [INFO] Successfully imported; asset ready for use
 ```
 
@@ -104,7 +104,7 @@ In Godot Editor or via script:
 
 ```gdscript
 # From a test scene or viewer
-var terrain = preload("res://assets/models/terrain/TC_TERRAIN_CrashBasin_V1.glb")
+var terrain = preload("res://assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb")
 var scene = terrain.instantiate()
 add_child(scene)
 
@@ -136,7 +136,7 @@ Load terrain in Godot test scene:
 
 ```gdscript
 # Create test scene with terrain
-var terrain_scene = preload("res://assets/models/terrain/TC_TERRAIN_CrashBasin_V1.glb").instantiate()
+var terrain_scene = preload("res://assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb").instantiate()
 var player_scene = preload("res://scenes/Player/Player.tscn").instantiate()
 
 add_child(terrain_scene)

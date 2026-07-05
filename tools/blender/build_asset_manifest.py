@@ -99,8 +99,36 @@ def asset_overrides(name: str) -> dict[str, object]:
 
 def build_manifest() -> dict[str, object]:
     entries = []
+
+    # Load existing manifest to preserve procedurally generated asset metadata
+    existing_entries = {}
+    if MANIFEST.exists():
+        try:
+            with open(MANIFEST) as f:
+                existing = json.load(f)
+                existing_entries = {e["asset_name"]: e for e in existing.get("entries", [])}
+        except Exception:
+            pass
+
     for glb in sorted(PROD_ROOT.glob("**/*.glb")):
         name = glb.stem
+
+        # Check if this is a procedurally generated asset with existing valid metadata
+        if name in existing_entries:
+            existing = existing_entries[name]
+            # Preserve procedurally generated assets (those with created_by_tool like create_terrain_*)
+            if (existing.get("source_blend") is None and
+                existing.get("created_by_tool") and
+                "create_" in existing.get("created_by_tool", "") and
+                existing.get("validation_status") != "FAIL"):
+                # Update only the GLB hash and review artifacts, preserve other metadata
+                existing["production_sha256"] = sha256(glb)
+                existing["production_export"] = str(glb.relative_to(ROOT))
+                existing["review_artifacts"] = review_paths(name)
+                entries.append(existing)
+                continue
+
+        # For non-procedural assets, discover source .blend and rebuild entry
         candidates = sorted(SOURCE_ROOT.glob(f"**/{name}.blend"))
         source = candidates[0] if candidates else None
         inspection = inspect_blend(source) if source else {"material_slots": [], "triangle_count": None, "validation_status": "FAIL", "issues": ["missing source blend"]}

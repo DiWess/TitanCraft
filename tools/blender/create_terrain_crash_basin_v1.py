@@ -20,7 +20,7 @@ Usage:
      blender --background --python create_terrain_crash_basin_v1.py
 
 Output:
-  - GLB file: assets/models/terrain/TC_TERRAIN_CrashBasin_V1.glb
+  - GLB file: assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
   - Manifest entry updated in: assets/Production/Generated/asset_manifest.json
   - SHA256 hash recorded for reproducibility
 """
@@ -48,7 +48,7 @@ except ImportError:
 class TerrainGenerator:
     """Procedurally generates TitanCraft Crash Basin terrain."""
 
-    def __init__(self, output_dir="assets/models/terrain"):
+    def __init__(self, output_dir="assets/Production/Generated/Terrain"):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.vertices = []

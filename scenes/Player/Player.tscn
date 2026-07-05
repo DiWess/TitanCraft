@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://titancraft_player"]
+[gd_scene load_steps=9 format=3 uid="uid://titancraft_player"]
 
 [ext_resource type="Script" path="res://src/Player/FirstPersonController.cs" id="1_controller"]
 [ext_resource type="Script" path="res://src/Player/CameraShaker.cs" id="5_camera_shaker"]
@@ -6,6 +6,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="2_mech_george"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/arm_hit.wav" id="3_arm_hit"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/player_damage.wav" id="4_player_damage"]
+[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PLAYER_MechanicalArm_01.gltf" id="7_v1_arm"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.35
@@ -34,7 +35,11 @@ script = ExtResource("5_camera_shaker")
 visible = false
 transform = Transform3D(0.18,0,0,0,0.18,0,0,0,0.18,0.55,-0.45,-0.9)
 mesh = ExtResource("2_mech_george")
-metadata/authentication = "Visual-only first-person arm from Quaternius Animated Mech Pack Textured/OBJ/George.obj."
+metadata/authentication = "Hidden legacy first-person arm proxy retained as script-controlled visibility node; V1 beta GLTF child supplies live visual."
+
+[node name="V1BetaMechanicalArmModel" parent="Head/Camera3D/MechanicalArmVisual" instance=ExtResource("7_v1_arm")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+metadata/integration = "Child of script-critical MechanicalArmVisual, so inventory/save/load visibility still controls early hidden and crafted visible states."
 
 [node name="ArmHitAudio" type="AudioStreamPlayer" parent="Head/Camera3D"]
 stream = ExtResource("3_arm_hit")

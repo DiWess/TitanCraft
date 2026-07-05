@@ -1,8 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://resource_drop_scene"]
+[gd_scene load_steps=15 format=3 uid="uid://resource_drop_scene"]
 
 [ext_resource type="Script" path="res://src/World/ResourceDrop.cs" id="1_script"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/ResourceItemHighlight.tres" id="2_highlight"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/HighlightRingPulse.tres" id="3_ring_mat"]
+[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PICKUP_Metal_01.gltf" id="4_v1_metal"]
+[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PICKUP_EnergyCell_01.gltf" id="5_v1_energy"]
 
 [sub_resource type="StandardMaterial3D" id="MAT_ItemDefault"]
 albedo_color = Color(0.56, 0.57, 0.55, 1)
@@ -57,6 +59,16 @@ script = ExtResource("1_script")
 HighlightMaterial = ExtResource("2_highlight")
 
 [node name="VisualGroup" type="Node3D" parent="."]
+
+[node name="V1BetaMetalModel" parent="VisualGroup" instance=ExtResource("4_v1_metal")]
+visible = false
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
+metadata/integration = "Optional visual-only V1 beta resource child; instance overrides in Main enable the matching resource type without changing pickup collision."
+
+[node name="V1BetaEnergyCellModel" parent="VisualGroup" instance=ExtResource("5_v1_energy")]
+visible = false
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
+metadata/integration = "Optional visual-only V1 beta electronics pickup child; hidden by default for non-electronics drops."
 
 [node name="ItemMesh" type="MeshInstance3D" parent="VisualGroup"]
 mesh = SubResource("MESH_ItemProxy")

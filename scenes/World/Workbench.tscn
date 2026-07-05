@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://workbench_landmark_scene"]
+[gd_scene load_steps=10 format=3 uid="uid://workbench_landmark_scene"]
 
 [ext_resource type="Script" path="res://src/World/Workbench.cs" id="1_script"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/WorkbenchChassis.tres" id="2_chassis"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/WorkbenchHighlight.tres" id="3_highlight"]
+[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PROP_Workbench_01.gltf" id="4_v1_workbench"]
 
 [sub_resource type="BoxMesh" id="MESH_Chassis"]
 size = Vector3(2.4, 0.9, 1.4)
@@ -34,6 +35,10 @@ HighlightMaterial = ExtResource("3_highlight")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 mesh = SubResource("MESH_Chassis")
 material_override = ExtResource("2_chassis")
+
+[node name="V1BetaWorkbenchModel" parent="VisualBase" instance=ExtResource("4_v1_workbench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
+metadata/integration = "V1 beta GLTF visual-only child; original Workbench script, collision, interaction zone, audio, and highlight remain unchanged."
 
 [node name="ControlPanel" type="MeshInstance3D" parent="VisualBase"]
 transform = Transform3D(1, 0, 0, 0, 0.75, -0.66, 0, 0.66, 0.75, 0, 1.0, -0.42)

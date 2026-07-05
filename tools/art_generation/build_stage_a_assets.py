@@ -25,17 +25,18 @@ def write_obj(name: str, vertices: list[tuple[float, float, float]], faces: list
 
 
 def box(name: str, sx: float, sy: float, sz: float, skew: float = 0.0, bite: bool = False) -> None:
+    """Write a crushed debris block with sloped sides so route props do not read as default cubes."""
     x, y, z = sx / 2, sy / 2, sz / 2
     v = [
-        (-x - skew, -y, -z), (x - skew, -y, -z), (x + skew, y, -z), (-x + skew, y, -z),
-        (-x + skew, -y, z), (x + skew, -y, z), (x - skew, y, z), (-x - skew, y, z),
+        (-x - skew, -y, -z*0.82), (x*0.82 - skew, -y, -z), (x + skew, -y, z*0.48), (-x*0.75 + skew, -y, z),
+        (-x*0.62 + skew, y*0.42, -z*0.58), (x*0.58 + skew, y, -z*0.35), (x*0.7 - skew, y*0.55, z*0.38), (-x*0.48 - skew, y*0.72, z*0.55),
+        (-x*0.18, y*1.18, -z*0.12), (x*0.22, -y*1.05, z*0.1),
     ]
-    faces = [(1,2,3,4), (5,8,7,6), (1,5,6,2), (2,6,7,3), (3,7,8,4), (4,8,5,1)]
+    faces = [(1,2,6,5), (2,3,7,6), (3,4,8,7), (4,1,5,8), (5,6,9,8), (1,4,10,2), (2,10,3), (4,3,10)]
     if bite:
-        v += [(0.15*sx, y*1.05, -z*1.05), (0.48*sx, y*1.08, -0.25*z), (0.2*sx, y*1.05, 0.2*z)]
-        faces += [(3,9,10), (3,10,7), (7,10,11), (7,11,8)]
+        v += [(0.12*sx, y*1.05, -z*1.05), (0.46*sx, y*0.92, -0.25*z), (0.16*sx, y*1.02, 0.28*z)]
+        faces += [(6,11,12), (6,12,7), (7,12,13), (7,13,8)]
     write_obj(name, v, faces)
-
 
 def wedge(name: str, sx: float, sy: float, sz: float, nose: float = 0.35) -> None:
     x, y, z = sx / 2, sy / 2, sz / 2
@@ -65,26 +66,58 @@ def cylinder(name: str, radius_a: float, radius_b: float, depth: float, segments
 
 
 def rock(name: str, sx: float, sy: float, sz: float, ridge: bool = False) -> None:
+    """Write layered basalt with broken shelves rather than cone/cube primitive silhouettes."""
     x, z = sx/2, sz/2
     top = sy
-    v = [(-x,0,-z), (x*0.8,0,-z*0.9), (x,0,z*0.55), (-x*0.75,0,z), (-x*0.6,top*0.7,-z*0.6), (x*0.5,top,-z*0.25), (x*0.65,top*0.55,z*0.45), (-x*0.4,top*0.85,z*0.6)]
-    faces = [(1,2,3,4), (5,8,7,6), (1,5,6,2), (2,6,7,3), (3,7,8,4), (4,8,5,1)]
+    v = [
+        (-x,0,-z*0.82), (-x*0.34,0,-z*1.08), (x*0.86,0,-z*0.72), (x,0,z*0.28),
+        (x*0.36,0,z), (-x*0.9,0,z*0.64),
+        (-x*0.82,top*0.24,-z*0.58), (-x*0.28,top*0.5,-z*0.78), (x*0.52,top*0.34,-z*0.46),
+        (x*0.7,top*0.26,z*0.2), (x*0.14,top*0.42,z*0.68), (-x*0.62,top*0.36,z*0.44),
+        (-x*0.48,top*0.74,-z*0.32), (x*0.08,top*0.98,-z*0.18), (x*0.46,top*0.68,z*0.08), (-x*0.18,top*0.82,z*0.34),
+    ]
+    faces = [
+        (1,2,8,7), (2,3,9,8), (3,4,10,9), (4,5,11,10), (5,6,12,11), (6,1,7,12),
+        (7,8,13), (8,9,14,13), (9,10,15,14), (10,11,16,15), (11,12,16), (12,7,13,16),
+        (13,14,15,16), (1,6,5,4,3,2),
+    ]
     if ridge:
-        v += [(0, top*1.35, -z*0.15), (-x*0.25, top*1.15, z*0.2)]
-        faces += [(5,9,6), (6,9,7), (7,10,8), (8,10,5)]
+        v += [(-x*0.14, top*1.28, -z*0.24), (x*0.34, top*1.08, z*0.18), (-x*0.58, top*0.96, z*0.06)]
+        faces += [(13,17,14), (14,17,15), (15,18,16), (16,19,13)]
     write_obj(name, v, faces)
 
 
 def ground(name: str, sx: float, sz: float, broken: bool = False) -> None:
+    """Write a thickened crash basin with raised lips, interior lows, and ash mounds."""
     x, z = sx/2, sz/2
-    v = [(-x,0,-z), (-x*0.15,0,-z*0.85), (x,0,-z*0.65), (x*0.82,0,z*0.75), (x*0.2,0,z), (-x*0.9,0,z*0.62)]
+    top = [
+        (-x,0.32,-z*0.48), (-x*0.66,0.46,-z), (-x*0.12,0.22,-z*1.08), (x*0.54,0.38,-z*0.82), (x,0.34,-z*0.32),
+        (x*0.9,0.3,z*0.48), (x*0.32,0.2,z), (-x*0.42,0.34,z*0.92), (-x*0.92,0.38,z*0.44),
+        (-x*0.42,-0.24,-z*0.38), (x*0.14,-0.32,-z*0.3), (x*0.42,-0.22,z*0.18), (-x*0.22,-0.2,z*0.34),
+        (-x*0.6,0.58,-z*0.7), (x*0.68,0.54,-z*0.42), (x*0.58,0.46,z*0.52), (-x*0.74,0.5,z*0.42),
+        (-x*0.2,0.22,-z*0.78), (x*0.18,0.12,z*0.72),
+    ]
+    v = top[:]
+    # Add a low skirt around the perimeter so terrain edges read as thickness/berm, not floating cards.
+    skirt_start = len(v) + 1
+    for px, _py, pz in top[:9]:
+        v.append((px, -0.62, pz))
+    faces = [
+        (1,2,10), (2,3,18,10), (3,4,11,18), (4,5,15,11), (5,6,12,15), (6,7,19,12),
+        (7,8,13,19), (8,9,17,13), (9,1,10,17), (10,11,12,13), (10,13,17), (11,15,12),
+        (2,14,3), (4,15,5), (6,16,7), (8,17,9),
+    ]
+    # Side wall faces for visible non-card terrain edge.
+    for i in range(9):
+        a = i + 1
+        b = (i + 1) % 9 + 1
+        c = skirt_start + (i + 1) % 9
+        d = skirt_start + i
+        faces.append((a, b, c, d))
     if broken:
-        v += [(-x*0.15,0.04,-z*0.05), (x*0.28,0.04,z*0.12), (-x*0.72,0.28,-z*0.38), (x*0.68,0.22,-z*0.22), (x*0.52,0.24,z*0.48), (-x*0.55,0.2,z*0.42)]
-        faces = [(1,2,7,6), (2,3,4,8,7), (7,8,5,6), (1,9,2), (2,10,3), (4,11,5), (5,12,6)]
-    else:
-        faces = [(1,2,3,4,5,6)]
+        v += [(-x*0.78,0.78,-z*0.76), (x*0.76,0.72,-z*0.48), (x*0.64,0.64,z*0.62), (-x*0.84,0.68,z*0.52)]
+        faces += [(2,29,3), (4,30,5), (6,31,7), (8,32,9)]
     write_obj(name, v, faces)
-
 
 def ribs() -> None:
     v = []

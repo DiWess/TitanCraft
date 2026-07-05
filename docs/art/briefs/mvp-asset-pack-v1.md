@@ -12,6 +12,7 @@ Standalone production asset candidates for the Crash Site MVP, authored in Blend
 - Export: GLB via `tools/blender/export_asset.py` to `assets/Production/Generated/MVP_Pack_V1/`.
 - Review: 3 auto-framed PNGs per asset via `tools/blender/render_mvp_asset_review.py` (Cycles CPU, headless-safe).
 - Binary delivery: `.blend`/`.glb` are regenerated deterministically by CI or locally; binaries are not committed.
+- Scene delivery: each GLB is also converted to a committed single-file text `.gltf` (embedded base64 buffer) under `assets/models/mvp_pack_v1/` via `tools/blender/glb_to_embedded_gltf.py`, matching the committed v1_beta model precedent so gameplay scenes can reference reviewable text assets.
 
 ## Assets
 

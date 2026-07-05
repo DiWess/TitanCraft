@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://resource_drop_scene"]
+[gd_scene load_steps=16 format=3 uid="uid://resource_drop_scene"]
 
 [ext_resource type="Script" path="res://src/World/ResourceDrop.cs" id="1_script"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/ResourceItemHighlight.tres" id="2_highlight"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/HighlightRingPulse.tres" id="3_ring_mat"]
-[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PICKUP_Metal_01.gltf" id="4_v1_metal"]
-[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PICKUP_EnergyCell_01.gltf" id="5_v1_energy"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Metal_V1.gltf" id="4_v1_metal"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Electronics_V1.gltf" id="5_v1_energy"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Biomass_V1.gltf" id="6_mvp_biomass"]
 
 [sub_resource type="StandardMaterial3D" id="MAT_ItemDefault"]
 albedo_color = Color(0.56, 0.57, 0.55, 1)
@@ -62,13 +63,13 @@ HighlightMaterial = ExtResource("2_highlight")
 
 [node name="V1BetaMetalModel" parent="VisualGroup" instance=ExtResource("4_v1_metal")]
 visible = false
-transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
-metadata/integration = "Optional visual-only V1 beta resource child; instance overrides in Main enable the matching resource type without changing pickup collision."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+metadata/integration = "Optional visual-only MVP Pack V1 metal shard pile; instance overrides in Main enable the matching resource type without changing pickup collision."
 
 [node name="V1BetaEnergyCellModel" parent="VisualGroup" instance=ExtResource("5_v1_energy")]
 visible = false
-transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
-metadata/integration = "Optional visual-only V1 beta electronics pickup child; hidden by default for non-electronics drops."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+metadata/integration = "Optional visual-only MVP Pack V1 electronics module stack; hidden by default for non-electronics drops."
 
 [node name="ItemMesh" type="MeshInstance3D" parent="VisualGroup"]
 mesh = SubResource("MESH_ItemProxy")
@@ -80,6 +81,11 @@ visible = false
 mesh = SubResource("MESH_HighlightRing")
 material_override = ExtResource("3_ring_mat")
 cast_shadow = 0
+
+[node name="MvpBiomassModel" parent="VisualGroup" instance=ExtResource("6_mvp_biomass")]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+metadata/integration = "Optional visual-only MVP Pack V1 biomass cluster; appended after HighlightRing so existing Main instance override indexes stay stable."
 
 [node name="ParticleEffects" type="Node3D" parent="."]
 

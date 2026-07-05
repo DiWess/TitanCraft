@@ -4,8 +4,8 @@
 [ext_resource type="Script" path="res://src/World/GalaxabrainComponentPickup.cs" id="2_component"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="3_robot"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/galaxabrain_down.wav" id="4_death_audio"]
-[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_CHAR_GalaxabrainScout_01.gltf" id="5_v1_scout"]
-[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PICKUP_Component_01.gltf" id="6_v1_component"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_CHAR_GalaxabrainScout_V1.gltf" id="5_v1_scout"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Component_V1.gltf" id="6_v1_component"]
 
 [sub_resource type="StandardMaterial3D" id="MAT_Galaxabrain_AlienCyan"]
 albedo_color = Color(0.25, 0.95, 1.0, 1)
@@ -54,19 +54,23 @@ mesh = SubResource("BoxMesh_placeholder")
 metadata/integration = "V1 beta Galaxabrain Scout visual-only child; CharacterBody3D script, capsule collision, and component gate are preserved."
 
 [node name="V1BetaGalaxabrainScoutModel" parent="V1BetaScoutVisualRoot" instance=ExtResource("5_v1_scout")]
-transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -1.0, 0)
+metadata/integration = "MVP Asset Pack V1 Scout biomech visual, rotated so the head cluster faces -Z forward and offset so ground-contact feet meet the terrain under the body origin; gameplay body and collision unchanged."
 
 [node name="AuthenticatedRobotGalaxabrainVisual" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.75,0,0,0,0.75,0,0,0,0.75,0,0,0)
+visible = false
 mesh = ExtResource("3_robot")
-metadata/authentication = "Visual-only Quaternius Animated Robot Pack OBJ/Robot.obj; placeholder cube hidden, gameplay collision unchanged."
+metadata/authentication = "Hidden legacy Quaternius robot visual; MVP Pack V1 Scout model supplies the visible enemy."
 
 [node name="GalaxabrainOrganicCore" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.15, 0, 0, 0, 0.9, 0, 0, 0, 1.15, 0, 0.92, -0.08)
+visible = false
 mesh = SubResource("SphereMesh_galaxabrain_core")
 
 [node name="GalaxabrainCyanEye" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.43)
+visible = false
 mesh = SubResource("BoxMesh_galaxabrain_eye")
 
 [node name="GalaxabrainComponentPickup" type="Area3D" parent="."]
@@ -78,7 +82,7 @@ script = ExtResource("2_component")
 metadata/integration = "V1 beta component is visible only when GalaxabrainComponentPickup is enabled after scout defeat; no grant from mission step alone."
 
 [node name="V1BetaComponentModel" parent="GalaxabrainComponentPickup/VisualRoot" instance=ExtResource("6_v1_component")]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.35, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GalaxabrainComponentPickup"]
 shape = SubResource("CapsuleShape3D_scout")

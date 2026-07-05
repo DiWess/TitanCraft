@@ -26,7 +26,13 @@ This pipeline is for authored assets only. It must not add gameplay code, runtim
 7. Build/update `assets/Production/Generated/asset_manifest.json`.
 8. Download the generated `.blend`, `.glb`, manifest, and PNG evidence from the GitHub Actions artifact bundle; do not commit binary review/build outputs.
 
-## Non-Production Test Asset
+## Production Asset Candidates
+
+## MVP Asset Pack V1
+
+The eleven Crash Site MVP assets (workbench, dormant/active beacon, metal/biomass/electronics/component pickups, Galaxabrain Scout, mechanical arm, save point, crash debris landmark) are authored by `tools/blender/create_mvp_asset_pack_v1.py` under `assets/Source/Blender/Production/MVP_Pack_V1/`, exported to `assets/Production/Generated/MVP_Pack_V1/`, and reviewed with `tools/blender/render_mvp_asset_review.py` (Cycles CPU, headless-safe). Brief: `docs/art/briefs/mvp-asset-pack-v1.md`. Binaries are delivered through the `blender-asset-forge-assets` workflow artifact, not committed.
+
+# Non-Production Test Asset
 
 The repository contains exactly one pipeline test asset:
 

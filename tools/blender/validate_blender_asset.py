@@ -33,7 +33,21 @@ for obj in meshes:
         triangles += max(1, len(poly.vertices) - 2)
     obj.evaluated_get(depsgraph).to_mesh_clear()
 print(json.dumps({'mesh_count': len(meshes), 'materials': materials, 'triangles': triangles, 'issues': issues}, sort_keys=True))
-max_triangles = 1500 if Path(path).name == 'TC_HeavyCrashHull_V1.blend' else 500
+budgets = {
+    'TC_HeavyCrashHull_V1.blend': 1500,
+    'TC_PROP_Workbench_V1.blend': 3200,
+    'TC_PROP_Beacon_Dormant_V1.blend': 2000,
+    'TC_PROP_Beacon_Active_V1.blend': 2800,
+    'TC_PICKUP_Metal_V1.blend': 900,
+    'TC_PICKUP_Biomass_V1.blend': 1400,
+    'TC_PICKUP_Electronics_V1.blend': 900,
+    'TC_PICKUP_Component_V1.blend': 900,
+    'TC_CHAR_GalaxabrainScout_V1.blend': 3200,
+    'TC_PLAYER_MechanicalArm_V1.blend': 2600,
+    'TC_PROP_SavePoint_V1.blend': 1400,
+    'TC_ENV_CrashDebris_A_V1.blend': 1400,
+}
+max_triangles = budgets.get(Path(path).name, 500)
 if triangles > max_triangles:
     issues.append(f'triangle budget exceeded: {triangles} > {max_triangles}')
 if issues:

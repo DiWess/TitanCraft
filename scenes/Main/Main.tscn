@@ -67,8 +67,8 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_b.obj" id="37_rock_b"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="38_rock_ridge"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
-[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PROP_SavePoint_01.gltf" id="71_v1_savepoint"]
-[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_ENV_CrashDebris_A_01.gltf" id="72_v1_debris"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PROP_SavePoint_V1.gltf" id="71_v1_savepoint"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CrashDebris_A_V1.gltf" id="72_v1_debris"]
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
 albedo_color = Color(0.88, 0.85, 0.80, 1)
@@ -534,7 +534,11 @@ transform = Transform3D(1,0,0,0,1,0,0,0,1,-8,0.85,-4)
 Type = 1
 Quantity = 3
 
+[node name="MvpBiomassModel" parent="ResourceDrop_BiomassPickup/VisualGroup" index="4"]
+visible = true
+
 [node name="ItemMesh" parent="ResourceDrop_BiomassPickup/VisualGroup" index="0"]
+visible = false
 mesh = SubResource("SphereMesh_biomass")
 material_override = SubResource("MAT_BiomassPickup_Bright")
 
@@ -630,10 +634,11 @@ surface_material_override/0 = ExtResource("17_rock")
 metadata/integration = "V1 beta save point GLTF visual-only child under existing SavePoint Area3D; original script and collision retained."
 
 [node name="V1BetaSavePointModel" parent="Placeholder_SavePoint/VisualRoot" instance=ExtResource("71_v1_savepoint")]
-transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, -0.05, 0)
+metadata/integration = "MVP Pack V1 save point pillar visual; original script and collision retained."
 
 [node name="SavePointAuthenticModule" type="MeshInstance3D" parent="Placeholder_SavePoint"]
 transform = Transform3D(0.45,0,0,0,0.45,0,0,0,0.45,0,0.2,0)
+visible = false
 mesh = ExtResource("24_robot")
 surface_material_override/0 = ExtResource("16_orange")
 [node name="ProductionVisualRoot" type="Node3D" parent="."]
@@ -896,12 +901,12 @@ mesh = ExtResource("63_tc_ash_patch")
 material_override = ExtResource("68_tc_ash_mat")
 
 [node name="V1BetaCrashDebris_ToWorkbench" parent="StageAVisualRoot/RouteOpening" instance=ExtResource("72_v1_debris")]
-transform = Transform3D(1.2, 0, -0.28, 0, 1.0, 0, 0.28, 0, 1.2, 9.3, 0.35, -10.5)
-metadata/integration = "V1 beta crash debris visual landmark; collisionless scene child, placed beside route rather than on traversal line."
+transform = Transform3D(0.75, 0, -0.175, 0, 0.7, 0, 0.175, 0, 0.75, 9.3, 0.02, -10.5)
+metadata/integration = "MVP Pack V1 crash debris hull-shard landmark; collisionless scene child, placed beside route rather than on traversal line."
 
 [node name="V1BetaCrashDebris_ToBeacon" parent="StageAVisualRoot/RouteOpening" instance=ExtResource("72_v1_debris")]
-transform = Transform3D(0.9, 0, 0.38, 0, 0.8, 0, -0.38, 0, 0.9, 19.2, 0.35, -17.0)
-metadata/integration = "V1 beta crash debris visual landmark; collisionless scene child preserves beacon approach and trigger."
+transform = Transform3D(0.62, 0, 0.26, 0, 0.55, 0, -0.26, 0, 0.62, 19.2, 0.02, -17.0)
+metadata/integration = "MVP Pack V1 crash debris hull-shard landmark; collisionless scene child preserves beacon approach and trigger."
 
 [node name="ForegroundFraming" type="Node3D" parent="StageAVisualRoot"]
 

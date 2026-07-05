@@ -54,7 +54,30 @@ jobs:
       - name: Render TC_HeavyCrashHull_V1 reviews
         run: blender --background --python tools/blender/render_heavy_crash_hull_v1_reviews.py
 
-      - name: Rebuild manifest with TC_HeavyCrashHull_V1
+      - name: Create MVP Asset Pack V1 sources
+        run: blender --background --python tools/blender/create_mvp_asset_pack_v1.py
+
+      - name: Validate MVP Asset Pack V1 sources
+        run: |
+          for blend in assets/Source/Blender/Production/MVP_Pack_V1/*.blend; do
+            python3 tools/blender/validate_blender_asset.py "$blend"
+          done
+
+      - name: Export MVP Asset Pack V1 GLBs
+        run: |
+          for blend in assets/Source/Blender/Production/MVP_Pack_V1/*.blend; do
+            name="$(basename "$blend" .blend)"
+            blender --background --python tools/blender/export_asset.py -- "$blend" "assets/Production/Generated/MVP_Pack_V1/$name.glb"
+          done
+
+      - name: Render MVP Asset Pack V1 reviews
+        run: |
+          for blend in assets/Source/Blender/Production/MVP_Pack_V1/*.blend; do
+            name="$(basename "$blend" .blend)"
+            blender --background --python tools/blender/render_mvp_asset_review.py -- "$blend" "artifacts/asset-review/$name"
+          done
+
+      - name: Rebuild manifest with all generated assets
         run: python3 tools/blender/build_asset_manifest.py
 
       - name: Upload downloadable asset forge bundle
@@ -67,7 +90,9 @@ jobs:
             assets/Production/Generated/Test/TC_TestCrate.glb
             assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
             assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
+            assets/Source/Blender/Production/MVP_Pack_V1/*.blend
+            assets/Production/Generated/MVP_Pack_V1/*.glb
             assets/Production/Generated/asset_manifest.json
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png
-            artifacts/asset-review/TC_HeavyCrashHull_V1/*.png
+            artifacts/asset-review/TC_*/*.png

@@ -147,9 +147,11 @@ def main() -> None:
     add_box("TC_TerrainDioramaKit_V1_embedded_hull_proxy_scale_only", (-3.6, .1, .72), (3.4, 1.1, .42), scorch, -8)
     bpy.ops.mesh.primitive_uv_sphere_add(segments=12, ring_count=6, radius=.38, location=(1.7, -4.0, 1.25))
     bpy.context.object.name = "TC_TerrainDioramaKit_V1_player_capsule_scale_reference_head"
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     bpy.context.object.data.materials.append(capsule_mat)
     bpy.ops.mesh.primitive_cylinder_add(vertices=12, radius=.42, depth=1.6, location=(1.7, -4.0, .45))
     bpy.context.object.name = "TC_TerrainDioramaKit_V1_player_capsule_scale_reference_body"
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     bpy.context.object.data.materials.append(capsule_mat)
     for obj in bpy.context.scene.objects:
         if obj.type == "MESH":

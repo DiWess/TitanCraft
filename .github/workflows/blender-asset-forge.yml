@@ -39,6 +39,9 @@ jobs:
       - name: Create Phase 1 terrain (Crash Basin)
         run: blender --background --python tools/blender/create_terrain_crash_basin_v1.py
 
+      - name: Create Phase 2 hull (Crash Hull Mk1)
+        run: blender --background --python tools/blender/create_crash_hull_mk1.py || true
+
       - name: Render neutral turntable
         run: blender --background --python tools/blender/render_asset_turntable.py -- assets/Source/Blender/_templates/TC_TestCrate.blend artifacts/asset-review/test-crate/neutral_turntable.png neutral
 
@@ -94,6 +97,7 @@ jobs:
             assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
             assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
             assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
+            assets/Production/Generated/Hero/TC_CRASH_HullMk1_V1.glb
             assets/Source/Blender/Production/MVP_Pack_V1/*.blend
             assets/Production/Generated/MVP_Pack_V1/*.glb
             assets/Production/Generated/asset_manifest.json

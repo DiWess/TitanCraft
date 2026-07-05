@@ -646,25 +646,51 @@ Principes :
 | UI | HUD, menus, écrans de victoire et de défaite |
 | World | Site du crash, balise, établi, point de sauvegarde, zones de collecte |
 
-## 21. Arborescence recommandée
+## 21. Arborescence actuelle
 
-Arborescence cible indicative :
+Arborescence officielle du projet :
 
 ```text
 TitanCraft/
 ├── README.md
 ├── AGENTS.md
 ├── CLAUDE.md
-├── LICENSE
+├── PROJECT_DIRECTOR_START_HERE.md
 ├── THIRD_PARTY_ASSETS.md
-├── CHANGELOG.md
+├── THIRD_PARTY_DEPENDENCIES.md
 ├── project.godot
+├── export_presets.cfg
 ├── TitanCraft.csproj
+├── TitanCraft.sln
+├── .github/
+│   ├── pull_request_template.md
+│   └── workflows/
+├── .gitignore
+├── art/
+│   └── blender/
+├── artifacts/
+│   ├── asset-review/
+│   ├── mvp_closure/
+│   ├── review/
+│   ├── source-archives/
+│   ├── source-files/
+│   ├── runtime-contract-report.json
+│   └── terrain-generation-report.json
 ├── docs/
-│   ├── architecture.md
-│   ├── gameplay.md
-│   ├── decisions/
-│   └── testing.md
+│   ├── architecture/
+│   ├── art/
+│   ├── debug/
+│   ├── implementation/
+│   ├── pipeline/
+│   ├── production/
+│   ├── release/
+│   ├── review/
+│   ├── testing/
+│   ├── testing.md
+│   ├── material-library.md
+│   ├── asset-policy.md
+│   ├── performance-baseline.md
+│   └── [various review and planning documents]
 ├── src/
 │   ├── Core/
 │   ├── Player/
@@ -674,36 +700,75 @@ TitanCraft/
 │   ├── Missions/
 │   ├── SaveSystem/
 │   ├── UI/
-│   └── World/
+│   ├── World/
+│   └── Tools/
 ├── scenes/
 │   ├── Main/
 │   ├── Player/
 │   ├── Enemies/
 │   ├── World/
+│   ├── Environment/
 │   ├── Props/
-│   └── UI/
+│   │   ├── Wreckage/
+│   │   ├── Human/
+│   │   └── Environment/
+│   ├── Resources/
+│   ├── UI/
+│   ├── Debug/
+│   │   └── VisualReview/
+│   └── Proof/
 ├── assets/
-│   ├── Models/
-│   ├── Materials/
-│   ├── Textures/
-│   ├── Audio/
-│   ├── Fonts/
-│   └── Placeholders/
+│   ├── Production/
+│   │   ├── Custom/
+│   │   │   └── StageA/
+│   │   ├── Generated/
+│   │   ├── Player/
+│   │   │   └── MechanicalArm/
+│   │   ├── Environment/
+│   │   │   └── CrashSite/
+│   │   └── Enemies/
+│   │       └── Galaxabrain/
+│   └── ThirdParty/
+│       ├── Kenney/
+│       │   ├── NatureKit/
+│       │   └── ModularSpaceKit/
+│       └── KayKit/
+│           └── SpaceBaseBits/
 ├── data/
-│   ├── Items/
-│   ├── Recipes/
-│   ├── Enemies/
-│   └── Missions/
+│   └── Recipes/
 ├── tests/
 │   ├── Unit/
-│   ├── Integration/
-│   └── Manual/
-├── builds/
-│   └── Windows/
-└── tools/
+│   └── Integration/
+├── tools/
+│   ├── agent_preflight.py
+│   ├── agent_task_router.py
+│   ├── validate_agent_studio.py
+│   ├── blender/
+│   └── [validation and CI scripts]
+└── studio/
+    ├── README.md
+    ├── agents/
+    ├── memory/
+    ├── skills/
+    ├── decisions/
+    ├── prompts/
+    ├── checklists/
+    ├── templates/
+    ├── rehearsals/
+    └── indexes/
 ```
 
-L’arborescence peut être ajustée si Godot ou C# impose une meilleure organisation. Tout changement important doit être documenté, idéalement dans [`docs/architecture.md`](docs/architecture.md) ou [`docs/decisions/`](docs/decisions/).
+La structure reflète les besoins du projet :
+- **assets/** est organisée par statut (Production vs ThirdParty) et rôle (Player, Environment, Enemies) plutôt que par type.
+- **data/** contient actuellement les Recipes ; Items, Enemies, Missions peuvent être ajoutés selon les besoins.
+- **docs/** contient les documents de production organisés par domaine (art, pipeline, production, release, etc.).
+- **src/Tools** contient les scripts utilitaires C# pour la production.
+- **studio/** est le système opérationnel local Agent Studio pour la gouvernance et le routage.
+- **tests/** contient les tests Unit et Integration (les tests manuels sont documentés dans docs/testing/).
+- **artifacts/** stocke les résultats de génération d’assets et les rapports de validation.
+- **tools/** contient les scripts Python pour l’automatisation, la validation et le routage des tâches.
+
+Tout changement important doit être documenté dans [`studio/decisions/`](studio/decisions/) ou [`docs/architecture/`](docs/architecture/).
 
 ## 22. Conventions C#
 
@@ -896,13 +961,13 @@ Critères :
 - dossier de build identifiable ;
 - instructions d’installation simples.
 
-Dossier cible recommandé :
+Répertoire de sortie recommandé lors de l'export Godot :
 
 ```text
 builds/Windows/TitanCraft-MVP/
 ```
 
-Le build ne doit pas être commité dans Git sauf décision contraire.
+Le répertoire `builds/` n'existe que localement après export et ne doit pas être commité dans Git. Un `.gitignore` approprié exclut ce répertoire.
 
 ### Checklist d’export Windows
 
@@ -1150,16 +1215,21 @@ Critères d’acceptation :
 
 Ne pas commencer l’ennemi, les ressources ou la fabrication avant validation de cette capsule technique.
 
-## 37. Liens vers la documentation future
+## 37. Documentation principale
 
-Documents recommandés à créer progressivement :
+Documentation organisée par domaine :
 
-- [`docs/architecture.md`](docs/architecture.md) : décisions techniques et organisation réelle du projet ;
-- [`docs/gameplay.md`](docs/gameplay.md) : détails de gameplay validés après tests ;
+- [`docs/architecture/`](docs/architecture/) : décisions techniques et organisation du projet ;
 - [`docs/testing.md`](docs/testing.md) : procédures de test automatisé et manuel ;
-- [`docs/decisions/`](docs/decisions/) : décisions structurantes horodatées ;
+- [`docs/testing/`](docs/testing/) : résultats et rapports de tests ;
+- [`docs/production/`](docs/production/) : statut de production, roadmap, blockers, définition de terminé ;
+- [`docs/art/`](docs/art/) : direction artistique, briefs, statut, guides d'exécution ;
+- [`docs/pipeline/`](docs/pipeline/) : Blender Asset Forge, Visual Artifact Factory, processus d'assets ;
+- [`docs/release/`](docs/release/) : préparation de la démo publique, checklist de release ;
+- [`docs/review/`](docs/review/) : résultats et diagnostics des reviews visuelles ;
+- [`studio/decisions/`](studio/decisions/) : Architecture Decision Records et décisions structurantes ;
 - [`THIRD_PARTY_ASSETS.md`](THIRD_PARTY_ASSETS.md) : licences et sources des assets externes ;
-- [`CHANGELOG.md`](CHANGELOG.md) : changements notables.
+- [`THIRD_PARTY_DEPENDENCIES.md`](THIRD_PARTY_DEPENDENCIES.md) : licences des dépendances logicielles.
 
 ## Checklist avant toute Pull Request
 

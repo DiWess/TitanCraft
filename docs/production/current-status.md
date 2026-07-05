@@ -25,6 +25,14 @@
 - Agent Studio routing and evidence improvements.
 - Blender Asset Forge standalone candidate generation.
 - Visual Artifact Factory review-bundle generation.
+- Phase 7 planning (composition guide, balance playtesting, audio design, polish, platform testing) pending Phase 6 completion.
+
+## Phase 7 Status
+
+- **Phase 7 planning document:** Complete (docs/production/phase-7-planning.md)
+- **Phase 7 roadmap entry:** Added to docs/production/production-roadmap.md
+- **Phase 7 start condition:** Blocked on Phase 6 completion (visual approval, export proof, release gates)
+- **Phase 7 estimated duration:** 6-10 weeks (24-40 hours) across 5 workstreams
 
 ## Verification Environment Notes
 

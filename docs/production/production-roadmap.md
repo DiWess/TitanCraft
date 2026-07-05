@@ -36,3 +36,10 @@
 
 - Prepare demo materials only after visual approval, gameplay validation, export proof, and release gates pass.
 - Do not use marketing screenshots before approved visuals exist.
+
+## Phase 7: Extended production
+
+- Extend Crash Site MVP with composition guidance, balance validation, audio implementation, polish optimization, and platform testing.
+- Implement Art Director composition guide, gameplay balance playtesting, audio & sound design, polish & optimization, and Windows platform expansion.
+- All Phase 7 work operates within locked Crash Site scope; forbidden MVP features remain forbidden.
+- See [`docs/production/phase-7-planning.md`](phase-7-planning.md) for detailed scope, gates, and success criteria.

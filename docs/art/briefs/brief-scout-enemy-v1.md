@@ -30,17 +30,17 @@ The Scout signals **"hostile threat incoming"** purely through form and stance, 
 ### Body Plan
 
 **Overall Form:**
-- Central torso (alien, bulbous, biomorphic)
-- Four articulated legs (insectoid, rapid movement)
-- Two arm-like appendages with sensing/weapon capability
-- Head unit with optical sensors (glowing threat indicator)
-- Compact, coiled posture (suggests ready-to-leap athleticism)
+- Bulbous torso pod with layered carapace plates (alien biomech core)
+- Four spindly spider-like legs with tapered geometry (rapid, agile movement)
+- Raised neck connecting to forward head cluster (predatory posture)
+- Head with compact sensors and glowing braincase (alien threat indicator)
+- Compact, elevated stance (spindly legs suggest high-speed pursuit)
 
 **Size & Scale:**
-- Height: ~1.2–1.4m (smaller than player ~1.8m, but present and menacing)
-- Width: ~0.6m at widest (compact, agile)
-- Stance: Low center of gravity (four legs on ground, hunched forward)
-- Implied speed: Slim, efficient form suggests 40+ km/h sprinting capability
+- Height: ~1.3m body, ~1.5m with head extension (smaller than player ~1.8m, menacing)
+- Width: ~0.6m body, ~1.15m leg span when stance is wide (compact core, agile frame)
+- Stance: Mid-height on four legs, forward-leaning (ready-to-pounce posture)
+- Implied speed: Thin legs and raised position suggest 50+ km/h pursuit capability
 
 ### Design Priorities
 
@@ -130,34 +130,40 @@ The Scout signals **"hostile threat incoming"** purely through form and stance, 
 
 ## Material & Color Specification
 
-### Primary Armor (Organic-Chitin)
-- **Albedo:** Dark brown-gray (RGB ~80, 70, 60)
-- **Roughness:** ~0.65 (chitinous, matte with slight sheen)
-- **Metalness:** 0.2 (organic armor, slight metal content from embedded tech)
-- **Coverage:** ~60%
-- **Purpose:** Primary body form, menacing dark appearance
+### Primary Carapace (Dark Biomech Carbon)
+- **Albedo:** Very dark gray-black (RGB ~30, 32, 40)
+- **Roughness:** ~0.38 (matte, alien armor)
+- **Metalness:** 0.55 (treated bio-metal hybrid)
+- **Coverage:** ~50%
+- **Purpose:** Primary body form, absorbing alien appearance
 
-### Accent Plating (Industrial Metal)
-- **Albedo:** Steel gray (RGB ~120, 120, 130)
-- **Roughness:** ~0.6 (oxidized metal, worn)
-- **Metalness:** 0.4 (bare/treated steel, armor reinforcement)
-- **Coverage:** ~20%
-- **Purpose:** Segmented armor, joint reinforcements, weapon-like edges
+### Armor Plating (Structural Metal)
+- **Albedo:** Dark metal-gray (RGB ~85, 90, 105)
+- **Roughness:** ~0.45 (oxidized metal, worn)
+- **Metalness:** 0.65 (reinforced steel)
+- **Coverage:** ~25%
+- **Purpose:** Layered carapace, armor plates, structural reinforcements
 
-### Optical Sensors (Threat Glow)
-- **Albedo:** Bright amber or red (RGB ~240, 150, 50 or ~220, 80, 60)
-- **Emissive Strength:** 1.5–2.0 (obvious threat indicator, visible even in daylight)
-- **Roughness:** ~0.2 (lens-like, reflective)
-- **Metalness:** 0
-- **Coverage:** ~5% (eyes, sensor array)
-- **Purpose:** Hostile indicator, draws player attention, suggests awareness
+### Threat Core (Purple Emissive Glow)
+- **Albedo:** Very dark purple (RGB ~10, 0, 30)
+- **Emissive:** Bright purple glow (RGB ~220, 80, 255, emissive 7.0)
+- **Roughness:** ~0.3 (lens-like, reflective)
+- **Metalness:** 0 (crystalline, not metal)
+- **Coverage:** ~5% (chest core, eye slit, braincase)
+- **Purpose:** Intense threat indicator, menacing alien intelligence signal
 
-### Shadow/Damage Accent (Scorch)
-- **Albedo:** Very dark brown-black (RGB ~30, 25, 20)
-- **Roughness:** ~0.85 (charred, scorched)
-- **Metalness:** 0
-- **Coverage:** ~15% (battle damage, scorch marks)
-- **Purpose:** Battle history, menacing aesthetic
+### Knee Joint / Contact Points (Dark Secondary)
+- **Albedo:** Very dark gray (RGB ~30, 32, 40)
+- **Roughness:** ~0.48 (worn joint surface)
+- **Metalness:** 0.65 (metal bearing surfaces)
+- **Coverage:** ~5% (articulation points)
+
+### Leg Glow Accent (Purple Energy Path)
+- **Albedo:** Very dark purple (RGB ~10, 0, 30)
+- **Emissive:** Purple accent glow (RGB ~220, 80, 255, emissive 3.0)
+- **Roughness:** ~0.3 (energy flow suggestion)
+- **Coverage:** ~5% (leg seams, hip-to-knee energy path)
+- **Purpose:** Suggests internal power/energy circulation, menacing
 
 ---
 

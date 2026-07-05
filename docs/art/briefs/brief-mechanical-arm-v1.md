@@ -86,63 +86,67 @@ The arm signals **"enhanced player capability"** purely through form and detail,
 
 ## Structural Breakdown
 
-### 1. Wrist Cuff Assembly
+### 1. Elbow Joint Assembly
 
-- Curved or cylindrical cuff body (wraps around player arm)
-- Hinged or segmented at wrist (allows arm rotation)
-- Inner mounting points (straps, clamps, padding)
-- Outer plating (dark metal, riveted)
-- Joint articulation visible (allows flexion at wrist)
+- Dark metal base joint (stationary attachment to player arm)
+- Hinged articulation point (allows forearm rotation)
+- Clean cylindrical form, minimal detail
+- ~0.1m length, substantial diameter
 
-**Poly allocation:** ~400–500 polys (detailed cuff, segmentation)
+**Poly allocation:** ~100 polys (simple joint)
 
-### 2. Forearm Extension
+### 2. Segmented Forearm (3 Segments)
 
-- Structural arm from cuff to gripper (0.25–0.3m long)
-- I-beam or box-tube construction (structural, industrial)
-- Visible support struts or ribbing (no solid mass)
-- Dark steel with possible accent trim
-- Mounting points for hydraulic lines
+- Three cylindrical segments in alternating beige and steel
+- Each segment ~0.15–0.25m long, tapered diameter
+- Segments decrease in diameter toward hand (tapering form)
+- Clean geometric cylinders, smooth finish
+- No internal detail, structural simplicity
 
-**Poly allocation:** ~300–400 polys (tubular form, strut detailing)
+**Poly allocation:** ~250 polys (three segments, geometric precision)
 
-### 3. Hydraulic System
+### 3. Energy Seams (Between Segments)
 
-- Main hydraulic lines running full arm length
-- Piston rod from cuff to gripper (suggests actuator)
-- Conduit manifolds at cuff and gripper
-- Tubing with accent color (orange or cyan)
-- Flexible hose details (not rigid pipes)
+- Purple glowing band between each segment
+- Thin cylindrical glowing element (~0.02m tall)
+- Suggests power flow through arm structure
+- High emissive strength (5.0) for visible energy manifestation
 
-**Poly allocation:** ~200–300 polys (line routing, connector geometry)
+**Poly allocation:** ~100 polys (three seams, glowing geometry)
 
-### 4. Gripper/End-Effector (Gripper Design)
+### 4. Hand Assembly
 
-**If Gripper Form:**
-- Two opposed metal fingers or jaws
-- Articulated at knuckle joint (can open/close)
-- Textured grip surfaces (grooved for traction)
-- Possibly magnetized or sticky pad hints
-- Threat language: menacing pincer shape
+**Wrist Joint:**
+- Dark metal cylindrical base (rotation point)
+- ~0.1m length, proportional to segments
+- Clean geometry
 
-**If Fist Form:**
-- Knuckle-reinforced impact face
-- Armor plating over fist volume
-- Spike or knuckle duster accents
-- Smaller articulation at wrist (rotation only)
-- Threat language: melee weapon appearance
+**Palm & Fingers:**
+- Broad palm platform (dark metal, ~0.2m wide)
+- Three fingers extending from palm (geometric boxes, menacing)
+- Single thumb (angled, off to side)
+- All dark metal, armored appearance
+- Articulation hints but no full joints
 
-**Poly allocation:** ~400–600 polys (detailed gripper jaws or armored fist)
+**Knuckle Glow:**
+- Purple emissive line across knuckle ridge
+- Suggests concentrated energy at impact point
+- High threat indicator
+
+**Poly allocation:** ~400 polys (palm, three fingers, thumb, glow)
 
 ### 5. Accent & Detail
 
-- Weathering and oxidation (rust, patina)
-- Battle damage (dents, scratches, burn marks)
-- Visible bolts, rivets, weld seams
-- Asymmetry (repurposed/salvaged appearance)
-- Possible glint or slight reflection (suggests metal)
+**Orange Stripe:**
+- Single orange paint stripe on upper forearm
+- ~0.05m × 0.16m × ~0.05m placement
+- Functional accent, suggests active system
 
-**Poly allocation:** ~200–300 polys (edge geometry, damage marks)
+**Top Plate:**
+- Dark metal mounting plate above segments
+- Stabilization element, slightly raised
+
+**Poly allocation:** ~150 polys (accent stripe, top plate, rivet details)
 
 ---
 
@@ -161,40 +165,46 @@ The arm signals **"enhanced player capability"** purely through form and detail,
 
 ## Material & Color Specification
 
-### Primary Structure (Industrial Metal)
-- **Albedo:** Dark steel (RGB ~90, 90, 100)
-- **Roughness:** ~0.75 (oxidized, weathered)
-- **Metalness:** 0.4 (bare/treated steel)
-- **Coverage:** ~60%
-- **Purpose:** Main arm structure, salvage aesthetic
+### Forearm Segments (Alternating Beige/Steel)
+**Segment A (Beige Hull Material):**
+- **Albedo:** Off-white beige (RGB ~220, 200, 180)
+- **Roughness:** ~0.62 (worn hull material)
+- **Metalness:** 0.12 (salvage hull origin)
+- **Coverage:** ~30% (alternating segments)
 
-### Gripper/Fist Surfaces (High-Friction)
-- **Albedo:** Darker steel (RGB ~60, 60, 70)
-- **Roughness:** ~0.85 (matte, friction-optimized)
-- **Metalness:** 0.3 (bare metal, grip texture)
-- **Coverage:** ~20%
-- **Purpose:** Gripping surfaces, menacing dark appearance
+**Segment B (Mid-Tone Metal):**
+- **Albedo:** Medium steel (RGB ~180, 190, 205)
+- **Roughness:** ~0.45 (polished metal)
+- **Metalness:** 0.75 (bare metal)
+- **Coverage:** ~25% (alternating segments)
 
-### Hydraulic Accent (Fluid Lines)
-- **Albedo:** Orange or cyan (RGB ~240, 140, 60 or ~100, 220, 255)
-- **Roughness:** ~0.4 (smooth, shiny tubing)
-- **Metalness:** 0.6 (copper/aluminum tubing)
-- **Coverage:** ~10%
-- **Purpose:** Highlights functional system, suggests power/energy flow
+### Energy Seams (Purple Glowing)
+- **Albedo:** Very dark purple (RGB ~10, 0, 30)
+- **Emissive:** Purple glow (RGB ~220, 80, 255, emissive 5.0)
+- **Roughness:** ~0.3 (energy flow appearance)
+- **Metalness:** 0 (pure energy glow)
+- **Coverage:** ~5% (seams between segments)
+- **Purpose:** Suggests powered energy flow through arm seams
 
-### Rivets & Bolts (Metallic Detail)
-- **Albedo:** Bright steel (RGB ~180, 180, 190)
-- **Roughness:** ~0.5 (polished heads, worn shafts)
-- **Metalness:** 0.8 (actual metal fasteners)
-- **Coverage:** ~5%
-- **Purpose:** Shows construction/assembly, industrial detail
+### Wrist/Palm/Fingers (Dark Metal)
+- **Albedo:** Very dark gray (RGB ~30, 32, 40)
+- **Roughness:** ~0.48 (matte, worn)
+- **Metalness:** 0.65 (treated metal)
+- **Coverage:** ~20% (grip surfaces, finger detail)
 
-### Weathering & Scorch (Patina)
-- **Albedo:** Brown-black (RGB ~40, 35, 30)
-- **Roughness:** ~0.9 (heavily corroded, matte)
-- **Metalness:** 0.1 (oxide layer)
-- **Coverage:** ~5%
-- **Purpose:** Battle wear, salvage history
+### Accent Stripe (Orange Paint)
+- **Albedo:** Orange paint (RGB ~240, 140, 60)
+- **Roughness:** ~0.42 (painted finish)
+- **Metalness:** 0
+- **Coverage:** ~5% (accent stripe on upper arm)
+- **Purpose:** Functional highlight, suggests active system
+
+### Knuckle Glow (Purple Energy Accent)
+- **Albedo:** Very dark purple (RGB ~10, 0, 30)
+- **Emissive:** Purple glow (RGB ~220, 80, 255, emissive 3.0)
+- **Roughness:** ~0.3 (energy manifestation)
+- **Coverage:** ~3% (fist knuckle line)
+- **Purpose:** Threat indicator at impact point
 
 ---
 

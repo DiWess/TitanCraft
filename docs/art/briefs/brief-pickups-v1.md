@@ -38,33 +38,33 @@ The pickups signal **"collectable resource available"** purely through form and 
 
 ### Biomass (TC_PICKUP_Biomass_V1)
 **Purpose:** Organic material (fuel, growth substrate, consumables)
-- **Silhouette:** Irregular rounded mass, lumpy, organic form
-- **Scale:** ~0.35m × 0.28m × 0.3m (fist-sized, slightly larger)
-- **Color:** Warm brown/tan (RGB ~160, 120, 80)
-- **Accent:** None (organic material, no glow)
-- **Surface:** Rough, porous, matte finish
-- **Poly budget:** ~250 polys (more detailed for organic feel)
-- **Visibility:** 5–8m in shade or overcast
+- **Silhouette:** Faceted dark-red crystalline organic cluster with growth spikes
+- **Scale:** ~0.35m × 0.3m × 0.4m (distinctive clustered form)
+- **Color:** Dark burgundy-red (RGB ~150, 10, 16)
+- **Accent:** Red emissive glow (subtle, emissive 0.5)
+- **Surface:** Faceted crystal appearance with organic growth spikes
+- **Poly budget:** ~250 polys (faceted geometry, spikes)
+- **Visibility:** 5–8m, red glow aids detection
 
 ### Electronics (TC_PICKUP_Electronics_V1)
 **Purpose:** Circuitry and controllers (logic, sensing, automation)
-- **Silhouette:** Rectangular circuit board or module, geometric, with visible components
-- **Scale:** ~0.4m × 0.25m × 0.15m (flat, pocket-sized)
-- **Color:** Dark substrate (RGB ~60, 60, 70) with cyan accent traces
-- **Accent:** Cyan emissive highlight (RGB ~100, 220, 255, emissive 0.6)
-- **Surface:** Flat with component details (capacitors, chips, traces)
+- **Silhouette:** Stacked dark crates/modules with orange lids and cyan indicators
+- **Scale:** ~0.32m × 0.26m × 0.38m (composite modular stack)
+- **Color:** Dark metal base (RGB ~45, 50, 58), orange lid accent, cyan LED indicators
+- **Accent:** Orange paint on lids, cyan emissive on indicator strips (emissive 4.0)
+- **Surface:** Boxy modular form, geometric lids, antenna protrusion
 - **Poly budget:** ~300 polys
-- **Visibility:** 8–10m (cyan glow aids distance visibility)
+- **Visibility:** 8–10m (cyan glow aids distance visibility, distinctive stacked form)
 
 ### Component (TC_PICKUP_Component_V1)
-**Purpose:** Generic modular part (flexible use in crafting)
-- **Silhouette:** Hybrid form — part mechanical, part structural (wrench-like or connector-like)
-- **Scale:** ~0.32m × 0.28m × 0.2m (tool-sized)
-- **Color:** Dark steel base (RGB ~100, 100, 110) with orange accent
-- **Accent:** Orange emissive highlight (RGB ~240, 140, 60, emissive 0.7)
-- **Surface:** Moderate detail, bolts and seams visible, industrial finish
+**Purpose:** Alien artifact, mission objective material
+- **Silhouette:** Purple crystalline cluster formation on dark rock substrate
+- **Scale:** ~0.36m × 0.3m × 0.32m (cluster with satellite shards)
+- **Color:** Purple crystal core (RGB ~220, 80, 60) with dark substrate
+- **Accent:** Purple emissive glow on crystals (RGB ~220, 80, 255, emissive 1.4)
+- **Surface:** Faceted crystal geometry, satellite shards, rock base
 - **Poly budget:** ~280 polys
-- **Visibility:** 7–10m (orange accent distinguishes from other types)
+- **Visibility:** 7–10m (purple glow distinguishes from other types, alien aesthetic)
 
 ---
 
@@ -109,44 +109,61 @@ The pickups signal **"collectable resource available"** purely through form and 
 
 ### Biomass (TC_PICKUP_Biomass_V1)
 
-**Primary Material (Organic Matter)**
-- **Albedo:** Warm brown (RGB ~160, 120, 80)
-- **Roughness:** ~0.8 (organic, porous, matte)
-- **Metalness:** 0 (non-metallic, biological)
-- **Coverage:** 100% (pure biomass)
-- **Purpose:** Signals organic/fuel material, natural appearance
+**Primary Organic Crystal (Dark Red)**
+- **Albedo:** Dark burgundy-red (RGB ~150, 10, 16)
+- **Roughness:** ~0.32 (faceted crystal, some gloss)
+- **Metalness:** 0 (organic, non-metallic)
+- **Emissive:** Red glow (emissive strength 0.5)
+- **Coverage:** ~80% (crystal cluster)
+
+**Substrate (Dark Metal)**
+- **Albedo:** Very dark metal (RGB ~45, 50, 58)
+- **Roughness:** ~0.7 (matte, oxidized)
+- **Metalness:** 0.65 (bare metal)
+- **Coverage:** ~20% (rock base)
 
 ### Electronics (TC_PICKUP_Electronics_V1)
 
-**Substrate (Dark Circuit Board)**
-- **Albedo:** Dark gray (RGB ~60, 60, 70)
-- **Roughness:** ~0.6 (matte circuit board)
-- **Metalness:** 0.1 (composite with traces)
-- **Coverage:** ~80%
+**Dark Crate Substrate (Industrial Dark)**
+- **Albedo:** Very dark metal (RGB ~45, 50, 58)
+- **Roughness:** ~0.48 (matte)
+- **Metalness:** 0.65 (bare metal)
+- **Coverage:** ~60% (main crate body)
 
-**Trace Accents (Cyan Emissive)**
-- **Albedo:** Bright cyan (RGB ~100, 220, 255)
-- **Emissive Strength:** 0.6 (moderate glow, visible in shadow)
-- **Roughness:** ~0.3 (shiny traces)
-- **Metalness:** 0.2 (copper-like)
-- **Coverage:** ~20% (circuit traces, component leads)
-- **Purpose:** Signals active electronics, differentiates from other types
+**Orange Lid Paint (Functional Accent)**
+- **Albedo:** Orange paint (RGB ~240, 140, 60)
+- **Roughness:** ~0.42 (painted finish)
+- **Metalness:** 0
+- **Coverage:** ~20% (lid covers)
+
+**Cyan LED Indicators (Glowing)**
+- **Albedo:** Very dark cyan (RGB ~0, 20, 20)
+- **Emissive:** Bright cyan glow (RGB ~100, 220, 255, emissive 4.0)
+- **Roughness:** ~0.3 (LED appearance)
+- **Coverage:** ~10% (indicator lights, antenna)
+- **Purpose:** Signals active electronics, high visibility
+
+**Mid-Tone Metal (Modules)**
+- **Albedo:** Medium steel (RGB ~180, 190, 205)
+- **Roughness:** ~0.45 (polished metal)
+- **Metalness:** 0.75 (bare metal)
+- **Coverage:** ~10% (secondary modules)
 
 ### Component (TC_PICKUP_Component_V1)
 
-**Base Structure (Industrial Steel)**
-- **Albedo:** Dark steel (RGB ~100, 100, 110)
-- **Roughness:** ~0.7 (matte, oxidized)
-- **Metalness:** 0.3 (bare steel)
-- **Coverage:** ~75%
+**Purple Crystal (Alien Artifact)**
+- **Albedo:** Purple (RGB ~220, 80, 255)
+- **Roughness:** ~0.22 (faceted, light-catching)
+- **Metalness:** 0 (crystal, non-metallic)
+- **Emissive:** Purple glow (RGB ~220, 80, 255, emissive 1.4)
+- **Coverage:** ~60% (crystal cluster and satellites)
 
-**Accent Detail (Orange Emissive)**
-- **Albedo:** Orange (RGB ~240, 140, 60)
-- **Emissive Strength:** 0.7 (visible glow, active indicator)
-- **Roughness:** ~0.5 (some gloss, functional highlight)
-- **Metalness:** 0
-- **Coverage:** ~25% (accent edges, connector points)
-- **Purpose:** Signals modular/craftable component, matches workbench accent language
+**Dark Substrate (Rock/Metal)**
+- **Albedo:** Very dark (RGB ~45, 50, 58)
+- **Roughness:** ~0.7 (matte, oxidized)
+- **Metalness:** 0.2 (dirty metal/rock)
+- **Coverage:** ~40% (base rock, substrate)
+- **Purpose:** Alien artifact material, exotic color language
 
 ---
 

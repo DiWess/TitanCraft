@@ -1,0 +1,122 @@
+name: TitanCraft Stage A Blender Asset Review
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/blender/**'
+      - 'docs/art/reviews/stage-a-terrain-diorama-kit-v1-review.md'
+      - 'docs/pipeline/stage-a-blender-asset-review-ci.md'
+      - '.github/workflows/stage-a-blender-asset-review.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  stage-a-terrain-diorama-kit-v1:
+    name: Build Stage A terrain diorama kit review artifact
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: stage-a-terrain-diorama-kit-v1-review
+      REVIEW_DIR: artifacts/asset-review/TC_TerrainDioramaKit_V1
+      SOURCE_BLEND: assets/Source/Blender/StageA/TC_TerrainDioramaKit_V1.blend
+      GENERATED_GLB: assets/Production/Generated/StageA/TC_TerrainDioramaKit_V1.glb
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Blender and image tooling
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y blender python3-pil python3-numpy libegl1 xvfb
+          mkdir -p "$REVIEW_DIR" artifacts/asset-review/logs
+          blender --version 2>&1 | tee artifacts/asset-review/logs/blender-version.log
+
+      - name: Compile Blender Python tooling
+        run: python3 -m py_compile tools/blender/*.py
+
+      - name: Generate Stage A Terrain Diorama Kit V1 source and GLB
+        run: blender --background --python tools/blender/create_stage_a_terrain_diorama_kit_v1.py
+
+      - name: Validate Stage A Terrain Diorama Kit V1 source
+        run: python3 tools/blender/validate_stage_a_blender_asset.py "$SOURCE_BLEND"
+
+      - name: Render Stage A Terrain Diorama Kit V1 review PNGs
+        run: blender --background --python tools/blender/render_asset_review.py -- "$SOURCE_BLEND" "$REVIEW_DIR"
+
+      - name: Build Stage A Terrain Diorama Kit V1 contact sheet
+        run: python3 tools/blender/build_asset_review_contact_sheet.py "$REVIEW_DIR"
+
+      - name: Write hashes and metadata
+        run: |
+          set -euo pipefail
+          {
+            echo "# Stage A Terrain Diorama Kit V1 Review Metadata"
+            echo "workflow_name: TitanCraft Stage A Blender Asset Review"
+            echo "artifact_name: $ARTIFACT_NAME"
+            echo "source_blend: $SOURCE_BLEND"
+            echo "generated_glb: $GENERATED_GLB"
+            echo "review_dir: $REVIEW_DIR"
+            echo "commit_sha: $GITHUB_SHA"
+            echo "run_id: $GITHUB_RUN_ID"
+            echo "visual_approval: not_claimed"
+            echo "godot_integration: not_performed"
+          } > "$REVIEW_DIR/review_metadata.md"
+          find "$REVIEW_DIR" assets/Source/Blender/StageA assets/Production/Generated/StageA \
+            -type f \( -name '*.png' -o -name '*.md' -o -name '*.blend' -o -name '*.glb' \) \
+            -print0 | sort -z | xargs -0 sha256sum > "$REVIEW_DIR/sha256sums.txt"
+          find "$REVIEW_DIR" -maxdepth 1 -type f -print | sort > "$REVIEW_DIR/generated_file_list.txt"
+
+      - name: Verify required review files
+        run: |
+          set -euo pipefail
+          for path in \
+            "$REVIEW_DIR/front.png" \
+            "$REVIEW_DIR/back.png" \
+            "$REVIEW_DIR/left.png" \
+            "$REVIEW_DIR/right.png" \
+            "$REVIEW_DIR/top.png" \
+            "$REVIEW_DIR/hero_three_quarter.png" \
+            "$REVIEW_DIR/scale_reference.png" \
+            "$REVIEW_DIR/material_preview.png" \
+            "$REVIEW_DIR/contact_sheet.png" \
+            "$REVIEW_DIR/mesh_stats_report.md" \
+            "$REVIEW_DIR/review_metadata.md" \
+            "$REVIEW_DIR/sha256sums.txt" \
+            "$SOURCE_BLEND" \
+            "$GENERATED_GLB"; do
+            test -s "$path"
+          done
+
+      - name: Upload Stage A Terrain Diorama Kit V1 review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          if-no-files-found: error
+          path: |
+            artifacts/asset-review/TC_TerrainDioramaKit_V1/*.png
+            artifacts/asset-review/TC_TerrainDioramaKit_V1/mesh_stats_report.md
+            artifacts/asset-review/TC_TerrainDioramaKit_V1/review_metadata.md
+            artifacts/asset-review/TC_TerrainDioramaKit_V1/sha256sums.txt
+            artifacts/asset-review/TC_TerrainDioramaKit_V1/generated_file_list.txt
+            assets/Source/Blender/StageA/TC_TerrainDioramaKit_V1.blend
+            assets/Production/Generated/StageA/TC_TerrainDioramaKit_V1.glb
+            artifacts/asset-review/logs/blender-version.log
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          {
+            echo "## TitanCraft Stage A Blender Asset Review"
+            echo "- Job status: $JOB_STATUS"
+            echo "- Artifact name: $ARTIFACT_NAME"
+            echo "- Review directory: $REVIEW_DIR"
+            echo "- Contact sheet: $REVIEW_DIR/contact_sheet.png"
+            echo "- Visual approval: not claimed"
+            echo "- Godot integration: not performed"
+            echo "- Stage A completion: not claimed"
+          } >> "$GITHUB_STEP_SUMMARY"

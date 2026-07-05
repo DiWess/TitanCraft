@@ -477,9 +477,9 @@ def generate_manifest_entry(filepath, poly_count, validation_status):
     entry = {
         "asset_name": asset_name,
         "classification": "generated",
-        "source_blend": "art/blender/models/TC_TERRAIN_CrashBasin_V1.blend",
-        "source_sha256": None,  # Will be populated when source .blend exists
-        "production_export": str(Path(filepath).relative_to(Path.cwd())),
+        "source_blend": None,  # Procedurally generated, no source .blend
+        "source_sha256": None,
+        "production_export": str(Path(filepath).resolve().relative_to(Path.cwd().resolve())),
         "production_sha256": file_hash,
         "export_format": "GLB",
         "created_by_tool": "tools/blender/create_terrain_crash_basin_v1.py",

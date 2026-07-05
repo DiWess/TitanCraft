@@ -30,7 +30,7 @@ This pipeline is for authored assets only. It must not add gameplay code, runtim
 
 ## MVP Asset Pack V1
 
-The seven Crash Site MVP concept-sheet assets (workbench, dormant/active beacon, metal/biomass/electronics/component pickups) are authored by `tools/blender/create_mvp_asset_pack_v1.py` under `assets/Source/Blender/Production/MVP_Pack_V1/`, exported to `assets/Production/Generated/MVP_Pack_V1/`, and reviewed with `tools/blender/render_mvp_asset_review.py` (Cycles CPU, headless-safe). Brief: `docs/art/briefs/mvp-asset-pack-v1.md`. Binaries are delivered through the `blender-asset-forge-assets` workflow artifact, not committed.
+The eleven Crash Site MVP assets (workbench, dormant/active beacon, metal/biomass/electronics/component pickups, Galaxabrain Scout, mechanical arm, save point, crash debris landmark) are authored by `tools/blender/create_mvp_asset_pack_v1.py` under `assets/Source/Blender/Production/MVP_Pack_V1/`, exported to `assets/Production/Generated/MVP_Pack_V1/`, and reviewed with `tools/blender/render_mvp_asset_review.py` (Cycles CPU, headless-safe). Brief: `docs/art/briefs/mvp-asset-pack-v1.md`. Binaries are delivered through the `blender-asset-forge-assets` workflow artifact, not committed.
 
 # Non-Production Test Asset
 

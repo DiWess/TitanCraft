@@ -12,6 +12,13 @@ Blender 4.0.2 sources matching the approved MVP concept sheet:
   6. TC_PICKUP_Electronics_V1  dark module crates with orange lids
   7. TC_PICKUP_Component_V1    purple alien crystal cluster
 
+plus the remaining Crash Site MVP roster:
+
+  8. TC_CHAR_GalaxabrainScout_V1  spindly quadruped biomech, purple threat core
+  9. TC_PLAYER_MechanicalArm_V1   first-person segmented mechanical arm reward
+ 10. TC_PROP_SavePoint_V1         cyan checkpoint pillar
+ 11. TC_ENV_CrashDebris_A_V1      off-white bent hull shard landmark
+
 Run with Blender:
   blender --background --python tools/blender/create_mvp_asset_pack_v1.py
   blender --background --python tools/blender/create_mvp_asset_pack_v1.py -- --asset TC_PROP_Workbench_V1
@@ -24,6 +31,7 @@ import sys
 from pathlib import Path
 
 import bpy
+from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_DIR = ROOT / "assets/Source/Blender/Production/MVP_Pack_V1"
@@ -355,6 +363,109 @@ def build_pickup_component() -> None:
     gem("TC_Component_Rock", dark, (0, 0, 0.03), 0.18, (1, 0.85, 0.22), jitter=0.025, rng=rng)
 
 
+def strut(name: str, mat: bpy.types.Material, start: tuple[float, float, float], end: tuple[float, float, float],
+          r_start: float, r_end: float, scale: tuple[float, float, float] = (1, 1, 1),
+          vertices: int = 4, bevel: float = 0.008) -> bpy.types.Object:
+    """Tapered prism spanning two points; used for limbs and struts."""
+    p1, p2 = Vector(start), Vector(end)
+    direction = p2 - p1
+    bpy.ops.mesh.primitive_cone_add(vertices=vertices, radius1=r_start, radius2=r_end,
+                                    depth=direction.length, location=(p1 + p2) / 2)
+    obj = bpy.context.object
+    obj.name = name
+    obj.rotation_euler = direction.to_track_quat("Z", "Y").to_euler()
+    obj.scale = scale
+    return _finalize(obj, mat, bevel)
+
+
+def build_scout() -> None:
+    """Galaxabrain Scout: spindly quadruped biomech with an emissive purple core."""
+    carbon = pbr("TC_MVP_AlienCarbon", (0.030, 0.032, 0.040), rough=0.38, metal=0.55)
+    plate = pbr("TC_MVP_AlienPlate", (0.085, 0.090, 0.105), rough=0.45, metal=0.65)
+    purple = pbr("TC_MVP_PurpleGlow", (0.01, 0.0, 0.03), rough=0.3, emission=PURPLE_GLOW, strength=7.0)
+    crystal = pbr("TC_MVP_PurpleCrystal", PURPLE_CRYSTAL, rough=0.22, emission=PURPLE_GLOW, strength=1.4)
+    rng = random.Random(47)
+    # Torso pod with layered carapace plates
+    gem("TC_Scout_Torso", carbon, (0, 0, 1.10), 0.42, (1.0, 0.72, 0.62), rot=(0, 12, 0), jitter=0.02, rng=rng)
+    box("TC_Scout_PlateTop", plate, (0.02, 0, 1.36), (0.55, 0.42, 0.10), rot=(0, 14, 0), bevel=0.02)
+    box("TC_Scout_PlateBack", plate, (-0.30, 0, 1.16), (0.28, 0.48, 0.30), rot=(0, -18, 0), bevel=0.02)
+    # Forward head cluster with glowing braincase
+    strut("TC_Scout_Neck", plate, (0.30, 0, 1.18), (0.62, 0, 1.34), 0.10, 0.06)
+    gem("TC_Scout_Head", carbon, (0.72, 0, 1.36), 0.16, (1.2, 0.85, 0.9), rot=(0, 20, 0), jitter=0.012, rng=rng)
+    gem("TC_Scout_Braincase", crystal, (0.76, 0, 1.44), 0.10, (0.9, 0.7, 0.9), jitter=0.01, rng=rng)
+    box("TC_Scout_EyeSlit", purple, (0.86, 0, 1.35), (0.05, 0.14, 0.025), rot=(0, 20, 0), bevel=0)
+    # Chest core
+    gem("TC_Scout_Core", purple, (0.26, 0, 1.02), 0.11, (0.8, 0.8, 1.1))
+    # Four spider legs: hip -> raised knee -> bladed foot
+    for i, ang in enumerate((50, 130, 230, 310)):
+        rad = math.radians(ang)
+        hip = (0.30 * math.cos(rad), 0.34 * math.sin(rad), 1.06)
+        knee = (0.85 * math.cos(rad), 0.88 * math.sin(rad), 1.62)
+        foot = (1.15 * math.cos(rad), 1.18 * math.sin(rad), 0.0)
+        strut(f"TC_Scout_LegUpper_{i}", plate, hip, knee, 0.075, 0.045, bevel=0.01)
+        gem(f"TC_Scout_Knee_{i}", carbon, knee, 0.07, (1, 1, 1))
+        strut(f"TC_Scout_LegLower_{i}", carbon, knee, foot, 0.045, 0.012, scale=(1, 0.55, 1), bevel=0.008)
+        strut(f"TC_Scout_LegGlow_{i}", purple,
+              ((hip[0] + knee[0]) / 2, (hip[1] + knee[1]) / 2, (hip[2] + knee[2]) / 2 + 0.03),
+              (knee[0], knee[1], knee[2] + 0.02), 0.02, 0.008, bevel=0)
+
+
+def build_mechanical_arm() -> None:
+    """First-person mechanical arm reward: segmented forearm, purple energy seams."""
+    beige = pbr("TC_MVP_HullBeige", BEIGE_HULL, rough=0.62, metal=0.12)
+    dark = pbr("TC_MVP_DarkMetal", DARK_METAL, rough=0.48, metal=0.65)
+    mid = pbr("TC_MVP_MidMetal", MID_METAL, rough=0.45, metal=0.75)
+    purple = pbr("TC_MVP_PurpleGlow", (0.01, 0.0, 0.03), rough=0.3, emission=PURPLE_GLOW, strength=5.0)
+    orange = pbr("TC_MVP_OrangePaint", ORANGE_PAINT, rough=0.42)
+    # Forearm along +Y from the elbow, resting on the ground plane for review.
+    segments = ((0.10, 0.155, 0.20), (0.32, 0.145, 0.18), (0.52, 0.135, 0.14))
+    for i, (y, r, depth) in enumerate(segments):
+        cyl(f"TC_Arm_Segment_{i}", beige if i % 2 == 0 else mid, (0, y, 0.17), r, depth,
+            rot=(90, 0, 0), vertices=10, bevel=0.015)
+        cyl(f"TC_Arm_Seam_{i}", purple, (0, y + depth / 2 + 0.012, 0.17), r * 0.82, 0.018,
+            rot=(90, 0, 0), vertices=10, bevel=0)
+    cyl("TC_Arm_Elbow", dark, (0, -0.04, 0.17), 0.165, 0.10, rot=(90, 0, 0), vertices=10, bevel=0.015)
+    box("TC_Arm_TopPlate", dark, (0, 0.30, 0.335), (0.16, 0.42, 0.035), bevel=0.01)
+    box("TC_Arm_StripePlate", orange, (0.13, 0.22, 0.24), (0.02, 0.16, 0.05), bevel=0.005)
+    # Wrist and simplified powered fist
+    cyl("TC_Arm_Wrist", dark, (0, 0.66, 0.17), 0.10, 0.08, rot=(90, 0, 0), vertices=10, bevel=0.01)
+    box("TC_Arm_Palm", mid, (0, 0.78, 0.17), (0.20, 0.16, 0.20), bevel=0.02)
+    for i, x in enumerate((-0.065, 0.0, 0.065)):
+        box(f"TC_Arm_Finger_{i}", dark, (x, 0.90, 0.19), (0.05, 0.10, 0.06), rot=(-8, 0, 0), bevel=0.01)
+    box("TC_Arm_Thumb", dark, (-0.12, 0.80, 0.11), (0.05, 0.09, 0.05), rot=(0, 0, -20), bevel=0.01)
+    box("TC_Arm_Knuckle", purple, (0, 0.856, 0.245), (0.15, 0.02, 0.02), bevel=0)
+
+
+def build_save_point() -> None:
+    """Save point: compact checkpoint pillar with cyan emissive ring and strip."""
+    beige = pbr("TC_MVP_HullBeige", BEIGE_HULL, rough=0.62, metal=0.12)
+    dark = pbr("TC_MVP_DarkMetal", DARK_METAL, rough=0.48, metal=0.65)
+    cyan = pbr("TC_MVP_CyanLED", (0.0, 0.02, 0.02), rough=0.3, emission=CYAN_GLOW, strength=5.0)
+    orange = pbr("TC_MVP_OrangePaint", ORANGE_PAINT, rough=0.42)
+    cyl("TC_SavePoint_Base", dark, (0, 0, 0.07), 0.42, 0.14, rot=(0, 0, 30), vertices=6, bevel=0.02)
+    taper("TC_SavePoint_Column", beige, (0, 0, 0.80), 0.26, 0.17, 1.32, rot=(0, 0, 30), vertices=6, bevel=0.02)
+    cyl("TC_SavePoint_Ring", cyan, (0, 0, 0.24), 0.30, 0.05, rot=(0, 0, 30), vertices=6, bevel=0)
+    box("TC_SavePoint_Strip", cyan, (0.24, 0, 0.86), (0.03, 0.09, 0.90), rot=(0, -2.2, 0), bevel=0)
+    cyl("TC_SavePoint_CapMount", dark, (0, 0, 1.50), 0.19, 0.08, rot=(0, 0, 30), vertices=6, bevel=0.012)
+    cyl("TC_SavePoint_Emitter", cyan, (0, 0, 1.56), 0.13, 0.04, vertices=10, bevel=0)
+    box("TC_SavePoint_WarnPlate", orange, (0, -0.40, 0.07), (0.26, 0.03, 0.08), bevel=0.005)
+
+
+def build_crash_debris() -> None:
+    """Crash debris landmark: bent off-white hull shard with exposed scorched ribs."""
+    beige = pbr("TC_MVP_HullBeige", BEIGE_HULL, rough=0.62, metal=0.12)
+    soot = pbr("TC_MVP_SootMetal", (0.055, 0.050, 0.048), rough=0.75, metal=0.35)
+    mid = pbr("TC_MVP_MidMetal", MID_METAL, rough=0.45, metal=0.75)
+    orange = pbr("TC_MVP_OrangePaint", ORANGE_PAINT, rough=0.42)
+    box("TC_Debris_PlateMain", beige, (0, 0, 0.85), (1.9, 0.14, 1.9), rot=(0, -28, 8), bevel=0.03)
+    box("TC_Debris_PlateBent", beige, (0.95, 0.18, 0.28), (1.1, 0.12, 0.9), rot=(6, 38, 14), bevel=0.03)
+    box("TC_Debris_EdgeScorch", soot, (-0.72, -0.10, 1.42), (0.55, 0.16, 1.1), rot=(4, -28, 8), bevel=0.02)
+    for i, dy in enumerate((-0.45, 0.0, 0.45)):
+        box(f"TC_Debris_Rib_{i}", mid, (0.1 + 0.06 * i, dy, 0.42), (0.09, 0.09, 0.84), rot=(0, 12, 0), bevel=0.012)
+    box("TC_Debris_Chunk", soot, (-0.55, 0.62, 0.16), (0.62, 0.5, 0.32), rot=(0, 0, 24), bevel=0.02)
+    box("TC_Debris_Marking", orange, (0.18, -0.075, 1.05), (0.55, 0.015, 0.18), rot=(0, -28, 8), bevel=0)
+
+
 ASSETS = {
     "TC_PROP_Workbench_V1": build_workbench,
     "TC_PROP_Beacon_Dormant_V1": build_beacon_dormant,
@@ -363,6 +474,10 @@ ASSETS = {
     "TC_PICKUP_Biomass_V1": build_pickup_biomass,
     "TC_PICKUP_Electronics_V1": build_pickup_electronics,
     "TC_PICKUP_Component_V1": build_pickup_component,
+    "TC_CHAR_GalaxabrainScout_V1": build_scout,
+    "TC_PLAYER_MechanicalArm_V1": build_mechanical_arm,
+    "TC_PROP_SavePoint_V1": build_save_point,
+    "TC_ENV_CrashDebris_A_V1": build_crash_debris,
 }
 
 

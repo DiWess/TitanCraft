@@ -68,6 +68,10 @@ MVP_PACK_V1_ASSETS = {
     "TC_PICKUP_Biomass_V1",
     "TC_PICKUP_Electronics_V1",
     "TC_PICKUP_Component_V1",
+    "TC_CHAR_GalaxabrainScout_V1",
+    "TC_PLAYER_MechanicalArm_V1",
+    "TC_PROP_SavePoint_V1",
+    "TC_ENV_CrashDebris_A_V1",
 }
 
 

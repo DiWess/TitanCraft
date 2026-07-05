@@ -32,6 +32,7 @@ import math
 import struct
 from pathlib import Path
 from datetime import datetime
+from random import Random
 
 # Try to import Blender if available
 try:
@@ -54,6 +55,8 @@ class TerrainGenerator:
         self.faces = []
         self.materials = {}
         self.vertex_count = 0
+        self.poly_count = 0
+        self.validation_status = "PENDING"
 
     def add_mesh(self, vertices, faces, material_name):
         """Add mesh geometry and assign material."""
@@ -73,10 +76,13 @@ class TerrainGenerator:
 
         # Large base plane with subtle undulation
         width, depth = 150, 150
-        resolution = 32  # Creates ~1,000 polys per zone
+        resolution = 64  # Higher resolution: creates ~4,000 polys
 
         vertices = []
         faces = []
+
+        # Deterministic RNG for height variation
+        rng = Random(42)
 
         # Create height map for subtle ash floor variation
         for z in range(resolution + 1):
@@ -89,8 +95,10 @@ class TerrainGenerator:
                 px = (nx - 0.5) * width
                 pz = (nz - 0.5) * depth
 
-                # Subtle height variation (depression toward center)
-                height = -0.5 + 0.3 * math.sin(nx * math.pi) * math.sin(nz * math.pi)
+                # Subtle height variation (depression toward center + perlin-like noise)
+                base_height = -0.5 + 0.3 * math.sin(nx * math.pi) * math.sin(nz * math.pi)
+                noise = 0.1 * math.sin(nx * 8) * math.cos(nz * 8)
+                height = base_height + noise
 
                 vertices.append((px, pz, height))
 
@@ -113,9 +121,9 @@ class TerrainGenerator:
         """Generate foreground rock formations (2,500 polys)."""
         print("Generating basalt foreground...")
 
-        # Left and right basalt rock clusters
-        vertices_left = self._generate_rock_cluster(-40, 0, scale=3.0, height=8)
-        vertices_right = self._generate_rock_cluster(40, 0, scale=2.5, height=7)
+        # Left and right basalt rock clusters (more detailed)
+        vertices_left = self._generate_rock_cluster(-40, 0, scale=3.0, height=8, num_rocks=5)
+        vertices_right = self._generate_rock_cluster(40, 0, scale=2.5, height=7, num_rocks=4)
 
         # Simple faces (assume triangulated cluster)
         faces_left = [(i, i+1, i+2) for i in range(0, len(vertices_left)-2, 3)]
@@ -124,7 +132,7 @@ class TerrainGenerator:
         self.add_mesh(vertices_left, faces_left, "Basalt Foreground")
         self.add_mesh(vertices_right, faces_right, "Basalt Foreground")
 
-        print(f"  Basalt foreground: {len(vertices_left) + len(vertices_right)} vertices")
+        print(f"  Basalt foreground: {len(vertices_left) + len(vertices_right)} vertices, {len(faces_left) + len(faces_right)} faces")
 
     def generate_basalt_midground(self):
         """Generate midground rock formations and route markers (2,000 polys)."""
@@ -265,21 +273,27 @@ class TerrainGenerator:
         self.add_mesh(vertices, faces, "Scorch/Dust")
         print(f"  Scorch/dust: {len(vertices)} vertices")
 
-    def _generate_rock_cluster(self, center_x, center_z, scale=1.0, height=5):
-        """Generate a cluster of irregular rock geometry."""
+    def _generate_rock_cluster(self, center_x, center_z, scale=1.0, height=5, num_rocks=3):
+        """Generate a cluster of irregular rock geometry (deterministic)."""
         vertices = []
 
-        # Multiple smaller rocks in cluster
-        num_rocks = 3
+        # Seed RNG by cluster position for determinism
+        rng = Random(int(center_x * 1000 + center_z * 100))
+
         for rock_idx in range(num_rocks):
-            # Slight offset for each rock
-            offset_x = center_x + (rock_idx - 1) * scale * 2
-            offset_z = center_z
+            # Slight offset for each rock (deterministic randomness)
+            offset_angle = (rock_idx / num_rocks) * 2 * math.pi
+            offset_dist = scale * (1 + 0.5 * rng.random())
+
+            offset_x = center_x + offset_dist * math.cos(offset_angle)
+            offset_z = center_z + offset_dist * math.sin(offset_angle)
 
             # Rock geometry (simplified box with bevels)
             rock_verts = self._generate_irregular_box(
                 offset_x, offset_z, 0,
-                width=scale * 2, depth=scale * 2, height=height * (0.7 + rock_idx * 0.2),
+                width=scale * (1.5 + rng.random()),
+                depth=scale * (1.5 + rng.random()),
+                height=height * (0.6 + 0.4 * rng.random()),
                 irregularity=0.3
             )
             vertices.extend(rock_verts)
@@ -287,8 +301,12 @@ class TerrainGenerator:
         return vertices
 
     def _generate_irregular_box(self, cx, cz, cy, width, depth, height, irregularity=0.1):
-        """Generate a box with irregular edges for natural rock appearance."""
+        """Generate a box with irregular edges for natural rock appearance (deterministic)."""
         vertices = []
+
+        # Deterministic RNG seeded by position (reproducible across runs)
+        seed = int((cx * 1000 + cz * 100) % (2**32))
+        rng = Random(seed)
 
         # Base corners with slight irregularity
         half_w = width / 2
@@ -296,17 +314,17 @@ class TerrainGenerator:
 
         for x_mult in [-1, 1]:
             for z_mult in [-1, 1]:
-                # Bottom
-                irr_x = (hash(f"{cx}{cz}{x_mult}{z_mult}b") % 100) / 100 - 0.5
-                irr_z = (hash(f"{cx}{cz}{x_mult}{z_mult}b2") % 100) / 100 - 0.5
+                # Bottom (deterministic irregularity)
+                irr_x = rng.random() - 0.5
+                irr_z = rng.random() - 0.5
 
                 x = cx + x_mult * half_w * (1 + irr_x * irregularity)
                 z = cz + z_mult * half_d * (1 + irr_z * irregularity)
                 vertices.append((x, z, cy))
 
-                # Top
-                irr_x_top = (hash(f"{cx}{cz}{x_mult}{z_mult}t") % 100) / 100 - 0.5
-                irr_z_top = (hash(f"{cx}{cz}{x_mult}{z_mult}t2") % 100) / 100 - 0.5
+                # Top (deterministic irregularity)
+                irr_x_top = rng.random() - 0.5
+                irr_z_top = rng.random() - 0.5
 
                 x_top = cx + x_mult * half_w * (1 + irr_x_top * irregularity * 0.5)
                 z_top = cz + z_mult * half_d * (1 + irr_z_top * irregularity * 0.5)
@@ -315,17 +333,21 @@ class TerrainGenerator:
         return vertices
 
     def _generate_patch(self, cx, cz, size=1.0, height=0.1):
-        """Generate a small irregular patch (for scorch/dust)."""
+        """Generate a small irregular patch (for scorch/dust, deterministic)."""
         vertices = []
+
+        # Deterministic RNG seeded by position
+        seed = int((cx * 1000 + cz * 100) % (2**32))
+        rng = Random(seed)
 
         half_s = size / 2
 
-        # Quad with slight height variation
+        # Quad with slight height variation (deterministic)
         for x_mult in [-1, 1]:
             for z_mult in [-1, 1]:
                 x = cx + x_mult * half_s
                 z = cz + z_mult * half_s
-                h = height * (0.5 + (hash(f"{x}{z}") % 100) / 100)
+                h = height * (0.5 + rng.random())
                 vertices.append((x, z, h))
 
         return vertices
@@ -341,8 +363,22 @@ class TerrainGenerator:
         self.generate_ridge_rim()
         self.generate_scorch_dust()
 
-        print(f"\n✓ Total geometry: {len(self.vertices)} vertices, {len(self.faces)} faces")
-        print(f"  Target: 8,000–12,000 polys → Achieved: ~{len(self.faces)}")
+        poly_count = len(self.faces)
+        print(f"\n✓ Total geometry: {len(self.vertices)} vertices, {poly_count} faces")
+        print(f"  Target: 8,000–12,000 polys → Achieved: {poly_count}")
+
+        # Validate poly budget
+        if poly_count < 8000 or poly_count > 12000:
+            print(f"\n⚠ WARNING: Poly count {poly_count} outside target range [8,000–12,000]")
+            print(f"  Asset will be marked ASSET_UNDER_BUDGET until resolved")
+            self.poly_count = poly_count
+            self.validation_status = "ASSET_UNDER_BUDGET"
+        else:
+            print(f"  ✓ Poly count within target range")
+            self.poly_count = poly_count
+            self.validation_status = "ASSET_IMPLEMENTATION_PASS"
+
+        return self.validation_status
 
     def export_glb(self, filename="TC_TERRAIN_CrashBasin_V1.glb"):
         """Export terrain as GLB file (if Blender available)."""
@@ -422,39 +458,51 @@ class TerrainGenerator:
         mesh_obj.data.materials.append(material)
 
 
-def generate_manifest_entry(filepath):
-    """Generate asset manifest entry with SHA256 hash."""
-    print("\n=== Generating Manifest Entry ===\n")
+def generate_manifest_entry(filepath, poly_count, validation_status):
+    """Generate asset manifest entry in canonical schema with SHA256 hash.
+
+    Uses the Asset Forge canonical manifest schema to ensure integration
+    with tools/blender/build_asset_manifest.py.
+    """
+    print("\n=== Generating Manifest Entry (Canonical Schema) ===\n")
 
     # Read file and compute SHA256
     with open(filepath, 'rb') as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
 
     file_size = os.path.getsize(filepath)
+    asset_name = Path(filepath).stem
 
-    # Asset manifest entry
+    # Canonical manifest entry (from build_asset_manifest.py schema)
     entry = {
-        "asset_id": "TC_TERRAIN_CrashBasin_V1",
-        "asset_type": "terrain",
-        "file_path": str(filepath),
-        "format": "GLB",
-        "poly_count": 9100,
-        "material_zones": ["Ash Floor", "Basalt Foreground", "Basalt Midground", "Fractured Ground", "Ridge Rim", "Scorch/Dust"],
-        "file_size_bytes": file_size,
-        "sha256_hash": file_hash,
-        "generation_date": datetime.now().isoformat(),
-        "source_brief": "docs/art/brief-terrain-crash-basin.md",
-        "blender_source": "art/blender/models/TC_TERRAIN_CrashBasin_V1.blend",
-        "validation_status": "ASSET_IMPLEMENTATION_PASS",
-        "notes": "Polygonal Salvage Sci-Fi volcanic crash site terrain. Shaped ash basin with basalt framing, fractured impact zone, route landmarks."
+        "asset_name": asset_name,
+        "classification": "generated",
+        "source_blend": "art/blender/models/TC_TERRAIN_CrashBasin_V1.blend",
+        "source_sha256": None,  # Will be populated when source .blend exists
+        "production_export": str(Path(filepath).relative_to(Path.cwd())),
+        "production_sha256": file_hash,
+        "export_format": "GLB",
+        "created_by_tool": "tools/blender/create_terrain_crash_basin_v1.py",
+        "material_slots": ["Ash Floor", "Basalt Foreground", "Basalt Midground", "Fractured Ground", "Ridge Rim", "Scorch/Dust"],
+        "validation_status": validation_status,
+        "triangle_count": poly_count,
+        "review_artifacts": [],
+        "collision_policy": "none",
+        "metadata": {
+            "brief": "docs/art/brief-terrain-crash-basin.md",
+            "target_poly_budget": "8000–12000",
+            "generated_date": datetime.now().isoformat(),
+            "notes": "Polygonal Salvage Sci-Fi volcanic crash site terrain. Shaped ash basin with basalt framing, fractured impact zone, route landmarks."
+        }
     }
 
-    print(f"Asset ID: {entry['asset_id']}")
-    print(f"File size: {entry['file_size_bytes']} bytes")
-    print(f"SHA256: {entry['sha256_hash']}")
-    print(f"Poly count: {entry['poly_count']}")
+    print(f"Asset name: {entry['asset_name']}")
+    print(f"File size: {file_size} bytes")
+    print(f"SHA256: {entry['production_sha256']}")
+    print(f"Triangle count: {entry['triangle_count']}")
+    print(f"Validation status: {entry['validation_status']}")
 
-    # Update or create manifest
+    # Load or create manifest using canonical schema
     manifest_path = Path("assets/Production/Generated/asset_manifest.json")
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -462,17 +510,27 @@ def generate_manifest_entry(filepath):
         with open(manifest_path, 'r') as f:
             manifest = json.load(f)
     else:
-        manifest = {"assets": []}
+        manifest = {
+            "schema": "Asset Forge Production Manifest v1",
+            "generated_date": datetime.now().isoformat(),
+            "entries": []
+        }
 
-    # Add or update entry
-    manifest["assets"] = [a for a in manifest.get("assets", []) if a.get("asset_id") != entry["asset_id"]]
-    manifest["assets"].append(entry)
+    # Update or add entry (remove old version if exists)
+    manifest["entries"] = [e for e in manifest.get("entries", []) if e.get("asset_name") != asset_name]
+    manifest["entries"].append(entry)
+    manifest["generated_date"] = datetime.now().isoformat()
 
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
 
     print(f"\n✓ Manifest updated: {manifest_path}")
-    print(f"  Total assets in manifest: {len(manifest['assets'])}")
+    print(f"  Total assets in manifest: {len(manifest['entries'])}")
+
+    if validation_status != "ASSET_IMPLEMENTATION_PASS":
+        print(f"\n⚠ Asset validation status: {validation_status}")
+        print(f"  Poly count {poly_count} is outside target range [8000–12000]")
+        print(f"  Asset will not pass final gate until polys are corrected")
 
 
 def main():
@@ -490,9 +548,12 @@ def main():
         output_path = generator.export_glb()
 
         if output_path and os.path.exists(output_path):
-            generate_manifest_entry(output_path)
+            generate_manifest_entry(output_path, generator.poly_count, generator.validation_status)
             print("\n" + "="*60)
-            print("✓ PHASE 1 TERRAIN: ASSET_IMPLEMENTATION_PASS")
+            if generator.validation_status == "ASSET_IMPLEMENTATION_PASS":
+                print("✓ PHASE 1 TERRAIN: ASSET_IMPLEMENTATION_PASS")
+            else:
+                print(f"⚠ PHASE 1 TERRAIN: {generator.validation_status}")
             print("="*60)
             print(f"\nNext steps:")
             print(f"  1. Verify in Godot: godot --headless --path . --import")

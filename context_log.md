@@ -79,3 +79,7 @@
 
 - 2026-07-04: Added Galaxabrain Scout landed-hit and defeat feedback through the existing Crash Site HUD action-feedback path with integration smoke assertions.
 - 2026-07-04: Added HUD mission-component inventory feedback and gameplay mouse recapture so Crash Site pickups and screen-edge turning remain clear.
+
+- 2026-07-05: Added V1 beta visual pass blockout asset candidates, visual bible, evidence scaffold, and schematic screenshot evidence while preserving locked Crash Site gameplay scope.
+
+- 2026-07-05: Replaced binary PNG placeholder evidence with text-diffable SVG and Markdown workaround while preserving the V1 beta partial visual verdict and PNG gate limitation.

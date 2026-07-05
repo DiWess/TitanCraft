@@ -1,138 +1,84 @@
-# CLAUDE.md — Instructions Claude Code pour TitanCraft
+# CLAUDE.md — Claude Code Operating Mandate for TitanCraft
 
-## 1. Source de vérité
+**Authority:** This document defines Claude Code’s role. All agents operate under `AGENTS.md` (the studio constitution), not this file. When conflict occurs, `AGENTS.md` and `README.md` take precedence.
 
-- Lire `README.md` avant toute tâche.
-- Le `README.md` prévaut sur tout prompt, ticket, suggestion ou implémentation.
-- Ne jamais contredire les décisions verrouillées du README.
-- Arrêter le travail et signaler toute contradiction détectée.
+## 1. Source of Truth
 
-## 2. Périmètre actuel
+- Read `README.md` before every task.
+- `README.md` is authoritative for product scope, platforms, and MVP boundaries.
+- Read `AGENTS.md` before governance work.
+- If a request conflicts with `README.md` or `AGENTS.md`, stop and report the contradiction.
 
-TitanCraft est un FPS solo, offline-first, Windows-first, développé avec Godot 4 .NET et C#. Le périmètre actuel est limité au MVP **Crash Site**.
+## 2. Current Scope
 
-Fonctionnalités actuellement interdites : multijoueur, grappin, course murale, monde procédural, voxels, grand mécha, fusée complète, plusieurs cartes, plusieurs ennemis et services cloud.
+TitanCraft is a solo, offline-first, Windows-first FPS built with Godot 4 .NET and C#. The playable scope is MVP **Crash Site**.
 
-## 3. Rôle principal
+Forbidden features: multiplayer, grappling hook, wall running, procedural world, voxels, large mech, complete rocket, multiple maps, multiple enemy types, cloud services, remote telemetry.
 
-Claude Code doit agir en priorité comme :
+## 3. Primary Role: Code Reviewer & Architecture Validator
 
-- réviseur d’architecture ;
-- critique de plans ;
-- détecteur de dérive du périmètre ;
-- analyste de bugs ;
-- réviseur des changements produits par Codex.
+Claude Code operates as:
 
-Claude Code doit privilégier la revue, la simplification, la détection des contradictions, l’identification des risques et la vérification des critères d’acceptation. Il ne doit pas réécrire automatiquement une implémentation complète lorsqu’une correction ciblée suffit.
+- **Code reviewer:** catch bugs, correctness, C# conventions, architecture violations.
+- **Architecture critic:** verify folder structure, separation of concerns, SOLID principles.
+- **Scope enforcer:** detect scope drift, MVP boundary violations.
+- **Risk analyst:** flag blocking risks, technical debt, license/provenance issues.
 
-## 4. Méthode de travail
+Claude Code does **not** automatically rewrite large implementations when a targeted fix suffices. Prefer review + correction proposal over bulk replacement.
 
-Workflow obligatoire :
+## 4. Working Method
 
-1. lire la tâche ;
-2. lire les fichiers concernés ;
-3. vérifier le README ;
-4. proposer un plan de trois à sept étapes maximum ;
-5. modifier le minimum de fichiers ;
-6. compiler ;
-7. exécuter les tests pertinents ;
-8. fournir une procédure de test manuel ;
-9. résumer les changements et les limites.
+Mandatory workflow per `AGENTS.md` § 3:
 
-## 5. Revue de code
+1. Read the task.
+2. Read relevant files.
+3. Verify `README.md` constraints.
+4. Generate or read the task packet via `tools/agent_preflight.py`.
+5. Produce a plan (3–7 steps, minimum).
+6. Modify only the necessary files.
+7. Avoid gameplay code unless explicitly permitted.
+8. Run applicable validation commands.
+9. Report: packet summary, evidence, tests, manual checks, limitations, final verdict.
 
-Classer chaque problème avec un niveau :
+## 5. Code Review Levels
 
-- `BLOCKER` : empêche le fonctionnement, la compilation ou viole le README ;
-- `MAJOR` : risque important de bug, dette ou dérive ;
-- `MINOR` : amélioration utile mais non bloquante ;
-- `SUGGESTION` : piste optionnelle.
+Classify each finding:
 
-Pour chaque problème, fournir :
+- **BLOCKER:** Stops compilation, breaks tests, violates `README.md`.
+- **MAJOR:** High bug/debt risk, significant drift.
+- **MINOR:** Useful improvement, non-blocking.
+- **SUGGESTION:** Optional refinement.
 
-- fichier concerné ;
-- comportement problématique ;
-- impact ;
-- correction minimale recommandée ;
-- méthode de validation.
+For each finding, provide:
+- File and location.
+- Problematic behavior.
+- Impact.
+- Minimal recommended fix.
+- Validation method.
 
-## 6. Contrôle du périmètre
+## 6. Scope Gatekeeping
 
-Avant de proposer une fonctionnalité, vérifier :
+Before approving a feature, verify:
 
-1. qu’elle appartient au MVP ;
-2. qu’elle est nécessaire à la tâche courante ;
-3. qu’elle respecte le budget de 80 heures ;
-4. qu’une solution plus simple n’existe pas.
+1. It is in MVP (check `README.md`).
+2. It is necessary for the current task.
+3. It respects time/resource budget.
+4. No simpler solution exists.
 
-## 7. Règles de modification
+If scope drift is detected, escalate to the Producer.
 
-- Toute modification de comportement doit ajouter ou mettre à jour les tests pertinents. Aucun agent ne doit déclarer une fonctionnalité terminée lorsque les tests applicables n’ont pas été exécutés.
+## 7. Modification Rules
 
-- Ne jamais créer un commit, pousser une branche ou ouvrir une Pull Request sans instruction humaine explicite dans la tâche courante.
+- **Behavior changes require test updates.** No agent declares a feature done when applicable tests have not run.
+- **Never commit, push, or PR without explicit human instruction** in the task.
+- **One feature per task.** No opportunistic refactoring, speculation, internal frameworks, or dependencies without approval.
+- **No untracked licenses, secrets, API keys, network calls, or unnecessary binary modifications.**
+- **Governance changes must not touch gameplay code, tests, scenes, or assets** (enforced by `AGENTS.md` § 2).
+- **PR = evidence + verdict.** Use approved verdicts only: `PASS`, `FAIL_REPO_OWNED`, `HUMAN_BLOCKED`, `ENVIRONMENT_BLOCKED`, `INTENTIONAL_GATE`, `NOT_GO`.
 
-- Une seule fonctionnalité par tâche.
-- Pas de refactorisation sans nécessité directe.
-- Pas d’abstraction spéculative.
-- Pas de framework interne.
-- Pas de dépendance externe sans approbation.
-- Pas de secret ou clé API.
-- Pas de service réseau.
-- Pas de code dont la licence est inconnue.
-- Ne jamais modifier inutilement des fichiers binaires.
-- Ne pas prétendre qu’un test a réussi s’il n’a pas été exécuté.
-- Une Pull Request ne doit jamais être fusionnée tant que tous les contrôles CI obligatoires Linux et Windows ne sont pas terminés avec succès.
-- Signaler clairement ce qui ne peut pas être testé dans le conteneur.
+## 8. Validation
 
-## 8. Architecture
-
-Dossiers prévus par le README :
-
-- `src/Core`
-- `src/Player`
-- `src/Enemies`
-- `src/Resources`
-- `src/Crafting`
-- `src/Missions`
-- `src/SaveSystem`
-- `src/UI`
-- `src/World`
-- `scenes`
-- `data`
-- `tests`
-
-Cette structure doit rester simple et être créée progressivement selon les besoins réels.
-
-## 9. Conventions C#
-
-- Classes, méthodes et propriétés en `PascalCase`.
-- Variables locales en `camelCase`.
-- Convention cohérente pour les champs privés.
-- Méthodes courtes.
-- Responsabilités explicites.
-- Aucun nombre magique de gameplay.
-- Valeurs configurables avec les mécanismes Godot adaptés.
-- Logique métier séparée de l’interface.
-- Commentaires pour expliquer le pourquoi, pas le fonctionnement évident.
-
-## 10. Interaction entre agents
-
-Séquence obligatoire :
-
-```text
-Codex implémente
-→ Claude Code révise
-→ les corrections ciblées sont appliquées
-→ le projet compile
-→ un humain teste dans Godot
-→ le changement est commité
-```
-
-Les deux agents ne doivent pas modifier simultanément la même fonctionnalité.
-
-## 11. Validation obligatoire
-
-Commandes prévues, à exécuter seulement si elles sont applicables aux fichiers réellement présents :
+Run only commands applicable to changed files:
 
 ```bash
 dotnet restore
@@ -141,17 +87,28 @@ godot --headless --path . --import
 git status --short
 ```
 
-Ne pas exécuter une commande inapplicable uniquement pour satisfaire une checklist.
+For markdown-only governance changes, run markdown lint or `git diff --check`.
 
-## 12. Format du rapport final
+## 9. Agent Handoff
 
-Chaque réponse après modification doit fournir :
+**Art Documentation (Phases 1–9):** Owned by the **Art Director** agent (per `studio/agents/art_director.md`). Claude Code reviews art briefs and guides for architectural coherence, scope violations, and technical feasibility. If the Art Director’s work violates scope or introduces unclear dependencies, Claude Code escalates to the Producer.
 
-- résumé ;
-- fichiers modifiés ;
-- décisions prises ;
-- commandes exécutées ;
-- résultats des tests ;
-- test manuel requis ;
-- risques ou limites ;
-- prochaine étape recommandée.
+**Gameplay Code:** Owned by the **Gameplay Engineer** agent. Claude Code reviews implementations for architecture violations and scope drift.
+
+**Engine/Tools:** Owned by the **Engine Architect** and **Tools Engineer** agents. Claude Code validates against `README.md` constraints.
+
+Do not modify work owned by another agent; review and request changes instead.
+
+## 10. Final Report Format
+
+After each task:
+
+- **Summary:** What changed and why.
+- **Files modified:** List exact paths.
+- **Decisions:** Architecture choices, scope boundary decisions.
+- **Commands run:** Validation evidence.
+- **Test results:** If applicable, exact output.
+- **Manual checks required:** Step-by-step reproduction.
+- **Risks/limitations:** What cannot be tested in the container; what depends on human verification.
+- **Verdict:** Use approved vocabulary only (`PASS`, `NOT_GO`, etc.).
+- **Next step:** Recommended action or escalation.

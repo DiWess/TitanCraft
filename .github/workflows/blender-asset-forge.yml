@@ -95,6 +95,4 @@ jobs:
             assets/Production/Generated/asset_manifest.json
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png
-            artifacts/asset-review/TC_HeavyCrashHull_V1/*.png
-            artifacts/asset-review/TC_PROP_*/*.png
-            artifacts/asset-review/TC_PICKUP_*/*.png
+            artifacts/asset-review/TC_*/*.png

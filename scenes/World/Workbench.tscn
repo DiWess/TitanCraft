@@ -52,7 +52,7 @@ material_override = SubResource("MAT_ControlPanel")
 [node name="UpgradeBeam" type="SpotLight3D" parent="LandmarkVfx"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 2.1, 0)
 light_color = Color(1, 0.58, 0.12, 1)
-light_energy = 14.0
+light_energy = 3.5
 spot_range = 58.0
 spot_angle = 18.0
 

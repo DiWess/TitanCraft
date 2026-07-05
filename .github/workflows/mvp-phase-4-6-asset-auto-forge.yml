@@ -153,17 +153,21 @@ Triggered by: MVP Phase 4–6 Auto-Forge workflow" || echo "No changes to commit
           ls -lah assets/Production/Generated/MVP_Pack_V1/ || echo "No GLB files found"
           echo ""
           echo "Asset manifest entries:"
-          python3 -c "
-          import json
-          try:
-            with open('assets/Production/Generated/asset_manifest.json') as f:
-              manifest = json.load(f)
-              for asset in manifest.get('assets', []):
-                if 'Phase' in asset.get('phase', 0) and asset['phase'] >= 4 and asset['phase'] <= 6:
-                  print(f\"  ✓ {asset['name']} ({asset['poly_count']} polys)\")
-          except:
-            print('  (manifest not found or parse error)')
-          " || echo "Could not parse manifest"
+          python3 << 'PYEOF'
+import json
+try:
+  with open('assets/Production/Generated/asset_manifest.json') as f:
+    manifest = json.load(f)
+    for asset in manifest.get('assets', []):
+      phase = asset.get('phase', 0)
+      if isinstance(phase, int) and 4 <= phase <= 6:
+        name = asset.get('name', 'Unknown')
+        polys = asset.get('poly_count', 0)
+        print(f"  ✓ {name} ({polys} polys)")
+except Exception as e:
+  print(f"  (manifest not found or parse error: {e})")
+PYEOF
+
           echo ""
           echo "=== Asset generation complete ==="
 

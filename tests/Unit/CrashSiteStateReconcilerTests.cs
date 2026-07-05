@@ -88,4 +88,69 @@ public sealed class CrashSiteStateReconcilerTests
         // otherwise the attack is disabled and the fight is unwinnable.
         AssertThat(CrashSiteStateReconciler.RequiresMechanicalArmBuilt(tampered.MissionStep)).IsTrue();
     }
+
+    [TestCase]
+    public void LoadReconciliationDoesNotGrantComponentBeforePickupFlag()
+    {
+        var saveData = new CrashSiteSaveData
+        {
+            IsMechanicalArmBuilt = true,
+            IsGalaxabrainDefeated = true,
+            IsGalaxabrainComponentCollected = false,
+            MissionStep = CrashSiteMissionStep.ActivateBeacon,
+        };
+
+        var reconciledStep = CrashSiteStateReconciler.ReconcileLoadedMissionStep(saveData);
+
+        AssertThat(reconciledStep).IsEqual(CrashSiteMissionStep.RecoverGalaxabrainComponent);
+    }
+
+    [TestCase]
+    public void LoadReconciliationDoesNotSkipScoutDefeatFromInconsistentSave()
+    {
+        var saveData = new CrashSiteSaveData
+        {
+            IsMechanicalArmBuilt = true,
+            IsGalaxabrainDefeated = false,
+            IsGalaxabrainComponentCollected = true,
+            MissionStep = CrashSiteMissionStep.ActivateBeacon,
+        };
+
+        var reconciledStep = CrashSiteStateReconciler.ReconcileLoadedMissionStep(saveData);
+
+        AssertThat(reconciledStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
+    }
+
+    [TestCase]
+    public void LoadReconciliationPreservesCraftedArmBeforeScoutFight()
+    {
+        var saveData = new CrashSiteSaveData
+        {
+            IsMechanicalArmBuilt = true,
+            IsGalaxabrainDefeated = false,
+            IsGalaxabrainComponentCollected = false,
+            MissionStep = CrashSiteMissionStep.DefeatGalaxabrain,
+        };
+
+        var reconciledStep = CrashSiteStateReconciler.ReconcileLoadedMissionStep(saveData);
+
+        AssertThat(reconciledStep).IsEqual(CrashSiteMissionStep.DefeatGalaxabrain);
+        AssertThat(saveData.IsMechanicalArmBuilt).IsTrue();
+    }
+
+    [TestCase]
+    public void LoadReconciliationDowngradesMissingMechanicalArmBeforeCombat()
+    {
+        var saveData = new CrashSiteSaveData
+        {
+            IsMechanicalArmBuilt = false,
+            IsGalaxabrainDefeated = true,
+            IsGalaxabrainComponentCollected = true,
+            MissionStep = CrashSiteMissionStep.ActivateBeacon,
+        };
+
+        var reconciledStep = CrashSiteStateReconciler.ReconcileLoadedMissionStep(saveData);
+
+        AssertThat(reconciledStep).IsEqual(CrashSiteMissionStep.BuildMechanicalArm);
+    }
 }

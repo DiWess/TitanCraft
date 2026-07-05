@@ -75,15 +75,15 @@ public partial class CrashSiteSaveCoordinator : Node
         if (!LocalSaveGameStore.TryLoad(out var saveData, SavePath))
             return false;
 
-        var missionStep = saveData.MissionStep;
+        var missionStep = CrashSiteStateReconciler.ReconcileLoadedMissionStep(saveData);
         _player.GlobalPosition = new Vector3(saveData.PlayerX, saveData.PlayerY, saveData.PlayerZ);
         _player.Health.Restore(saveData.Health);
         _player.Inventory.Restore(
             saveData.Metal,
             saveData.Biomass,
             saveData.ElectronicComponents,
-            CrashSiteStateReconciler.RequiresMechanicalArmBuilt(missionStep),
-            CrashSiteStateReconciler.RequiresComponentCollected(missionStep));
+            saveData.IsMechanicalArmBuilt || CrashSiteStateReconciler.RequiresMechanicalArmBuilt(missionStep),
+            saveData.IsGalaxabrainComponentCollected && CrashSiteStateReconciler.RequiresComponentCollected(missionStep));
         _player.Mission.Restore(missionStep);
 
         if (CrashSiteStateReconciler.RequiresGalaxabrainDefeated(missionStep))

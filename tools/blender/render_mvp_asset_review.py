@@ -116,7 +116,8 @@ def main() -> None:
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
     scene.cycles.samples = 48
-    scene.cycles.use_denoising = True
+    # apt-packaged Blender builds lack OpenImageDenoiser; only denoise when the build supports it.
+    scene.cycles.use_denoising = bool(getattr(bpy.app.build_options, "openimagedenoise", False))
     scene.cycles.device = "CPU"
     scene.render.resolution_x = 960
     scene.render.resolution_y = 720

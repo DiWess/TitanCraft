@@ -1,0 +1,74 @@
+[gd_scene load_steps=2 format=3 uid="uid://dw2py3d6x4c5s"]
+
+[ext_resource type="Script" path="res://src/Core/Phase7CompositionManager.cs" id="1_abc12"]
+
+[node name="Phase7_Composition" type="Node3D"]
+script = ExtResource("1_abc12")
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting"]
+transform = Transform3D(0.923879, -0.378927, 0.050944, 0.341913, 0.867364, -0.359959, 0.179342, 0.325568, 0.928368, 0, 50, 30)
+light_energy_multiplier = 2.5
+shadow_enabled = true
+directional_shadow_split_1 = 0.1
+directional_shadow_split_2 = 0.25
+directional_shadow_split_3 = 0.5
+
+[node name="AmbientEnvironment" type="WorldEnvironment" parent="Lighting"]
+environment = SubResource("Environment")
+
+[sub_resource type="Environment" id="Environment"]
+ambient_light_source = 1
+ambient_light_energy = 0.8
+ambient_light_energy_source = 0.8
+ambient_light_sky_contribution = 0.2
+tonemap_mode = 0
+adjustment_enabled = false
+
+[node name="DebugGrid" type="Node3D" parent="."]
+visible = false
+
+[node name="GridFloor_Reference" type="MeshInstance3D" parent="DebugGrid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+material_override = SubResource("GridMaterial")
+mesh = SubResource("GridPlane")
+
+[sub_resource type="StandardMaterial3D" id="GridMaterial"]
+albedo_color = Color(0.3, 0.3, 0.3, 0.3)
+transparency = 1
+cull_mode = 2
+
+[sub_resource type="PlaneMesh" id="GridPlane"]
+size = Vector2(100, 100)
+subdivisions = Vector2i(20, 20)
+
+# Phase 7 Asset Composition Notes:
+# This scene is auto-populated by Phase7CompositionManager.cs script.
+# All assets are instantiated and positioned according to PHASE_7_EXECUTION_GUIDE.md
+#
+# Layout:
+#   - Terrain: Origin (0, 0, 0) — Base layer
+#   - Hull: Far side (45, 30, 5) — Visual landmark, crashed angle
+#   - Workbench: Central (0, 25, 0) — Crafting hub, rotated 180°
+#   - SavePoint: Central-left (-8, 22, 0) — Checkpoint refuge
+#   - Beacon (Dormant): Far side (50, 35, 5) — Victory objective
+#   - Pickups: 5 items in 3 clusters (Cluster 1: ~8-12m, Cluster 2: ~20-25m, Cluster 3: ~35-45m)
+#   - Scout: Arena (35, 45, 0.5) — Enemy antagonist
+#   - Player: Spawn (0, 0, 1.7) — First-person, eye height
+#   - Camera: Attached to Player, FPS POV
+#   - Arm: Attached to Camera, lower-right corner
+#
+# To enable debug grid: Set DebugGrid.visible = true in inspector
+# To test in Godot: Open this scene, run it, and use WASD to navigate
+#
+# Expected output on _Ready():
+#   ✓ Terrain placed at origin
+#   ✓ Hull placed at (45, 30, 5) with crash tilt
+#   ✓ Workbench placed at (0, 25, 0) - central hub
+#   ✓ Save Point placed at (-8, 22, 0) - checkpoint refuge
+#   ✓ Beacon (Dormant) placed at (50, 35, 5) - victory objective
+#   ✓ Placed 5 pickups in 3 clusters
+#   ✓ Scout enemy placed at (35, 45, 0.5) - arena zone threat
+#   ✓ Player spawned at (0, 0, 1.7) with camera and arm
+#   ✓ Mechanical arm attached to camera (FPS POV)

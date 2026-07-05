@@ -1,0 +1,74 @@
+[
+  {
+    "name": "TC_PROP_Workbench_01",
+    "export": "assets/models/v1_beta/TC_PROP_Workbench_01.gltf",
+    "description": "Workbench: orange-lit salvage bench with raised control panel",
+    "function": "Interaction",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "3a24db50068f53c85c8d18e9a2a1d5de9d0f34cf9374fb49505ac04b8965edca"
+  },
+  {
+    "name": "TC_PROP_Beacon_01",
+    "export": "assets/models/v1_beta/TC_PROP_Beacon_01.gltf",
+    "description": "Beacon: tall cyan mast and core final objective",
+    "function": "Progression clarity",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "c4e3c787ec648a8d1faf1055b6167a218c91c6c0fe24cbee3120af3d25add76c"
+  },
+  {
+    "name": "TC_PLAYER_MechanicalArm_01",
+    "export": "assets/models/v1_beta/TC_PLAYER_MechanicalArm_01.gltf",
+    "description": "Mechanical arm: first-person reward silhouette",
+    "function": "Reward clarity",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "6f625692bd35b9ab0ad80fcbfba200a78f8c9f9c7ee646d08c672e272f03f6ad"
+  },
+  {
+    "name": "TC_CHAR_GalaxabrainScout_01",
+    "export": "assets/models/v1_beta/TC_CHAR_GalaxabrainScout_01.gltf",
+    "description": "Galaxabrain Scout: dark biomech body with cyan threat core",
+    "function": "Threat readability",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "79322c8ead6c81fb7caf5795d87fbd5bc0ece5aa398c240979db4885d46f0a91"
+  },
+  {
+    "name": "TC_PICKUP_Component_01",
+    "export": "assets/models/v1_beta/TC_PICKUP_Component_01.gltf",
+    "description": "Alien component: cyan triangular drop",
+    "function": "Progression clarity",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "8a002858eca1583ceef2bf8d52c4694a1cc9709d64398255865cf5e5cacfa659"
+  },
+  {
+    "name": "TC_PICKUP_Metal_01",
+    "export": "assets/models/v1_beta/TC_PICKUP_Metal_01.gltf",
+    "description": "Metal pickup: silver ingot cluster",
+    "function": "Interaction",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "80f0b3e076abaf0c0d42193584727f54aa218d56a5580ede2d54dc91e1110d00"
+  },
+  {
+    "name": "TC_PICKUP_EnergyCell_01",
+    "export": "assets/models/v1_beta/TC_PICKUP_EnergyCell_01.gltf",
+    "description": "Energy/electronics pickup: blue cell",
+    "function": "Interaction",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "dc9329b9d6336bf67680610c5ff2b795921fa5217435c2e2562e67f089606e70"
+  },
+  {
+    "name": "TC_ENV_CrashDebris_A_01",
+    "export": "assets/models/v1_beta/TC_ENV_CrashDebris_A_01.gltf",
+    "description": "Crash debris A: off-white hull shard landmark",
+    "function": "Navigation",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "a0a05509e71bd45a7482e58b6c19780a051037a6279de3a2b80149b57d8455cf"
+  },
+  {
+    "name": "TC_PROP_SavePoint_01",
+    "export": "assets/models/v1_beta/TC_PROP_SavePoint_01.gltf",
+    "description": "Save point: cyan checkpoint pillar",
+    "function": "Interaction",
+    "license": "Repo-owned procedural blockout generated for TitanCraft",
+    "sha256": "b1457b5b94167807f989f282f1cb7ff5b08efdfdb40be86aee5715031d3f13ab"
+  }
+]

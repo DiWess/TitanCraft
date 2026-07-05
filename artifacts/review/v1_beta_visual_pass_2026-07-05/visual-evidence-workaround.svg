@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">TitanCraft Crash Site V1 Beta visual evidence workaround</title>
+  <desc id="desc">Text-diffable vector evidence replacing unsupported binary PNG placeholders. It documents the schematic focal point, route cue, crash landmark, and objective silhouette used by the V1 beta visual pass.</desc>
+  <rect width="1280" height="720" fill="#26242a"/>
+  <rect y="560" width="1280" height="160" fill="#4c4642"/>
+  <line x1="80" y1="610" x2="1180" y2="610" stroke="#e67d23" stroke-width="8"/>
+  <polygon points="150,525 470,360 620,442 620,525" fill="#beb296"/>
+  <rect x="820" y="260" width="110" height="300" fill="#3cabc8"/>
+  <circle cx="915" cy="225" r="45" fill="#50f0ff"/>
+  <text x="60" y="70" fill="#ffe6b4" font-family="sans-serif" font-size="32">TitanCraft Crash Site V1 Beta Evidence Workaround</text>
+  <text x="60" y="115" fill="#aae6ff" font-family="sans-serif" font-size="22">Focal point: cyan objective marker. Route: orange path stripe. Landmark: off-white crash hull.</text>
+  <text x="60" y="665" fill="#dddddd" font-family="sans-serif" font-size="20">Text-diffable SVG replaces unsupported binary PNG placeholders; live Godot PNG capture remains a required external review gate.</text>
+</svg>

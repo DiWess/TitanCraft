@@ -79,8 +79,8 @@ def ground(name: str, sx: float, sz: float, broken: bool = False) -> None:
     x, z = sx/2, sz/2
     v = [(-x,0,-z), (-x*0.15,0,-z*0.85), (x,0,-z*0.65), (x*0.82,0,z*0.75), (x*0.2,0,z), (-x*0.9,0,z*0.62)]
     if broken:
-        v += [(-x*0.15,0.04,-z*0.05), (x*0.28,0.04,z*0.12)]
-        faces = [(1,2,7,6), (2,3,4,8,7), (7,8,5,6)]
+        v += [(-x*0.15,0.04,-z*0.05), (x*0.28,0.04,z*0.12), (-x*0.72,0.28,-z*0.38), (x*0.68,0.22,-z*0.22), (x*0.52,0.24,z*0.48), (-x*0.55,0.2,z*0.42)]
+        faces = [(1,2,7,6), (2,3,4,8,7), (7,8,5,6), (1,9,2), (2,10,3), (4,11,5), (5,12,6)]
     else:
         faces = [(1,2,3,4,5,6)]
     write_obj(name, v, faces)
@@ -114,12 +114,22 @@ def fuselage(name: str, sections: list[tuple[float, float, float, float]]) -> No
         nxt = (si + 1) * n
         for i in range(n):
             faces.append((base+i+1, base+(i+1)%n+1, nxt+(i+1)%n+1, nxt+i+1))
-    # Add a raised broken spine so the neutral-grey read is not a raw box.
+    # Add raised torn spine and side cheek plates so Blender/Godot review keeps a non-box silhouette.
     if len(sections) >= 3:
         top_a = len(v) + 1
         mid = len(sections) // 2
         v += [(sections[0][0] + 0.5, sections[0][1]*1.08, -sections[0][2]*0.2), (sections[mid][0], sections[mid][1]*1.25, -sections[mid][2]*0.05), (sections[-1][0] - 0.5, sections[-1][1]*1.05, 0.0)]
         faces += [(top_a, top_a+1, top_a+2)]
+        cheek = len(v) + 1
+        v += [
+            (sections[0][0] + 0.4, -sections[0][1]*1.12, -sections[0][2]*0.55),
+            (sections[mid][0], -sections[mid][1]*1.38, -sections[mid][2]*0.18),
+            (sections[-1][0] - 0.4, -sections[-1][1]*1.08, -sections[-1][2]*0.45),
+            (sections[0][0] + 0.8, sections[0][1]*1.05, sections[0][2]*0.58),
+            (sections[mid][0] - 0.3, sections[mid][1]*1.32, sections[mid][2]*0.22),
+            (sections[-1][0] - 0.8, sections[-1][1]*1.02, sections[-1][2]*0.5),
+        ]
+        faces += [(cheek, cheek+1, cheek+2), (cheek+3, cheek+5, cheek+4)]
     write_obj(name, v, faces)
 
 

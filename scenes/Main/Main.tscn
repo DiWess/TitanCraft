@@ -880,6 +880,21 @@ transform = Transform3D(0.45,0,-0.35,0,0.4,0,0.35,0,0.45,14.0,0.4,-14.0)
 mesh = ExtResource("52_tc_wing")
 material_override = ExtResource("66_tc_graphite_mat")
 
+[node name="RouteEdgeBasalt_LeftA" type="MeshInstance3D" parent="StageAVisualRoot/RouteOpening"]
+transform = Transform3D(0.42,0,0.18,0,0.38,0,-0.18,0,0.42,4.2,0.28,-10.2)
+mesh = ExtResource("56_tc_basalt_fg")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="RouteEdgeBasalt_RightA" type="MeshInstance3D" parent="StageAVisualRoot/RouteOpening"]
+transform = Transform3D(0.36,0,-0.22,0,0.34,0,0.22,0,0.36,7.5,0.26,-6.6)
+mesh = ExtResource("58_tc_basalt_mid_b")
+material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="RouteEdgeAshMarker_Workbench" type="MeshInstance3D" parent="StageAVisualRoot/RouteOpening"]
+transform = Transform3D(0.55,0,0.18,0,1,0,-0.18,0,0.42,10.2,0.2,-12.2)
+mesh = ExtResource("63_tc_ash_patch")
+material_override = ExtResource("68_tc_ash_mat")
+
 [node name="V1BetaCrashDebris_ToWorkbench" parent="StageAVisualRoot/RouteOpening" instance=ExtResource("72_v1_debris")]
 transform = Transform3D(1.2, 0, -0.28, 0, 1.0, 0, 0.28, 0, 1.2, 9.3, 0.35, -10.5)
 metadata/integration = "V1 beta crash debris visual landmark; collisionless scene child, placed beside route rather than on traversal line."

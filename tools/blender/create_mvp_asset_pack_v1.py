@@ -176,7 +176,7 @@ def build_workbench() -> None:
     dark = pbr("TC_MVP_DarkMetal", DARK_METAL, rough=0.48, metal=0.65)
     mid = pbr("TC_MVP_MidMetal", MID_METAL, rough=0.45, metal=0.75)
     orange = pbr("TC_MVP_OrangePaint", ORANGE_PAINT, rough=0.42)
-    holo = pbr("TC_MVP_OrangeHolo", (0.02, 0.01, 0.0), rough=0.3, emission=ORANGE_GLOW, strength=5.0)
+    holo = pbr("TC_MVP_OrangeHolo", (0.02, 0.01, 0.0), rough=0.3, emission=ORANGE_GLOW, strength=1.8)
     red_led = pbr("TC_MVP_RedLED", (0.02, 0.0, 0.0), rough=0.3, emission=RED_GLOW, strength=4.0)
     rubber = pbr("TC_MVP_Rubber", RUBBER_DARK, rough=0.85)
 

@@ -19,7 +19,7 @@ public partial class MvpPlaythroughCapture : Node
 {
     private const string MainScenePath = "res://scenes/Main/Main.tscn";
     private const string VictoryScenePath = "res://scenes/UI/VictoryScreen.tscn";
-    private const string OutputDir = "res://artifacts/mvp_closure/playthrough";
+    private const string OutputDir = "res://artifacts/review/v1_beta_godot_integration_2026-07-05";
 
     public override async void _Ready()
     {
@@ -54,31 +54,31 @@ public partial class MvpPlaythroughCapture : Node
         var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
         var savePoint = main.GetNode<SavePoint>("Placeholder_SavePoint");
 
-        await Capture("01_initial_spawn");
+        await Capture("start-area-live");
 
-        foreach (var pickupName in new[] { "Placeholder_MetalPickup", "Placeholder_BiomassPickup", "Placeholder_ElectronicsPickup" })
+        foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup" })
         {
-            var pickup = main.GetNode<ResourcePickup>(pickupName);
+            var pickup = main.GetNode<ResourceDrop>(pickupName);
             Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} collection failed");
         }
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm, "Resource collection did not advance the mission");
-        await Capture("02_resources_collected");
+        await Capture("workbench-live");
 
         MovePlayerToSee(player, workbench.GlobalPosition);
         Require(workbench.Interact(player.Inventory, player.Mission), "Crafting failed");
         Require(player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Visible, "Arm visual hidden after craft");
-        await Capture("03_arm_crafted_visible");
+        await Capture("mechanical-arm-visible-live");
 
         MovePlayerToSee(player, scout.GlobalPosition);
         for (var hit = 0; hit < 4; hit++)
             scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
         Require(scout.Brain.IsDead, "Scout survived");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Death did not advance mission");
-        await Capture("04_enemy_defeated_objective_updated");
+        await Capture("scout-encounter-live");
 
         Require(component.Interact(player.Inventory, player.Mission), "Component recovery failed");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Recovery did not advance mission");
-        await Capture("05_component_recovered");
+        await Capture("component-pickup-live");
 
         MovePlayerToSee(player, savePoint.GlobalPosition);
         Require(savePoint.Interact(player.Inventory, player.Mission), "Checkpoint save failed");
@@ -86,14 +86,14 @@ public partial class MvpPlaythroughCapture : Node
         MovePlayerToSee(player, beacon.GlobalPosition);
         Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed");
         Require(player.Mission.IsVictory, "Victory not reached");
-        await Capture("06_beacon_active");
+        await Capture("beacon-activation-live");
 
         main.QueueFree();
         await Frames(2);
 
         var victoryScreen = LoadScene<Control>(VictoryScenePath);
         AddChild(victoryScreen);
-        await Capture("07_victory_screen");
+        await Capture("victory-live");
         victoryScreen.QueueFree();
         await Frames(2);
 
@@ -106,7 +106,7 @@ public partial class MvpPlaythroughCapture : Node
         Require(reloadedPlayer.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Reloaded mission step mismatch");
         Require(reloadedPlayer.Inventory.IsMechanicalArmBuilt && reloadedPlayer.Inventory.HasGalaxabrainComponent, "Reloaded inventory mismatch");
         Require(reloaded.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout").Brain.IsDead, "Reloaded scout came back to life");
-        await Capture("08_restored_save_state");
+        await Capture("save-load-arm-persist-live");
         reloaded.QueueFree();
         await Frames(2);
         LocalSaveGameStore.DeleteSave();

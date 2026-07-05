@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://beacon_landmark_scene"]
+[gd_scene load_steps=12 format=3 uid="uid://beacon_landmark_scene"]
 
 [ext_resource type="Script" path="res://src/World/Beacon.cs" id="1_script"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/BeaconDormant.tres" id="2_dormant"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/BeaconActive.tres" id="3_active"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/ResourceItemHighlight.tres" id="4_highlight"]
+[ext_resource type="PackedScene" path="res://assets/models/v1_beta/TC_PROP_Beacon_01.gltf" id="5_v1_beacon"]
 
 [sub_resource type="CylinderMesh" id="MESH_BeaconMast"]
 top_radius = 0.45
@@ -44,6 +45,12 @@ script = ExtResource("1_script")
 DormantMaterial = ExtResource("2_dormant")
 ActiveMaterial = ExtResource("3_active")
 HighlightMaterial = ExtResource("4_highlight")
+
+[node name="VisualRoot" type="Node3D" parent="."]
+metadata/integration = "V1 beta beacon GLTF is visual-only; original ClosedVisual/ActiveVisual drive activation readability and gameplay state."
+
+[node name="V1BetaBeaconModel" parent="VisualRoot" instance=ExtResource("5_v1_beacon")]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 0, 0, 0)
 
 [node name="ClosedVisual" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)

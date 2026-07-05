@@ -1,0 +1,217 @@
+{
+  "manifest_version": "1.0",
+  "generated_date": "2026-07-05T00:00:00Z",
+  "document": "docs/asset-records.md",
+  "assets": {
+    "third_party": {
+      "quaternius_modular_scifi_megakit": {
+        "creator": "Quaternius",
+        "source_url": "https://quaternius.itch.io/modular-sci-fi-megakit",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "archive_hash_sha256": "6fae60cf5189e44dff0bd91097f094a765acc6d57d64a85a0cc0dd56e03035e3",
+        "archive_size_bytes": 48559316,
+        "downloaded_date": "2026-06-30",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/ThirdParty/Quaternius/ModularSciFiMegaKit/",
+        "license_file": "assets/ThirdParty/Quaternius/ModularSciFiMegaKit/LICENSE_CC0.txt",
+        "files": [
+          {
+            "path": "Models/angle_corridor_a.obj",
+            "hash_sha256": "e12747df6f0b72795da33dcaf39d36fa7c95945ab2c6dc6aae89f61483689d68",
+            "purpose": "Modular corridor section"
+          },
+          {
+            "path": "Models/angle_corridor_b.obj",
+            "hash_sha256": "0f62977d07376487127856944691d598d13b994cd8cd79ae3d9416e0ecd12544",
+            "purpose": "Modular corridor section variant"
+          },
+          {
+            "path": "Models/angle_wall_c.obj",
+            "hash_sha256": "74b6d6569c436eb3b3312de8527f5d7b8255d2ac7984b44934c9e0b96ccc0756",
+            "purpose": "Angled sci-fi wall"
+          },
+          {
+            "path": "Models/angled_panel_e.obj",
+            "hash_sha256": "07af55a9074041714a5223f7844e1c0fc691a31497319de54bea555633e6a4aa",
+            "purpose": "Wall panel detail"
+          },
+          {
+            "path": "Models/corridor_strut_d.obj",
+            "hash_sha256": "8d4dbac0e98173cb7a1532c74b65b038ebd19cac49bbad24002c6c6e4efb026c",
+            "purpose": "Structural support element"
+          },
+          {
+            "path": "Models/door_floor_a.obj",
+            "hash_sha256": "7f50b7387dbe286441409414e28d08f4c340d3fe7599051da5028f484efd3c74",
+            "purpose": "Modular floor section"
+          },
+          {
+            "path": "Models/internal_rib_a.obj",
+            "hash_sha256": "a168183fd16c25b91c24db401cce8b28e7c4973fee745170387b70731c3c6b4d",
+            "purpose": "Internal structural rib"
+          },
+          {
+            "path": "Models/support_frame_a.obj",
+            "hash_sha256": "02214a95b758b785a6b20b1a54c3e5fcaca9fd186b451653e94e4dd50fc37460",
+            "purpose": "Support frame"
+          },
+          {
+            "path": "Models/support_frame_b.obj",
+            "hash_sha256": "42ce253ad9fe8c89af4e6bb96581c8bc4231864f20cafb82bfdcc474c0c4ccd9",
+            "purpose": "Support frame variant"
+          }
+        ]
+      },
+      "quaternius_stylized_nature_megakit": {
+        "creator": "Quaternius",
+        "source_url": "https://quaternius.itch.io/stylized-nature-megakit",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "archive_hash_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+        "archive_size_bytes": 104088529,
+        "downloaded_date": "2026-06-30",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/ThirdParty/Quaternius/StylizedNatureMegaKit/",
+        "license_file": "assets/ThirdParty/Quaternius/StylizedNatureMegaKit/LICENSE_CC0.txt"
+      },
+      "quaternius_ultimate_space_kit": {
+        "creator": "Quaternius",
+        "source_url": "https://quaternius.com/packs/ultimatespacekit.html",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "source_medium": "Official Quaternius Google Drive folder",
+        "downloaded_date": "2026-06-30",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/ThirdParty/Quaternius/UltimateSpaceKit/",
+        "license_file": "assets/ThirdParty/Quaternius/UltimateSpaceKit/LICENSE_CC0.txt"
+      },
+      "quaternius_animated_mech_pack": {
+        "creator": "Quaternius",
+        "source_url": "https://quaternius.com/packs/animatedmech.html",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "downloaded_date": "2026-06-30",
+        "classification": "REFERENCE",
+        "local_directory": "assets/ThirdParty/Quaternius/AnimatedMechPack/",
+        "license_file": "assets/ThirdParty/Quaternius/AnimatedMechPack/LICENSE_CC0.txt",
+        "note": "Visual proof only; not integrated into Crash Site MVP"
+      },
+      "quaternius_animated_robot_pack": {
+        "creator": "Quaternius",
+        "source_url": "https://quaternius.com/packs/animatedrobot.html",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "downloaded_date": "2026-06-30",
+        "classification": "REFERENCE",
+        "local_directory": "assets/ThirdParty/Quaternius/AnimatedRobotPack/",
+        "license_file": "assets/ThirdParty/Quaternius/AnimatedRobotPack/LICENSE_CC0.txt",
+        "note": "Visual proof only; not integrated into Crash Site MVP"
+      },
+      "kenney_modular_space_kit": {
+        "creator": "Kenney",
+        "source_url": "https://kenney.nl/assets/modular-space-kit",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/ThirdParty/Kenney/ModularSpaceKit/"
+      },
+      "kenney_nature_kit": {
+        "creator": "Kenney",
+        "source_url": "https://kenney.nl/assets/nature-kit",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/ThirdParty/Kenney/NatureKit/"
+      },
+      "kaykit_space_base_bits": {
+        "creator": "Kay Lousberg / KayKit",
+        "source_url": "https://kaylousberg.itch.io/space-base-bits",
+        "license": "Creative Commons Zero (CC0) v1.0 Universal",
+        "archive_hash_sha256": "4f8d3e2e90a74d9a0d5262e9e09daccac320f1bcfbe4fa2837559a8ad7b98c17",
+        "archive_size_bytes": 5495833,
+        "downloaded_date": "2026-06-30",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/ThirdParty/KayKit/SpaceBaseBits/",
+        "license_file": "assets/ThirdParty/KayKit/SpaceBaseBits/LICENSE_CC0.txt",
+        "files": [
+          {
+            "path": "Models/antenna_a.obj",
+            "hash_sha256": "d1315aafdd78f97335aba816ee686bc6b53209db1ca7708caf8a74863f95e838",
+            "purpose": "Communication antenna"
+          },
+          {
+            "path": "Models/crate_a.obj",
+            "hash_sha256": "a4a64d4d8bd8344a0031be90b3ec9d0d76fae9f881d74a20d696f108c5c077ea",
+            "purpose": "Storage container"
+          },
+          {
+            "path": "Models/tank_a.obj",
+            "hash_sha256": "55676e0392306c071d9a0ffd6923221e0a19d56962c34518d47967e0e207f7ff",
+            "purpose": "Fuel/resource tank"
+          }
+        ]
+      }
+    },
+    "production": {
+      "titancraft_stage_a_environment": {
+        "creator": "TitanCraft production team",
+        "license": "Project proprietary",
+        "classification": "PRODUCTION",
+        "local_directory": "assets/Production/Custom/StageA/",
+        "purpose": "Primary visual environment for Crash Site MVP",
+        "note": "Custom-created assets; included in game binary only"
+      }
+    },
+    "audio": {
+      "temporary_mvp_cues": {
+        "creator": "TitanCraft production (Python synthesis)",
+        "license": "Project-owned temporary",
+        "classification": "PLACEHOLDER",
+        "local_directory": "assets/audio/temp/",
+        "generation_date": "2026-07-03",
+        "generation_method": "Deterministic sine-wave synthesis via tools/prepare_audio_assets.py",
+        "note": "Temporary gameplay feedback cues; final audio direction TBD",
+        "cues": [
+          "pickup_chime.wav",
+          "craft_confirm.wav",
+          "arm_hit.wav",
+          "player_damage.wav",
+          "galaxabrain_down.wav",
+          "beacon_activate.wav",
+          "victory_sting.wav"
+        ]
+      }
+    },
+    "placeholders": [
+      {
+        "asset_role": "Terrain PBR Albedo/Normal/ORM",
+        "expected_path": "assets/textures/terrain_*",
+        "license_requirement": "CC0",
+        "status": "Placeholder provenance only"
+      },
+      {
+        "asset_role": "Sci-Fi Workbench",
+        "expected_path": "assets/models/workbench.glb",
+        "license_requirement": "CC0",
+        "status": "Placeholder provenance only"
+      },
+      {
+        "asset_role": "Beacon",
+        "expected_path": "assets/models/beacon.glb",
+        "license_requirement": "CC0",
+        "status": "Placeholder provenance only"
+      },
+      {
+        "asset_role": "Crashed Ship",
+        "expected_path": "assets/models/crashed_ship.glb",
+        "license_requirement": "CC0",
+        "status": "Placeholder provenance only"
+      }
+    ]
+  },
+  "approval_gates": {
+    "all_sources_official": true,
+    "all_licenses_commercial_use": true,
+    "all_active_files_hashed": true,
+    "no_fake_placeholders": true,
+    "classifications_explicit": true,
+    "memories_satisfied": [
+      "MEM-ASSET-006",
+      "MEM-ASSET-007"
+    ]
+  }
+}

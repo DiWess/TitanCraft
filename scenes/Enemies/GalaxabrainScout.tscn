@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/temp/galaxabrain_down.wav" id="4_death_audio"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_CHAR_GalaxabrainScout_V1.gltf" id="5_v1_scout"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Component_V1.gltf" id="6_v1_component"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_CHAR_GalaxabrainScout_Disabled_V1.gltf" id="9_v1_scout_disabled"]
 
 [sub_resource type="StandardMaterial3D" id="MAT_Galaxabrain_AlienCyan"]
 albedo_color = Color(0.25, 0.95, 1.0, 1)
@@ -56,6 +57,14 @@ metadata/integration = "V1 beta Galaxabrain Scout visual-only child; CharacterBo
 [node name="V1BetaGalaxabrainScoutModel" parent="V1BetaScoutVisualRoot" instance=ExtResource("5_v1_scout")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -1.0, 0)
 metadata/integration = "MVP Asset Pack V1 Scout biomech visual, rotated so the head cluster faces -Z forward and offset so ground-contact feet meet the terrain under the body origin; gameplay body and collision unchanged."
+
+[node name="V1BetaScoutDisabledVisualRoot" type="Node3D" parent="."]
+visible = false
+metadata/integration = "Disabled/dead Scout read (docs/art/crash-site-object-asset-inventory.md); toggled on in GalaxabrainScout.Die()/RestoreDefeated() in place of hiding the whole CharacterBody3D, so the corpse stays visible instead of the enemy vanishing."
+
+[node name="V1BetaGalaxabrainScoutDisabledModel" parent="V1BetaScoutDisabledVisualRoot" instance=ExtResource("9_v1_scout_disabled")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -1.0, 0)
+metadata/integration = "Same rotation/offset as V1BetaGalaxabrainScoutModel -- the disabled rig shares the alive rig's foot-at-origin grounding, only hip/torso heights are compressed."
 
 [node name="AuthenticatedRobotGalaxabrainVisual" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.75,0,0,0,0.75,0,0,0,0.75,0,0,0)

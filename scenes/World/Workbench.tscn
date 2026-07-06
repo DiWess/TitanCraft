@@ -4,6 +4,7 @@
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/WorkbenchChassis.tres" id="2_chassis"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/WorkbenchHighlight.tres" id="3_highlight"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PROP_Workbench_V1.gltf" id="4_v1_workbench"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PLAYER_MechanicalArmUnbuilt_V1.gltf" id="5_v1_arm_unbuilt"]
 
 [sub_resource type="BoxMesh" id="MESH_Chassis"]
 size = Vector3(2.4, 0.9, 1.4)
@@ -40,6 +41,12 @@ metadata/integration = "Hidden legacy chassis proxy retained for the Workbench s
 
 [node name="V1BetaWorkbenchModel" parent="VisualBase" instance=ExtResource("4_v1_workbench")]
 metadata/integration = "MVP Asset Pack V1 workbench GLTF visual-only child; original Workbench script, collision, interaction zone, audio, and highlight remain unchanged."
+
+[node name="V1BetaMechanicalArmUnbuiltVisualRoot" type="Node3D" parent="VisualBase"]
+metadata/integration = "Unbuilt hint (docs/art/crash-site-object-asset-inventory.md): loose salvaged arm parts on the bench top before the player crafts the Mechanical Arm Mk I. Workbench.RestoreArmState() hides this once IsMechanicalArmBuilt is true; visible by default for a fresh game."
+
+[node name="V1BetaMechanicalArmUnbuiltModel" parent="VisualBase/V1BetaMechanicalArmUnbuiltVisualRoot" instance=ExtResource("5_v1_arm_unbuilt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.9, 0.1)
 
 [node name="ControlPanel" type="MeshInstance3D" parent="VisualBase"]
 transform = Transform3D(1, 0, 0, 0, 0.75, -0.66, 0, 0.66, 0.75, 0, 1.0, -0.42)

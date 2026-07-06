@@ -46,6 +46,7 @@ budgets = {
     'TC_PLAYER_MechanicalArm_V1.blend': 2600,
     'TC_PROP_SavePoint_V1.blend': 1400,
     'TC_ENV_CrashDebris_A_V1.blend': 1400,
+    'TC_LightingReference_V1.blend': 700,
 }
 max_triangles = budgets.get(Path(path).name, 500)
 if triangles > max_triangles:

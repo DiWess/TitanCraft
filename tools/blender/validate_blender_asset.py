@@ -43,10 +43,13 @@ budgets = {
     'TC_PICKUP_Electronics_V1.blend': 900,
     'TC_PICKUP_Component_V1.blend': 900,
     'TC_CHAR_GalaxabrainScout_V1.blend': 3200,
+    'TC_CHAR_GalaxabrainScout_Disabled_V1.blend': 900,
     'TC_PLAYER_MechanicalArm_V1.blend': 2600,
+    'TC_PLAYER_MechanicalArmUnbuilt_V1.blend': 600,
     'TC_PROP_SavePoint_V1.blend': 1400,
     'TC_ENV_CrashDebris_A_V1.blend': 1400,
     'TC_LightingReference_V1.blend': 800,
+    'TC_PolishDetails_V1.blend': 1700,
 }
 max_triangles = budgets.get(Path(path).name, 500)
 if triangles > max_triangles:

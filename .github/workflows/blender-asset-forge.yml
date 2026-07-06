@@ -89,6 +89,18 @@ jobs:
       - name: Render TC_LightingReference_V1 reviews
         run: blender --background --python tools/blender/render_mvp_asset_review.py -- assets/Source/Blender/Production/TC_LightingReference_V1.blend artifacts/asset-review/TC_LightingReference_V1
 
+      - name: Create TC_PolishDetails_V1 source
+        run: blender --background --python tools/blender/create_polish_details_kit_v1.py
+
+      - name: Validate TC_PolishDetails_V1 source
+        run: python3 tools/blender/validate_blender_asset.py assets/Source/Blender/Production/TC_PolishDetails_V1.blend
+
+      - name: Export TC_PolishDetails_V1 GLB
+        run: blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/Production/TC_PolishDetails_V1.blend assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb
+
+      - name: Render TC_PolishDetails_V1 reviews
+        run: blender --background --python tools/blender/render_mvp_asset_review.py -- assets/Source/Blender/Production/TC_PolishDetails_V1.blend artifacts/asset-review/TC_PolishDetails_V1
+
       - name: Create MVP Asset Pack V1 sources
         run: blender --background --python tools/blender/create_mvp_asset_pack_v1.py
 
@@ -127,6 +139,8 @@ jobs:
             assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
             assets/Source/Blender/Production/TC_LightingReference_V1.blend
             assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb
+            assets/Source/Blender/Production/TC_PolishDetails_V1.blend
+            assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb
             assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
             assets/Production/Generated/Hero/TC_CRASH_HullMk1_V1.glb
             assets/Source/Blender/Production/MVP_Pack_V1/*.blend

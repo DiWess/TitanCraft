@@ -26,7 +26,7 @@ Open screenshots and compare them against rejected failures before any visual ap
 
 ## Required Memories
 
-- MEM-VISFAIL, MEM-SCREEN.
+- MEM-VISFAIL, MEM-SCREEN, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -44,6 +44,7 @@ Open screenshots and compare them against rejected failures before any visual ap
 - No before/after comparison.
 - Says looks good.
 - Tests passed used as visual verdict.
+- In-engine coherence called release-ready without citing the axis 6 gap from `studio/decisions/quality_benchmark_v1.md`.
 
 ## Approved Verdicts
 

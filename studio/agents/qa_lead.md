@@ -26,7 +26,7 @@ Block fake progress by requiring tests, visual evidence, and manual procedures a
 
 ## Required Memories
 
-- MEM-CI, MEM-SCREEN, MEM-PROMPT.
+- MEM-CI, MEM-SCREEN, MEM-PROMPT, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -43,6 +43,7 @@ Block fake progress by requiring tests, visual evidence, and manual procedures a
 - No evidence for claim.
 - Vague verdict.
 - No manual test for visual/gameplay change.
+- Performance or feel number with no cited log, capture, or dated human playtest note.
 
 ## Approved Verdicts
 

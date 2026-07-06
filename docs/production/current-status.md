@@ -34,6 +34,19 @@
 - **Phase 7 start condition:** Blocked on Phase 6 completion (visual approval, export proof, release gates)
 - **Phase 7 estimated duration:** 6-10 weeks (24-40 hours) across 5 workstreams
 
+## Quality Benchmark (target bar)
+
+- `studio/decisions/quality_benchmark_v1.md` sets the studio's target quality bar: 10 axes, each anchored to a
+  named top-tier peer in the same genre lane (Half-Life 2, Titanfall 2, Doom Eternal, Returnal, Subnautica,
+  Valheim, Grounded), with a target score and the current gap on each axis.
+- Every specialist agent (Producer, QA Lead, Technical Director, Art Director, Gameplay Engineer, Level
+  Designer, Visual Reviewer) must cite that ADR's axis, peer anchor, and gap before signing `PASS`/`GO` on
+  the corresponding system — agreement between studio agents alone is not sufficient evidence.
+- The 2026-07-06 `BETA_READY` verdict (`studio/tasks/PRE_BETA_AUDIT_COMPLETE.md`) predates this ADR and does
+  not meet its evidence bar: it states FPS/draw-call/GPU-ms numbers and a full Windows human playthrough with
+  no supporting artifact, and it contradicts this file's own "Blocked" list above. Treat that verdict as
+  **unverified**, not current, until it is re-issued with cited evidence per the ADR.
+
 ## Verification Environment Notes
 
 - Local Codex/checkouts may not have `origin` or a local `main` branch configured. Inability to fetch `origin/main` in that environment is an environment limitation, not a repository production defect.

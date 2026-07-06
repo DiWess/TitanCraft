@@ -26,7 +26,7 @@ Enforce readable grounded sci-fi visuals and reject visually failed screenshots 
 
 ## Required Memories
 
-- MEM-VISFAIL, MEM-VISID, MEM-SCREEN.
+- MEM-VISFAIL, MEM-VISID, MEM-SCREEN, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -44,6 +44,7 @@ Enforce readable grounded sci-fi visuals and reject visually failed screenshots 
 - Toy-like hull only decorated.
 - Route slab called terrain.
 - Claims tests prove art quality.
+- Art called "top-tier" or "release-ready" without citing the axis 6 target in `studio/decisions/quality_benchmark_v1.md` and a human/visual-reviewer verdict.
 
 ## Approved Verdicts
 

@@ -31,6 +31,9 @@ files:
   - id: PRODUCTION-STAGE-GATES
     path: production_stage_gates.md
     topic: Production Stage Gates
+  - id: QUALITY-BENCHMARK
+    path: quality_benchmark.md
+    topic: Quality Benchmark
   - id: PROMPT-FAILURE-PATTERNS
     path: prompt_failure_patterns.md
     topic: Prompt Failure Patterns

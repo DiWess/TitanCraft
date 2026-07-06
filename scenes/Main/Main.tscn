@@ -69,6 +69,34 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PROP_SavePoint_V1.gltf" id="71_v1_savepoint"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CrashDebris_A_V1.gltf" id="72_v1_debris"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/wind_ambience_loop_01.wav" id="80_wind_ambient"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/volcanic_rumble_loop_01.wav" id="81_rumble_ambient"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/machinery_hum_loop_01.wav" id="82_machinery_hum"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/metal_walk_01.wav" id="83_footsteps_metal"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/rock_walk_01.wav" id="84_footsteps_rock"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/ash_walk_01.wav" id="85_footsteps_ash"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/swing_01.wav" id="86_weapon_swing"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/impact_01.wav" id="87_weapon_impact"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/ready_tone_01.wav" id="88_weapon_ready"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/alert_01.wav" id="89_enemy_alert"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/attack_01.wav" id="90_enemy_attack"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/hurt_01.wav" id="91_enemy_hurt"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/death_01.wav" id="92_enemy_death"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/select_01.wav" id="93_ui_select"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/hover_01.wav" id="94_ui_hover"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/craft_complete_01.wav" id="95_ui_craft"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/menu_toggle_01.wav" id="96_ui_menu"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/metal_01.wav" id="97_pickup_metal"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/glass_01.wav" id="98_pickup_glass"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/organic_01.wav" id="99_pickup_organic"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/generic_01.wav" id="100_pickup_generic"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/objective_complete_01.wav" id="101_state_objective"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/victory_01.wav" id="102_state_victory"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/defeat_01.wav" id="103_state_defeat"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/mission_complete_01.wav" id="104_state_mission"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_complete_01.wav" id="105_save_complete"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_progress_01.wav" id="106_save_progress"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/save/load_complete_01.wav" id="107_load_complete"]
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
 albedo_color = Color(0.88, 0.85, 0.80, 1)
@@ -433,50 +461,50 @@ omni_range = 8.0
 metadata/category = "Ambient environment loops (wind, rumble, machinery)"
 metadata/positioning = "3D positional audio at origin"
 [node name="AmbientLoop_Wind" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("80_wind_ambient")
 volume_db = -12.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with wind_ambience_loop_01.wav)"
 metadata/notes = "Continuous loop at 0.3 volume baseline, 120s duration, stereo"
 [node name="AmbientLoop_Rumble" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("81_rumble_ambient")
 volume_db = -14.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with mechanical_rumble_01.wav)"
 metadata/notes = "Distant volcanic rumble, subtle, very low profile (0.2 volume)"
 [node name="AmbientLoop_Machinery" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("82_machinery_hum")
 volume_db = -16.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with machinery_idle_01.wav)"
+metadata/source = "Freesound.org / CC0 / machinery_hum_loop_01.wav"
 metadata/notes = "Residual ship machinery hum, extremely subtle (0.15 volume)"
 [node name="AudioLayer_Player" type="Node" parent="."]
 metadata/category = "Player movement, weapon, mechanical arm"
 metadata/positioning = "3D positional audio from player origin"
 [node name="Footsteps_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("83_footsteps_metal")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_metal_walk_01.wav)"
+metadata/source = "Freesound.org / CC0 / footsteps_metal_walk_01.wav"
 metadata/notes = "Single metal footstep, triggered on grounded movement intervals (0.4s walk, 0.3s sprint)"
 [node name="Footsteps_Rock" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("84_footsteps_rock")
 volume_db = -8.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_rock_crunch_01.wav)"
 metadata/notes = "Rock/basalt footstep, terrain-specific trigger"
 [node name="Footsteps_Ash" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("85_footsteps_ash")
 volume_db = -8.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_ash_shuffle_01.wav)"
 metadata/notes = "Volcanic ash shuffle footstep, soft terrain variant"
 [node name="Weapon_Swing" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("86_weapon_swing")
 volume_db = -6.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_swing_01.wav)"
 metadata/notes = "Mechanical arm swing/whoosh, triggered on left-click attack input (0.4s duration)"
 [node name="Weapon_Impact" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("87_weapon_impact")
 volume_db = -5.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_impact_hit_01.wav)"
 metadata/notes = "Weapon hit confirmation, only plays on raycast success; high priority feedback"
 [node name="Weapon_Ready" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("88_weapon_ready")
 volume_db = -10.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_ready_tone_01.wav)"
 metadata/notes = "Mechanical ready tone when attack cooldown completes; brief chime (0.2s)"
@@ -484,22 +512,22 @@ metadata/notes = "Mechanical ready tone when attack cooldown completes; brief ch
 metadata/category = "Scout enemy state and behavior audio"
 metadata/positioning = "3D positional audio from scout position"
 [node name="Scout_Alert" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("89_enemy_alert")
 volume_db = -7.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_alert_01.wav)"
 metadata/notes = "Scout detection alert, triggered when player enters 12m detection range"
 [node name="Scout_Attack" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("90_enemy_attack")
 volume_db = -6.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_attack_strike_01.wav)"
 metadata/notes = "Scout melee attack strike, triggered when entering 2m attack range"
 [node name="Scout_Hurt" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("91_enemy_hurt")
 volume_db = -8.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_hurt_01.wav)"
 metadata/notes = "Scout damage feedback, played when HP reduced; variable intensity"
 [node name="Scout_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("92_enemy_death")
 volume_db = -4.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_death_01.wav)"
 metadata/notes = "Scout defeat fanfare, triggered when HP reaches 0; high priority audio"
@@ -512,22 +540,22 @@ metadata/notes = "Scout breathing/ambient idle loop, very subtle background pres
 metadata/category = "UI menu and confirmation audio"
 metadata/positioning = "2D non-positional audio (screen-relative)"
 [node name="UI_Select" type="AudioStreamPlayer" parent="AudioLayer_UI"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("93_ui_select")
 volume_db = -10.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_select_01.wav)"
 metadata/notes = "Menu confirmation click, triggered on UI selection (high UI priority)"
 [node name="UI_Hover" type="AudioStreamPlayer" parent="AudioLayer_UI"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("94_ui_hover")
 volume_db = -12.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_hover_01.wav)"
 metadata/notes = "Menu hover/focus audio, subtle over-confirmation feedback"
 [node name="UI_Craft_Complete" type="AudioStreamPlayer" parent="AudioLayer_UI"]
-stream = ExtResource("41_craft_audio")
+stream = ExtResource("95_ui_craft")
 volume_db = -7.0
 metadata/source = "Existing: craft_confirm.wav (temporary placeholder)"
 metadata/notes = "Crafting completion confirmation, triggered after crafting countdown"
 [node name="UI_Menu_Toggle" type="AudioStreamPlayer" parent="AudioLayer_UI"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("96_ui_menu")
 volume_db = -9.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_menu_toggle_01.wav)"
 metadata/notes = "Pause/resume menu toggle, briefing audio on state change"
@@ -535,22 +563,22 @@ metadata/notes = "Pause/resume menu toggle, briefing audio on state change"
 metadata/category = "Resource pickup and collection audio"
 metadata/positioning = "3D positional audio at pickup location"
 [node name="Pickup_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("97_pickup_metal")
 volume_db = -6.0
 metadata/source = "Existing: pickup_chime.wav (temporary placeholder, will differentiate)"
 metadata/notes = "Metal resource collection cue, bright metallic chime, 0.3s"
 [node name="Pickup_Glass" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("98_pickup_glass")
 volume_db = -6.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_glass_01.wav)"
 metadata/notes = "Electronics resource collection, distinct glass/crystal tones"
 [node name="Pickup_Organic" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("99_pickup_organic")
 volume_db = -7.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_organic_01.wav)"
 metadata/notes = "Biomass resource collection, soft organic tones"
 [node name="Pickup_Generic" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("100_pickup_generic")
 volume_db = -8.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_generic_01.wav)"
 metadata/notes = "Generic fallback pickup cue, used if specific type unavailable"
@@ -558,22 +586,22 @@ metadata/notes = "Generic fallback pickup cue, used if specific type unavailable
 metadata/category = "Game state transition audio (objectives, victory, defeat)"
 metadata/positioning = "2D non-positional audio (screen-relative, high priority)"
 [node name="State_Objective" type="AudioStreamPlayer" parent="AudioLayer_State"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("101_state_objective")
 volume_db = -8.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_objective_complete_01.wav)"
 metadata/notes = "Objective completion chime, triggered when mission phase completes (60 FPS)"
 [node name="State_Victory" type="AudioStreamPlayer" parent="AudioLayer_State"]
-stream = ExtResource("42_beacon_audio")
+stream = ExtResource("102_state_victory")
 volume_db = -6.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_victory_fanfare_01.wav)"
 metadata/notes = "Victory fanfare, high-priority audio on game victory condition, 3.2s"
 [node name="State_Defeat" type="AudioStreamPlayer" parent="AudioLayer_State"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("103_state_defeat")
 volume_db = -5.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_defeat_horn_01.wav)"
 metadata/notes = "Defeat fanfare/horn, triggered on player death condition"
 [node name="State_Mission_Complete" type="AudioStreamPlayer" parent="AudioLayer_State"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("104_state_mission")
 volume_db = -7.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_mission_complete_01.wav)"
 metadata/notes = "Full mission completion audio, plays after beacon activation succeeds"
@@ -581,17 +609,17 @@ metadata/notes = "Full mission completion audio, plays after beacon activation s
 metadata/category = "Save/Load state audio (optional)"
 metadata/positioning = "2D non-positional audio"
 [node name="Save_Complete" type="AudioStreamPlayer" parent="AudioLayer_Save"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("105_save_complete")
 volume_db = -10.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with save_complete_01.wav)"
 metadata/notes = "Save completion confirmation, optional audio on save trigger"
 [node name="Save_Progress" type="AudioStreamPlayer" parent="AudioLayer_Save"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("106_save_progress")
 volume_db = -11.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with save_progress_01.wav)"
 metadata/notes = "In-progress save indication, optional brief tone during save operation"
 [node name="Load_Complete" type="AudioStreamPlayer" parent="AudioLayer_Save"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("107_load_complete")
 volume_db = -10.0
 metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with load_complete_01.wav)"
 metadata/notes = "Load completion confirmation, optional audio on game restore"

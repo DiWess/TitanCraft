@@ -26,6 +26,9 @@ requirements:
     - hash
     - lane classification
     - explicit NOT_GO unless all release gates pass
+    - cited evidence artifact for every FPS, draw-call, GPU-ms, or similar performance number (studio/decisions/quality_benchmark_v1.md rule 1)
+    - dated human playtest note for any movement/combat/level "feel" claim (studio/decisions/quality_benchmark_v1.md rule 2)
+    - named peer anchor, target score, and gap from studio/decisions/quality_benchmark_v1.md for any axis the verdict claims is ready (rule 3)
   documentation:
     - requested doc objective
     - files changed

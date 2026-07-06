@@ -8,3 +8,4 @@
 - [ ] Manual test procedure is documented.
 - [ ] Risks and limitations are documented.
 - [ ] Final verdict uses approved vocabulary.
+- [ ] Quality Scorecard scores changed in this PR cite real evidence, not another agent's say-so, and match the appended `docs/production/quality-scorecard-log.md` entry.

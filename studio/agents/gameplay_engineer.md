@@ -26,7 +26,7 @@ Implement or review MVP gameplay behavior with tests and mission smoke evidence 
 
 ## Required Memories
 
-- MEM-MVP, MEM-CS, MEM-DEBUG.
+- MEM-MVP, MEM-CS, MEM-DEBUG, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -43,6 +43,7 @@ Implement or review MVP gameplay behavior with tests and mission smoke evidence 
 - No applicable test for behavior change.
 - Touches out-of-scope mechanics.
 - Claims gameplay feel without manual procedure.
+- Combat or movement claimed to match the axis 2/3 peer target in `studio/decisions/quality_benchmark_v1.md` without a dated human playtest note.
 
 ## Approved Verdicts
 

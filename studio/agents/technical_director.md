@@ -26,7 +26,7 @@ Keep Godot, C#, build, and scene changes technically safe while separating runti
 
 ## Required Memories
 
-- MEM-GODOT, MEM-CS, MEM-ARCH.
+- MEM-GODOT, MEM-CS, MEM-ARCH, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -43,6 +43,7 @@ Keep Godot, C#, build, and scene changes technically safe while separating runti
 - Runtime success used as visual approval.
 - Untested public API change.
 - External dependency without approval.
+- FPS, draw-call, or GPU-ms figure asserted without a captured profiler or benchmark artifact, or claimed from a headless/no-Windows-hardware environment.
 
 ## Approved Verdicts
 

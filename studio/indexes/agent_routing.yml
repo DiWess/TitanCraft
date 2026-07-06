@@ -27,3 +27,6 @@ routes:
   prompt_or_agent_governance:
     primary: producer
     secondary: [qa_lead, technical_director]
+  quality_benchmark_review:
+    primary: producer
+    secondary: [qa_lead, technical_director, art_director, gameplay_engineer, level_designer, visual_reviewer]

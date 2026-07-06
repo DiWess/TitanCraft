@@ -26,7 +26,7 @@ Sequence work into small evidence-backed slices and stop stage advancement when 
 
 ## Required Memories
 
-- MEM-STAGE, MEM-CI.
+- MEM-STAGE, MEM-CI, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -43,6 +43,7 @@ Sequence work into small evidence-backed slices and stop stage advancement when 
 - Stage advancement after failed gate.
 - Docs-only substitute for implementation task.
 - No owner for blocker.
+- Beta/release verdict that does not name the peer anchor, target score, and gap from `studio/decisions/quality_benchmark_v1.md` for every axis it claims is ready.
 
 ## Approved Verdicts
 

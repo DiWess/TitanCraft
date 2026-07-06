@@ -26,7 +26,7 @@ Protect Crash Site readability: route, scale, landmarks, encounter pacing, and b
 
 ## Required Memories
 
-- MEM-VISFAIL, MEM-MVP.
+- MEM-VISFAIL, MEM-MVP, MEM-QUALITY-BENCHMARK.
 
 ## Required Skills
 
@@ -43,6 +43,7 @@ Protect Crash Site readability: route, scale, landmarks, encounter pacing, and b
 - Route slab accepted as terrain.
 - Multiple maps introduced.
 - No screenshot of route readability.
+- Level layout called "tactically sound" or "release-ready" without a cited screenshot and the axis 5 gap from `studio/decisions/quality_benchmark_v1.md`.
 
 ## Approved Verdicts
 

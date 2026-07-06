@@ -14,6 +14,7 @@ public partial class CrashSiteSaveCoordinator : Node
     [Export] public NodePath GalaxabrainPath { get; set; } = "../Placeholder_GalaxabrainScout";
     [Export] public NodePath BeaconPath { get; set; } = "../Placeholder_Beacon";
     [Export] public NodePath WorkbenchPath { get; set; } = "../Placeholder_Workbench";
+    [Export] public NodePath IntroTitleCardPath { get; set; } = "../IntroTitleCard";
     [Export] public string SavePath { get; set; } = LocalSaveGameStore.DefaultSavePath;
 
     public bool LastSaveSucceeded { get; private set; }
@@ -25,6 +26,7 @@ public partial class CrashSiteSaveCoordinator : Node
     private GalaxabrainScout? _galaxabrain;
     private Beacon? _beacon;
     private Workbench? _workbench;
+    private IntroTitleCard? _introTitleCard;
 
     public override void _Ready()
     {
@@ -34,10 +36,17 @@ public partial class CrashSiteSaveCoordinator : Node
         _galaxabrain = GetNodeOrNull<GalaxabrainScout>(GalaxabrainPath);
         _beacon = GetNodeOrNull<Beacon>(BeaconPath);
         _workbench = GetNodeOrNull<Workbench>(WorkbenchPath);
+        _introTitleCard = GetNodeOrNull<IntroTitleCard>(IntroTitleCardPath);
         _pauseMenu.SaveRequested += SaveGame;
         if (_savePoint is not null)
             _savePoint.SaveRequested += SaveGame;
-        LoadGameIfPresent();
+
+        // Fresh run (no save to restore): play the title card once. A loaded
+        // run should never replay it, so this only fires on the false branch.
+        if (!LoadGameIfPresent())
+        {
+            _introTitleCard?.Play();
+        }
     }
 
     public override void _ExitTree()

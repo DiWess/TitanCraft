@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/Props/Wreckage/ShipWreckageShard_A.tscn" id="47_wreckage_shard"]
 [ext_resource type="PackedScene" path="res://scenes/UI/HUD.tscn" id="8_hud"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PauseMenu.tscn" id="9_pause"]
+[ext_resource type="PackedScene" path="res://scenes/UI/IntroTitleCard.tscn" id="90_intro_title_card"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteEndScreenNavigator.cs" id="11_end_nav"]
 [ext_resource type="Script" path="res://src/SaveSystem/CrashSiteSaveCoordinator.cs" id="12_save"]
@@ -1158,9 +1159,11 @@ transform = Transform3D(1,0,0,0,1,0,0,0,1,20,1.0,-16)
 PlayerPath = NodePath("../Player")
 [node name="HUD" parent="." instance=ExtResource("8_hud")]
 [node name="PauseMenu" parent="." instance=ExtResource("9_pause")]
+[node name="IntroTitleCard" parent="." instance=ExtResource("90_intro_title_card")]
 [node name="HudBinder" type="Node" parent="."]
 script = ExtResource("10_hud_binder")
 [node name="EndScreenNavigator" type="Node" parent="."]
 script = ExtResource("11_end_nav")
 [node name="SaveCoordinator" type="Node" parent="."]
 script = ExtResource("12_save")
+IntroTitleCardPath = NodePath("../IntroTitleCard")

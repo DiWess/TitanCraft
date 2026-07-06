@@ -120,8 +120,8 @@ def build_station(index: int, role: str, color: tuple[float, float, float], stre
     sample_mat = pbr(f"TC_LightingRef_{role}Sample", (0.02, 0.02, 0.02), rough=0.3,
                       emission=color, strength=strength)
 
-    box(f"TC_LightingRef_{role}_Plinth", plinth, (x, 0, 0.05), (0.40, 0.40, 0.10), bevel=0.015)
-    box(f"TC_LightingRef_{role}_Sample", sample_mat, (x, 0, 0.175), (0.16, 0.16, 0.15), bevel=0.006)
+    box(f"TC_LightingRef_{role}_Plinth", plinth, (x, 0, 0.05), (0.40, 0.40, 0.10), bevel=0)
+    box(f"TC_LightingRef_{role}_Sample", sample_mat, (x, 0, 0.175), (0.16, 0.16, 0.15), bevel=0)
     text_label(f"TC_LightingRef_{role}_Label", label, label_mat, (x, 0.24, 0.001))
 
 

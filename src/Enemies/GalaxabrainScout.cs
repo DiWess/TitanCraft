@@ -139,6 +139,8 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public NodePath? MissionComponentPath { get; set; }
 
+    [Export] public NodePath? CombatTutorialPath { get; set; }
+
     public GalaxabrainScoutBrain Brain => _brain;
 
     public GalaxabrainScoutState State => _brain.State;
@@ -205,10 +207,19 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     private void OnScoutStateChanged(GalaxabrainScoutState previousState, GalaxabrainScoutState newState)
     {
-        // Trigger alert audio when scout first detects player (Idle → Chase)
+        // Trigger alert audio and combat tutorial when scout first detects player (Idle → Chase)
         if (previousState == GalaxabrainScoutState.Idle && newState == GalaxabrainScoutState.Chase)
         {
             AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Alert", GlobalPosition);
+
+            // Show combat tutorial hint on first detection (Phase 7.4 Priority 1)
+            if (CombatTutorialPath != null && !CombatTutorialPath.IsEmpty)
+            {
+                if (GetNodeOrNull<Player.CombatTutorialHint>(CombatTutorialPath) is { } tutorial)
+                {
+                    tutorial.ShowCombatTutorial();
+                }
+            }
         }
         // Trigger attack audio when scout enters close combat range (Chase → Attack)
         // Note: Actual attack strike audio is played in _PhysicsProcess when TryConsumeAttack succeeds

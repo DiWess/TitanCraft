@@ -119,6 +119,8 @@ public partial class GalaxabrainScout : CharacterBody3D
         attackRange: 2f,
         attackCooldownSeconds: 0.8f);
 
+    private GalaxabrainScoutState _previousState = GalaxabrainScoutState.Idle;
+
     [Export] public int Health { get; set; } = GalaxabrainScoutBrain.DefaultHealth;
 
     [Export] public float DetectionRange { get; set; } = 12f;
@@ -137,6 +139,8 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public NodePath? MissionComponentPath { get; set; }
 
+    [Export] public NodePath? CombatTutorialPath { get; set; }
+
     public GalaxabrainScoutBrain Brain => _brain;
 
     public GalaxabrainScoutState State => _brain.State;
@@ -145,6 +149,7 @@ public partial class GalaxabrainScout : CharacterBody3D
     {
         _brain = new GalaxabrainScoutBrain(Health, DetectionRange, AttackRange, AttackCooldownSeconds);
         SetMissionComponentVisible(false);
+        _previousState = GalaxabrainScoutState.Idle;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -159,6 +164,13 @@ public partial class GalaxabrainScout : CharacterBody3D
         float distanceToPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
         _brain.Tick((float)delta, distanceToPlayer);
 
+        // Trigger audio on state transitions
+        if (_brain.State != _previousState)
+        {
+            OnScoutStateChanged(_previousState, _brain.State);
+            _previousState = _brain.State;
+        }
+
         if (_brain.State == GalaxabrainScoutState.Chase)
         {
             Vector3 direction = (player.GlobalPosition - GlobalPosition).Normalized();
@@ -170,6 +182,8 @@ public partial class GalaxabrainScout : CharacterBody3D
         Velocity = Vector3.Zero;
         if (_brain.TryConsumeAttack())
         {
+            // Play attack audio when scout actually strikes
+            AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Attack", GlobalPosition);
             TryDamagePlayer(player);
         }
     }
@@ -179,10 +193,36 @@ public partial class GalaxabrainScout : CharacterBody3D
         bool wasAlive = !_brain.IsDead;
         _brain.ApplyDamage(damage);
 
+        if (wasAlive && !_brain.IsDead)
+        {
+            // Play hurt audio on damage (but not on death, which has its own fanfare)
+            AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Hurt", GlobalPosition);
+        }
+
         if (wasAlive && _brain.IsDead)
         {
             Die();
         }
+    }
+
+    private void OnScoutStateChanged(GalaxabrainScoutState previousState, GalaxabrainScoutState newState)
+    {
+        // Trigger alert audio and combat tutorial when scout first detects player (Idle → Chase)
+        if (previousState == GalaxabrainScoutState.Idle && newState == GalaxabrainScoutState.Chase)
+        {
+            AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Alert", GlobalPosition);
+
+            // Show combat tutorial hint on first detection (Phase 7.4 Priority 1)
+            if (CombatTutorialPath != null && !CombatTutorialPath.IsEmpty)
+            {
+                if (GetNodeOrNull<Player.CombatTutorialHint>(CombatTutorialPath) is { } tutorial)
+                {
+                    tutorial.ShowCombatTutorial();
+                }
+            }
+        }
+        // Trigger attack audio when scout enters close combat range (Chase → Attack)
+        // Note: Actual attack strike audio is played in _PhysicsProcess when TryConsumeAttack succeeds
     }
 
     private void TryDamagePlayer(Node3D player)

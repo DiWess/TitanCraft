@@ -150,6 +150,9 @@ jobs:
             artifacts/asset-review/test-crate/material_turntable.png
             artifacts/asset-review/TC_*/*.png
 
+      - name: Remove Blender .blend1 backup files
+        run: find assets/Source/Blender -name '*.blend1' -delete
+
       - name: Check for changes to commit
         id: check_changes
         run: |

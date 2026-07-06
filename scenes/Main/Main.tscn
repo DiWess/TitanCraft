@@ -329,8 +329,10 @@ background_mode = 2
 sky = SubResource("Sky_main")
 ambient_light_source = 3
 ambient_light_color = Color(0.18, 0.23, 0.32, 1)
-ambient_light_energy = 0.45
+ambient_light_energy = 0.6
 tonemap_mode = 2
+tonemap_exposure = 0.85
+ssao_enabled = true
 glow_enabled = true
 glow_intensity = 0.24
 glow_strength = 0.55
@@ -381,8 +383,10 @@ visible = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
-light_energy = 1.35
+light_energy = 1.05
 shadow_enabled = true
+shadow_bias = 0.25
+shadow_normal_bias = 3.0
 [node name="Ground" type="StaticBody3D" parent="."]
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 visible = false
@@ -400,6 +404,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_1"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_1"]
@@ -411,6 +416,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_2"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_2"]
@@ -422,6 +428,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_3"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_3"]
@@ -433,6 +440,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_panel")
 [node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_4"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
 mesh = SubResource("BoxMesh_orange_strip")
 [node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_4"]

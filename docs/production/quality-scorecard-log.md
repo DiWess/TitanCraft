@@ -56,3 +56,25 @@ Do not edit or delete prior entries. If a score was wrong, add a new entry that 
 **Note:** This entry is the baseline `studio/decisions/quality_benchmark_v1.md` was built from. Future entries
 track movement from here — the goal is the Δ column trending toward the peer target column, with cited
 evidence for every change.
+
+### 2026-07-06 — claude/visual-benchmark-6-10-blomv3 (no PR yet)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 3.0 | 8.5 | = | Unchanged this pass; still one scene, sparse/disconnected ground patches (see axis 6 evidence). |
+| 6 | Visual art & presentation | 3.0 | 9.0 | +1.0 | `docs/release/evidence/titancraft-visual-axis6-pass-2026-07-06.md`: real Godot+Xvfb screenshot capture confirmed working in-container (corrects prior no-display assumption); opened 8 before/after production PNGs; fixed a real floating-geometry defect (orphaned `OrangeVent` accents left visible after their parent wall panels were hidden) and rebalanced blown-highlight exposure / pure-black ambient via `Environment`/`DirectionalLight3D` values in `scenes/Main/Main.tscn`. Still kit/placeholder-heavy, still no continuous terrain, Stage A still formally unapproved per `docs/production/known-blockers.md` — does not reach the 9.0 target or the studio's 6.0 aspirational milestone; +1.0 reflects only the cited, verified defect fixes, not a general art-quality claim. |
+| 7 | Audio & feedback | 2.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.0 | 8.0 | = | Unchanged this pass; `dotnet build`/`dotnet test` (71/71) re-verified during this pass. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | Unchanged this pass; see capability correction note in axis 6 evidence file — prior "no display in container" assumption (`MEM-QUALITY-BENCHMARK-003`) was disproved this pass for visual capture specifically (does not extend to human feel/hardware claims). |
+
+**Composite (axes 1–9):** 3.8 / 10 (peer average ≈8.8 / 10)
+**Note:** Axis 6 moved 2.0 → 3.0 on cited, opened before/after PNG evidence for two specific, verified
+defect fixes (see evidence file). This explicitly does **not** claim the 6/10 milestone the branch name
+targets — reaching 6.0 needs continuous terrain (not sparse patches), replacement of placeholder standee
+assets, and a human/Art Director aesthetic sign-off, none of which this pass attempted (out of scope for
+a single lighting/bugfix pass; see `CLAUDE.md` §9 agent handoff).

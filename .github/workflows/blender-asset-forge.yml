@@ -6,17 +6,37 @@ on:
       - 'tools/blender/**'
       - 'docs/pipeline/**'
       - 'docs/art/briefs/**'
-      - 'assets/Production/Generated/asset_manifest.json'
+      - '.github/workflows/blender-asset-forge.yml'
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'tools/blender/**'
+      - 'docs/pipeline/**'
+      - 'docs/art/briefs/**'
       - '.github/workflows/blender-asset-forge.yml'
   workflow_dispatch:
 
+# Trigger paths above are deliberately limited to inputs (scripts/docs/this
+# workflow file). This job commits generated outputs under assets/Source/Blender/
+# and assets/Production/Generated/ back to the branch; if those output paths were
+# also trigger paths, the bot's own commit would re-trigger this workflow forever.
+concurrency:
+  group: blender-asset-forge-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   asset-forge-artifacts:
-    name: Build downloadable Blender Asset Forge artifacts
+    name: Build and commit Blender Asset Forge outputs
     runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install Blender
         run: |
@@ -32,9 +52,6 @@ jobs:
 
       - name: Export GLB
         run: blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/_templates/TC_TestCrate.blend assets/Production/Generated/Test/TC_TestCrate.glb
-
-      - name: Build asset manifest
-        run: python3 tools/blender/build_asset_manifest.py
 
       - name: Create Phase 1 terrain (Crash Basin)
         run: blender --background --python tools/blender/create_terrain_crash_basin_v1.py
@@ -59,6 +76,18 @@ jobs:
 
       - name: Render TC_HeavyCrashHull_V1 reviews
         run: blender --background --python tools/blender/render_heavy_crash_hull_v1_reviews.py
+
+      - name: Create TC_LightingReference_V1 source
+        run: blender --background --python tools/blender/create_lighting_reference_kit_v1.py
+
+      - name: Validate TC_LightingReference_V1 source
+        run: python3 tools/blender/validate_blender_asset.py assets/Source/Blender/Production/TC_LightingReference_V1.blend
+
+      - name: Export TC_LightingReference_V1 GLB
+        run: blender --background --python tools/blender/export_asset.py -- assets/Source/Blender/Production/TC_LightingReference_V1.blend assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb
+
+      - name: Render TC_LightingReference_V1 reviews
+        run: blender --background --python tools/blender/render_mvp_asset_review.py -- assets/Source/Blender/Production/TC_LightingReference_V1.blend artifacts/asset-review/TC_LightingReference_V1
 
       - name: Create MVP Asset Pack V1 sources
         run: blender --background --python tools/blender/create_mvp_asset_pack_v1.py
@@ -96,6 +125,8 @@ jobs:
             assets/Production/Generated/Test/TC_TestCrate.glb
             assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend
             assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb
+            assets/Source/Blender/Production/TC_LightingReference_V1.blend
+            assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb
             assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
             assets/Production/Generated/Hero/TC_CRASH_HullMk1_V1.glb
             assets/Source/Blender/Production/MVP_Pack_V1/*.blend
@@ -104,3 +135,26 @@ jobs:
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png
             artifacts/asset-review/TC_*/*.png
+
+      - name: Check for changes to commit
+        id: check_changes
+        run: |
+          if git diff --quiet -- assets/Source/Blender/ assets/Production/Generated/ && [ -z "$(git status --porcelain -- assets/Source/Blender/ assets/Production/Generated/)" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            git status --short -- assets/Source/Blender/ assets/Production/Generated/
+          fi
+
+      - name: Commit and push generated Blender sources and exports
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          set -euo pipefail
+          git config --local user.email "claude@anthropic.com"
+          git config --local user.name "Blender Asset Forge (GitHub Actions)"
+          git add assets/Source/Blender/ assets/Production/Generated/
+          git commit \
+            -m "Auto-forge: rebuild Blender Asset Forge sources, exports, and manifest" \
+            -m "This is an automated commit from the Blender Asset Forge GitHub Actions workflow. It regenerates every standalone asset candidate's .blend source, .glb export, and assets/Production/Generated/asset_manifest.json from the tools/blender/create_*.py recipes on this branch." \
+            -m "These remain standalone Blender Asset Forge candidates only: visual-only, collisionless, and not integrated into any production scene. Scene integration (Stage C) is a separate, human/visual-reviewer-gated step."
+          git push -u origin HEAD:"${{ github.ref_name }}"

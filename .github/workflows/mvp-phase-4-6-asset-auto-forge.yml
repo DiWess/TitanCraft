@@ -112,28 +112,10 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           echo "=== Committing Phase 4–6 auto-generated assets ==="
-          git commit -m "Auto-forge: Generate Phase 4–6 MVP assets (Blender)
-
-Phase 4–6 Auto-Generated Assets:
-- TC_PICKUP_Metal_V1.glb
-- TC_PICKUP_Biomass_V1.glb
-- TC_PICKUP_Electronics_V1.glb
-- TC_PICKUP_Component_V1.glb
-- TC_CHAR_GalaxabrainScout_V1.glb
-- TC_PLAYER_MechanicalArm_V1.glb
-- TC_PROP_SavePoint_V1.glb
-- TC_PROP_Workbench_V1.glb
-- TC_PROP_Beacon_Dormant_V1.glb
-- TC_PROP_Beacon_Active_V1.glb
-- Plus asset manifest and review turntables
-
-All assets generated via Blender 4.0+ via:
-  blender --background --python tools/blender/create_mvp_asset_pack_v1.py
-
-Ready for Phase 7 scene composition.
-
-This is an automated commit from GitHub Actions.
-Triggered by: MVP Phase 4–6 Auto-Forge workflow" || echo "No changes to commit"
+          git commit \
+            -m "Auto-forge: Generate Phase 4-6 MVP assets (Blender)" \
+            -m "Phase 4-6 auto-generated assets: TC_PICKUP_Metal_V1, TC_PICKUP_Biomass_V1, TC_PICKUP_Electronics_V1, TC_PICKUP_Component_V1, TC_CHAR_GalaxabrainScout_V1, TC_PLAYER_MechanicalArm_V1, TC_PROP_SavePoint_V1, TC_PROP_Workbench_V1, TC_PROP_Beacon_Dormant_V1, TC_PROP_Beacon_Active_V1, plus asset manifest and review turntables. Generated via: blender --background --python tools/blender/create_mvp_asset_pack_v1.py" \
+            -m "This is an automated commit from GitHub Actions. Triggered by: MVP Phase 4-6 Auto-Forge workflow." || echo "No changes to commit"
 
       - name: Push generated assets to branch
         if: steps.check_changes.outputs.has_changes == 'true'
@@ -153,20 +135,8 @@ Triggered by: MVP Phase 4–6 Auto-Forge workflow" || echo "No changes to commit
           ls -lah assets/Production/Generated/MVP_Pack_V1/ || echo "No GLB files found"
           echo ""
           echo "Asset manifest entries:"
-          python3 << 'PYEOF'
-import json
-try:
-  with open('assets/Production/Generated/asset_manifest.json') as f:
-    manifest = json.load(f)
-    for asset in manifest.get('assets', []):
-      phase = asset.get('phase', 0)
-      if isinstance(phase, int) and 4 <= phase <= 6:
-        name = asset.get('name', 'Unknown')
-        polys = asset.get('poly_count', 0)
-        print(f"  ✓ {name} ({polys} polys)")
-except Exception as e:
-  print(f"  (manifest not found or parse error: {e})")
-PYEOF
+          python3 -c 'import json; d = json.load(open("assets/Production/Generated/asset_manifest.json")); [print("  * " + e.get("asset_name", "Unknown") + " (" + str(e.get("triangle_count", 0)) + " triangles)") for e in d.get("entries", [])]' \
+            || echo "  (manifest not found or parse error)"
 
           echo ""
           echo "=== Asset generation complete ==="

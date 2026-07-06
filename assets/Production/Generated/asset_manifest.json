@@ -386,7 +386,7 @@
       "asset_name": "TC_LightingReference_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_LightingReference_V1.blend",
-      "source_sha256": "cb21b5c423e1649f249de45e099597ad55f6bb083a40ae4145017c0228af73e3",
+      "source_sha256": "616275e792d51dcf3479c4c636158bec272f764b8808141e105b45d18d45fc4c",
       "production_export": "assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb",
       "production_sha256": "b6ab7ffde8a7c03ac20ba1d02fbb50694c30f3220ed8c340eccd658b0b7c12ef",
       "export_format": "GLB",

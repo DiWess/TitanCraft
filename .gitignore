@@ -82,11 +82,12 @@ artifacts/visual-review/
 # Generated temporary audio cues are materialized by tools/prepare_audio_assets.py in CI/local validation.
 /assets/audio/temp/*.wav
 
-# Local Blender Asset Forge review renders
-artifacts/asset-review/**/*.png
+# Blender Asset Forge outputs (.blend sources, .glb exports, and review PNGs)
+# are committed to the repo by the Blender Asset Forge GitHub Actions workflow
+# (.github/workflows/blender-asset-forge.yml), which pushes them back to the
+# branch after every build. They are intentionally not gitignored.
 !artifacts/asset-review/.gitkeep
 !artifacts/asset-review/**/.gitkeep
-# Blender binary outputs are not globally ignored; generated review binaries should be removed locally or delivered as workflow artifacts.
 !assets/Source/Blender/.gitkeep
 !assets/Source/Blender/**/.gitkeep
 !assets/Production/Generated/.gitkeep

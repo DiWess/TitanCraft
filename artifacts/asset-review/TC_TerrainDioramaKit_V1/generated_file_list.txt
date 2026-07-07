@@ -1,0 +1,13 @@
+artifacts/asset-review/TC_TerrainDioramaKit_V1/back.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/contact_sheet.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/front.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/generated_file_list.txt
+artifacts/asset-review/TC_TerrainDioramaKit_V1/hero_three_quarter.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/left.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/material_preview.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/mesh_stats_report.md
+artifacts/asset-review/TC_TerrainDioramaKit_V1/review_metadata.md
+artifacts/asset-review/TC_TerrainDioramaKit_V1/right.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/scale_reference.png
+artifacts/asset-review/TC_TerrainDioramaKit_V1/sha256sums.txt
+artifacts/asset-review/TC_TerrainDioramaKit_V1/top.png

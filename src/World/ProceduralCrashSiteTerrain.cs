@@ -184,7 +184,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         for (int i = 0; i < centers.Length; i++)
         {
             Vector2 c = centers[i];
-            var poly = new[] { c + new Vector2(-6,-1), c + new Vector2(-2,-2.5f), c + new Vector2(4,-1.5f), c + new Vector2(7,1.2f), c + new Vector2(1,2.4f), c + new Vector2(-5,1.4f) };
+            var poly = new[] { c + new Vector2(-5,1.4f), c + new Vector2(1,2.4f), c + new Vector2(7,1.2f), c + new Vector2(4,-1.5f), c + new Vector2(-2,-2.5f), c + new Vector2(-6,-1) };
             result.Add(($"HorizonSegment_{i+1:00}", BuildPrism(poly, 1.8f + i * 0.22f, 0.02f, ColorFor(TerrainZone.HorizonRidge, 0)), ColorFor(TerrainZone.HorizonRidge, 0)));
         }
         return result;
@@ -266,7 +266,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     private static void AddColored(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c, Color color)
     {
-        Vector3 normal = (b - a).Cross(c - a).Normalized(); vertices.Add(a); vertices.Add(b); vertices.Add(c); normals.Add(normal); normals.Add(normal); normals.Add(normal); colors.Add(color); colors.Add(color); colors.Add(color);
+        Vector3 normal = (c - a).Cross(b - a).Normalized(); vertices.Add(a); vertices.Add(b); vertices.Add(c); normals.Add(normal); normals.Add(normal); normals.Add(normal); colors.Add(color); colors.Add(color); colors.Add(color);
     }
 
     private static ArrayMesh MeshFrom(List<Vector3> vertices, List<Vector3> normals, List<Color> colors)
@@ -311,7 +311,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     private static void AddTriangle(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c, TerrainZone zone)
     {
-        Vector3 normal = (b - a).Cross(c - a).Normalized();
+        Vector3 normal = (c - a).Cross(b - a).Normalized();
         Color color = ColorFor(zone, (a.Y + b.Y + c.Y) / 3.0f);
         vertices.Add(a); vertices.Add(b); vertices.Add(c);
         normals.Add(normal); normals.Add(normal); normals.Add(normal);

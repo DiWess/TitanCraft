@@ -13,10 +13,12 @@ public partial class Workbench : StaticBody3D, ICrashSiteInteractable, ILookHigh
 
     [Export] public NodePath CraftAudioPath { get; set; } = "CraftAudio";
     [Export] public NodePath ChassisPath { get; set; } = "VisualBase/WorkbenchChassis";
+    [Export] public NodePath UnbuiltArmVisualPath { get; set; } = "VisualBase/V1BetaMechanicalArmUnbuiltVisualRoot";
     [Export] public Material? HighlightMaterial { get; set; }
 
     private MeshInstance3D? _chassis;
     private Material? _baseMaterial;
+    private Node3D? _unbuiltArmVisual;
 
     public override void _Ready()
     {
@@ -24,6 +26,7 @@ public partial class Workbench : StaticBody3D, ICrashSiteInteractable, ILookHigh
         CollisionMask = 1u;
         _chassis = GetNodeOrNull<MeshInstance3D>(ChassisPath);
         _baseMaterial = _chassis?.MaterialOverride;
+        _unbuiltArmVisual = GetNodeOrNull<Node3D>(UnbuiltArmVisualPath);
         SetHighlighted(false);
     }
 
@@ -46,9 +49,24 @@ public partial class Workbench : StaticBody3D, ICrashSiteInteractable, ILookHigh
         if (crafted)
         {
             AudioCue.Play(this, CraftAudioPath);
+            RestoreArmState(true);
         }
 
         return crafted;
+    }
+
+    /// <summary>
+    /// Hides the unbuilt-parts hint model once the arm is built. The Interact()
+    /// success path calls this directly; CrashSiteSaveCoordinator also calls it
+    /// after a load so a save with the arm already built doesn't leave stray
+    /// parts visible at the workbench before the player revisits it.
+    /// </summary>
+    public void RestoreArmState(bool isMechanicalArmBuilt)
+    {
+        if (_unbuiltArmVisual is not null)
+        {
+            _unbuiltArmVisual.Visible = !isMechanicalArmBuilt;
+        }
     }
 
     public void SetHighlighted(bool isHighlighted)

@@ -38,6 +38,8 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float SprintFov { get; set; } = 90.0f;
     [Export] public float FovLerpSpeed { get; set; } = 8.0f;
     [Export] public float SprintSpeedMultiplier { get; set; } = 1.15f;
+    [Export] public float WalkFootstepIntervalSeconds { get; set; } = 0.45f;
+    [Export] public float SprintFootstepIntervalSeconds { get; set; } = 0.32f;
 
     public MvpInventory Inventory { get; } = new();
 
@@ -59,6 +61,20 @@ public partial class FirstPersonController : CharacterBody3D
     private string _interactionPrompt = string.Empty;
     private ILookHighlightTarget? _currentLookTarget;
     private bool _debugHighlightAllResourceDrops;
+    private float _footstepTimer;
+    private int _footstepAudioIndex;
+    private bool _wasAttackOnCooldown;
+
+    // No ground-material tagging exists yet, so this is a fixed rotation across
+    // all three recorded surfaces rather than genuine surface detection -- it
+    // exists so Footsteps_Metal/Rock/Ash (already produced, never triggered by
+    // any code) actually play instead of the player moving in total silence.
+    private static readonly string[] FootstepAudioPaths =
+    {
+        "AudioLayer_Player/Footsteps_Metal",
+        "AudioLayer_Player/Footsteps_Rock",
+        "AudioLayer_Player/Footsteps_Ash",
+    };
 
     public override void _Ready()
     {
@@ -257,6 +273,7 @@ public partial class FirstPersonController : CharacterBody3D
                 && !Inventory.IsMechanicalArmBuilt)
             {
                 ShowActionFeedback(ResourceCompletionFeedback);
+                AudioCue.Play(this, "AudioLayer_State/State_Objective");
             }
         }
         else if (interacted && interactable is Workbench)
@@ -264,10 +281,12 @@ public partial class FirstPersonController : CharacterBody3D
             // Reuse the existing controller-to-HUD feedback signal for the craft success,
             // keeping the MVP loop guidance in one player-facing action channel.
             ShowActionFeedback(MechanicalArmCraftSuccessFeedback);
+            AudioCue.Play(this, "AudioLayer_UI/UI_Craft_Complete");
         }
         else if (interacted && interactable is GalaxabrainComponentPickup)
         {
             ShowActionFeedback(GalaxabrainComponentRecoveryFeedback);
+            AudioCue.Play(this, "AudioLayer_State/State_Objective");
         }
         else if (interacted && interactable is SavePoint)
         {
@@ -418,6 +437,7 @@ public partial class FirstPersonController : CharacterBody3D
         // Scout defeat remains separate from component pickup and victory; this
         // only clarifies the existing recovery objective through the HUD channel.
         ShowActionFeedback(GalaxabrainScoutDefeatFeedback);
+        AudioCue.Play(this, "AudioLayer_State/State_Objective");
     }
 
     private void ShowActionFeedback(string message)
@@ -437,6 +457,7 @@ public partial class FirstPersonController : CharacterBody3D
         }
 
         _mechanicalArmAttack.Tick((float)delta);
+        UpdateWeaponReadyAudio();
         UpdateInteractionPrompt();
 
         var velocity = Velocity;
@@ -462,5 +483,38 @@ public partial class FirstPersonController : CharacterBody3D
         velocity.Z = moveDirection.Z * speed;
         Velocity = velocity;
         MoveAndSlide();
+
+        UpdateFootstepAudio(inputDirection, isSprinting, (float)delta);
+    }
+
+    private void UpdateFootstepAudio(Vector2 inputDirection, bool isSprinting, float deltaSeconds)
+    {
+        bool isWalking = IsOnFloor() && inputDirection.LengthSquared() > 0.01f;
+        if (!isWalking)
+        {
+            _footstepTimer = 0f;
+            return;
+        }
+
+        _footstepTimer -= deltaSeconds;
+        if (_footstepTimer > 0f)
+        {
+            return;
+        }
+
+        AudioCue.Play3D(this, FootstepAudioPaths[_footstepAudioIndex], GlobalPosition);
+        _footstepAudioIndex = (_footstepAudioIndex + 1) % FootstepAudioPaths.Length;
+        _footstepTimer = isSprinting ? SprintFootstepIntervalSeconds : WalkFootstepIntervalSeconds;
+    }
+
+    private void UpdateWeaponReadyAudio()
+    {
+        bool isOnCooldown = _mechanicalArmAttack.IsOnCooldown;
+        if (_wasAttackOnCooldown && !isOnCooldown && Inventory.IsMechanicalArmBuilt)
+        {
+            AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Ready", GlobalPosition);
+        }
+
+        _wasAttackOnCooldown = isOnCooldown;
     }
 }

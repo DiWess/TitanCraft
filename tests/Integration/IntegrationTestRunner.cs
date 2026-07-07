@@ -232,7 +232,13 @@ public partial class IntegrationTestRunner : Node
             scout.ApplyDamage(MechanicalArmAttackLogic.DefaultMechanicalArmDamage);
 
         Require(scout.Brain.IsDead, "Galaxabrain Scout did not die after four arm hits");
-        Require(!scout.Visible, "Galaxabrain Scout stayed visible after death");
+        // The corpse stays visible (docs/art/crash-site-object-asset-inventory.md,
+        // "Disabled/dead Scout read") instead of the whole body vanishing: the
+        // alive visual root swaps off and the disabled/collapsed visual root
+        // swaps on.
+        Require(scout.Visible, "Galaxabrain Scout should stay visible after death so the corpse reads as defeated");
+        Require(!scout.GetNode<Node3D>("V1BetaScoutVisualRoot").Visible, "Alive Scout visual stayed visible after death");
+        Require(scout.GetNode<Node3D>("V1BetaScoutDisabledVisualRoot").Visible, "Disabled Scout visual did not become visible after death");
         Require(missionComponent.Visible, "Galaxabrain component pickup did not become visible after scout death");
         Require(missionComponent.Monitoring, "Galaxabrain component pickup did not become collectable after scout death");
         await Frames(2);
@@ -698,7 +704,9 @@ public partial class IntegrationTestRunner : Node
         var reloadedComponent = reloadedScout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
         Require(reloaded.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastLoadSucceeded, "Reload did not restore the defeat-state save");
         Require(reloadedScout.Brain.IsDead, "Defeated Galaxabrain came back to life after reload");
-        Require(!reloadedScout.Visible, "Defeated Galaxabrain became visible again after reload");
+        Require(reloadedScout.Visible, "Defeated Galaxabrain corpse should stay visible after reload");
+        Require(!reloadedScout.GetNode<Node3D>("V1BetaScoutVisualRoot").Visible, "Alive Scout visual became visible again after reload");
+        Require(reloadedScout.GetNode<Node3D>("V1BetaScoutDisabledVisualRoot").Visible, "Disabled Scout visual was not restored after reload");
         Require(reloadedScout.GetNode<CollisionShape3D>("CollisionShape3D").Disabled, "Restored dead Galaxabrain body collider stayed enabled");
         Require(reloadedComponent.Visible && reloadedComponent.Monitoring, "Unrecovered component was not available after reload");
         Require(reloadedPlayer.Inventory.IsMechanicalArmBuilt, "Mechanical arm ownership was lost across reload");
@@ -719,7 +727,8 @@ public partial class IntegrationTestRunner : Node
         var finalScout = finalRun.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
         var finalComponent = finalScout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
         var finalBeacon = finalRun.GetNode<Beacon>("Placeholder_Beacon");
-        Require(finalScout.Brain.IsDead && !finalScout.Visible, "Defeated Galaxabrain revived on the second reload");
+        Require(finalScout.Brain.IsDead && finalScout.Visible, "Defeated Galaxabrain revived on the second reload");
+        Require(finalScout.GetNode<Node3D>("V1BetaScoutDisabledVisualRoot").Visible, "Disabled Scout visual was not restored on the second reload");
         Require(!finalComponent.Visible && !finalComponent.Monitoring, "Recovered component became interactable again after reload");
         Require(!finalComponent.Interact(finalPlayer.Inventory, finalPlayer.Mission), "Recovered component could be collected twice across reloads");
         Require(finalPlayer.Inventory.HasGalaxabrainComponent, "Recovered component was lost across reload");

@@ -378,36 +378,58 @@ def strut(name: str, mat: bpy.types.Material, start: tuple[float, float, float],
     return _finalize(obj, mat, bevel)
 
 
-def build_scout() -> None:
-    """Galaxabrain Scout: spindly quadruped biomech with an emissive purple core."""
+def _build_scout(disabled: bool) -> None:
+    """Galaxabrain Scout geometry shared by the alive and disabled/dead variants.
+
+    disabled=True collapses the stance (uniform z-compression of torso/head/legs)
+    and dims the purple core/braincase/eye/leg-glow emission, per the "collapsed
+    shell, dimmed core" quality gate in docs/art/crash-site-object-asset-inventory.md.
+    """
     carbon = pbr("TC_MVP_AlienCarbon", (0.030, 0.032, 0.040), rough=0.38, metal=0.55)
     plate = pbr("TC_MVP_AlienPlate", (0.085, 0.090, 0.105), rough=0.45, metal=0.65)
-    purple = pbr("TC_MVP_PurpleGlow", (0.01, 0.0, 0.03), rough=0.3, emission=PURPLE_GLOW, strength=7.0)
-    crystal = pbr("TC_MVP_PurpleCrystal", PURPLE_CRYSTAL, rough=0.22, emission=PURPLE_GLOW, strength=1.4)
+    core_strength = 1.0 if disabled else 7.0
+    crystal_strength = 0.15 if disabled else 1.4
+    purple = pbr("TC_MVP_PurpleGlow" + ("Dim" if disabled else ""), (0.01, 0.0, 0.03), rough=0.3,
+                 emission=PURPLE_GLOW, strength=core_strength)
+    crystal = pbr("TC_MVP_PurpleCrystal" + ("Dim" if disabled else ""), PURPLE_CRYSTAL, rough=0.22,
+                  emission=PURPLE_GLOW, strength=crystal_strength)
     rng = random.Random(47)
+    z = (lambda height: 0.42 * height) if disabled else (lambda height: height)
+    torso_tilt = 46 if disabled else 12
+    prefix = "TC_ScoutDisabled" if disabled else "TC_Scout"
     # Torso pod with layered carapace plates
-    gem("TC_Scout_Torso", carbon, (0, 0, 1.10), 0.42, (1.0, 0.72, 0.62), rot=(0, 12, 0), jitter=0.02, rng=rng)
-    box("TC_Scout_PlateTop", plate, (0.02, 0, 1.36), (0.55, 0.42, 0.10), rot=(0, 14, 0), bevel=0.02)
-    box("TC_Scout_PlateBack", plate, (-0.30, 0, 1.16), (0.28, 0.48, 0.30), rot=(0, -18, 0), bevel=0.02)
+    gem(f"{prefix}_Torso", carbon, (0, 0, z(1.10)), 0.42, (1.0, 0.72, 0.62), rot=(0, torso_tilt, 0), jitter=0.02, rng=rng)
+    box(f"{prefix}_PlateTop", plate, (0.02, 0, z(1.36)), (0.55, 0.42, 0.10), rot=(0, 14 + (torso_tilt - 12), 0), bevel=0.02)
+    box(f"{prefix}_PlateBack", plate, (-0.30, 0, z(1.16)), (0.28, 0.48, 0.30), rot=(0, -18, 0), bevel=0.02)
     # Forward head cluster with glowing braincase
-    strut("TC_Scout_Neck", plate, (0.30, 0, 1.18), (0.62, 0, 1.34), 0.10, 0.06)
-    gem("TC_Scout_Head", carbon, (0.72, 0, 1.36), 0.16, (1.2, 0.85, 0.9), rot=(0, 20, 0), jitter=0.012, rng=rng)
-    gem("TC_Scout_Braincase", crystal, (0.76, 0, 1.44), 0.10, (0.9, 0.7, 0.9), jitter=0.01, rng=rng)
-    box("TC_Scout_EyeSlit", purple, (0.86, 0, 1.35), (0.05, 0.14, 0.025), rot=(0, 20, 0), bevel=0)
-    # Chest core
-    gem("TC_Scout_Core", purple, (0.26, 0, 1.02), 0.11, (0.8, 0.8, 1.1))
-    # Four spider legs: hip -> raised knee -> bladed foot
+    strut(f"{prefix}_Neck", plate, (0.30, 0, z(1.18)), (0.62, 0, z(1.34)), 0.10, 0.06)
+    gem(f"{prefix}_Head", carbon, (0.72, 0, z(1.36)), 0.16, (1.2, 0.85, 0.9), rot=(0, 20, 0), jitter=0.012, rng=rng)
+    gem(f"{prefix}_Braincase", crystal, (0.76, 0, z(1.44)), 0.10, (0.9, 0.7, 0.9), jitter=0.01, rng=rng)
+    box(f"{prefix}_EyeSlit", purple, (0.86, 0, z(1.35)), (0.05, 0.14, 0.025), rot=(0, 20, 0), bevel=0)
+    # Chest core -- the combat-readable weak point; exposed and dimmed once disabled
+    gem(f"{prefix}_Core", purple, (0.26, 0, z(1.02)), 0.11, (0.8, 0.8, 1.1))
+    # Four spider legs: hip -> raised knee -> bladed foot; z-compressed to sell a collapsed stance
     for i, ang in enumerate((50, 130, 230, 310)):
         rad = math.radians(ang)
-        hip = (0.30 * math.cos(rad), 0.34 * math.sin(rad), 1.06)
-        knee = (0.85 * math.cos(rad), 0.88 * math.sin(rad), 1.62)
+        hip = (0.30 * math.cos(rad), 0.34 * math.sin(rad), z(1.06))
+        knee = (0.85 * math.cos(rad), 0.88 * math.sin(rad), z(1.62))
         foot = (1.15 * math.cos(rad), 1.18 * math.sin(rad), 0.0)
-        strut(f"TC_Scout_LegUpper_{i}", plate, hip, knee, 0.075, 0.045, bevel=0.01)
-        gem(f"TC_Scout_Knee_{i}", carbon, knee, 0.07, (1, 1, 1))
-        strut(f"TC_Scout_LegLower_{i}", carbon, knee, foot, 0.045, 0.012, scale=(1, 0.55, 1), bevel=0.008)
-        strut(f"TC_Scout_LegGlow_{i}", purple,
+        strut(f"{prefix}_LegUpper_{i}", plate, hip, knee, 0.075, 0.045, bevel=0.01)
+        gem(f"{prefix}_Knee_{i}", carbon, knee, 0.07, (1, 1, 1))
+        strut(f"{prefix}_LegLower_{i}", carbon, knee, foot, 0.045, 0.012, scale=(1, 0.55, 1), bevel=0.008)
+        strut(f"{prefix}_LegGlow_{i}", purple,
               ((hip[0] + knee[0]) / 2, (hip[1] + knee[1]) / 2, (hip[2] + knee[2]) / 2 + 0.03),
               (knee[0], knee[1], knee[2] + 0.02), 0.02, 0.008, bevel=0)
+
+
+def build_scout() -> None:
+    """Galaxabrain Scout: spindly quadruped biomech with an emissive purple core."""
+    _build_scout(disabled=False)
+
+
+def build_scout_disabled() -> None:
+    """Galaxabrain Scout, disabled/dead state: collapsed stance, dimmed core, for post-combat readability."""
+    _build_scout(disabled=True)
 
 
 def build_mechanical_arm() -> None:
@@ -434,6 +456,30 @@ def build_mechanical_arm() -> None:
         box(f"TC_Arm_Finger_{i}", dark, (x, 0.90, 0.19), (0.05, 0.10, 0.06), rot=(-8, 0, 0), bevel=0.01)
     box("TC_Arm_Thumb", dark, (-0.12, 0.80, 0.11), (0.05, 0.09, 0.05), rot=(0, 0, -20), bevel=0.01)
     box("TC_Arm_Knuckle", purple, (0, 0.856, 0.245), (0.15, 0.02, 0.02), bevel=0)
+
+
+def build_mechanical_arm_unbuilt() -> None:
+    """Unbuilt hint: salvaged Mechanical Arm Mk I parts loose on a tray, not yet assembled or powered.
+
+    Same segment/elbow/wrist/palm profile as build_mechanical_arm(), but scattered
+    and disconnected on a salvage tray with no purple energy seams -- the recipe
+    is not craftable/powered until the player gathers resources at the workbench.
+    """
+    beige = pbr("TC_MVP_HullBeige", BEIGE_HULL, rough=0.62, metal=0.12)
+    dark = pbr("TC_MVP_DarkMetal", DARK_METAL, rough=0.48, metal=0.65)
+    mid = pbr("TC_MVP_MidMetal", MID_METAL, rough=0.45, metal=0.75)
+    steel = pbr("TC_MVP_SteelScrap", STEEL_SCRAP, rough=0.42, metal=0.9)
+    orange = pbr("TC_MVP_OrangePaint", ORANGE_PAINT, rough=0.42)
+    box("TC_ArmUnbuilt_Tray", steel, (0, 0, 0.02), (1.10, 0.62, 0.04), bevel=0.012)
+    box("TC_ArmUnbuilt_TrayStripe", orange, (0, -0.27, 0.045), (1.00, 0.03, 0.01), bevel=0)
+    segments = ((-0.34, 0.10, 12), (-0.04, -0.12, -8), (0.32, 0.06, 20))
+    profiles = ((0.155, 0.20), (0.145, 0.18), (0.135, 0.14))
+    for i, ((x, y, yaw), (r, depth)) in enumerate(zip(segments, profiles)):
+        cyl(f"TC_ArmUnbuilt_Segment_{i}", beige if i % 2 == 0 else mid, (x, y, 0.04 + r), r, depth,
+            rot=(90, 0, yaw), vertices=10, bevel=0.015)
+    cyl("TC_ArmUnbuilt_Elbow", dark, (-0.20, 0.24, 0.04 + 0.165), 0.165, 0.10, rot=(90, 0, 40), vertices=10, bevel=0.015)
+    cyl("TC_ArmUnbuilt_Wrist", dark, (0.16, -0.22, 0.04 + 0.10), 0.10, 0.08, rot=(90, 0, -25), vertices=10, bevel=0.01)
+    box("TC_ArmUnbuilt_PalmBlank", mid, (0.42, -0.18, 0.10), (0.20, 0.16, 0.20), rot=(0, 0, 15), bevel=0.02)
 
 
 def build_save_point() -> None:
@@ -475,7 +521,9 @@ ASSETS = {
     "TC_PICKUP_Electronics_V1": build_pickup_electronics,
     "TC_PICKUP_Component_V1": build_pickup_component,
     "TC_CHAR_GalaxabrainScout_V1": build_scout,
+    "TC_CHAR_GalaxabrainScout_Disabled_V1": build_scout_disabled,
     "TC_PLAYER_MechanicalArm_V1": build_mechanical_arm,
+    "TC_PLAYER_MechanicalArmUnbuilt_V1": build_mechanical_arm_unbuilt,
     "TC_PROP_SavePoint_V1": build_save_point,
     "TC_ENV_CrashDebris_A_V1": build_crash_debris,
 }

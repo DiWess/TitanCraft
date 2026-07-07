@@ -141,6 +141,10 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public NodePath? CombatTutorialPath { get; set; }
 
+    [Export] public NodePath AliveVisualPath { get; set; } = "V1BetaScoutVisualRoot";
+
+    [Export] public NodePath DisabledVisualPath { get; set; } = "V1BetaScoutDisabledVisualRoot";
+
     public GalaxabrainScoutBrain Brain => _brain;
 
     public GalaxabrainScoutState State => _brain.State;
@@ -245,7 +249,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         DisableBodyCollision();
         SetMissionComponentVisible(true);
         AudioCue.Play(this, DeathAudioPath);
-        Visible = false;
+        ShowDisabledVisual();
 
         // Gameplay death is the only event allowed to complete the defeat objective;
         // the component pickup afterwards completes only component recovery.
@@ -266,11 +270,29 @@ public partial class GalaxabrainScout : CharacterBody3D
         SetPhysicsProcess(false);
         DisableBodyCollision();
         SetMissionComponentVisible(isComponentAvailable);
-        Visible = false;
+        ShowDisabledVisual();
 
         if (!isComponentAvailable && GetMissionComponent() is GalaxabrainComponentPickup pickup)
         {
             pickup.RestoreCollected();
+        }
+    }
+
+    /// <summary>
+    /// Swaps the alive rig for the collapsed/dimmed-core disabled rig instead of
+    /// hiding the whole body, so the corpse reads as defeated rather than vanishing
+    /// (docs/art/crash-site-object-asset-inventory.md, "Disabled/dead Scout read").
+    /// </summary>
+    private void ShowDisabledVisual()
+    {
+        if (GetNodeOrNull<Node3D>(AliveVisualPath) is { } alive)
+        {
+            alive.Visible = false;
+        }
+
+        if (GetNodeOrNull<Node3D>(DisabledVisualPath) is { } disabled)
+        {
+            disabled.Visible = true;
         }
     }
 

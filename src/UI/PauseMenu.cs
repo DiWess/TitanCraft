@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Core;
 
 namespace TitanCraft.UI;
 
@@ -26,6 +27,7 @@ public partial class PauseMenu : CanvasLayer
         Visible = !Visible;
         GetTree().Paused = Visible;
         Input.MouseMode = Visible ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
+        AudioCue.Play(this, "AudioLayer_UI/UI_Menu_Toggle");
     }
 
     public void Resume()
@@ -33,15 +35,27 @@ public partial class PauseMenu : CanvasLayer
         Visible = false;
         GetTree().Paused = false;
         Input.MouseMode = Input.MouseModeEnum.Captured;
+        AudioCue.Play(this, "AudioLayer_UI/UI_Select");
     }
 
-    public void SaveGame() => SaveRequested?.Invoke();
+    public void SaveGame()
+    {
+        AudioCue.Play(this, "AudioLayer_UI/UI_Select");
+        SaveRequested?.Invoke();
+    }
 
     public void ReturnToMainMenu()
     {
+        AudioCue.Play(this, "AudioLayer_UI/UI_Select");
         GetTree().Paused = false;
         GetTree().ChangeSceneToFile(MainMenuScenePath);
     }
 
-    public void QuitGame() => GetTree().Quit();
+    public void QuitGame()
+    {
+        AudioCue.Play(this, "AudioLayer_UI/UI_Select");
+        GetTree().Quit();
+    }
+
+    public void PlayHoverSound() => AudioCue.Play(this, "AudioLayer_UI/UI_Hover");
 }

@@ -85,3 +85,17 @@
 - 2026-07-05: Replaced binary PNG placeholder evidence with text-diffable SVG and Markdown workaround while preserving the V1 beta partial visual verdict and PNG gate limitation.
 
 - 2026-07-07: Integrated the existing Blender Asset Forge polish-details candidate into Main.tscn at crash-wreck, workbench, and beacon-route positions as visual-only production dressing; validation passed for import/build/node resolution, while screenshot evidence stayed environment-blocked because xvfb-run is unavailable.
+
+- 2026-07-07: Added `docs/production/mvp-closure-index-2026-07-07.md` to route the broad full-MVP closure request into evidence-backed autonomous, human-blocked, and environment-blocked tasks without expanding Crash Site MVP scope.
+
+- 2026-07-07: Added `docs/art/reviews/agent-studio-visual-valuation-2026-07-07.md` with opened-PNG Agent Studio visual valuation, environment-blocked fresh capture note, and NOT_GO final visual approval verdict.
+
+- 2026-07-07: Closed Agent Studio next task by generating the Stage A `TC_TerrainDioramaKit_V1` review artifact bundle with Blender, recording hashes/mesh stats, and keeping visual approval gated for the next Visual Reviewer task.
+
+- 2026-07-07: Recorded the Stage A Visual Reviewer verdict for `TC_TerrainDioramaKit_V1` as NOT_GO after opening all review PNGs; scale-reference occlusion blocks approval and keeps production integration gated.
+
+- 2026-07-07: Re-rendered Stage A terrain review PNGs with a readable scale-reference view, recorded Visual Reviewer PASS, captured production integration screenshots, and moved the production sign-off gate to PASS without expanding Crash Site MVP scope.
+
+- 2026-07-07: Untracked generated Stage A binary review/source/export artifacts, documented their local/CI artifact policy, and stamped `StageAVisualRoot` with PASS review/sign-off metadata so production carries the approved Stage A gate through tracked scene state.
+
+- 2026-07-07: Built `TC_HullRibOccluder_V1` through Blender as a committed text OBJ with provenance/hash evidence, then applied two collisionless Stage A wreckage instances to `Main.tscn` and verified import/build/PNG capture without expanding Crash Site gameplay scope.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=98 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -105,6 +105,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Small_V1.gltf" id="109_v1_shard_small"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Medium_V1.gltf" id="110_v1_shard_medium"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_EmbeddedCluster_V1.gltf" id="111_v1_shard_cluster"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PolishDetails_V1.gltf" id="112_v1_polish_details"]
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
 albedo_color = Color(0.88, 0.85, 0.80, 1)
@@ -467,6 +468,21 @@ transform = Transform3D(1,0,0,0,1,0,0,0,1,-2,3.0,-4)
 light_color = Color(1, 0.48, 0.18, 1)
 light_energy = 0.55
 omni_range = 8.0
+[node name="CrashWreck_PolishDetails" type="Node3D" parent="."]
+transform = Transform3D(2.8, 0, 0, 0, 2.8, 0, 0, 0, 2.8, -8.2, 1.35, -10.3)
+
+[node name="PolishDetailsModel" parent="CrashWreck_PolishDetails" instance=ExtResource("112_v1_polish_details")]
+
+[node name="Workbench_PolishDetails" type="Node3D" parent="."]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0.0, 1.1, 17.0)
+
+[node name="PolishDetailsModel" parent="Workbench_PolishDetails" instance=ExtResource("112_v1_polish_details")]
+
+[node name="BeaconRoute_PolishDetails" type="Node3D" parent="."]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 26.0, 0.8, 27.5)
+
+[node name="PolishDetailsModel" parent="BeaconRoute_PolishDetails" instance=ExtResource("112_v1_polish_details")]
+
 [node name="AudioLayer_Ambient" type="Node" parent="."]
 metadata/category = "Ambient environment loops (wind, rumble, machinery)"
 metadata/positioning = "3D positional audio at origin"

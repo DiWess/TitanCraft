@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Enemies;
 using TitanCraft.Player;
 using TitanCraft.UI;
@@ -79,6 +80,7 @@ public partial class CrashSiteSaveCoordinator : Node
             MissionStep = missionStep,
         }, SavePath);
         LastSaveSucceeded = true;
+        AudioCue.Play(this, "AudioLayer_Save/Save_Complete");
     }
 
     public bool LoadGameIfPresent()
@@ -105,6 +107,7 @@ public partial class CrashSiteSaveCoordinator : Node
         _workbench?.RestoreArmState(isMechanicalArmBuilt);
 
         LastLoadSucceeded = true;
+        AudioCue.Play(this, "AudioLayer_Save/Load_Complete");
         return true;
     }
 }

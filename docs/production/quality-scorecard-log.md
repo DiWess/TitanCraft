@@ -102,3 +102,25 @@ better — axes 2 and 3 remain at 3.0 (logic/wiring verified, feel `HUMAN_BLOCKE
 above. A genuine push toward 10/10 on this benchmark needs, at minimum: a dated human playtest for axes
 2/3/9, Stage A visual approval for axis 6, and the Stage B→C review chain this branch has been operating
 under an explicit human override of (see prior commits) resolved properly rather than bypassed.
+
+### 2026-07-07 (second pass same day) — claude/blender-assets-scene-integration-kyt4th (no PR yet)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | The 6-step progression (collect → build arm → defeat Scout → recover component → save → activate beacon) now has an audio beat at 3 of its intermediate transitions (see axis 7). This closes a completeness gap in how the loop communicates its own progress, not a loop-structure change; score held, since the axis's stated gap ("single path") is about content breadth, not feedback, and is unaffected. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass; see prior entry's binding-rule-2 constraint. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Workbench crafting success now plays `UI_Craft_Complete` (previously produced, never triggered — confirmed via grep before this change). Held at 5.0: this is audio-feedback completeness on an already-scored system, not a change to the recipe/progression design itself. |
+| 5 | World / level design | 3.0 | 8.5 | = | Unchanged this pass. |
+| 6 | Visual art & presentation | 3.0 | 9.0 | = | Unchanged this pass. |
+| 7 | Audio & feedback | 2.5 | 8.5 | +0.5 | Wired four more previously-silent, already-produced audio cues (confirmed via grep showing zero call sites before this change, and a headless GDScript instantiation of `Main.tscn` confirming all four resolve to real `AudioStreamPlayer` nodes at their expected paths afterward): `Save_Complete` on `CrashSiteSaveCoordinator.SaveGame()` success, `Load_Complete` on `LoadGameIfPresent()` success, `State_Objective` on the resource-collection-complete, component-recovery, and Scout-defeat transitions, and `UI_Craft_Complete` on Workbench crafting success. Deliberately left unwired: `Save_Progress` (no clean semantic moment for a synchronous, near-instant save — wiring it would mean firing it and `Save_Complete` in the same frame, which is contrived, not a real "in progress" state); `UI_Select`/`UI_Hover`/`UI_Menu_Toggle` and the Beacon→Victory transition's own `State_Objective` (Main.tscn's audio layers are unreachable once `MainMenu.tscn`/`VictoryScreen.tscn`/`DefeatScreen.tscn` load as standalone scene roots — Main unloads first — so wiring those would need new local `AudioStreamPlayer` nodes added to four separate scene files, a materially larger change than this pass scoped; Beacon activation already gets its own distinct Victory sting from the end screen, so adding `State_Objective` there would just be redundant, overlapping audio). Same binding-rule-2 caveat as before: this is wiring completeness, not a "sounds good" claim. |
+| 8 | Technical stability | 7.0 | 8.0 | = | Re-verified: `dotnet build` 0 warnings/errors; `dotnet test` 71/71; `tests/Integration/IntegrationTestRunner.tscn` rerun to `TITANCRAFT_INTEGRATION_TESTS_PASS` with all 11 MVP smoke milestones (including the save/load persistence test that now also exercises the new Save/Load audio calls) after the audio wiring above. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | Unchanged this pass — no new claim requiring correction found. |
+
+**Composite (axes 1–9):** 3.8 / 10 (peer average ≈8.8 / 10; the +0.5 on axis 7 does not move the rounded
+composite)
+**Note:** Same constraint as the prior entry: no claim of "10/10" or of improved feel. This pass closes
+audio-completeness gaps only (assets that existed and were silent now play at their intended moments);
+axes 2/3/9 remain gated on a human playtest, axis 6 on Stage A approval, and axis 5 on unverified layout
+claims — none of which this pass touched.

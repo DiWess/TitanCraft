@@ -273,6 +273,7 @@ public partial class FirstPersonController : CharacterBody3D
                 && !Inventory.IsMechanicalArmBuilt)
             {
                 ShowActionFeedback(ResourceCompletionFeedback);
+                AudioCue.Play(this, "AudioLayer_State/State_Objective");
             }
         }
         else if (interacted && interactable is Workbench)
@@ -280,10 +281,12 @@ public partial class FirstPersonController : CharacterBody3D
             // Reuse the existing controller-to-HUD feedback signal for the craft success,
             // keeping the MVP loop guidance in one player-facing action channel.
             ShowActionFeedback(MechanicalArmCraftSuccessFeedback);
+            AudioCue.Play(this, "AudioLayer_UI/UI_Craft_Complete");
         }
         else if (interacted && interactable is GalaxabrainComponentPickup)
         {
             ShowActionFeedback(GalaxabrainComponentRecoveryFeedback);
+            AudioCue.Play(this, "AudioLayer_State/State_Objective");
         }
         else if (interacted && interactable is SavePoint)
         {
@@ -434,6 +437,7 @@ public partial class FirstPersonController : CharacterBody3D
         // Scout defeat remains separate from component pickup and victory; this
         // only clarifies the existing recovery objective through the HUD channel.
         ShowActionFeedback(GalaxabrainScoutDefeatFeedback);
+        AudioCue.Play(this, "AudioLayer_State/State_Objective");
     }
 
     private void ShowActionFeedback(string message)

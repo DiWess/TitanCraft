@@ -78,3 +78,27 @@ defect fixes (see evidence file). This explicitly does **not** claim the 6/10 mi
 targets — reaching 6.0 needs continuous terrain (not sparse patches), replacement of placeholder standee
 assets, and a human/Art Director aesthetic sign-off, none of which this pass attempted (out of scope for
 a single lighting/bugfix pass; see `CLAUDE.md` §9 agent handoff).
+
+### 2026-07-07 — claude/blender-assets-scene-integration-kyt4th (no PR yet)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | `src/Player/FirstPersonController.cs` now plays a distinct `Weapon_Ready` cue when the Mechanical Arm's cooldown ends (previously that audio asset was produced but never triggered by any code — confirmed via repo-wide grep before the change). This is a functional completeness fix, not a feel improvement: per `quality_benchmark_v1.md` binding rule 2, "combat is satisfying" and equivalents require a dated human playtest in a non-headless environment, which this session cannot produce. Score held at 3.0 (logic tested, feel still unverified) rather than raised. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | `FirstPersonController` now triggers footstep audio (cycling the three already-produced but previously unused `Footsteps_Metal/Rock/Ash` clips) on a walk/sprint timer while grounded and moving. This is not real surface-material detection (no such tagging exists on ground meshes) — it is a fixed rotation, documented as such in code. Same binding-rule-2 constraint as axis 2: functional wiring verified, "feels responsive" is not claimed and needs a human pass. Score held at 3.0. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 3.0 | 8.5 | = | Unchanged this pass. |
+| 6 | Visual art & presentation | 3.0 | 9.0 | = | Unchanged this pass (prior session on this branch added Blender Asset Forge candidates and cinematic-polish UI reveals; see branch history, not re-scored here). |
+| 7 | Audio & feedback | 2.0 | 8.5 | +0.5 | Same footstep/weapon-ready wiring as axes 2–3 above: two previously-silent, already-produced audio layers (`AudioLayer_Player/Footsteps_*`, `AudioLayer_Player/Weapon_Ready`) are now actually triggered, confirmed present at their expected NodePaths via a headless GDScript instantiation of `Main.tscn` (`AudioLayer_Player/Footsteps_Metal` etc. resolved to real `AudioStreamPlayer3D` nodes). Still placeholder-sourced audio per README's non-priority stance on audio; +0.5 reflects closing a concrete "asset exists, never plays" gap, not a mix/design quality claim. |
+| 8 | Technical stability | 7.0 | 8.0 | = | Re-verified: `dotnet build` 0 warnings/errors; `dotnet test` 71/71 gdUnit4 passed; `godot --headless --path . --import` 0 errors. Additionally ran `tests/Integration/IntegrationTestRunner.tscn` headlessly (a full Godot-scene integration suite this session had not previously run) and found it failing on stale assertions from an earlier commit on this same branch: three `Require` calls in `TestGalaxabrainScoutDeathPickup()` and `TestDefeatedScoutPersistenceAcrossReload()` still asserted `!scout.Visible` after death, left over from before `GalaxabrainScout.Die()`/`RestoreDefeated()` were changed (this branch, prior commit) to keep the corpse visible via a visual-root swap instead of hiding the whole body. Fixed the assertions to check the new alive/disabled visual-root swap instead of reverting the behavior; reran to a clean `TITANCRAFT_INTEGRATION_TESTS_PASS` with all 11 MVP smoke milestones passing. This is the process-integrity axis 10 evidence for this entry, not scored here as a stability gain — it's a correction of this session's own prior gap (didn't run this suite before declaring the earlier commit done). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | See axis 8 evidence: a prior commit on this branch was declared verified (`dotnet build`/`dotnet test`/scene-load checks) without running `tests/Integration/IntegrationTestRunner.tscn`, which would have caught the stale-assertion regression immediately. Recorded here rather than silently fixed, per this axis's own purpose. |
+
+**Composite (axes 1–9):** 3.8 / 10 (peer average ≈8.8 / 10, unchanged from prior entry — the +0.5 on axis 7
+does not move the rounded composite)
+**Note:** This pass explicitly does not claim a "10/10 MVP." Per `quality_benchmark_v1.md` binding rule 2,
+no agent in a headless/no-display environment may assert that combat, movement, or level flow "feels"
+better — axes 2 and 3 remain at 3.0 (logic/wiring verified, feel `HUMAN_BLOCKED`) despite the additions
+above. A genuine push toward 10/10 on this benchmark needs, at minimum: a dated human playtest for axes
+2/3/9, Stage A visual approval for axis 6, and the Stage B→C review chain this branch has been operating
+under an explicit human override of (see prior commits) resolved properly rather than bypassed.

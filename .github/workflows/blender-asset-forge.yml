@@ -220,20 +220,20 @@ jobs:
       - name: Check for changes to commit
         id: check_changes
         run: |
-          if git diff --quiet -- assets/Source/Blender/ assets/Production/Generated/ && [ -z "$(git status --porcelain -- assets/Source/Blender/ assets/Production/Generated/)" ]; then
+          if git diff --quiet -- assets/Source/Blender/ assets/Production/Generated/ artifacts/asset-review/ && [ -z "$(git status --porcelain -- assets/Source/Blender/ assets/Production/Generated/ artifacts/asset-review/)" ]; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
-            git status --short -- assets/Source/Blender/ assets/Production/Generated/
+            git status --short -- assets/Source/Blender/ assets/Production/Generated/ artifacts/asset-review/
           fi
 
       - name: Commit and push generated Blender sources and exports
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && github.event_name == 'push'
         run: |
           set -euo pipefail
           git config --local user.email "claude@anthropic.com"
           git config --local user.name "Blender Asset Forge (GitHub Actions)"
-          git add assets/Source/Blender/ assets/Production/Generated/
+          git add assets/Source/Blender/ assets/Production/Generated/ artifacts/asset-review/
           git commit \
             -m "Auto-forge: rebuild Blender Asset Forge sources, exports, and manifest" \
             -m "This is an automated commit from the Blender Asset Forge GitHub Actions workflow. It regenerates every standalone asset candidate's .blend source, .glb export, and assets/Production/Generated/asset_manifest.json from the tools/blender/create_*.py recipes on this branch." \

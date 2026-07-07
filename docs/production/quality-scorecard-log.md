@@ -180,3 +180,25 @@ passes like this one and the three before it (each has moved the needle roughly 
 rounded composite), not one turn. This pass's real, verified contribution: a Windows export that failed
 silently-by-omission before (never actually attempted with evidence on this branch) now succeeds cleanly,
 and two real, previously-undiscovered scene defects are fixed.
+
+### 2026-07-07 (fifth pass same day) — claude/blender-assets-scene-integration-kyt4th (no PR yet)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 3.5 | 8.5 | = | Unchanged this pass. |
+| 6 | Visual art & presentation | 4.0 | 9.0 | +1.0 | Captured fresh screenshots via `xvfb-run -a godot --path . --script tools/visual_review/capture_phase3a_production_integration.gd` and found the single worst visual defect in the whole scene: `ProceduralCrashSiteTerrain` was `visible = false` in `scenes/Main/Main.tscn` (confirmed by reading the file), so every asset — hull, workbench, save point, beacon, pickups, distant silhouettes — appeared as tiny disconnected debris floating in a flat void with no ground plane at all. Set it `visible = true` and re-captured: this fixed the void/connectivity but revealed a second real defect — the terrain rendered solid unlit black. Ruled out shadow-mapping as sole cause via a disable-shadows diagnostic (partial improvement only, most of the surface stayed black). Read `src/World/ProceduralCrashSiteTerrain.cs`'s `AddColored()`/`AddTriangle()` and found both computed the face normal as `(b - a).Cross(c - a).Normalized()`; hand-checked this against the actual grid-triangulation winding used in `BuildMesh()` (representative vertices a=(0,0,0), b=(1,0,0), c=(1,0,1)) and got a cross product of `(0,-1,0)` — pointing straight down through the terrain, away from the light, explaining the near-zero direct lighting. Flipped both to `(c - a).Cross(b - a).Normalized()`, rebuilt (`dotnet build`, 0 errors), restored the shadow-disable diagnostic back to `shadow_enabled = true` (that was a test, not the fix), re-imported, and re-captured all 8 production screenshots. Opened `production_01_spawn_overview.png`, `production_04_resource_workbench_zone.png`, and `production_08_wide_terrain_composition.png` before/after: terrain now renders as a continuous, connected, properly lit surface with visible directional-light gradient and per-zone albedo tones (brown/ash/basalt), not solid black. New, disclosed limitation found while checking: `production_01` shows a visible hard vertical seam/step where two terrain zone meshes meet in the near-camera foreground (a sharp height discontinuity with a hard shadow edge) — not fixed this pass, this is a separate zone-blending issue, not the normal-inversion bug. Held at 4.0, not higher: this fixes a rendering-breaking defect (the worst-case failure for this axis — a broken void), not the underlying art-direction gaps (still Stage-A-unapproved per `docs/production/known-blockers.md`, still low-poly kit assets, now also has a newly-visible zone-seam artifact). This is the largest single verified jump this axis has had this session because the prior state was not merely "unpolished" but actually broken (no ground plane rendering at all). |
+| 7 | Audio & feedback | 2.5 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after the terrain/scene changes: `dotnet build TitanCraft.sln` 0 errors; `godot --headless --path . --import` 0 errors; `dotnet test` 71/71 passed; `godot --headless --path . tests/Integration/IntegrationTestRunner.tscn` reached `TITANCRAFT_INTEGRATION_TESTS_PASS` with all 11 MVP smoke milestones (the `LocalSaveGameStore` "unreadable save data" line in the log is an expected negative-path warning from that same suite's load-corruption test, not a regression). No change to the score: this pass re-confirmed the existing 7.5, it didn't close the still-open Windows-hardware-execution gap. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | Unchanged this pass. |
+
+**Composite (axes 1–9):** 4.1 / 10 (peer average ≈8.8 / 10 — 36.5/9 = 4.055, rounds to 4.1)
+**Note:** This pass fixed a genuine rendering bug (inverted terrain normals causing solid-black, disconnected
+terrain) rather than adding new art assets — the kind of fix that matters most for a first impression, since
+a broken void is worse than a merely unpolished level. It does not constitute Stage A visual approval, a feel
+claim, or a "10/10" — those remain blocked exactly as stated in every prior entry. The newly-observed
+terrain-zone seam in `production_01` is disclosed above rather than cropped out of the evidence.

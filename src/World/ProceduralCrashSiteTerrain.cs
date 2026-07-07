@@ -266,7 +266,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     private static void AddColored(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c, Color color)
     {
-        Vector3 normal = (b - a).Cross(c - a).Normalized(); vertices.Add(a); vertices.Add(b); vertices.Add(c); normals.Add(normal); normals.Add(normal); normals.Add(normal); colors.Add(color); colors.Add(color); colors.Add(color);
+        Vector3 normal = (c - a).Cross(b - a).Normalized(); vertices.Add(a); vertices.Add(b); vertices.Add(c); normals.Add(normal); normals.Add(normal); normals.Add(normal); colors.Add(color); colors.Add(color); colors.Add(color);
     }
 
     private static ArrayMesh MeshFrom(List<Vector3> vertices, List<Vector3> normals, List<Color> colors)
@@ -311,7 +311,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     private static void AddTriangle(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c, TerrainZone zone)
     {
-        Vector3 normal = (b - a).Cross(c - a).Normalized();
+        Vector3 normal = (c - a).Cross(b - a).Normalized();
         Color color = ColorFor(zone, (a.Y + b.Y + c.Y) / 3.0f);
         vertices.Add(a); vertices.Add(b); vertices.Add(c);
         normals.Add(normal); normals.Add(normal); normals.Add(normal);

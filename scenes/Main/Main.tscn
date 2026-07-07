@@ -101,6 +101,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_complete_01.wav" id="105_save_complete"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_progress_01.wav" id="106_save_progress"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/load_complete_01.wav" id="107_load_complete"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_RockOccluder_V1.gltf" id="108_v1_rock_occluder"]
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
 albedo_color = Color(0.88, 0.85, 0.80, 1)
@@ -313,9 +314,6 @@ material = ExtResource("16_orange")
 [sub_resource type="BoxMesh" id="BoxMesh_beacon_crown"]
 size = Vector3(0.72, 0.16, 0.72)
 material = ExtResource("19_violet")
-[sub_resource type="BoxMesh" id="BoxMesh_rock"]
-size = Vector3(3, 2, 2.3)
-material = ExtResource("17_rock")
 [sub_resource type="SphereMesh" id="SphereMesh_moon"]
 radial_segments = 12
 rings = 6
@@ -637,23 +635,20 @@ metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with load_
 metadata/notes = "Load completion confirmation, optional audio on game restore"
 [node name="VolcanicRock_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1.2,0.15,0,0,1,0,-0.08,0,1,-20,1.0,-18)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+metadata/integration = "Foreground rock occluder (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only mesh swap; Collision_BlockingRock is untouched."
+[node name="RockOccluderModel" parent="VolcanicRock_1" instance=ExtResource("108_v1_rock_occluder")]
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_1"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="VolcanicRock_2" type="StaticBody3D" parent="."]
 transform = Transform3D(1.4,0.15,0,0,1.2,0,-0.08,0,1,22,1.0,-30)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+metadata/integration = "Foreground rock occluder (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only mesh swap; Collision_BlockingRock is untouched."
+[node name="RockOccluderModel" parent="VolcanicRock_2" instance=ExtResource("108_v1_rock_occluder")]
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_2"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="VolcanicRock_3" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0.15,0,0,1.4,0,-0.08,0,1.3,-25,1.0,-35)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VolcanicRock_3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+metadata/integration = "Foreground rock occluder (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only mesh swap; Collision_BlockingRock is untouched."
+[node name="RockOccluderModel" parent="VolcanicRock_3" instance=ExtResource("108_v1_rock_occluder")]
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_3"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="DistantRock_4" type="Node3D" parent="."]

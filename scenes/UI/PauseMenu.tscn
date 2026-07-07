@@ -35,3 +35,7 @@ text = "Quit"
 [connection signal="pressed" from="Panel/Menu/SaveButton" to="." method="SaveGame"]
 [connection signal="pressed" from="Panel/Menu/MainMenuButton" to="." method="ReturnToMainMenu"]
 [connection signal="pressed" from="Panel/Menu/QuitButton" to="." method="QuitGame"]
+[connection signal="mouse_entered" from="Panel/Menu/ResumeButton" to="." method="PlayHoverSound"]
+[connection signal="mouse_entered" from="Panel/Menu/SaveButton" to="." method="PlayHoverSound"]
+[connection signal="mouse_entered" from="Panel/Menu/MainMenuButton" to="." method="PlayHoverSound"]
+[connection signal="mouse_entered" from="Panel/Menu/QuitButton" to="." method="PlayHoverSound"]

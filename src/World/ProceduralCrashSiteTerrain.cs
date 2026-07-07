@@ -184,7 +184,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         for (int i = 0; i < centers.Length; i++)
         {
             Vector2 c = centers[i];
-            var poly = new[] { c + new Vector2(-6,-1), c + new Vector2(-2,-2.5f), c + new Vector2(4,-1.5f), c + new Vector2(7,1.2f), c + new Vector2(1,2.4f), c + new Vector2(-5,1.4f) };
+            var poly = new[] { c + new Vector2(-5,1.4f), c + new Vector2(1,2.4f), c + new Vector2(7,1.2f), c + new Vector2(4,-1.5f), c + new Vector2(-2,-2.5f), c + new Vector2(-6,-1) };
             result.Add(($"HorizonSegment_{i+1:00}", BuildPrism(poly, 1.8f + i * 0.22f, 0.02f, ColorFor(TerrainZone.HorizonRidge, 0)), ColorFor(TerrainZone.HorizonRidge, 0)));
         }
         return result;

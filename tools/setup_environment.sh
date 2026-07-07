@@ -1,27 +1,36 @@
 #!/usr/bin/env bash
-# Idempotent Linux toolchain setup for TitanCraft (Godot 4 .NET + C#).
+# Idempotent Linux toolchain setup for TitanCraft (Godot 4 .NET + C# + the
+# Blender Asset Forge).
 #
 # Installs, only if missing/wrong version:
 #   - .NET SDK (channel matches DOTNET_CHANNEL below)
 #   - Godot 4 .NET (mono) headless-capable editor binary
 #   - Godot export templates for that same Godot version
+#   - Blender, for tools/blender/*.py (docs/pipeline/blender-asset-forge.md)
 #
 # Then warms the local build: `dotnet restore`, temp audio assets, and a
 # headless Godot import pass, so `dotnet build` / `tools/test.sh` can run
 # immediately afterwards without extra setup steps.
 #
 # Versions here must stay in sync with .github/workflows/ci.yml,
-# .github/workflows/windows-mvp-export.yml, and tools/test.sh.
+# .github/workflows/windows-mvp-export.yml, .github/workflows/blender-asset-forge.yml,
+# and tools/test.sh.
 set -euo pipefail
 
 DOTNET_CHANNEL="8.0"
 GODOT_VERSION="4.7-stable"
 GODOT_VERSION_STRING="4.7.stable.mono.official.5b4e0cb0f"
 GODOT_TEMPLATE_VERSION="4.7.stable.mono"
+BLENDER_VERSION="4.0.2"
 
 TOOLS_DIR="${TITANCRAFT_TOOLS_DIR:-$HOME/.local/share/titancraft-tools}"
 BIN_DIR="${TITANCRAFT_BIN_DIR:-$HOME/.local/bin}"
 REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+
+SUDO=""
+if [[ "$(id -u)" -ne 0 ]] && command -v sudo >/dev/null 2>&1; then
+  SUDO="sudo"
+fi
 
 log() { echo "[setup_environment] $*"; }
 
@@ -88,6 +97,21 @@ install_export_templates() {
   test -f "$template_dir/windows_release_x86_64.exe"
 }
 
+install_blender() {
+  if command -v blender >/dev/null 2>&1 && blender --version 2>/dev/null | head -1 | grep -q "$BLENDER_VERSION"; then
+    log "Blender $BLENDER_VERSION already installed, skipping."
+    return
+  fi
+  if ! command -v apt-get >/dev/null 2>&1; then
+    log "apt-get not available; skipping Blender install. Install Blender $BLENDER_VERSION manually to use tools/blender/*.py."
+    return
+  fi
+  log "Installing Blender via apt (matches .github/workflows/blender-asset-forge.yml)"
+  $SUDO apt-get update
+  $SUDO apt-get install -y blender python3-numpy libegl1 xvfb
+  blender --version | head -1 | grep -q "$BLENDER_VERSION"
+}
+
 warm_build() {
   export PATH="$BIN_DIR:$PATH"
   cd "$REPO_ROOT"
@@ -112,9 +136,11 @@ main() {
   install_dotnet
   install_godot
   install_export_templates
+  install_blender
   warm_build
-  log "Environment ready. dotnet: $(command -v dotnet || echo missing), godot: $(command -v godot || echo missing)"
+  log "Environment ready. dotnet: $(command -v dotnet || echo missing), godot: $(command -v godot || echo missing), blender: $(command -v blender || echo missing)"
   log "Next: dotnet build, or ./tools/test.sh for the full restore/build/test/import/export pass."
+  log "Blender Asset Forge loop: docs/pipeline/blender-asset-forge.md (tools/blender/*.py)."
 }
 
 main "$@"

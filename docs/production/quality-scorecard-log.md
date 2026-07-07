@@ -146,3 +146,37 @@ StageA hull/terrain in this pass either — same reasoning as the prior session 
 deliberately tuned (see the exposure-rebalance commit in this repo's history) and swapping it for a
 redundant candidate would be bulk replacement of working art, not a targeted fix. The distant-silhouette
 swap was safe specifically because the placeholder it replaced was unfinished (plain boxes), not tuned.
+
+### Correction — axis 5 transcription error in the entry above
+
+The "third pass" table above lists axis 5's `Δ` as `+0.5` but left the **Score /10** cell at `3.0` instead
+of `3.5` — a copy/paste error, not an intentional score. The composite of `3.9` already used the *correct*
+value (35.0 summed with 3.5, not 3.0, ÷ 9 = 3.89 ≈ 3.9), so the reported composite number was right; only
+the axis-5 score cell in that row was wrong. Recorded here per this log's own rule ("do not edit prior
+entries; add a new entry that corrects it and say why") rather than silently editing the table above.
+
+### 2026-07-07 (fourth pass same day) — claude/blender-assets-scene-integration-kyt4th (no PR yet)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 3.5 | 8.5 | = | Unchanged this pass (corrected score carried forward; see correction note above). |
+| 6 | Visual art & presentation | 3.0 | 9.0 | = | Unchanged this pass. |
+| 7 | Audio & feedback | 2.5 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | +0.5 | Ran the actual documented Windows export procedure end to end for the first time on this branch (`docs/testing.md` "Windows offline MVP build verification"): `python3 tools/prepare_audio_assets.py` (materializes the 7 temp audio cues that every earlier session this branch had been missing, confirmed by the "resource file not found" errors disappearing from `godot --headless --path . --import` afterward), then `godot --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe`. First attempt surfaced two real, previously-undiscovered defects via actual ERROR-level export log lines (not assumed): `scenes/World/Phase7_Composition.tscn` referenced a `SubResource("Environment")` before its declaration (Godot's format-3 parser requires declaration-before-use; fixed by reordering the sub_resource block before the referencing node) and `scenes/CrashSite_MVP.tscn` referenced a script, `src/Core/CrashSiteMVPController.cs`, that does not exist anywhere in the repo (confirmed via `find`) — `docs/art/PHASE_7_EXECUTION_GUIDE.md` shows this was one of two scene-naming options considered ("`Main.tscn` or `CrashSite_MVP.tscn`"); `Main.tscn` is the one actually built out, so this was superseded, unreferenced (confirmed via repo-wide grep) dead scaffolding, not a live dependency — deleted rather than patched. Re-ran import (0 errors) and export (0 errors, `file` confirms a valid `PE32+ executable ... for MS Windows, 12 sections`) after both fixes. `dotnet test` (71/71) and `tests/Integration/IntegrationTestRunner.tscn` (`TITANCRAFT_INTEGRATION_TESTS_PASS`, all 11 milestones) re-verified after the scene edits/deletion, since grep confirmed nothing in `tests/` referenced either file. Held at 7.5, not the full 8.0 target: the export itself is now clean and verified, but the executable actually **running** on real Windows hardware remains unverified in this container, per the existing documented blocker (`artifacts/mvp_closure/20260703_windows_manual_validation_blocked.md`) — that gap is real and this pass does not close it. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | See the correction note above — recorded honestly rather than left uncorrected. |
+
+**Composite (axes 1–9):** 3.9 / 10 (peer average ≈8.8 / 10 — 35.5/9 = 3.94, rounds to 3.9)
+**Note:** Asked to push this to 4.5 this pass. Doing the math honestly: 4.5 needs a summed total of 40.5
+across 9 axes; the actual total after this pass is 35.5. Axes 2, 3, and 9 cannot move without a human
+playtest or a README scope change (both outside what a headless agent pass can produce), which leaves
+axes 1, 4, 5, 6, 7, 8 to carry the full +5.0 still needed — and axis 8 alone had only 1.0 of headroom left
+before this pass, now largely spent. Reaching 4.5 honestly needs several more independently-verified
+passes like this one and the three before it (each has moved the needle roughly +0.05 to +0.1 in the
+rounded composite), not one turn. This pass's real, verified contribution: a Windows export that failed
+silently-by-omission before (never actually attempted with evidence on this branch) now succeeds cleanly,
+and two real, previously-undiscovered scene defects are fixed.

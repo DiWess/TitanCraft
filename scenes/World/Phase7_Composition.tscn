@@ -1,6 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://dw2py3d6x4c5s"]
+[gd_scene load_steps=5 format=3 uid="uid://dw2py3d6x4c5s"]
 
 [ext_resource type="Script" path="res://src/Core/Phase7CompositionManager.cs" id="1_abc12"]
+
+[sub_resource type="Environment" id="Environment"]
+ambient_light_source = 1
+ambient_light_energy = 0.8
+ambient_light_energy_source = 0.8
+ambient_light_sky_contribution = 0.2
+tonemap_mode = 0
+adjustment_enabled = false
+
+[sub_resource type="StandardMaterial3D" id="GridMaterial"]
+albedo_color = Color(0.3, 0.3, 0.3, 0.3)
+transparency = 1
+cull_mode = 2
+
+[sub_resource type="PlaneMesh" id="GridPlane"]
+size = Vector2(100, 100)
+subdivisions = Vector2i(20, 20)
 
 [node name="Phase7_Composition" type="Node3D"]
 script = ExtResource("1_abc12")
@@ -18,14 +35,6 @@ directional_shadow_split_3 = 0.5
 [node name="AmbientEnvironment" type="WorldEnvironment" parent="Lighting"]
 environment = SubResource("Environment")
 
-[sub_resource type="Environment" id="Environment"]
-ambient_light_source = 1
-ambient_light_energy = 0.8
-ambient_light_energy_source = 0.8
-ambient_light_sky_contribution = 0.2
-tonemap_mode = 0
-adjustment_enabled = false
-
 [node name="DebugGrid" type="Node3D" parent="."]
 visible = false
 
@@ -33,15 +42,6 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 material_override = SubResource("GridMaterial")
 mesh = SubResource("GridPlane")
-
-[sub_resource type="StandardMaterial3D" id="GridMaterial"]
-albedo_color = Color(0.3, 0.3, 0.3, 0.3)
-transparency = 1
-cull_mode = 2
-
-[sub_resource type="PlaneMesh" id="GridPlane"]
-size = Vector2(100, 100)
-subdivisions = Vector2i(20, 20)
 
 # Phase 7 Asset Composition Notes:
 # This scene is auto-populated by Phase7CompositionManager.cs script.

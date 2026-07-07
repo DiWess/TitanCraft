@@ -1,12 +1,84 @@
 {
   "schema": "titancraft.blender_asset_forge.manifest.v1",
-  "generated_at": "2026-07-07T00:53:55.527358+00:00",
+  "generated_at": "2026-07-07T07:52:39.031903+00:00",
   "entries": [
+    {
+      "asset_name": "TC_ENV_AlienShard_EmbeddedCluster_V1",
+      "classification": "generated",
+      "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.blend",
+      "source_sha256": "5dcbadf1bd676aa3327407c9902bfb0ac0c5dcbf5b1bb53b6a90f6494d2012ed",
+      "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.glb",
+      "production_sha256": "c241e441438eaa03f1690c05647a017bab5ee03fbef13b7e180c44904b21986e",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/export_asset.py",
+      "material_slots": [
+        "TC_MAT_AlienShard_Violet"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 48,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/back_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/front.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Generated asset entry."
+    },
+    {
+      "asset_name": "TC_ENV_AlienShard_Medium_V1",
+      "classification": "generated",
+      "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.blend",
+      "source_sha256": "acfd2990fa11536262da4712c9f72036ca12fc01a7b26cb719c2a899bab6bdea",
+      "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.glb",
+      "production_sha256": "d79469ce5b6e8b4d3263934526193b995ad19c41ec9b49c89720e832b5c4ae9f",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/export_asset.py",
+      "material_slots": [
+        "TC_MAT_AlienShard_Violet"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 16,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/back_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/front.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Generated asset entry."
+    },
+    {
+      "asset_name": "TC_ENV_AlienShard_Small_V1",
+      "classification": "generated",
+      "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Small_V1.blend",
+      "source_sha256": "bd5299a716ea163a0c104b6fc7884d844ae1f35fa32c189a16931d3aa1bcf531",
+      "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Small_V1.glb",
+      "production_sha256": "f7163a87f82aa548c8db4373651e53c5d6782794047ee93d766f1d758cb6e646",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/export_asset.py",
+      "material_slots": [
+        "TC_MAT_AlienShard_Violet"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 16,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/back_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/front.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Generated asset entry."
+    },
     {
       "asset_name": "TC_HeavyCrashHull_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend",
-      "source_sha256": "0d6193fd32f58d02a42fffbf949a5f6357da8e87dc0b789494902bdb0b59dae9",
+      "source_sha256": "7274bffbaf33245ad08eaf494a53631dfa55f5ee15d66ad2429818b23e95074b",
       "production_export": "assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb",
       "production_sha256": "69b77c1dc737f23221da6cdf0a7a5676babc2ec69ce8a7132bdbb12e54d120f5",
       "export_format": "GLB",
@@ -40,7 +112,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_AlienArc_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_AlienArc_V1.blend",
-      "source_sha256": "76a95e16e825b7f5fc9e8c42866337d28f88d341378d54c9e0f3e5d6a6859935",
+      "source_sha256": "08938a3bcb2059da0ec59dfa0a9481d55e283c72ce800dd306c89a87351994a2",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_AlienArc_V1.glb",
       "production_sha256": "3ae0fbdf3591ad4b8d1a5e5e01f137b3e3cd8090f927ffc9c4ff1bca9c5f3ab4",
       "export_format": "GLB",
@@ -67,7 +139,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_BasaltRidge_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_BasaltRidge_V1.blend",
-      "source_sha256": "90266876b6babe56cad0092d481c5ed2ffe38ad50d9e8a26fa5130d88562b3c4",
+      "source_sha256": "e05fbd0e9e806dea5f4398f0a2e3eec12ed008040952be3971260c97cbee02c5",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_BasaltRidge_V1.glb",
       "production_sha256": "d501e1e3f2e09332bf4abdf22dfba4ad42b83c2b2c8328a6c20d556dd55f90df",
       "export_format": "GLB",
@@ -94,7 +166,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_SmokePlume_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_SmokePlume_V1.blend",
-      "source_sha256": "69ff1143d7a8699d0695e7468d46ae8a200fd540ada75f9f2a7311fbd1eb3d19",
+      "source_sha256": "dcc6e53590e0d36bf74d7b6be07a9fc2b644996847a17d906bc81a72e4679444",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_SmokePlume_V1.glb",
       "production_sha256": "cd362f11144fa98280ffcfac992759fc9dc833239ea716b0ccdd3ff4a1a6a75f",
       "export_format": "GLB",
@@ -118,10 +190,34 @@
       "verdict": "TC_ENV_DISTANTSILHOUETTE_SMOKEPLUME_V1_REVIEW_ARTIFACTS_READY"
     },
     {
+      "asset_name": "TC_ENV_RockOccluder_V1",
+      "classification": "generated",
+      "source_blend": "assets/Source/Blender/Production/TC_ENV_RockOccluder_V1.blend",
+      "source_sha256": "84e462d02d9f9a46db448ea09d17401b921ba8a796880cb7ec8b58a8deadbf53",
+      "production_export": "assets/Production/Generated/Environment/TC_ENV_RockOccluder_V1.glb",
+      "production_sha256": "e8d26ad1136639ebd7c5eb5d7f203af7c379fb975c7b711aa0cdd1edacb32305",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/export_asset.py",
+      "material_slots": [
+        "TC_MAT_VolcanicRock_Boulder"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 20,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/back_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/front.png",
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Generated asset entry."
+    },
+    {
       "asset_name": "TC_LightingReference_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_LightingReference_V1.blend",
-      "source_sha256": "ca62bd6312991a5930f0229c79f64cf0bef9e51b8384c8d5264367eaa80d8314",
+      "source_sha256": "9bfe80ce8bacedb03e6cde0cc58cdd6027b4fc6fdca3c3a6f7474359fd48e2d6",
       "production_export": "assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb",
       "production_sha256": "b6ab7ffde8a7c03ac20ba1d02fbb50694c30f3220ed8c340eccd658b0b7c12ef",
       "export_format": "GLB",
@@ -153,7 +249,7 @@
       "asset_name": "TC_CHAR_GalaxabrainScout_Disabled_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_Disabled_V1.blend",
-      "source_sha256": "9f8efd2982dda9f2967a65cee56f56a07f3038cffa8773a5fd71ba0fd462bd7d",
+      "source_sha256": "1ce4404288ecbb0cba4e6fa5b29d5475d6915a799c16e5feae4f4578ac617ef2",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_Disabled_V1.glb",
       "production_sha256": "ea2ff0523f9e4517db1251f29c29652b7737dcb98741f6e46a8d114e5e7bb58d",
       "export_format": "GLB",
@@ -183,7 +279,7 @@
       "asset_name": "TC_CHAR_GalaxabrainScout_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_V1.blend",
-      "source_sha256": "fdf40699bebb93e2b2028ed60888647f3b37aa72a64aaf08f0138bfcf7cd1a41",
+      "source_sha256": "7874cbddeab844948a6603d887df5f298a8628d99bc507505525523b64402a30",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_V1.glb",
       "production_sha256": "ef908a2210ba49cf6c8e7754b8be6c29446148ab121c851a572dcae220812a26",
       "export_format": "GLB",
@@ -213,7 +309,7 @@
       "asset_name": "TC_ENV_CrashDebris_A_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_ENV_CrashDebris_A_V1.blend",
-      "source_sha256": "a9a09dff31755926843b40162059f0c5de03fc7a7ebfaff4ab4c525bcd5daf17",
+      "source_sha256": "9e9f043fb2a59c1bbd4de115361c8ed812d6ce22a381051385b17a045342f115",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_ENV_CrashDebris_A_V1.glb",
       "production_sha256": "766d1a2ee9bb7d772e87be967aeded53fd79d09983eac31bad46908a1534c974",
       "export_format": "GLB",
@@ -243,7 +339,7 @@
       "asset_name": "TC_PICKUP_Biomass_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Biomass_V1.blend",
-      "source_sha256": "4718c6ca15eeb9cd5b725c79c9f6e585883d6c2ac65185132ed16e8847501f36",
+      "source_sha256": "5f6e252766f39e5f14fcf93d8badf3213a3fafb00f3b61497925ac6efb1a793d",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Biomass_V1.glb",
       "production_sha256": "bf10c5f75dedf5e0c136793400d6a95e9f1be3a5fbb92ab60184014b7da5fde3",
       "export_format": "GLB",
@@ -271,7 +367,7 @@
       "asset_name": "TC_PICKUP_Component_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Component_V1.blend",
-      "source_sha256": "e1cacadc39944469fe7a62907f82fb73c413d17723f0b30c1fa705e1f295081a",
+      "source_sha256": "ec53d3fa7783fa2236c4c65cd8bf1e4c48a9fda13aa24d5a541e03d7952fca4c",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Component_V1.glb",
       "production_sha256": "0fc4f6d3dee62c3bc2efb87597a45745db7b0e0af61d253afdc3daefa7e140b3",
       "export_format": "GLB",
@@ -299,7 +395,7 @@
       "asset_name": "TC_PICKUP_Electronics_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Electronics_V1.blend",
-      "source_sha256": "b88d1bdaef50828e3b6f026e67216e261dd7ae894b393e16f4727d5d66d3626d",
+      "source_sha256": "013e68f7102e449b473b29a443c63ae43681bddad06fb0fba718e90fe87e5009",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Electronics_V1.glb",
       "production_sha256": "d7519950f230c0d0a349fa342e6ba9950227ae6b94e8d24b840ef8194f234386",
       "export_format": "GLB",
@@ -329,7 +425,7 @@
       "asset_name": "TC_PICKUP_Metal_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Metal_V1.blend",
-      "source_sha256": "6e9a6e349816c4ce6711e0816054bcceb13cf0f9f779079b2d70913830499aec",
+      "source_sha256": "543c78cc6ab8c351ecc836ddd3ecec8128d95fe77b4d8361b0cba6f480578227",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Metal_V1.glb",
       "production_sha256": "da587a5167feb267fb8f964ff91c36135f6dcd8f0b0f793bb50ac657cfd2900c",
       "export_format": "GLB",
@@ -358,7 +454,7 @@
       "asset_name": "TC_PLAYER_MechanicalArmUnbuilt_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_MechanicalArmUnbuilt_V1.blend",
-      "source_sha256": "73a0086551818566e9220f0db887b2b7184a6c44aa97268c440003d25620d751",
+      "source_sha256": "594b94b0086d9a16531e4b10baf051ec4dbe56561890355b57ed6e08fbc641cf",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_MechanicalArmUnbuilt_V1.glb",
       "production_sha256": "b7db9889af2753c55fd7652d7ce53cbb621f590a5b25d926e4b082f3d790562d",
       "export_format": "GLB",
@@ -389,7 +485,7 @@
       "asset_name": "TC_PLAYER_MechanicalArm_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_MechanicalArm_V1.blend",
-      "source_sha256": "91c842ad82c30336748fee771e7115596361e5cdfaa163eae258b7880230b78d",
+      "source_sha256": "44f7369eefec6374a6f2c7d99250072c3a2a92c7d86f3c9f9097487b6ebe6085",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_MechanicalArm_V1.glb",
       "production_sha256": "da6d48d92776252f198b7eba519a1a84ad46ef01df16101b4dad26a00b197711",
       "export_format": "GLB",
@@ -420,7 +516,7 @@
       "asset_name": "TC_PROP_Beacon_Active_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Beacon_Active_V1.blend",
-      "source_sha256": "7010817273289686f34bf23954b924c05bd48d689618edd1cec69e2611af8c1b",
+      "source_sha256": "a8b1898de3d15c1557f0425692f67793043fa415482dc5dd9c31c9ba969a3e31",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Beacon_Active_V1.glb",
       "production_sha256": "f050c7e46bb26ce4ce8026a5def5ced136cab4ad62da4b5d2924ecd9318dbe5a",
       "export_format": "GLB",
@@ -453,7 +549,7 @@
       "asset_name": "TC_PROP_Beacon_Dormant_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Beacon_Dormant_V1.blend",
-      "source_sha256": "627d9838892e27dc4608c89656969124efd195d23286a63251137bff8b872d74",
+      "source_sha256": "1f2dc9fb4e372e866194ad271866194758096b7e8ff80c9682817d9535bc62e6",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Beacon_Dormant_V1.glb",
       "production_sha256": "2dfc79ade5a2bec07277442a1012cd466e6060ec62660b4612ebb9900f572a95",
       "export_format": "GLB",
@@ -483,7 +579,7 @@
       "asset_name": "TC_PROP_SavePoint_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_SavePoint_V1.blend",
-      "source_sha256": "ba162fa76cfb669508553e4bba802a4ec22aae6b65a6366aec27953a7dff3d1f",
+      "source_sha256": "ab4918fb8dcb7cba32b4972fa0adbd3643b8120ef852f4fba2882df50d6eef9b",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_SavePoint_V1.glb",
       "production_sha256": "7a579913118250ff50ff1b50a47baa47d3d6061f85daed37e13070e6665a13a0",
       "export_format": "GLB",
@@ -513,7 +609,7 @@
       "asset_name": "TC_PROP_Workbench_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Workbench_V1.blend",
-      "source_sha256": "debdb58ff9e2d44991aeb0c44f48bc17cec006b662896ec2fff12115ac7d4213",
+      "source_sha256": "dac825c857c91cdb87c879bc68692d48ccaf1cdb2bf1d11ee65aee8a3d540d76",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Workbench_V1.glb",
       "production_sha256": "c59748dab6567b794b688a2e229cc9343e7262785b50a92406fd4b680ecf88e8",
       "export_format": "GLB",
@@ -546,7 +642,7 @@
       "asset_name": "TC_PolishDetails_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_PolishDetails_V1.blend",
-      "source_sha256": "4cdf473f77061a8d94114e6619fbd73c270bd8c2922c0b77d57a58f2b5d6c8da",
+      "source_sha256": "1d820fdb4946903e7759b4357bd09faf7d4995763ce721e458b618e213366db8",
       "production_export": "assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb",
       "production_sha256": "3b12d0ecd111d53b61c4bc95804816fbc63ce0b318ce8776370c2ec7b8db73b7",
       "export_format": "GLB",
@@ -580,7 +676,7 @@
       "source_blend": null,
       "source_sha256": null,
       "production_export": "assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb",
-      "production_sha256": "f9c43244ffddff5c494e4cb27e57273a89ccf81f229a84e3fc5774f71f616a79",
+      "production_sha256": "30606752ea72983badcd402e8f68b39a2f229a641e49fb1f495c197b3aac542d",
       "export_format": "GLB",
       "created_by_tool": "tools/blender/create_terrain_crash_basin_v1.py",
       "material_slots": [
@@ -598,7 +694,7 @@
       "metadata": {
         "brief": "docs/art/brief-terrain-crash-basin.md",
         "target_poly_budget": "8000\u201312000",
-        "generated_date": "2026-07-07T00:25:21.306788",
+        "generated_date": "2026-07-07T07:20:42.112479",
         "notes": "Polygonal Salvage Sci-Fi volcanic crash site terrain. Shaped ash basin with basalt framing, fractured impact zone, route landmarks."
       }
     },
@@ -606,7 +702,7 @@
       "asset_name": "TC_TestCrate",
       "classification": "pipeline-test",
       "source_blend": "assets/Source/Blender/_templates/TC_TestCrate.blend",
-      "source_sha256": "60e344a8144595f7c88076977d8c287727d6e6219775f593c008e21e4389f49c",
+      "source_sha256": "98850be0bdd5f77f1afad278de86daecfd4409f9f90195daa831f6221809465a",
       "production_export": "assets/Production/Generated/Test/TC_TestCrate.glb",
       "production_sha256": "b866eb705d41c0cd7409ce13d53908d09ae3c62cdfcb718ccc53fe8af46d1ad9",
       "export_format": "GLB",
@@ -622,114 +718,6 @@
       "runtime_mesh_generation": false,
       "license": "project-authored",
       "notes": "Non-production Blender Asset Forge test crate; do not use as final TitanCraft art."
-    },
-    {
-      "asset_name": "TC_ENV_RockOccluder_V1",
-      "classification": "production-candidate",
-      "source_blend": "assets/Source/Blender/Production/TC_ENV_RockOccluder_V1.blend",
-      "source_sha256": "fa3389248a10ba9c54acc56c1ecabce44cebf230fa9f9972e2b44d58168bfca0",
-      "production_export": "assets/Production/Generated/Environment/TC_ENV_RockOccluder_V1.glb",
-      "production_sha256": "e8d26ad1136639ebd7c5eb5d7f203af7c379fb975c7b711aa0cdd1edacb32305",
-      "export_format": "GLB",
-      "created_by_tool": "tools/blender/create_rock_occluder_kit_v1.py + tools/blender/export_asset.py",
-      "material_slots": [
-        "TC_MAT_VolcanicRock_Boulder"
-      ],
-      "validation_status": "PASS",
-      "triangle_count": 20,
-      "review_artifacts": [
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/front.png",
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/back_three_quarter.png"
-      ],
-      "collision_policy": "none",
-      "runtime_mesh_generation": false,
-      "license": "project-authored",
-      "notes": "Foreground rock occluder (docs/art/crash-site-object-asset-inventory.md 'Foreground occluders' required variant); replaces the plain scaled BoxMesh_rock placeholder used by scenes/Main/Main.tscn VolcanicRock_1/2/3. Visual-only mesh; each VolcanicRock StaticBody3D keeps its original separate CollisionShape3D untouched.",
-      "source_recipe": "tools/blender/create_rock_occluder_kit_v1.py",
-      "binary_delivery": "generated by Blender Asset Forge / GitHub Actions; .blend, .glb, and review PNGs are committed back to the branch by .github/workflows/blender-asset-forge.yml (see studio/decisions/commit-generated-blender-binaries.md)",
-      "verdict": "TC_ENV_ROCK_OCCLUDER_V1_REVIEW_ARTIFACTS_READY"
-    },
-    {
-      "asset_name": "TC_ENV_AlienShard_Small_V1",
-      "classification": "production-candidate",
-      "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Small_V1.blend",
-      "source_sha256": "ce1ff345abc704bde51fa2af55d3fec9397521f98d0be800aa733f0663e83064",
-      "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Small_V1.glb",
-      "production_sha256": "f7163a87f82aa548c8db4373651e53c5d6782794047ee93d766f1d758cb6e646",
-      "export_format": "GLB",
-      "created_by_tool": "tools/blender/create_alien_shard_kit_v1.py + tools/blender/export_asset.py",
-      "material_slots": [
-        "TC_MAT_AlienShard_Violet"
-      ],
-      "validation_status": "PASS",
-      "triangle_count": 16,
-      "review_artifacts": [
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/back_three_quarter.png"
-      ],
-      "collision_policy": "none",
-      "runtime_mesh_generation": false,
-      "license": "project-authored",
-      "notes": "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props' required variant); replaces the plain PrismMesh_crystal placeholder used by scenes/Main/Main.tscn AlienCrystal_1..5. Visual-only mesh; instance count in the scene is unchanged (no crystal-forest expansion, per the inventory's own forbidden pattern).",
-      "source_recipe": "tools/blender/create_alien_shard_kit_v1.py",
-      "binary_delivery": "generated by Blender Asset Forge / GitHub Actions; .blend, .glb, and review PNGs are committed back to the branch by .github/workflows/blender-asset-forge.yml (see studio/decisions/commit-generated-blender-binaries.md)",
-      "verdict": "TC_ENV_ALIEN_SHARD_SMALL_V1_REVIEW_ARTIFACTS_READY"
-    },
-    {
-      "asset_name": "TC_ENV_AlienShard_Medium_V1",
-      "classification": "production-candidate",
-      "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.blend",
-      "source_sha256": "077cd1beb6083e0b6b2972f6ae0d351a1a62838d8f98e1d17c455133d9c07e50",
-      "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.glb",
-      "production_sha256": "d79469ce5b6e8b4d3263934526193b995ad19c41ec9b49c89720e832b5c4ae9f",
-      "export_format": "GLB",
-      "created_by_tool": "tools/blender/create_alien_shard_kit_v1.py + tools/blender/export_asset.py",
-      "material_slots": [
-        "TC_MAT_AlienShard_Violet"
-      ],
-      "validation_status": "PASS",
-      "triangle_count": 16,
-      "review_artifacts": [
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/back_three_quarter.png"
-      ],
-      "collision_policy": "none",
-      "runtime_mesh_generation": false,
-      "license": "project-authored",
-      "notes": "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props' required variant); replaces the plain PrismMesh_crystal placeholder used by scenes/Main/Main.tscn AlienCrystal_1..5. Visual-only mesh; instance count in the scene is unchanged (no crystal-forest expansion, per the inventory's own forbidden pattern).",
-      "source_recipe": "tools/blender/create_alien_shard_kit_v1.py",
-      "binary_delivery": "generated by Blender Asset Forge / GitHub Actions; .blend, .glb, and review PNGs are committed back to the branch by .github/workflows/blender-asset-forge.yml (see studio/decisions/commit-generated-blender-binaries.md)",
-      "verdict": "TC_ENV_ALIEN_SHARD_MEDIUM_V1_REVIEW_ARTIFACTS_READY"
-    },
-    {
-      "asset_name": "TC_ENV_AlienShard_EmbeddedCluster_V1",
-      "classification": "production-candidate",
-      "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.blend",
-      "source_sha256": "b1e46e18e6ceee8af748ea415e78caa18d0326fc688900904d658d38b848e6db",
-      "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.glb",
-      "production_sha256": "c241e441438eaa03f1690c05647a017bab5ee03fbef13b7e180c44904b21986e",
-      "export_format": "GLB",
-      "created_by_tool": "tools/blender/create_alien_shard_kit_v1.py + tools/blender/export_asset.py",
-      "material_slots": [
-        "TC_MAT_AlienShard_Violet"
-      ],
-      "validation_status": "PASS",
-      "triangle_count": 48,
-      "review_artifacts": [
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/back_three_quarter.png"
-      ],
-      "collision_policy": "none",
-      "runtime_mesh_generation": false,
-      "license": "project-authored",
-      "notes": "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props' required variant); replaces the plain PrismMesh_crystal placeholder used by scenes/Main/Main.tscn AlienCrystal_1..5. Visual-only mesh; instance count in the scene is unchanged (no crystal-forest expansion, per the inventory's own forbidden pattern).",
-      "source_recipe": "tools/blender/create_alien_shard_kit_v1.py",
-      "binary_delivery": "generated by Blender Asset Forge / GitHub Actions; .blend, .glb, and review PNGs are committed back to the branch by .github/workflows/blender-asset-forge.yml (see studio/decisions/commit-generated-blender-binaries.md)",
-      "verdict": "TC_ENV_ALIEN_SHARD_EMBEDDEDCLUSTER_V1_REVIEW_ARTIFACTS_READY"
     }
   ]
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=98 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=99 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -33,6 +33,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_WingSheared.obj" id="52_tc_wing"]
 [ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_EngineExposed.obj" id="53_tc_engine"]
 [ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_InternalRibs.obj" id="54_tc_ribs"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_HullRibOccluder_V1.obj" id="113_tc_rib_occluder"]
 [ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BreachDebris.obj" id="55_tc_debris"]
 [ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltForeground.obj" id="56_tc_basalt_fg"]
 [ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltMidgroundA.obj" id="57_tc_basalt_mid_a"]
@@ -1036,6 +1037,10 @@ material_override = SubResource("PROD_MAT_Basalt")
 [node name="StageAVisualRoot" type="Node3D" parent="."]
 metadata/stage = "Stage A custom art kit integration; visual-only and collisionless."
 metadata/source = "assets/Production/Custom/StageA generated offline by tools/art_generation/build_stage_a_assets.py"
+metadata/stage_a_visual_verdict = "PASS"
+metadata/visual_review = "docs/art/reviews/stage-a-visual-approval-verdict.md"
+metadata/production_signoff = "docs/production/stage-a-production-integration-signoff.md"
+metadata/binary_policy = "Generated Stage A review binaries are local/CI artifacts; production uses tracked text mesh resources."
 
 [node name="GroundVisuals" type="Node3D" parent="StageAVisualRoot"]
 
@@ -1080,6 +1085,18 @@ material_override = ExtResource("65_tc_steel_mat")
 transform = Transform3D(0.78,0,0.15,0,0.78,0,-0.15,0,0.78,-5.4,0.42,-12.3)
 mesh = ExtResource("54_tc_ribs")
 material_override = ExtResource("65_tc_steel_mat")
+
+[node name="TC_HullRibOccluder_Foreground" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(1.35,0,0.45,-0.06,1.22,0.04,-0.45,-0.04,1.35,-8.6,0.42,-8.35)
+mesh = ExtResource("113_tc_rib_occluder")
+material_override = ExtResource("65_tc_steel_mat")
+metadata/integration = "Blender-authored text OBJ hull rib occluder; visual-only wreckage, collisionless, no gameplay route change."
+
+[node name="TC_HullRibOccluder_Buried" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
+transform = Transform3D(0.88,0,-0.32,0.05,0.78,0.03,0.32,-0.03,0.88,-5.15,0.38,-12.05)
+mesh = ExtResource("113_tc_rib_occluder")
+material_override = ExtResource("66_tc_graphite_mat")
+metadata/integration = "Second scaled visual-only instance of the Blender hull rib occluder; collision and mission logic untouched."
 
 [node name="TC_BreachDebris_A" type="MeshInstance3D" parent="StageAVisualRoot/CrashWreck"]
 transform = Transform3D(0.9,0,0.3,0,0.72,0,-0.3,0,0.9,-2.0,0.58,-11.5)

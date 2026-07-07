@@ -6,14 +6,16 @@
 - Blender Asset Forge is locally verified as the repeatable path for standalone generated asset candidates and GLB exports.
 - Art Taste Pack / visual identity guidance is ready as the visual style reference for asset and scene review.
 - Visual Artifact Factory is the reproducible CI path for Blender review PNGs and allowlisted Godot scene captures.
-- Stage A autonomous generated art is not approved.
-- `TC_HeavyCrashHull_V1` has a revised recipe and review workflow path, but production use still depends on standalone artifact review and a human or visual-reviewer verdict.
+- Stage A terrain-diorama evidence has moved from earlier NOT_GO to `PASS`: `TC_TerrainDioramaKit_V1` has regenerated review PNG evidence with a readable scale-reference view, a Visual Reviewer `PASS`, production integration sign-off, and `StageAVisualRoot` metadata in `scenes/Main/Main.tscn`.
+- Stage A generated binary source/export/review artifacts remain local or CI artifacts; tracked production state depends on text mesh resources, sign-off documentation, hashes/manifests, and scene metadata rather than committed `.blend`, `.glb`, or PNG binaries.
+- `TC_HullRibOccluder_V1` has been integrated as collisionless Stage A wreckage dressing with provenance/hash evidence and import/build/PNG capture evidence; this does not expand gameplay scope.
+- `TC_HeavyCrashHull_V1` still requires its own standalone artifact review and human or visual-reviewer verdict before production use.
 - Gameplay MVP work should remain locked to the Crash Site loop and must not expand scope.
 
 ## Blocked
 
-- Stage A visual replacement in production scenes.
-- Stage B work.
+- Any additional Stage A visual replacement or generated asset integration that lacks standalone review artifacts, hashes/manifests, opened-PNG diagnosis, and human or visual-reviewer verdict.
+- Stage B work until a producer re-gate explicitly cites the reconciled Stage A evidence and confirms remaining prerequisites.
 - Marketing screenshots or public-facing visual claims.
 - Production asset approval without standalone review artifacts, hashes, manifest evidence, and review verdict.
 
@@ -25,7 +27,15 @@
 - Agent Studio routing and evidence improvements.
 - Blender Asset Forge standalone candidate generation.
 - Visual Artifact Factory review-bundle generation.
+- Documentation-only reconciliation of Stage A status against `context_log.md`, `docs/art/reviews/stage-a-visual-approval-verdict.md`, `docs/production/stage-a-production-integration-signoff.md`, and `docs/production/visual-completion-checklist.md`.
 - Phase 7 planning (composition guide, balance playtesting, audio design, polish, platform testing) pending Phase 6 completion.
+
+## Stage A Reconciliation — 2026-07-07
+
+- Earlier status lines that said Stage A generated art was not approved are superseded for the `TC_TerrainDioramaKit_V1` terrain-diorama slice only. The current evidence chain records regenerated review PNGs, opened-image visual diagnosis, Visual Reviewer `PASS`, production scene integration sign-off, and tracked `StageAVisualRoot` metadata.
+- The `TC_HullRibOccluder_V1` follow-up is recorded as collisionless visual dressing with provenance/hash evidence and validation; it does not authorize gameplay changes, collision changes, or broader asset substitution.
+- Generated Stage A `.blend`, `.glb`, and PNG binaries remain untracked local/CI evidence artifacts. Future reviewers should use the checked-in review/sign-off documents, manifests, hashes, and scene metadata to locate and regenerate evidence rather than expecting those binaries in git.
+- This reconciliation does not mark broader beta, public demo, marketing, Stage B, or production release readiness as `GO`. Export proof, full release gates, human Windows gameplay/playtest evidence, and quality-benchmark evidence remain separate gates.
 
 ## Phase 7 Status
 

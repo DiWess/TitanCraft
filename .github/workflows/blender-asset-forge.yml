@@ -159,6 +159,29 @@ jobs:
       - name: Render Rock Occluder V1 reviews
         run: blender --background --python tools/blender/render_mvp_asset_review.py -- assets/Source/Blender/Production/TC_ENV_RockOccluder_V1.blend artifacts/asset-review/TC_ENV_RockOccluder_V1
 
+      - name: Create Alien Shard V1 sources
+        run: blender --background --python tools/blender/create_alien_shard_kit_v1.py
+
+      - name: Validate Alien Shard V1 sources
+        run: |
+          for blend in assets/Source/Blender/Production/AlienShard_V1/*.blend; do
+            python3 tools/blender/validate_blender_asset.py "$blend"
+          done
+
+      - name: Export Alien Shard V1 GLBs
+        run: |
+          for blend in assets/Source/Blender/Production/AlienShard_V1/*.blend; do
+            name="$(basename "$blend" .blend)"
+            blender --background --python tools/blender/export_asset.py -- "$blend" "assets/Production/Generated/AlienShard_V1/$name.glb"
+          done
+
+      - name: Render Alien Shard V1 reviews
+        run: |
+          for blend in assets/Source/Blender/Production/AlienShard_V1/*.blend; do
+            name="$(basename "$blend" .blend)"
+            blender --background --python tools/blender/render_mvp_asset_review.py -- "$blend" "artifacts/asset-review/$name"
+          done
+
       - name: Rebuild manifest with all generated assets
         run: python3 tools/blender/build_asset_manifest.py
 
@@ -184,6 +207,8 @@ jobs:
             assets/Production/Generated/MVP_Pack_V1/*.glb
             assets/Source/Blender/Production/TC_ENV_RockOccluder_V1.blend
             assets/Production/Generated/Environment/TC_ENV_RockOccluder_V1.glb
+            assets/Source/Blender/Production/AlienShard_V1/*.blend
+            assets/Production/Generated/AlienShard_V1/*.glb
             assets/Production/Generated/asset_manifest.json
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png

@@ -229,3 +229,33 @@ axis 6 stays capped by unapproved Stage A art regardless of bug fixes, and axis 
 spatialization, weapon feel) are feel claims that stay `HUMAN_BLOCKED` in this container by the ADR's own
 binding rule 2. Disclosed rather than hid the one loose thread from this pass: an unidentified dark wedge
 shape near the crashed-ship silhouette, spotted but not chased down, flagged for a future pass.
+
+### 2026-07-07 (seventh pass same day) — claude/blender-assets-scene-integration-kyt4th (no PR yet)
+
+User supplied 8 AAA-cinematic-style reference images (a main menu screen and in-game combat/base shots)
+and asked to build "a complete scene like these" then merge to main. Two real conflicts surfaced and were
+put to the user rather than silently actioned: (1) the references show a large background mech and a
+much bigger/different enemy than the documented single Galaxabrain Scout — both explicitly forbidden by
+`README.md`/`CLAUDE.md`'s MVP scope; (2) the references are path-traced cinematic renders with sculpted,
+fully-textured models — a different content pipeline entirely from this project's deliberate flat-shaded
+low-poly Blender kit style, not a gap closeable by "trying harder" in this container. User chose, explicitly:
+use the images as mood/palette/composition reference only (no large mech, no new enemy type), and
+confirmed "integrate to live production" means merge this branch into `main`.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. Explicitly did not add the second/larger enemy type shown in the reference images — forbidden by `README.md`. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Unchanged this pass (the shard swap below is recorded under axis 6, matching how the equivalent rock-occluder swap was categorized last pass). |
+| 6 | Visual art & presentation | 5.5 | 9.0 | +0.5 | The reference images' most prominent recurring motif — jagged violet crystal shards scattered around the base/arena — maps directly onto `docs/art/crash-site-object-asset-inventory.md`'s documented "Alien shard props" entry ("Jagged dark violet shards with irregular lean... Required variants: Small, medium, embedded cluster"). `scenes/Main/Main.tscn`'s five `AlienCrystal_1..5` route/arena props (grepped and confirmed before touching) all reused one plain 4-sided `PrismMesh` pyramid at different uniform scales — a placeholder, not the documented jagged/irregular-lean silhouette. Built `tools/blender/create_alien_shard_kit_v1.py` (three variants — small/medium/embedded-cluster, 16/16/48 triangles, all `BLENDER_ASSET_VALID`, reusing `assets/Materials/AlienVioletEmissive.tres`'s exact color for continuity), opened all three variants' review PNGs before integrating, exported to GLB, converted to embedded `.gltf`, and instanced them across the same 5 existing node positions (no increase in instance count — the inventory's own entry explicitly forbids "crystal forest expansion"). Verified placement/scale with a dedicated close-range camera test before trusting the wide production shots; confirmed the shard silhouettes read as broken/angular rather than the old clean-toy-pyramid look, both close-up and at gameplay-representative distance. Added the asset to `asset_manifest.json` and the CI workflow. +0.5, not more: this is one documented placeholder swap in the same spirit as the terrain/horizon/rock-occluder fixes from the last two passes, not a broader art pass — still Stage-A-unapproved, still low-poly throughout. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after the swap: `dotnet build` 0 errors, `godot --headless --path . --import` 0 errors, `dotnet test` 71/71, `IntegrationTestRunner` → `TITANCRAFT_INTEGRATION_TESTS_PASS` (11/11 milestones). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | Recorded the scope conflict and its resolution above rather than quietly complying with (or quietly refusing) an out-of-scope request. |
+
+**Composite (axes 1–9):** 4.3 / 10 (peer average ≈8.8 / 10 — 39.0/9 = 4.333, rounds to 4.3)
+**Note:** The user's actual ask this pass ("a complete scene like these") is not achievable in this container
+at the fidelity shown — that is stated plainly above, not worked around. What shipped instead is the one
+real, scope-safe, documented gap the reference images pointed at.

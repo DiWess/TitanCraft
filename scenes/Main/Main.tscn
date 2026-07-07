@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=97 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -102,6 +102,9 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_progress_01.wav" id="106_save_progress"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/load_complete_01.wav" id="107_load_complete"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_RockOccluder_V1.gltf" id="108_v1_rock_occluder"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Small_V1.gltf" id="109_v1_shard_small"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Medium_V1.gltf" id="110_v1_shard_medium"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_EmbeddedCluster_V1.gltf" id="111_v1_shard_cluster"]
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
 albedo_color = Color(0.88, 0.85, 0.80, 1)
@@ -293,9 +296,6 @@ top_radius = 0.35
 bottom_radius = 0.65
 height = 2.4
 material = ExtResource("14_graphite")
-[sub_resource type="PrismMesh" id="PrismMesh_crystal"]
-size = Vector3(1, 2.4, 1)
-material = ExtResource("19_violet")
 [sub_resource type="BoxMesh" id="BoxMesh_readability_pylon"]
 size = Vector3(0.24, 1.4, 0.24)
 material = ExtResource("16_orange")
@@ -785,21 +785,26 @@ transform = Transform3D(1,0,0,0,1,0,0,0,1,28,0.85,-20)
 [node name="ActivationAudio" parent="Placeholder_Beacon" index="5"]
 stream = ExtResource("42_beacon_audio")
 volume_db = -6.0
-[node name="AlienCrystal_1" type="MeshInstance3D" parent="."]
+[node name="AlienCrystal_1" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.2, -18)
-mesh = SubResource("PrismMesh_crystal")
-[node name="AlienCrystal_2" type="MeshInstance3D" parent="."]
+metadata/integration = "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props'); replaces a plain PrismMesh placeholder. Same instance count as before (no crystal-forest expansion)."
+[node name="AlienShardModel" parent="AlienCrystal_1" instance=ExtResource("110_v1_shard_medium")]
+[node name="AlienCrystal_2" type="Node3D" parent="."]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 24, 1.2, -22)
-mesh = SubResource("PrismMesh_crystal")
-[node name="AlienCrystal_3" type="MeshInstance3D" parent="."]
+metadata/integration = "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props'); replaces a plain PrismMesh placeholder. Same instance count as before (no crystal-forest expansion)."
+[node name="AlienShardModel" parent="AlienCrystal_2" instance=ExtResource("109_v1_shard_small")]
+[node name="AlienCrystal_3" type="Node3D" parent="."]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 30, 1.2, -18)
-mesh = SubResource("PrismMesh_crystal")
-[node name="AlienCrystal_4" type="MeshInstance3D" parent="."]
+metadata/integration = "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props'); replaces a plain PrismMesh placeholder. Same instance count as before (no crystal-forest expansion)."
+[node name="AlienShardModel" parent="AlienCrystal_3" instance=ExtResource("111_v1_shard_cluster")]
+[node name="AlienCrystal_4" type="Node3D" parent="."]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20, 1.2, -30)
-mesh = SubResource("PrismMesh_crystal")
-[node name="AlienCrystal_5" type="MeshInstance3D" parent="."]
+metadata/integration = "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props'); replaces a plain PrismMesh placeholder. Same instance count as before (no crystal-forest expansion)."
+[node name="AlienShardModel" parent="AlienCrystal_4" instance=ExtResource("109_v1_shard_small")]
+[node name="AlienCrystal_5" type="Node3D" parent="."]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 35, 1.2, -28)
-mesh = SubResource("PrismMesh_crystal")
+metadata/integration = "Alien shard prop (docs/art/crash-site-object-asset-inventory.md 'Alien shard props'); replaces a plain PrismMesh placeholder. Same instance count as before (no crystal-forest expansion)."
+[node name="AlienShardModel" parent="AlienCrystal_5" instance=ExtResource("111_v1_shard_cluster")]
 [node name="AlienZoneLight" type="OmniLight3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,24,3,-22)
 light_color = Color(0.45, 0.25, 1, 1)

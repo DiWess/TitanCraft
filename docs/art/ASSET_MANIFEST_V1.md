@@ -1,4 +1,14 @@
 # TitanCraft Stage B Asset Manifest V1
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** This document and the rest of its
+> Stage B/C "Simulation: Task #N" cluster (`VISUAL_REVIEWER_VERDICT_V1.md`, `TECHNICAL_DIRECTOR_AUDIT_V1.md`,
+> `PRODUCER_GATE_VERDICT_STAGE_B.md`, `LEVEL_DESIGNER_INTEGRATION_REPORT.md`, `FINAL_VALIDATION_REPORT.md`,
+> `PRODUCER_RELEASE_GATE_VERDICT.md`, `studio/tasks/PRE_BETA_AUDIT_COMPLETE.md`) describe assets and a scene
+> (`TC_CrashHull_V1`, `TC_GalaxabrainScout_V1`, `TC_MechanicalArm_V1`, `TC_Workbench_V1`, `TC_Beacon_V1`,
+> `src/Scenes/CrashSite.tscn`) that do not exist anywhere in this repository as of 2026-07-07. Do not cite this
+> file as evidence of real production, review, or release status. See
+> `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real state.
+
 **Date:** 2026-07-06 (Simulation: Task #1 Completion)  
 **Author:** Art Director (routed via AGENTS.md § 3)  
 **Authority:** Stage A briefs, material palette, asset languages  

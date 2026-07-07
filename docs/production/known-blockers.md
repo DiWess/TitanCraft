@@ -1,6 +1,6 @@
 # Known Blockers
 
-- Stage A visual art is not approved.
+- Stage A visual art is not approved as a whole for overall art-quality or marketing purposes: quality-benchmark axis 6 remains well below its 9.0 target (`docs/production/quality-scorecard-log.md`). One slice, `TC_TerrainDioramaKit_V1`, has completed its own standalone-review-artifact process and holds a narrow Visual Reviewer PASS plus production integration sign-off for that asset only (`docs/production/current-status.md`'s 2026-07-07 reconciliation, `docs/production/stage-a-production-integration-signoff.md`) — this does not extend to any other Stage A asset or to overall visual-quality/marketing readiness.
 - Autonomous mesh generation is exhausted without stronger references and a human gate.
 - Production asset approval requires standalone artifact review, including source, GLB, manifest, hashes, and PNG review evidence.
 - The GitHub Visual Artifact Factory workflow must be used for review bundles when local visual tooling is unavailable or when CI reproducibility is required.

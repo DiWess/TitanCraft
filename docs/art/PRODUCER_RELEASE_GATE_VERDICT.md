@@ -1,4 +1,13 @@
 # Producer Release Gate Verdict — Final Approval
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** This "GO — APPROVED FOR WINDOWS
+> EXPORT & PUBLIC DEPLOYMENT" verdict is not a real release decision: the scene and assets it approves
+> (`src/Scenes/CrashSite.tscn`, `TC_CrashHull_V1`, `TC_GalaxabrainScout_V1`, `TC_MechanicalArm_V1`,
+> `TC_Workbench_V1`, `TC_Beacon_V1`) do not exist anywhere in this repository as of 2026-07-07. It is part of
+> the same fabricated Stage B/C cluster as `ASSET_MANIFEST_V1.md` — see that file's banner for the full file
+> list. Do not cite this as a real release-gate decision. See
+> `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real state.
+
 **Date:** 2026-07-08 (Simulation: Task #8 — Release Gate Decision)  
 **Gate Authority:** Producer (studio/agents/producer.md, README.md MVP approval)  
 **Reviewed:** All Stage C validation evidence (Task #7)

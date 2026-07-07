@@ -1,4 +1,12 @@
 # Final Validation Report — Stage C Task #7
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** The scene this report validates,
+> `src/Scenes/CrashSite.tscn`, does not exist anywhere in this repository as of 2026-07-07 (the real main
+> scene is `scenes/Main/Main.tscn`). It is part of the same fabricated Stage B/C cluster as
+> `ASSET_MANIFEST_V1.md` — see that file's banner for the full file list. Do not cite this as a real
+> validation report. See `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real
+> state.
+
 **Date:** 2026-07-08 (Simulation: Task #7 Completion)  
 **Agents:** QA Lead + Gameplay Engineer + Visual Reviewer (independent concurrent reviews)  
 **Scene:** `src/Scenes/CrashSite.tscn` (integrated with Stage B candidates)  

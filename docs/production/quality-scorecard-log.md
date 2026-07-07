@@ -284,3 +284,14 @@ production as a conservative, visual-only scene dressing slice.
 **Note:** This is a safe production integration pass for an existing Blender candidate, not a new art-fidelity
 breakthrough. The visual/runtime gates remain separate: runtime import and node resolution pass; visual
 approval remains `ENVIRONMENT_BLOCKED`/`HUMAN_BLOCKED` until PNG review and human or visual-reviewer verdict exist.
+
+### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
+
+`docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for
+`TC_TerrainDioramaKit_V1` specifically (a standalone-review-artifact process gate for one asset: PNG
+diagnosis, Visual Reviewer sign-off, production integration sign-off). That is a different question from this
+axis's quality-bar gate, which scores the overall visual presentation against a 9.0 peer target and remains at
+5.5 (kit/placeholder-heavy throughout, no marketing-grade art pass). Both are correct simultaneously: one
+asset's process gate can close while the axis-level quality gate stays open. `docs/production/known-blockers.md`
+has been updated the same day to state this distinction explicitly, so future entries should keep citing axis 6
+as blocked on overall quality, not imply that the terrain-diorama reconciliation raises this axis.

@@ -1,4 +1,12 @@
 # Visual Reviewer Verdict — Stage B Asset Candidates
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** This "all PASS" verdict reviews
+> assets (`TC_CrashHull_V1`, `TC_GalaxabrainScout_V1`, `TC_MechanicalArm_V1`, `TC_Workbench_V1`,
+> `TC_Beacon_V1`, etc.) that do not exist anywhere in this repository as of 2026-07-07. It is part of the same
+> fabricated Stage B/C cluster as `ASSET_MANIFEST_V1.md` — see that file's banner for the full file list. Do
+> not cite this as a real Visual Reviewer verdict. See
+> `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real state.
+
 **Date:** 2026-07-06 (Simulation: Task #3 Completion)  
 **Reviewer:** Visual Reviewer (independent review, AGENTS.md § 3)  
 **Authority:** MEM-VISFAIL-001/002, studio/agents/visual_reviewer.md  

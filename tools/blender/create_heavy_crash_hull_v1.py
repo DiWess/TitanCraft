@@ -111,15 +111,15 @@ def main() -> None:
     _mesh_object("TC_HeavyCrashHull_V1_flat_graphite_underside", underside_verts, [(0, 1, 2, 3), (0, 4, 7, 1), (3, 2, 6, 5)], graphite)
 
     for index, x in enumerate([-2.9, -1.85, -0.8, 0.3, 1.45, 2.55], start=1):
-        _rotated_box(f"TC_HeavyCrashHull_V1_large_exposed_internal_rib_{index}", (x, -2.52, 1.38), (0.28, 0.48, 2.85), (0, 0, -8 if index % 2 else 7), steel)
-        _box(f"TC_HeavyCrashHull_V1_graphite_void_between_ribs_{index}", (x + 0.36, -2.68, 1.36), (0.38, 0.12, 1.7), graphite)
+        _rotated_box(f"TC_HeavyCrashHull_V1_large_exposed_internal_rib_{index}", (x, -2.58, 1.38), (0.4, 0.62, 2.85), (0, 0, -2 if index % 2 else 2), steel)
+        _box(f"TC_HeavyCrashHull_V1_graphite_void_between_ribs_{index}", (x + 0.36, -2.7, 1.36), (0.3, 0.1, 1.7), graphite)
     _rotated_box("TC_HeavyCrashHull_V1_thick_torn_breach_lower_lip", (-0.55, -2.78, 0.46), (5.9, 0.42, 0.42), (0, 0, -4), steel)
     _rotated_box("TC_HeavyCrashHull_V1_thick_torn_breach_upper_lip", (-0.35, -2.68, 2.72), (5.4, 0.42, 0.36), (0, 0, 5), steel)
     _rotated_box("TC_HeavyCrashHull_V1_breach_forward_ripped_vertical_edge", (-3.55, -2.62, 1.48), (0.42, 0.48, 2.45), (0, 0, -16), steel)
     _rotated_box("TC_HeavyCrashHull_V1_breach_rear_ripped_vertical_edge", (2.75, -2.7, 1.44), (0.46, 0.5, 2.2), (0, 0, 13), steel)
-    for index, (x, z, rz) in enumerate([(-3.1, 2.15, -18), (-1.25, 2.85, 20), (1.05, 2.92, -15), (2.7, 2.35, 24)], start=1):
-        _rotated_box(f"TC_HeavyCrashHull_V1_curled_torn_breach_panel_{index}", (x, -2.95, z), (1.05, 0.32, 0.24), (0, 0, rz), hull)
-    for index, (x, z, rz) in enumerate([(-3.65, 0.18, 10), (-2.05, -0.05, -6), (0.75, -0.12, 8), (2.35, 0.05, -12), (4.05, 0.02, 11)], start=1):
+    for index, (x, z, rz) in enumerate([(-3.1, 2.35, -6), (-1.25, 2.75, 7), (1.05, 2.8, -5), (2.7, 2.4, 8)], start=1):
+        _rotated_box(f"TC_HeavyCrashHull_V1_curled_torn_breach_panel_{index}", (x, -2.82, z), (1.05, 0.32, 0.24), (0, 0, rz), hull)
+    for index, (x, z, rz) in enumerate([(-3.65, 0.1, 4), (-2.05, -0.05, -3), (0.75, -0.08, 3), (2.35, 0.02, -4), (4.05, 0.0, 4)], start=1):
         _rotated_box(f"TC_HeavyCrashHull_V1_uneven_buried_torn_lower_edge_{index}", (x, -0.25, z), (1.05, 4.4, 0.24), (0, 0, rz), graphite if index % 2 else steel)
 
     for index, x in enumerate([-3.8, -1.2, 1.4, 3.6], start=1):
@@ -130,8 +130,8 @@ def main() -> None:
     _rotated_box("TC_HeavyCrashHull_V1_crushed_front_folded_offwhite_plate_left", (-5.95, -0.75, 1.05), (0.72, 1.85, 1.65), (0, -18, -18), hull)
     _rotated_box("TC_HeavyCrashHull_V1_crushed_front_folded_offwhite_plate_right", (-5.72, 0.85, 1.34), (0.58, 1.25, 1.85), (0, 14, 17), hull)
     _box("TC_HeavyCrashHull_V1_crushed_front_large_graphite_void", (-6.15, -0.28, 1.12), (0.52, 2.35, 1.95), graphite)
-    for index, (y, z, ry) in enumerate([(-1.55, 1.9, -32), (-0.65, 0.7, 26), (0.35, 2.05, -18), (1.25, 0.95, 35)], start=1):
-        _rotated_box(f"TC_HeavyCrashHull_V1_jagged_front_steel_fracture_strut_{index}", (-6.02, y, z), (0.34, 0.42, 1.45), (0, ry, 0), steel)
+    for index, (y, z, ry) in enumerate([(-1.55, 1.9, -10), (-0.65, 0.7, 8), (0.35, 2.05, -6), (1.25, 0.95, 11)], start=1):
+        _rotated_box(f"TC_HeavyCrashHull_V1_jagged_front_steel_fracture_strut_{index}", (-5.82, y, z), (0.34, 0.42, 1.45), (0, ry, 0), steel)
 
     _box("TC_HeavyCrashHull_V1_deep_rear_engine_mount_graphite_socket", (5.82, 0, 1.22), (0.82, 2.95, 2.05), graphite)
     _cylinder("TC_HeavyCrashHull_V1_rear_engine_outer_worn_steel_ring", (6.28, 0, 1.25), 1.32, 0.34, 20, steel)

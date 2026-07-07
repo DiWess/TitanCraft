@@ -6,9 +6,9 @@
       "asset_name": "TC_HeavyCrashHull_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend",
-      "source_sha256": "0d6193fd32f58d02a42fffbf949a5f6357da8e87dc0b789494902bdb0b59dae9",
+      "source_sha256": "eaa887ca888305198f96c4d2eb543abe85d054d5c5fc306fb035dd02190e7bbc",
       "production_export": "assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb",
-      "production_sha256": "69b77c1dc737f23221da6cdf0a7a5676babc2ec69ce8a7132bdbb12e54d120f5",
+      "production_sha256": "b3ebdd087bea4330ac0aa4a7f5710579e573a67ebe1dab48be51147bb39f9f9a",
       "export_format": "GLB",
       "created_by_tool": "tools/blender/create_heavy_crash_hull_v1.py + tools/blender/export_asset.py",
       "material_slots": [

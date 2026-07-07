@@ -124,3 +124,25 @@ composite)
 audio-completeness gaps only (assets that existed and were silent now play at their intended moments);
 axes 2/3/9 remain gated on a human playtest, axis 6 on Stage A approval, and axis 5 on unverified layout
 claims — none of which this pass touched.
+
+### 2026-07-07 (third pass same day) — claude/blender-assets-scene-integration-kyt4th (no PR yet)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 3.0 | 8.5 | +0.5 | `docs/art/crash-site-object-asset-inventory.md`'s "Distant silhouettes" entry calls for three named variants (basalt ridge, alien arc, smoke plume); `scenes/Main/Main.tscn`'s `DistantRock_4..7` background nodes were, until this pass, four plain scaled `BoxMesh` cubes (confirmed by reading the file before touching it) — an unfinished placeholder, not tuned art. Built `tools/blender/create_distant_silhouettes_kit_v1.py` (3 low-poly variants, 84-96 triangles each, all `BLENDER_ASSET_VALID`), rendered review PNGs (opened and visually checked before integrating), converted to embedded `.gltf`, and replaced all four `DistantRock` placeholders in `Main.tscn` (kept prior positions, cleaned the non-uniform placeholder scale to uniform). Still +0.5 not more: only one gap in one axis-5 sub-area closed; axis 5's stated blocker ("layout claims unverified") is untouched, and this is background dressing, not level layout. |
+| 6 | Visual art & presentation | 3.0 | 9.0 | = | Held at 3.0 despite the same work as axis 5: still Stage-A-unapproved by `docs/production/known-blockers.md`, still no continuous terrain, still kit-heavy. This pass replaced one small placeholder category, not enough to move a 9.0-target axis; recorded under axis 5 instead since it is level-background completeness, not an art-direction milestone. |
+| 7 | Audio & feedback | 2.5 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.0 | 8.0 | = | Re-verified after the `Main.tscn` change: `godot --headless --path . --import` 0 errors; a headless GDScript instantiation of `Main.tscn` confirmed all four `DistantRock_N/DistantSilhouetteModel` nodes resolve; `dotnet test` 71/71; `tests/Integration/IntegrationTestRunner.tscn` rerun to `TITANCRAFT_INTEGRATION_TESTS_PASS` (all 11 MVP smoke milestones) after the scene edit, confirming the background swap didn't regress anything the integration suite covers (it doesn't assert on `DistantRock` specifically — grepped `tests/` first to confirm zero references before assuming this was safe). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | Unchanged this pass. |
+
+**Composite (axes 1–9):** 3.9 / 10 (peer average ≈8.8 / 10)
+**Note:** Deliberately did not touch `TC_HeavyCrashHull_V1`/`TC_TERRAIN_CrashBasin_V1` against the existing
+StageA hull/terrain in this pass either — same reasoning as the prior session on this branch: that art was
+deliberately tuned (see the exposure-rebalance commit in this repo's history) and swapping it for a
+redundant candidate would be bulk replacement of working art, not a targeted fix. The distant-silhouette
+swap was safe specifically because the placeholder it replaced was unfinished (plain boxes), not tuned.

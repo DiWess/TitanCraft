@@ -70,6 +70,9 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PROP_SavePoint_V1.gltf" id="71_v1_savepoint"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CrashDebris_A_V1.gltf" id="72_v1_debris"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_DistantSilhouette_BasaltRidge_V1.gltf" id="91_v1_silhouette_basalt"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_DistantSilhouette_AlienArc_V1.gltf" id="92_v1_silhouette_arc"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_DistantSilhouette_SmokePlume_V1.gltf" id="93_v1_silhouette_smoke"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/wind_ambience_loop_01.wav" id="80_wind_ambient"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/volcanic_rumble_loop_01.wav" id="81_rumble_ambient"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/machinery_hum_loop_01.wav" id="82_machinery_hum"]
@@ -654,25 +657,21 @@ mesh = SubResource("BoxMesh_rock")
 [node name="Collision_BlockingRock" type="CollisionShape3D" parent="VolcanicRock_3"]
 shape = SubResource("BoxShape3D_blocking_rock")
 [node name="DistantRock_4" type="Node3D" parent="."]
-transform = Transform3D(1.8,0.15,0,0,1.8,0,-0.08,0,1.2,38,1.0,-42)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+transform = Transform3D(2.2,0,0,0,2.2,0,0,0,2.2,38,1.0,-42)
+metadata/integration = "Distant silhouette (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only, no gameplay/route implication."
+[node name="DistantSilhouetteModel" parent="DistantRock_4" instance=ExtResource("91_v1_silhouette_basalt")]
 [node name="DistantRock_5" type="Node3D" parent="."]
-transform = Transform3D(3,0.15,0,0,4,0,-0.08,0,2,-55,1.0,-62)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+transform = Transform3D(3.4,0,0,0,3.4,0,0,0,3.4,-55,1.0,-62)
+metadata/integration = "Distant silhouette (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only, no gameplay/route implication."
+[node name="DistantSilhouetteModel" parent="DistantRock_5" instance=ExtResource("92_v1_silhouette_arc")]
 [node name="DistantRock_6" type="Node3D" parent="."]
-transform = Transform3D(3,0.15,0,0,5,0,-0.08,0,2,55,1.0,-68)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+transform = Transform3D(3.0,0,0,0,3.0,0,0,0,3.0,55,1.0,-68)
+metadata/integration = "Distant silhouette (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only, no gameplay/route implication."
+[node name="DistantSilhouetteModel" parent="DistantRock_6" instance=ExtResource("93_v1_silhouette_smoke")]
 [node name="DistantRock_7" type="Node3D" parent="."]
-transform = Transform3D(4,0.15,0,0,3,0,-0.08,0,2,0,1.0,-72)
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DistantRock_7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("BoxMesh_rock")
+transform = Transform3D(2.6,0,0,0,2.6,0,0,0,2.6,0,1.0,-72)
+metadata/integration = "Distant silhouette (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only, no gameplay/route implication."
+[node name="DistantSilhouetteModel" parent="DistantRock_7" instance=ExtResource("91_v1_silhouette_basalt")]
 [node name="Environment" type="Node3D" parent="."]
 metadata/layout = "StaticClutter creates the spawn-to-resource-to-workbench breadcrumb trail; CoverElements owns solid navigational scrap."
 

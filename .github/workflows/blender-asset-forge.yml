@@ -101,6 +101,29 @@ jobs:
       - name: Render TC_PolishDetails_V1 reviews
         run: blender --background --python tools/blender/render_mvp_asset_review.py -- assets/Source/Blender/Production/TC_PolishDetails_V1.blend artifacts/asset-review/TC_PolishDetails_V1
 
+      - name: Create Distant Silhouettes V1 sources
+        run: blender --background --python tools/blender/create_distant_silhouettes_kit_v1.py
+
+      - name: Validate Distant Silhouettes V1 sources
+        run: |
+          for blend in assets/Source/Blender/Production/DistantSilhouettes_V1/*.blend; do
+            python3 tools/blender/validate_blender_asset.py "$blend"
+          done
+
+      - name: Export Distant Silhouettes V1 GLBs
+        run: |
+          for blend in assets/Source/Blender/Production/DistantSilhouettes_V1/*.blend; do
+            name="$(basename "$blend" .blend)"
+            blender --background --python tools/blender/export_asset.py -- "$blend" "assets/Production/Generated/DistantSilhouettes_V1/$name.glb"
+          done
+
+      - name: Render Distant Silhouettes V1 reviews
+        run: |
+          for blend in assets/Source/Blender/Production/DistantSilhouettes_V1/*.blend; do
+            name="$(basename "$blend" .blend)"
+            blender --background --python tools/blender/render_mvp_asset_review.py -- "$blend" "artifacts/asset-review/$name"
+          done
+
       - name: Create MVP Asset Pack V1 sources
         run: blender --background --python tools/blender/create_mvp_asset_pack_v1.py
 
@@ -141,6 +164,8 @@ jobs:
             assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb
             assets/Source/Blender/Production/TC_PolishDetails_V1.blend
             assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb
+            assets/Source/Blender/Production/DistantSilhouettes_V1/*.blend
+            assets/Production/Generated/DistantSilhouettes_V1/*.glb
             assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
             assets/Production/Generated/Hero/TC_CRASH_HullMk1_V1.glb
             assets/Source/Blender/Production/MVP_Pack_V1/*.blend

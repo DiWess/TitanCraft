@@ -259,3 +259,28 @@ confirmed "integrate to live production" means merge this branch into `main`.
 **Note:** The user's actual ask this pass ("a complete scene like these") is not achievable in this container
 at the fidelity shown — that is stated plainly above, not worked around. What shipped instead is the one
 real, scope-safe, documented gap the reference images pointed at.
+
+### 2026-07-07 (eighth pass same day) — codex/polish-details-production-integration (no PR yet)
+
+User asked to push categories 5/6/7 toward 10/10 with Blender and production import. Blender was not
+installed in this container (`blender --version` returned command-not-found), so this pass did not author a
+new `.blend` live; it imported the already-authored Blender Asset Forge `TC_PolishDetails_V1` candidate into
+production as a conservative, visual-only scene dressing slice.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Added surface-detail dressing at three existing production locations only: crash wreck, workbench approach, and beacon route. This supports landmark readability, but does not change route topology, objectives, collision, encounter layout, or the broader human-playtest blocker, so no axis-5 score change is claimed. |
+| 6 | Visual art & presentation | 5.5 | 9.0 | = | Converted the existing Blender-authored `assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb` to an embedded Godot `.gltf` and instanced it in `scenes/Main/Main.tscn` as three visual-only detail strips. A headless node-contract check confirmed all three `PolishDetailsModel` instances resolve. No score increase is claimed because PNG screenshot evidence could not be produced in this environment (`xvfb-run` missing; `--headless` capture has an empty dummy viewport), and Stage A visual approval remains blocked. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after scene/import changes: `python3 tools/validate_agent_studio.py`, `git diff --check`, `godot --headless --path . --import`, `dotnet build TitanCraft.sln --nologo`, and a headless node-contract script for the three new detail instances. No change to Windows-hardware execution evidence. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | Recorded the Blender/screenshot environment limitations rather than claiming 10/10 or visual approval without required evidence. |
+
+**Composite (axes 1–9):** 4.3 / 10 (peer average ≈8.8 / 10 — unchanged from the prior rounded composite)
+**Note:** This is a safe production integration pass for an existing Blender candidate, not a new art-fidelity
+breakthrough. The visual/runtime gates remain separate: runtime import and node resolution pass; visual
+approval remains `ENVIRONMENT_BLOCKED`/`HUMAN_BLOCKED` until PNG review and human or visual-reviewer verdict exist.

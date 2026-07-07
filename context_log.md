@@ -83,3 +83,5 @@
 - 2026-07-05: Added V1 beta visual pass blockout asset candidates, visual bible, evidence scaffold, and schematic screenshot evidence while preserving locked Crash Site gameplay scope.
 
 - 2026-07-05: Replaced binary PNG placeholder evidence with text-diffable SVG and Markdown workaround while preserving the V1 beta partial visual verdict and PNG gate limitation.
+
+- 2026-07-07: Integrated the existing Blender Asset Forge polish-details candidate into Main.tscn at crash-wreck, workbench, and beacon-route positions as visual-only production dressing; validation passed for import/build/node resolution, while screenshot evidence stayed environment-blocked because xvfb-run is unavailable.

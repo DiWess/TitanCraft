@@ -1,4 +1,13 @@
 # Producer Gate Verdict — Stage B Completion
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** This "PASS — ADVANCE TO STAGE C"
+> gate decision converges on Tasks #1/#3/#4, which describe assets that do not exist anywhere in this
+> repository as of 2026-07-07. It is part of the same fabricated Stage B/C cluster as `ASSET_MANIFEST_V1.md`
+> — see that file's banner for the full file list. Do not cite this as a real Producer gate decision. The
+> real, still-in-progress Stage B work is tracked in `docs/art/STAGE_B_ORCHESTRATION_BRIEF.md` and
+> `docs/production/PRODUCTION_PROGRESSION_DASHBOARD.md`. See
+> `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real state.
+
 **Date:** 2026-07-06 (Simulation: Task #5 Gate Decision)  
 **Gate Authority:** Producer (studio/agents/producer.md, AGENTS.md § 3)  
 **Task:** #5 — Convergence of Tasks #1 (Art Director), #3 (Visual Reviewer), #4 (Tech Director)

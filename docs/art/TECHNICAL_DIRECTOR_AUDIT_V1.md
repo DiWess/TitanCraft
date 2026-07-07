@@ -1,4 +1,11 @@
 # Technical Director Feasibility Audit — Stage B Assets
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** This audit's FPS/draw-call/GPU-ms
+> figures are not measured evidence — they describe assets that do not exist anywhere in this repository as
+> of 2026-07-07. It is part of the same fabricated Stage B/C cluster as `ASSET_MANIFEST_V1.md` — see that
+> file's banner for the full file list. Do not cite this as a real technical audit. See
+> `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real state.
+
 **Date:** 2026-07-06 (Simulation: Task #4 Completion)  
 **Auditor:** Technical Director (independent feasibility review, AGENTS.md § 3)  
 **Authority:** studio/agents/technical_director.md, README.md (60 FPS Windows target)  

@@ -15,6 +15,16 @@ TitanCraft uses a minimal layered test setup.
 ./tools/test.sh
 ```
 
+## Environment setup for agent/CI containers
+
+`tools/setup_environment.sh` installs the Linux toolchain `tools/test.sh` needs (matching .NET SDK and Godot 4 .NET mono versions used by `.github/workflows/ci.yml`), plus Blender for the Blender Asset Forge (matching `.github/workflows/blender-asset-forge.yml`). It then runs `dotnet restore`, prepares temporary audio assets, and warms the Godot import cache. It is idempotent: it detects already-installed `dotnet`/Godot/Blender and skips reinstalling them.
+
+```bash
+./tools/setup_environment.sh
+```
+
+Claude Code on the web sessions run this automatically via the `SessionStart` hook in `.claude/hooks/session-start.sh` (registered in `.claude/settings.json`), so a fresh Agent Studio session can run `dotnet build`, `./tools/test.sh`, or the Blender Asset Forge loop from `docs/pipeline/blender-asset-forge.md` without manual setup. Downloading the Godot binary and export templates requires outbound access to `github.com`; Blender is installed via `apt-get` instead, which does not depend on that host. If a session's network policy blocks `github.com`, install the Godot pieces manually first and the script will detect and skip them on the next run.
+
 ## Windows PowerShell commands
 
 ```powershell

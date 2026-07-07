@@ -1,4 +1,12 @@
 # Level Designer Integration Report — Stage C Task #6
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** The scene this report describes,
+> `src/Scenes/CrashSite.tscn`, does not exist anywhere in this repository as of 2026-07-07 (the real main
+> scene is `scenes/Main/Main.tscn`). It is part of the same fabricated Stage B/C cluster as
+> `ASSET_MANIFEST_V1.md` — see that file's banner for the full file list. Do not cite this as a real
+> integration report. See `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real
+> state.
+
 **Date:** 2026-07-07 (Simulation: Task #6 Completion)  
 **Agent:** Level Designer (task owner, studio/agents/level_designer.md)  
 **Scene:** `src/Scenes/CrashSite.tscn`  

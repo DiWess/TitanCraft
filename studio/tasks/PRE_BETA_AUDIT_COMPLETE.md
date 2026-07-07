@@ -1,4 +1,15 @@
 # Pre-Beta Audit Complete — BETA_READY Verdict Issued
+
+> **NOT REAL — SIMULATION EXERCISE, NO CORRESPONDING PRODUCTION STATE.** This "BETA_READY — ZERO DRIFT
+> DETECTED" verdict is not a real audit result: it shares its non-existent scene/asset references
+> (`src/Scenes/CrashSite.tscn`, `TC_CrashHull_V1`, `TC_GalaxabrainScout_V1`, `TC_MechanicalArm_V1`,
+> `TC_Workbench_V1`, `TC_Beacon_V1`) with the fabricated Stage B/C "Simulation: Task #N" cluster under
+> `docs/art/` (see `docs/art/ASSET_MANIFEST_V1.md`'s banner for the full file list), none of which exist in
+> this repository as of 2026-07-07. `docs/production/current-status.md` already flags this specific file as
+> unverified; this banner extends that flag with the full evidence trail. Do not cite this as a real beta
+> readiness verdict. See `docs/production/visual-scope-design-inventory-2026-07-07.md` for the audited real
+> state.
+
 **Date:** 2026-07-08  
 **Authority:** Producer (studio/agents/producer.md), AGENTS.md § 3  
 **Scope:** Full studio-wide audit of Phase 1 direction → Release implementation  

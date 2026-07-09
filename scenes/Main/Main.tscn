@@ -1,4 +1,4 @@
-[gd_scene load_steps=99 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=104 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -24,6 +24,8 @@
 [ext_resource type="Material" path="res://assets/Materials/VolcanicRock.tres" id="17_rock"]
 [ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
+[ext_resource type="Material" path="res://assets/Materials/Landmarks/MoonGlow.tres" id="120_moon_glow"]
+[ext_resource type="Material" path="res://assets/Materials/Landmarks/SignalSpireBeam.tres" id="121_spire_beam"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/pickup_chime.wav" id="40_pickup_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/craft_confirm.wav" id="41_craft_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/beacon_activate.wav" id="42_beacon_audio"]
@@ -317,32 +319,45 @@ material = ExtResource("16_orange")
 size = Vector3(0.72, 0.16, 0.72)
 material = ExtResource("19_violet")
 [sub_resource type="SphereMesh" id="SphereMesh_moon"]
-radial_segments = 12
-rings = 6
+radial_segments = 24
+rings = 12
 radius = 8.0
-material = ExtResource("13_ivory")
+material = ExtResource("120_moon_glow")
+[sub_resource type="BoxMesh" id="BoxMesh_spire_tower"]
+size = Vector3(2.6, 14.0, 2.6)
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_spire_fin"]
+size = Vector3(0.7, 9.0, 2.0)
+material = ExtResource("28_steel")
+[sub_resource type="CylinderMesh" id="CylinderMesh_spire_beam"]
+radial_segments = 8
+top_radius = 0.3
+bottom_radius = 0.55
+height = 52.0
+material = ExtResource("121_spire_beam")
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
-sky_top_color = Color(0.03, 0.05, 0.09, 1)
-sky_horizon_color = Color(0.10, 0.14, 0.23, 1)
-ground_bottom_color = Color(0.03, 0.035, 0.04, 1)
-ground_horizon_color = Color(0.07, 0.08, 0.09, 1)
+sky_top_color = Color(0.07, 0.05, 0.14, 1)
+sky_horizon_color = Color(0.46, 0.22, 0.13, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.04, 0.03, 0.07, 1)
+ground_horizon_color = Color(0.22, 0.12, 0.10, 1)
 [sub_resource type="Sky" id="Sky_main"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 2
 sky = SubResource("Sky_main")
 ambient_light_source = 3
-ambient_light_color = Color(0.18, 0.23, 0.32, 1)
-ambient_light_energy = 0.6
+ambient_light_color = Color(0.24, 0.19, 0.36, 1)
+ambient_light_energy = 0.7
 tonemap_mode = 2
 tonemap_exposure = 0.85
 ssao_enabled = true
 glow_enabled = true
-glow_intensity = 0.24
-glow_strength = 0.55
+glow_intensity = 0.32
+glow_strength = 0.6
 fog_enabled = true
-fog_light_color = Color(0.14, 0.17, 0.22, 1)
-fog_density = 0.009
+fog_light_color = Color(0.17, 0.11, 0.18, 1)
+fog_density = 0.010
 
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ground"]
@@ -387,6 +402,7 @@ visible = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
+light_color = Color(1, 0.76, 0.56, 1)
 light_energy = 1.05
 shadow_enabled = true
 shadow_bias = 0.25
@@ -398,9 +414,9 @@ mesh = SubResource("BoxMesh_ground")
 [node name="Collision_Ground" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_ground")
 [node name="Moon" type="MeshInstance3D" parent="."]
-visible = false
-transform = Transform3D(1,0,0,0,1,0,0,0,1,-42,36,-70)
+transform = Transform3D(1.9,0,0,0,1.9,0,0,0,1.9,-46,34,-92)
 mesh = SubResource("SphereMesh_moon")
+cast_shadow = 0
 [node name="C7_Wall_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,1.4,-10)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_1"]
@@ -452,23 +468,23 @@ shape = SubResource("BoxShape3D_c7_wall")
 [node name="BaseLamp_1" type="OmniLight3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-10,3.0,-8)
 light_color = Color(1, 0.48, 0.18, 1)
-light_energy = 0.55
-omni_range = 8.0
+light_energy = 1.15
+omni_range = 9.0
 [node name="BaseLamp_2" type="OmniLight3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,4,3.0,-12)
 light_color = Color(1, 0.48, 0.18, 1)
-light_energy = 0.55
-omni_range = 8.0
+light_energy = 1.15
+omni_range = 9.0
 [node name="BaseLamp_3" type="OmniLight3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,14,3.0,-14)
 light_color = Color(1, 0.48, 0.18, 1)
-light_energy = 0.55
-omni_range = 8.0
+light_energy = 1.15
+omni_range = 9.0
 [node name="BaseLamp_4" type="OmniLight3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,-2,3.0,-4)
 light_color = Color(1, 0.48, 0.18, 1)
-light_energy = 0.55
-omni_range = 8.0
+light_energy = 1.15
+omni_range = 9.0
 [node name="CrashWreck_PolishDetails" type="Node3D" parent="."]
 transform = Transform3D(2.8, 0, 0, 0, 2.8, 0, 0, 0, 2.8, -8.2, 1.35, -10.3)
 
@@ -825,7 +841,7 @@ metadata/integration = "Alien shard prop (docs/art/crash-site-object-asset-inven
 [node name="AlienZoneLight" type="OmniLight3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,24,3,-22)
 light_color = Color(0.45, 0.25, 1, 1)
-light_energy = 0.45
+light_energy = 0.95
 omni_range = 10.0
 [node name="AuthenticatedCrashSiteVisuals" type="Node3D" parent="."]
 metadata/authentication = "Phase 3A file-level authenticated Quaternius Google Drive assets; visual-only children."
@@ -1183,6 +1199,22 @@ material_override = ExtResource("67_tc_basalt_mat")
 transform = Transform3D(1.4,0,0.15,0,1.0,0,-0.15,0,1.4,24,0.05,-36)
 mesh = ExtResource("61_tc_ridge_c")
 material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="SignalSpire_Landmark" type="Node3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,58,0,-64)
+[node name="Tower" type="MeshInstance3D" parent="SignalSpire_Landmark"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,7.0,0)
+mesh = SubResource("BoxMesh_spire_tower")
+[node name="Fin_A" type="MeshInstance3D" parent="SignalSpire_Landmark"]
+transform = Transform3D(0.866,0,0.5,0,1,0,-0.5,0,0.866,-1.7,4.5,0)
+mesh = SubResource("BoxMesh_spire_fin")
+[node name="Fin_B" type="MeshInstance3D" parent="SignalSpire_Landmark"]
+transform = Transform3D(0.866,0,-0.5,0,1,0,0.5,0,0.866,1.7,4.5,0)
+mesh = SubResource("BoxMesh_spire_fin")
+[node name="Beam" type="MeshInstance3D" parent="SignalSpire_Landmark"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,40.0,0)
+mesh = SubResource("CylinderMesh_spire_beam")
+cast_shadow = 0
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)

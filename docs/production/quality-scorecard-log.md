@@ -305,6 +305,33 @@ approval remains `ENVIRONMENT_BLOCKED`/`HUMAN_BLOCKED` until PNG review and huma
 evidence, re-validated on today's HEAD). Scope completion and quality are different axes, per
 `quality_benchmark_v1.md`'s own Context section — this entry moves neither the composite nor any axis.
 
+### 2026-07-09 (second entry) — claude/agent-studio-mvp-closure-9s383i (reference-mood visual pass)
+
+User supplied the same class of cinematic reference images as the 2026-07-07 seventh pass and asked to
+"build the all scene assets and visual and apply to prod." Handled under the standing 2026-07-07 user
+decision: mood/palette/composition reference only — no large mech, no second enemy, no fidelity claim.
+Blender is not installed in this container, so this pass is scene-level art direction (text-format scene,
+material, and UI edits only), with before/after PNGs captured via xvfb and opened for diagnosis.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Unchanged (the new SignalSpire/Moon are sky dressing recorded under axis 6, per the rock-occluder precedent). |
+| 6 | Visual art & presentation | 6.0 | 9.0 | +0.5 | `docs/release/evidence/titancraft-visual-reference-mood-pass-2026-07-09.md`: before-state flat navy void sky (no moon, no landmark, unreadably weak practicals, default-grey main menu) replaced with a dusk violet/orange grade, glowing moon, 52 m emissive signal-spire skyline landmark, warm base pools vs violet counter-pool, and a styled main menu matching the reference structure — all verified by opened before/after PNGs from the same 8 production cameras plus a new menu capture. Two conditions the 2026-07-06 entry attached to reaching 6.0 (continuous terrain; placeholder standee swaps) were closed in intervening passes; the third (human/Art Director aesthetic sign-off) remains open and is stated in the evidence file — this raise reflects the verified closure of the sky/landmark/menu gaps, not an aesthetic approval, and 6.0 remains an agent score pending human confirmation. Disclosed limitation: the moon renders elliptically at the widest review-camera FOV. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after all scene/UI edits: `dotnet build` 0/0, `dotnet test` 71/71, import exit 0, `TITANCRAFT_INTEGRATION_TESTS_PASS` (menu node contracts intact — original `Menu/*` paths deliberately preserved). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | The forbidden elements in the references (large mech, second enemy) were again not built; the fidelity gap is stated in the evidence file rather than papered over. |
+
+**Composite (axes 1–9):** 4.4 / 10 (peer average ≈8.8 / 10 — 39.5/9 = 4.39, rounds to 4.4)
+**Note:** No 10/10 claim. Axis 6's remaining gap to its 9.0 target is art-direction depth (sculpted
+assets, texture work, human sign-off), not bug closure — the classes of work this container can verify
+are increasingly exhausted; the next real moves on this axis need Blender-authored assets and a human
+aesthetic pass.
+
 ### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
 
 `docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for

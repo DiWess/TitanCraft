@@ -285,6 +285,85 @@ production as a conservative, visual-only scene dressing slice.
 breakthrough. The visual/runtime gates remain separate: runtime import and node resolution pass; visual
 approval remains `ENVIRONMENT_BLOCKED`/`HUMAN_BLOCKED` until PNG review and human or visual-reviewer verdict exist.
 
+### 2026-07-09 — claude/agent-studio-mvp-closure-9s383i (MVP scope-closure pass, documentation only)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged; re-verified 71/71 unit tests + `TITANCRAFT_INTEGRATION_TESTS_PASS` on HEAD `d2a754a`. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged; feel still `HUMAN_BLOCKED` per binding rule 2. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged; same constraint. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged. |
+| 5 | World / level design | 3.5 | 8.5 | = | Unchanged. |
+| 6 | Visual art & presentation | 5.5 | 9.0 | = | Unchanged; Stage A overall approval still open per `known-blockers.md`. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified on HEAD `d2a754a`: `dotnet build` 0/0, `dotnet test` 71/71, import exit 0, integration suite PASS (log in `docs/production/mvp-closure-report-2026-07-09.md`). Windows-hardware execution gap still open, so no score change. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | This pass was asked to "push the report to 10/10 MVP." Handled per this log's own precedent: the closure report (`mvp-closure-report-2026-07-09.md`) records 10/10 only for README §30 scope completion (27/27, evidence-cited) and issues an explicit `NOT_GO` + contradiction report for any quality-benchmark 10/10 claim. No axis score was moved without evidence. |
+
+**Composite (axes 1–9):** 4.3 / 10 (peer average ≈8.8 / 10 — unchanged; documentation-only pass)
+**Note:** This entry closes the Crash Site MVP **scope** (README §30: 27/27 criteria, repository-owned
+evidence, re-validated on today's HEAD). Scope completion and quality are different axes, per
+`quality_benchmark_v1.md`'s own Context section — this entry moves neither the composite nor any axis.
+
+### 2026-07-09 (second entry) — claude/agent-studio-mvp-closure-9s383i (reference-mood visual pass)
+
+User supplied the same class of cinematic reference images as the 2026-07-07 seventh pass and asked to
+"build the all scene assets and visual and apply to prod." Handled under the standing 2026-07-07 user
+decision: mood/palette/composition reference only — no large mech, no second enemy, no fidelity claim.
+Blender is not installed in this container, so this pass is scene-level art direction (text-format scene,
+material, and UI edits only), with before/after PNGs captured via xvfb and opened for diagnosis.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Unchanged (the new SignalSpire/Moon are sky dressing recorded under axis 6, per the rock-occluder precedent). |
+| 6 | Visual art & presentation | 6.0 | 9.0 | +0.5 | `docs/release/evidence/titancraft-visual-reference-mood-pass-2026-07-09.md`: before-state flat navy void sky (no moon, no landmark, unreadably weak practicals, default-grey main menu) replaced with a dusk violet/orange grade, glowing moon, 52 m emissive signal-spire skyline landmark, warm base pools vs violet counter-pool, and a styled main menu matching the reference structure — all verified by opened before/after PNGs from the same 8 production cameras plus a new menu capture. Two conditions the 2026-07-06 entry attached to reaching 6.0 (continuous terrain; placeholder standee swaps) were closed in intervening passes; the third (human/Art Director aesthetic sign-off) remains open and is stated in the evidence file — this raise reflects the verified closure of the sky/landmark/menu gaps, not an aesthetic approval, and 6.0 remains an agent score pending human confirmation. Disclosed limitation: the moon renders elliptically at the widest review-camera FOV. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after all scene/UI edits: `dotnet build` 0/0, `dotnet test` 71/71, import exit 0, `TITANCRAFT_INTEGRATION_TESTS_PASS` (menu node contracts intact — original `Menu/*` paths deliberately preserved). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | The forbidden elements in the references (large mech, second enemy) were again not built; the fidelity gap is stated in the evidence file rather than papered over. |
+
+**Composite (axes 1–9):** 4.4 / 10 (peer average ≈8.8 / 10 — 39.5/9 = 4.39, rounds to 4.4)
+**Note:** No 10/10 claim. Axis 6's remaining gap to its 9.0 target is art-direction depth (sculpted
+assets, texture work, human sign-off), not bug closure — the classes of work this container can verify
+are increasingly exhausted; the next real moves on this axis need Blender-authored assets and a human
+aesthetic pass.
+
+### 2026-07-09 (third entry) — claude/agent-studio-mvp-closure-9s383i (Blender base-camp dressing pass)
+
+User asked to install Blender and push visual design/assets/scene "to max so we reach minimum 8/10."
+Blender 4.0.2 was installed in-container (apt, plus numpy/EGL deps), making this the first pass on this
+branch able to author new Blender assets live. Read "8/10" as the target to move toward, not a number to
+assert: per `quality_benchmark_v1.md` binding rules, axis 6 cannot honestly reach 8.0 from this container —
+that requires human/Art Director aesthetic sign-off and art-direction depth (texture/material work beyond
+flat-shaded kit style), neither of which an agent pass can produce. What this pass did instead is below;
+the score moves only as far as the cited evidence carries it.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Unchanged (camp dressing recorded under axis 6 per prior precedent; light-pole fixtures aid wayfinding but route topology is untouched). |
+| 6 | Visual art & presentation | 6.5 | 9.0 | +0.5 | `docs/release/evidence/titancraft-base-camp-dressing-pass-2026-07-09.md`: four new Blender-authored, `BLENDER_ASSET_VALID` assets (camp awning, supply crate stack, light pole, cable occluder — the last a documented required-but-never-built inventory variant) integrated as collisionless dressing; the four bare OmniLight sources now have visible fixtures; workbench hub reads as a lived-in camp in opened production captures. Review renders caught and fixed a real authoring bug (half-size boxes) before integration. +0.5 not more: one dressing slice, flat-shaded style unchanged, human aesthetic sign-off still missing, disclosed lamp-housing nit. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after asset/scene integration: `dotnet build` 0/0, `dotnet test` 71/71, import exit 0, `TITANCRAFT_INTEGRATION_TESTS_PASS`, manifest `--check` clean (29 entries). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | The "reach minimum 8/10" ask is answered with evidence and a stated ceiling rather than a fabricated score; the authoring bug found in review renders is recorded, not hidden. |
+
+**Composite (axes 1–9):** 4.4 / 10 (peer average ≈8.8 / 10 — 40.0/9 = 4.44, rounds to 4.4)
+**Note:** Doing the 8/10 math honestly, as the 2026-07-07 fourth-pass entry did: axis 6 at 8.0 needs
++1.5 beyond this entry, and the ADR's own binding rules gate that on (a) a dated human/Art Director
+aesthetic pass on opened evidence, (b) material/texture depth beyond the deliberate flat-shaded kit
+style, and (c) resolution of the Stage A overall-approval blocker. (a) and (c) are human gates by
+definition. The productive next step a human can take: pull this branch on the Windows machine, play
+it, and record an aesthetic verdict — that single artifact unlocks more score movement than any
+further agent pass can.
+
 ### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
 
 `docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for

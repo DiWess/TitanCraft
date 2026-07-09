@@ -285,6 +285,26 @@ production as a conservative, visual-only scene dressing slice.
 breakthrough. The visual/runtime gates remain separate: runtime import and node resolution pass; visual
 approval remains `ENVIRONMENT_BLOCKED`/`HUMAN_BLOCKED` until PNG review and human or visual-reviewer verdict exist.
 
+### 2026-07-09 — claude/agent-studio-mvp-closure-9s383i (MVP scope-closure pass, documentation only)
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged; re-verified 71/71 unit tests + `TITANCRAFT_INTEGRATION_TESTS_PASS` on HEAD `d2a754a`. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged; feel still `HUMAN_BLOCKED` per binding rule 2. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged; same constraint. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged. |
+| 5 | World / level design | 3.5 | 8.5 | = | Unchanged. |
+| 6 | Visual art & presentation | 5.5 | 9.0 | = | Unchanged; Stage A overall approval still open per `known-blockers.md`. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified on HEAD `d2a754a`: `dotnet build` 0/0, `dotnet test` 71/71, import exit 0, integration suite PASS (log in `docs/production/mvp-closure-report-2026-07-09.md`). Windows-hardware execution gap still open, so no score change. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | This pass was asked to "push the report to 10/10 MVP." Handled per this log's own precedent: the closure report (`mvp-closure-report-2026-07-09.md`) records 10/10 only for README §30 scope completion (27/27, evidence-cited) and issues an explicit `NOT_GO` + contradiction report for any quality-benchmark 10/10 claim. No axis score was moved without evidence. |
+
+**Composite (axes 1–9):** 4.3 / 10 (peer average ≈8.8 / 10 — unchanged; documentation-only pass)
+**Note:** This entry closes the Crash Site MVP **scope** (README §30: 27/27 criteria, repository-owned
+evidence, re-validated on today's HEAD). Scope completion and quality are different axes, per
+`quality_benchmark_v1.md`'s own Context section — this entry moves neither the composite nor any axis.
+
 ### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
 
 `docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for

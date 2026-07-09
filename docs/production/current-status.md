@@ -11,6 +11,12 @@
 - `TC_HullRibOccluder_V1` has been integrated as collisionless Stage A wreckage dressing with provenance/hash evidence and import/build/PNG capture evidence; this does not expand gameplay scope.
 - `TC_HeavyCrashHull_V1` still requires its own standalone artifact review and human or visual-reviewer verdict before production use.
 - Gameplay MVP work should remain locked to the Crash Site loop and must not expand scope.
+- **MVP scope closure — 2026-07-09:** the Crash Site MVP scope is closed per
+  `docs/production/mvp-closure-report-2026-07-09.md`: all 27 README §30 acceptance criteria are satisfied
+  by repository-owned evidence, re-validated against HEAD `d2a754a` (build 0/0, tests 71/71, integration
+  suite PASS, import 0 errors). This is a scope-completion verdict only: human Windows gameplay feel
+  validation remains `HUMAN_BLOCKED`, and the quality benchmark composite remains 4.3/10 — closure does
+  not claim, and must not be quoted as, a 10/10 quality result.
 
 ## Blocked
 

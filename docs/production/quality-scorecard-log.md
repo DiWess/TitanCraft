@@ -332,6 +332,38 @@ assets, texture work, human sign-off), not bug closure — the classes of work t
 are increasingly exhausted; the next real moves on this axis need Blender-authored assets and a human
 aesthetic pass.
 
+### 2026-07-09 (third entry) — claude/agent-studio-mvp-closure-9s383i (Blender base-camp dressing pass)
+
+User asked to install Blender and push visual design/assets/scene "to max so we reach minimum 8/10."
+Blender 4.0.2 was installed in-container (apt, plus numpy/EGL deps), making this the first pass on this
+branch able to author new Blender assets live. Read "8/10" as the target to move toward, not a number to
+assert: per `quality_benchmark_v1.md` binding rules, axis 6 cannot honestly reach 8.0 from this container —
+that requires human/Art Director aesthetic sign-off and art-direction depth (texture/material work beyond
+flat-shaded kit style), neither of which an agent pass can produce. What this pass did instead is below;
+the score moves only as far as the cited evidence carries it.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.0 | 9.0 | = | Unchanged this pass. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Unchanged (camp dressing recorded under axis 6 per prior precedent; light-pole fixtures aid wayfinding but route topology is untouched). |
+| 6 | Visual art & presentation | 6.5 | 9.0 | +0.5 | `docs/release/evidence/titancraft-base-camp-dressing-pass-2026-07-09.md`: four new Blender-authored, `BLENDER_ASSET_VALID` assets (camp awning, supply crate stack, light pole, cable occluder — the last a documented required-but-never-built inventory variant) integrated as collisionless dressing; the four bare OmniLight sources now have visible fixtures; workbench hub reads as a lived-in camp in opened production captures. Review renders caught and fixed a real authoring bug (half-size boxes) before integration. +0.5 not more: one dressing slice, flat-shaded style unchanged, human aesthetic sign-off still missing, disclosed lamp-housing nit. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified after asset/scene integration: `dotnet build` 0/0, `dotnet test` 71/71, import exit 0, `TITANCRAFT_INTEGRATION_TESTS_PASS`, manifest `--check` clean (29 entries). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | The "reach minimum 8/10" ask is answered with evidence and a stated ceiling rather than a fabricated score; the authoring bug found in review renders is recorded, not hidden. |
+
+**Composite (axes 1–9):** 4.4 / 10 (peer average ≈8.8 / 10 — 40.0/9 = 4.44, rounds to 4.4)
+**Note:** Doing the 8/10 math honestly, as the 2026-07-07 fourth-pass entry did: axis 6 at 8.0 needs
++1.5 beyond this entry, and the ADR's own binding rules gate that on (a) a dated human/Art Director
+aesthetic pass on opened evidence, (b) material/texture depth beyond the deliberate flat-shaded kit
+style, and (c) resolution of the Stage A overall-approval blocker. (a) and (c) are human gates by
+definition. The productive next step a human can take: pull this branch on the Windows machine, play
+it, and record an aesthetic verdict — that single artifact unlocks more score movement than any
+further agent pass can.
+
 ### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
 
 `docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for

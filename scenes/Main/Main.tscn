@@ -1,4 +1,4 @@
-[gd_scene load_steps=104 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=108 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -26,6 +26,10 @@
 [ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/MoonGlow.tres" id="120_moon_glow"]
 [ext_resource type="Material" path="res://assets/Materials/Landmarks/SignalSpireBeam.tres" id="121_spire_beam"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CampAwning_V1.gltf" id="130_camp_awning"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_SupplyCrateStack_V1.gltf" id="131_crate_stack"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_LightPole_V1.gltf" id="132_light_pole"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CableOccluder_V1.gltf" id="133_cable_occluder"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/pickup_chime.wav" id="40_pickup_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/craft_confirm.wav" id="41_craft_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/beacon_activate.wav" id="42_beacon_audio"]
@@ -1199,6 +1203,28 @@ material_override = ExtResource("67_tc_basalt_mat")
 transform = Transform3D(1.4,0,0.15,0,1.0,0,-0.15,0,1.4,24,0.05,-36)
 mesh = ExtResource("61_tc_ridge_c")
 material_override = ExtResource("67_tc_basalt_mat")
+
+[node name="BaseCampDressing" type="Node3D" parent="."]
+metadata/integration = "Base Camp Dressing Kit V1: visual-only, collisionless camp props (awning, crates, light-pole fixtures at existing BaseLamp positions, cable occluders). No gameplay, collision, or light-count changes."
+
+[node name="CampAwning" parent="BaseCampDressing" instance=ExtResource("130_camp_awning")]
+transform = Transform3D(0.966,0,0.259,0,1,0,-0.259,0,0.966,12.6,0.82,-13.6)
+[node name="CrateStack_Workbench" parent="BaseCampDressing" instance=ExtResource("131_crate_stack")]
+transform = Transform3D(0.94,0,0.342,0,1,0,-0.342,0,0.94,9.4,0.82,-10.4)
+[node name="CrateStack_Hull" parent="BaseCampDressing" instance=ExtResource("131_crate_stack")]
+transform = Transform3D(0.737,0,-0.516,0,0.9,0,0.516,0,0.737,-6.6,0.9,-9.2)
+[node name="LightPole_1" parent="BaseCampDressing" instance=ExtResource("132_light_pole")]
+transform = Transform3D(-0.259,0,-0.966,0,1,0,0.966,0,-0.259,-10,0.8,-8)
+[node name="LightPole_2" parent="BaseCampDressing" instance=ExtResource("132_light_pole")]
+transform = Transform3D(0,0,-1,0,1,0,1,0,0,4,0.8,-12)
+[node name="LightPole_3" parent="BaseCampDressing" instance=ExtResource("132_light_pole")]
+transform = Transform3D(-0.707,0,0.707,0,1,0,-0.707,0,-0.707,14,0.8,-14)
+[node name="LightPole_4" parent="BaseCampDressing" instance=ExtResource("132_light_pole")]
+transform = Transform3D(0.966,0,-0.259,0,1,0,0.259,0,0.966,-2,0.8,-4)
+[node name="CableRun_Workbench" parent="BaseCampDressing" instance=ExtResource("133_cable_occluder")]
+transform = Transform3D(0.985,0,0.174,0,1,0,-0.174,0,0.985,2.5,0.82,-12.8)
+[node name="CableRun_Hull" parent="BaseCampDressing" instance=ExtResource("133_cable_occluder")]
+transform = Transform3D(1.039,0,-0.6,0,1.2,0,0.6,0,1.039,-7,0.9,-8.5)
 
 [node name="SignalSpire_Landmark" type="Node3D" parent="."]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,58,0,-64)

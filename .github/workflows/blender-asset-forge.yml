@@ -182,6 +182,27 @@ jobs:
             blender --background --python tools/blender/render_mvp_asset_review.py -- "$blend" "artifacts/asset-review/$name"
           done
 
+      - name: Create Base Camp Dressing V1 sources
+        run: blender --background --python tools/blender/create_base_camp_dressing_kit_v1.py
+
+      - name: Validate Base Camp Dressing V1 sources
+        run: |
+          for name in TC_ENV_CampAwning_V1 TC_ENV_SupplyCrateStack_V1 TC_ENV_LightPole_V1 TC_ENV_CableOccluder_V1; do
+            python3 tools/blender/validate_blender_asset.py "assets/Source/Blender/Production/$name.blend"
+          done
+
+      - name: Export Base Camp Dressing V1 GLBs
+        run: |
+          for name in TC_ENV_CampAwning_V1 TC_ENV_SupplyCrateStack_V1 TC_ENV_LightPole_V1 TC_ENV_CableOccluder_V1; do
+            blender --background --python tools/blender/export_asset.py -- "assets/Source/Blender/Production/$name.blend" "assets/Production/Generated/BaseCampDressing/$name.glb"
+          done
+
+      - name: Render Base Camp Dressing V1 reviews
+        run: |
+          for name in TC_ENV_CampAwning_V1 TC_ENV_SupplyCrateStack_V1 TC_ENV_LightPole_V1 TC_ENV_CableOccluder_V1; do
+            blender --background --python tools/blender/render_mvp_asset_review.py -- "assets/Source/Blender/Production/$name.blend" "artifacts/asset-review/$name"
+          done
+
       - name: Rebuild manifest with all generated assets
         run: python3 tools/blender/build_asset_manifest.py
 
@@ -209,6 +230,11 @@ jobs:
             assets/Production/Generated/Environment/TC_ENV_RockOccluder_V1.glb
             assets/Source/Blender/Production/AlienShard_V1/*.blend
             assets/Production/Generated/AlienShard_V1/*.glb
+            assets/Source/Blender/Production/TC_ENV_CampAwning_V1.blend
+            assets/Source/Blender/Production/TC_ENV_SupplyCrateStack_V1.blend
+            assets/Source/Blender/Production/TC_ENV_LightPole_V1.blend
+            assets/Source/Blender/Production/TC_ENV_CableOccluder_V1.blend
+            assets/Production/Generated/BaseCampDressing/*.glb
             assets/Production/Generated/asset_manifest.json
             artifacts/asset-review/test-crate/neutral_turntable.png
             artifacts/asset-review/test-crate/material_turntable.png

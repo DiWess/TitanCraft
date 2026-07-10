@@ -139,3 +139,44 @@ git diff --check
 ## 10. Pull Request Rule
 
 Pull requests must include evidence, tests, manual verification, risks, and a final verdict. A PR must not claim memories are exhaustive or imply gameplay scope has changed.
+
+<!-- ISSAABUU_COMPANY_OS_BRIDGE_V1 -->
+## Issaabuu Company OS Bridge
+
+**Effective:** 2026-07-10  
+**Authority:** Founder-approved cross-repository governance
+
+This repository participates in the Issaabuu Company OS.
+
+### Authority boundary
+
+- Repository-local `README.md`, `AGENTS.md`, tests, schemas, ADRs, and release artifacts remain authoritative for product scope, implementation, validation, and technical truth.
+- OneDrive `/Issaabuu_Management_Inc/` is authoritative for company strategy, capital allocation, cross-product priorities, legal/financial/partnership records, company KPIs, and external claims.
+- GitHub is authoritative for code, commits, pull requests, tests, deployments, and technical evidence.
+- Conversations, model memory, generated summaries, and local notes are never canonical evidence.
+
+### Required Company OS references
+
+For material cross-company decisions, read through an authorized OneDrive connector or synchronized folder:
+
+1. `00_Master_Index/Issaabuu_Constitution_v2_0_Canonical.md`
+2. `00_Master_Index/SOURCE_OF_TRUTH_REGISTRY.md`
+3. `00_Master_Index/AI_OPERATING_PROTOCOL.md`
+4. `COMPANY_STATE.json`
+5. `MASTER_BRIEFING.md` and `MASTER_TASKS.md`
+
+If those files are unavailable, do not reconstruct them from memory. Continue only with repository-local technical work and mark company-level conclusions `SOURCE_UNAVAILABLE`.
+
+### Execution contract
+
+- One agent per branch/worktree. Never let Codex and Claude Code edit the same branch concurrently.
+- Business-document proposals go to the appropriate OneDrive agent staging lane; code changes go through reviewable GitHub branches and pull requests.
+- Separate repository capability, environment proof, production proof, and market proof.
+- Never convert tests or repository artifacts into user, revenue, partnership, or production claims without the required external evidence.
+- Never store secret values in repository instructions, prompts, logs, evidence, or agent memory.
+- Material plans must include a falsifiable thesis, evidence, definition of done, rollback, and a ten-step dependency horizon. Only the first unblocked step becomes active.
+
+### Conflict rule
+
+When repository instructions and Company OS state appear to conflict, freeze the disputed cross-company action, preserve repository safety, identify the exact contradiction, and escalate it through the Company OS decision and evidence ledgers. Do not silently choose a source.
+<!-- /ISSAABUU_COMPANY_OS_BRIDGE_V1 -->

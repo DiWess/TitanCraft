@@ -1,0 +1,205 @@
+name: TitanCraft Windows Playtest Journey
+
+# Full agent-gated playtest journey per
+# studio/decisions/quality_benchmark_v2_agent_gate_delegation.md:
+#   1. Build + export the Windows build on a real Windows runner and run a
+#      measured smoke (exit code, frames, wall time, exe hash) — this is the
+#      evidence source ADR rule 1 requires for any number in a verdict.
+#   2. Capture the allowlisted Godot scene review PNGs (aesthetic evidence).
+#   3. Scaffold a verdict draft with every machine field pre-filled; the
+#      Visual Reviewer agent opens the PNGs, fills the aesthetic verdict, and
+#      commits it to docs/production/playtests/.
+#   4. Validate committed verdicts so no unfounded feel/aesthetic claim can
+#      merge — this validation step is the agent-studio gate that replaces
+#      the human for everything except subjective feel adjectives, which
+#      still require a dated human note by ADR.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docs/production/playtests/**'
+      - 'tools/validate_playtest_evidence.py'
+      - 'tools/build_playtest_verdict_draft.py'
+      - '.github/workflows/windows-playtest-journey.yml'
+  pull_request:
+    paths:
+      - 'docs/production/playtests/**'
+      - 'tools/validate_playtest_evidence.py'
+      - 'tools/build_playtest_verdict_draft.py'
+      - '.github/workflows/windows-playtest-journey.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-committed-verdicts:
+    name: Validate committed playtest verdicts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate playtest evidence documents
+        run: python3 tools/validate_playtest_evidence.py
+
+  windows-export-smoke:
+    name: Windows export + measured smoke
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Godot 4.7 .NET
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_win64.zip -OutFile godot.zip
+          Expand-Archive godot.zip -DestinationPath godot
+          $godotExe = Get-ChildItem -Path godot -Recurse -Filter Godot_v4.7-stable_mono_win64.exe | Select-Object -First 1
+          if (-not $godotExe) { throw 'Godot_v4.7-stable_mono_win64.exe not found after extraction' }
+          $godotExe.DirectoryName | Out-File -FilePath $env:GITHUB_PATH -Append
+          "GODOT_BIN=$($godotExe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          & $godotExe.FullName --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
+          if ($LASTEXITCODE -ne 0) { throw "Godot version check failed with exit code $LASTEXITCODE" }
+      - name: Prepare temporary audio assets
+        shell: pwsh
+        run: python tools/prepare_audio_assets.py
+      - name: Install Godot export templates
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_export_templates.tpz -OutFile templates.tpz
+          Expand-Archive templates.tpz -DestinationPath templates_extract
+          $templateRoot = Join-Path $env:APPDATA 'Godot/export_templates/4.7.stable.mono'
+          New-Item -ItemType Directory -Force $templateRoot | Out-Null
+          Copy-Item -Recurse -Force 'templates_extract/templates/*' $templateRoot
+          if (-not (Test-Path (Join-Path $templateRoot 'windows_release_x86_64.exe'))) { throw 'Windows release export template missing' }
+      - name: Build, test, and export (repo-standard pipeline)
+        shell: pwsh
+        run: ./tools/test.ps1
+      - name: Measured Windows smoke run
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/playtest-journey | Out-Null
+          $frames = 600
+          $sw = [System.Diagnostics.Stopwatch]::StartNew()
+          $p = Start-Process -FilePath builds/Windows/TitanCraft.exe -ArgumentList '--headless',"--quit-after","$frames" -PassThru
+          if (-not $p.WaitForExit(60000)) { $p.Kill(); throw 'Measured smoke timeout after 60 s' }
+          $sw.Stop()
+          $wall = [Math]::Round($sw.Elapsed.TotalSeconds, 2)
+          $hash = (Get-FileHash builds/Windows/TitanCraft.exe -Algorithm SHA256).Hash.ToLower()
+          $proxy = if ($wall -gt 0) { [Math]::Round($frames / $wall, 1) } else { 0 }
+          $report = [ordered]@{
+            executable = 'builds/Windows/TitanCraft.exe'
+            sha256 = $hash
+            sha = '${{ github.sha }}'
+            run_id = '${{ github.run_id }}'
+            workflow = 'windows-playtest-journey'
+            runner_os = 'windows-latest'
+            runner_os_version = [System.Environment]::OSVersion.VersionString
+            smoke_exit_code = $p.ExitCode
+            smoke_frames = $frames
+            smoke_wall_seconds = $wall
+            frames_per_second_proxy = $proxy
+            windows_capture_png = $null
+          }
+          $report | ConvertTo-Json | Out-File -Encoding utf8 artifacts/playtest-journey/smoke_report.json
+          Get-Content artifacts/playtest-journey/smoke_report.json
+          if ($p.ExitCode -ne 0) { throw "Measured smoke failed with exit code $($p.ExitCode)" }
+      - name: Windows on-screen capture (best effort)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          Add-Type -AssemblyName System.Windows.Forms
+          $p = Start-Process -FilePath builds/Windows/TitanCraft.exe -PassThru
+          Start-Sleep -Seconds 20
+          $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bmp = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+          $gfx = [System.Drawing.Graphics]::FromImage($bmp)
+          $gfx.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+          $bmp.Save('artifacts/playtest-journey/windows_onscreen_capture.png')
+          Stop-Process -Id $p.Id -Force
+          $json = Get-Content artifacts/playtest-journey/smoke_report.json | ConvertFrom-Json
+          $json.windows_capture_png = 'artifacts/playtest-journey/windows_onscreen_capture.png'
+          $json | ConvertTo-Json | Out-File -Encoding utf8 artifacts/playtest-journey/smoke_report.json
+      - name: Upload Windows playtest bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-playtest-bundle
+          if-no-files-found: error
+          path: |
+            artifacts/playtest-journey/**
+            builds/Windows/TitanCraft.exe
+            builds/Windows/export.log
+
+  aesthetic-captures:
+    name: Godot scene captures for aesthetic review
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Godot capture tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 mesa-utils mesa-vulkan-drivers unzip xauth xvfb
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo mkdir -p /opt/godot
+          sudo cp -R /tmp/godot/Godot_v4.7-stable_mono_linux_x86_64/* /opt/godot/
+          sudo ln -sf /opt/godot/Godot_v4.7-stable_mono_linux.x86_64 /usr/local/bin/godot
+      - name: Prepare temporary audio assets
+        run: python3 tools/prepare_audio_assets.py
+      - name: Import Godot assets
+        run: godot --headless --path . --import
+      - name: Capture allowlisted Godot visual reviews
+        run: python3 tools/visual_review/run_visual_artifact_factory.py
+      - name: Upload aesthetic capture bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: aesthetic-capture-bundle
+          if-no-files-found: error
+          path: |
+            artifacts/visual-review/**
+
+  verdict-scaffold:
+    name: Scaffold verdict draft from evidence
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    needs:
+      - windows-export-smoke
+      - aesthetic-captures
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Download Windows playtest bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-playtest-bundle
+          path: bundle/windows
+      - name: Download aesthetic capture bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: aesthetic-capture-bundle
+          path: bundle/captures
+      - name: Build verdict draft
+        run: |
+          set -euo pipefail
+          python3 tools/build_playtest_verdict_draft.py \
+            bundle/windows/artifacts/playtest-journey/smoke_report.json \
+            bundle/captures \
+            artifacts/playtest-journey/verdict-draft.md
+      - name: Validate draft structure
+        run: python3 tools/validate_playtest_evidence.py --draft artifacts/playtest-journey/verdict-draft.md
+      - name: Upload verdict draft
+        uses: actions/upload-artifact@v4
+        with:
+          name: playtest-verdict-draft
+          if-no-files-found: error
+          path: artifacts/playtest-journey/verdict-draft.md

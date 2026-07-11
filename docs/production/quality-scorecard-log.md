@@ -391,6 +391,19 @@ this point is gated on a dated human Windows playtest, and axis 6 on human aesth
 material depth beyond the flat-shaded kit style. The next unlock is unchanged from the previous entry:
 a human pulls the branch, plays it, and records feel + aesthetic verdicts.
 
+### 2026-07-11 — claude/gameplay-graphics-optimization-veu8ad (agent-gated playtest journey, governance + pipeline only)
+
+Human owner directed that the Agent Studio validation replace the human in the Windows playtest +
+aesthetic verdict chain. Recorded as `studio/decisions/quality_benchmark_v2_agent_gate_delegation.md`
+(superseding v1 rule 2 in bounded scope) with its enforcing pipeline in the same change set:
+`.github/workflows/windows-playtest-journey.yml` (Windows-runner export + measured smoke, scene
+captures, verdict draft scaffold) and `tools/validate_playtest_evidence.py` (provenance hash,
+smoke evidence, opened-PNG citations, verdict vocabulary, feel-adjective guard — verified locally to
+pass an agent-completed verdict, reject a fabricated feel claim, and accept the same wording only
+under a dated human note). No axis scores move: this entry adds the *mechanism* for future evidence,
+not evidence itself. Axis 10 stays 2.0 until the journey produces its first validated verdict
+document; no gameplay code, scenes, or assets were touched.
+
 ### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
 
 `docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for

@@ -4,20 +4,24 @@ on:
   pull_request:
     paths:
       - 'studio/**'
+      - 'docs/production/playtests/**'
       - 'tools/agent_task_router.py'
       - 'tools/agent_preflight.py'
       - 'tools/test_agent_task_router.py'
       - 'tools/test_agent_preflight.py'
       - 'tools/validate_agent_studio.py'
+      - 'tools/validate_playtest_evidence.py'
       - '.github/workflows/agent-studio.yml'
   push:
     paths:
       - 'studio/**'
+      - 'docs/production/playtests/**'
       - 'tools/agent_task_router.py'
       - 'tools/agent_preflight.py'
       - 'tools/test_agent_task_router.py'
       - 'tools/test_agent_preflight.py'
       - 'tools/validate_agent_studio.py'
+      - 'tools/validate_playtest_evidence.py'
       - '.github/workflows/agent-studio.yml'
 
 jobs:
@@ -28,6 +32,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate Agent Studio structure
         run: python3 tools/validate_agent_studio.py
+      - name: Validate playtest evidence documents
+        run: python3 tools/validate_playtest_evidence.py
       - name: Rehearse task routing
         run: python3 tools/test_agent_task_router.py
       - name: Validate task preflight

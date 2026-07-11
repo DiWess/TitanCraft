@@ -33,6 +33,10 @@
 - Agent Studio routing and evidence improvements.
 - Blender Asset Forge standalone candidate generation.
 - Visual Artifact Factory review-bundle generation.
+- Agent-gated Windows playtest journey runs (`.github/workflows/windows-playtest-journey.yml`) and
+  verdict documents in `docs/production/playtests/` validated by `tools/validate_playtest_evidence.py`,
+  per `studio/decisions/quality_benchmark_v2_agent_gate_delegation.md` (aesthetic verdicts delegated to
+  the Visual Reviewer agent on opened CI captures; feel adjectives still require a dated human note).
 - Documentation-only reconciliation of Stage A status against `context_log.md`, `docs/art/reviews/stage-a-visual-approval-verdict.md`, `docs/production/stage-a-production-integration-signoff.md`, and `docs/production/visual-completion-checklist.md`.
 - Phase 7 planning (composition guide, balance playtesting, audio design, polish, platform testing) pending Phase 6 completion.
 

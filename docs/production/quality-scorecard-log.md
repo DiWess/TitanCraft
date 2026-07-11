@@ -364,6 +364,33 @@ definition. The productive next step a human can take: pull this branch on the W
 it, and record an aesthetic verdict — that single artifact unlocks more score movement than any
 further agent pass can.
 
+### 2026-07-10 — claude/gameplay-graphics-optimization-veu8ad (heavy-hull review + Scout hit reaction)
+
+User asked to push gameplay and visual design "to max capacity using Blender." Read per this log's
+precedent: move only as far as evidence carries, inside locked MVP scope. This pass ran the Blender
+Asset Forge locally via the `bpy` 4.2.22 pip module (first pass to do so without apt Blender or CI),
+closed the queued `TC_HeavyCrashHull_V1` standalone-review gap, and added the README §11-required
+simple visual hit reaction to the Galaxabrain Scout.
+
+| # | Axis | Score /10 | Peer target | Δ | Evidence |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Unchanged this pass. |
+| 2 | Combat & enemy AI | 3.5 | 9.0 | +0.5 | `ScoutHitFlinch` scale-punch on the alive rig completes the README §11 "simple visual reaction" requirement; hit chain is now hit-stop + camera trauma + hurt audio + enemy flinch, all code-verified (4 new unit tests, `GameFeelTests`). +0.5 reflects requirement coverage only — combat *feel* remains HUMAN_BLOCKED per ADR rule 2. |
+| 3 | Movement & controls | 3.0 | 9.5 | = | Unchanged this pass. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Unchanged this pass. |
+| 5 | World / level design | 4.0 | 8.5 | = | Unchanged this pass. |
+| 6 | Visual art & presentation | 6.5 | 9.0 | = | `docs/art/reviews/heavy-crash-hull-v1-standalone-review.md`: the hero-wreck candidate named as still-unreviewed in `current-status.md` now has its six opened review PNGs (auto-framed, 1.8 m scale reference), provenance hashes, and a Visual Reviewer `PASS` as a standalone candidate. No scene integration this pass, so no score movement — the axis blocker (overall quality bar + human sign-off) is unchanged. First renders failed silhouette/scale readability; the framing bug was fixed in `render_heavy_crash_hull_v1_reviews.py` and re-rendered rather than waved through. |
+| 7 | Audio & feedback | 3.0 | 8.5 | = | Unchanged this pass. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified: `dotnet build` 0 warnings/0 errors; `dotnet test` 75/75 (71 prior + 4 new); `./tools/test.sh` full suite exit 0; `validate_agent_studio.py` pass; `BLENDER_ASSET_VALID` 0 issues on the tracked hull source. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged this pass. |
+| 10 | Process integrity of studio claims | 2.0 | n/a | = | The tracked `.blend` binary was regenerated during work, then deliberately restored to the committed bytes and reviews re-rendered from the pristine source (no unnecessary binary modification); the first-render framing failure is recorded above, not hidden. |
+
+**Composite (axes 1–9):** 4.5 / 10 (peer average ≈8.8 / 10 — 40.5/9 = 4.5)
+**Note:** "Max capacity" cannot be honestly asserted from a headless container: axes 2/3 movement past
+this point is gated on a dated human Windows playtest, and axis 6 on human aesthetic sign-off plus
+material depth beyond the flat-shaded kit style. The next unlock is unchanged from the previous entry:
+a human pulls the branch, plays it, and records feel + aesthetic verdicts.
+
 ### Clarification — Stage A reconciliation scope vs. axis 6 (2026-07-07)
 
 `docs/production/current-status.md`'s "Stage A Reconciliation — 2026-07-07" section grants a PASS for

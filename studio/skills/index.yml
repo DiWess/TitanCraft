@@ -51,3 +51,6 @@ skills:
   - id: SKILL-WINDOWS-EXPORT-VALIDATION
     path: windows_export_validation.md
     purpose: Windows Export Validation workflow.
+  - id: SKILL-WINDOWS-PLAYTEST-JOURNEY
+    path: windows_playtest_journey.md
+    purpose: Windows Playtest Journey workflow.

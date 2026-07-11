@@ -111,6 +111,49 @@ public sealed class GalaxabrainScoutBrain
     }
 }
 
+/// <summary>
+/// Pure timer for the Scout's simple visual hit reaction (README §11 "réaction
+/// visuelle simple"): a short scale punch on the alive rig that decays back to
+/// rest. Kept engine-free so the curve is unit-testable like the brain.
+/// </summary>
+public sealed class ScoutHitFlinch
+{
+    public const float DefaultDurationSeconds = 0.18f;
+    public const float DefaultScalePunch = 0.08f;
+
+    private readonly float _durationSeconds;
+    private readonly float _scalePunch;
+    private float _remainingSeconds;
+
+    public ScoutHitFlinch(float durationSeconds = DefaultDurationSeconds, float scalePunch = DefaultScalePunch)
+    {
+        if (durationSeconds <= 0f)
+        {
+            throw new ArgumentOutOfRangeException(nameof(durationSeconds), "Flinch duration must be greater than zero.");
+        }
+
+        if (scalePunch < 0f)
+        {
+            throw new ArgumentOutOfRangeException(nameof(scalePunch), "Flinch scale punch cannot be negative.");
+        }
+
+        _durationSeconds = durationSeconds;
+        _scalePunch = scalePunch;
+    }
+
+    public bool IsActive => _remainingSeconds > 0f;
+
+    /// <summary>1.0 at rest; 1.0 + punch at impact, decaying linearly back to rest.</summary>
+    public float CurrentScale => 1f + _scalePunch * (_remainingSeconds / _durationSeconds);
+
+    public void Trigger() => _remainingSeconds = _durationSeconds;
+
+    public void Tick(float deltaSeconds)
+    {
+        _remainingSeconds = Math.Max(0f, _remainingSeconds - Math.Max(0f, deltaSeconds));
+    }
+}
+
 public partial class GalaxabrainScout : CharacterBody3D
 {
     private GalaxabrainScoutBrain _brain = new(
@@ -120,6 +163,8 @@ public partial class GalaxabrainScout : CharacterBody3D
         attackCooldownSeconds: 0.8f);
 
     private GalaxabrainScoutState _previousState = GalaxabrainScoutState.Idle;
+
+    private ScoutHitFlinch _hitFlinch = new();
 
     [Export] public int Health { get; set; } = GalaxabrainScoutBrain.DefaultHealth;
 
@@ -145,6 +190,10 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public NodePath DisabledVisualPath { get; set; } = "V1BetaScoutDisabledVisualRoot";
 
+    [Export] public float HitFlinchDurationSeconds { get; set; } = ScoutHitFlinch.DefaultDurationSeconds;
+
+    [Export] public float HitFlinchScalePunch { get; set; } = ScoutHitFlinch.DefaultScalePunch;
+
     public GalaxabrainScoutBrain Brain => _brain;
 
     public GalaxabrainScoutState State => _brain.State;
@@ -152,12 +201,15 @@ public partial class GalaxabrainScout : CharacterBody3D
     public override void _Ready()
     {
         _brain = new GalaxabrainScoutBrain(Health, DetectionRange, AttackRange, AttackCooldownSeconds);
+        _hitFlinch = new ScoutHitFlinch(HitFlinchDurationSeconds, HitFlinchScalePunch);
         SetMissionComponentVisible(false);
         _previousState = GalaxabrainScoutState.Idle;
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        UpdateHitFlinch((float)delta);
+
         Node3D? player = GetConfiguredPlayer();
         if (player is null || _brain.IsDead)
         {
@@ -201,6 +253,11 @@ public partial class GalaxabrainScout : CharacterBody3D
         {
             // Play hurt audio on damage (but not on death, which has its own fanfare)
             AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Hurt", GlobalPosition);
+
+            // README §11 requires a simple visual reaction on hit; the flinch
+            // decays in _PhysicsProcess, which death disables, so only a
+            // surviving Scout is punched.
+            _hitFlinch.Trigger();
         }
 
         if (wasAlive && _brain.IsDead)
@@ -227,6 +284,20 @@ public partial class GalaxabrainScout : CharacterBody3D
         }
         // Trigger attack audio when scout enters close combat range (Chase → Attack)
         // Note: Actual attack strike audio is played in _PhysicsProcess when TryConsumeAttack succeeds
+    }
+
+    private void UpdateHitFlinch(float deltaSeconds)
+    {
+        if (!_hitFlinch.IsActive)
+        {
+            return;
+        }
+
+        _hitFlinch.Tick(deltaSeconds);
+        if (GetNodeOrNull<Node3D>(AliveVisualPath) is { } alive)
+        {
+            alive.Scale = Vector3.One * _hitFlinch.CurrentScale;
+        }
     }
 
     private void TryDamagePlayer(Node3D player)

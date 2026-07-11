@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Render the six local review PNGs for TC_HeavyCrashHull_V1.
 
+Cameras auto-frame from the evaluated scene bounds so every view shows the
+full hull silhouette, and each render includes a 1.8 m astronaut-height
+scale reference (render-only, never part of the exported asset) per the
+Stage A review lesson that unframed or scale-less PNGs are not reviewable.
+
 Run with Blender after source generation:
   blender --background --python tools/blender/render_heavy_crash_hull_v1_reviews.py
 """
@@ -14,9 +19,18 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend"
 REVIEW_DIR = ROOT / "artifacts/asset-review/TC_HeavyCrashHull_V1"
 
+SCALE_REFERENCE_HEIGHT_M = 1.8
 
-def _look_at(obj: bpy.types.Object, target: tuple[float, float, float]) -> None:
-    direction = Vector(target) - obj.location
+# View name -> (unit direction from hull center to camera, distance multiplier, lens mm)
+VIEWS = {
+    "front_three_quarter.png": (Vector((-0.66, -0.62, 0.42)), 2.3, 34),
+    "side_silhouette.png": (Vector((0.0, -1.0, 0.18)), 2.4, 38),
+    "rear_engine.png": (Vector((1.0, -0.28, 0.22)), 2.1, 30),
+}
+
+
+def _look_at(obj: bpy.types.Object, target: Vector) -> None:
+    direction = target - obj.location
     obj.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
 
 
@@ -29,20 +43,65 @@ def _apply_neutral_material() -> None:
             obj.data.materials.append(neutral)
 
 
-def _render(name: str, camera_location: tuple[float, float, float], neutral: bool, target: tuple[float, float, float] = (0, 0, 1.2), lens: float = 35) -> None:
+def _scene_bounds() -> tuple[Vector, Vector]:
+    low = Vector((1e9, 1e9, 1e9))
+    high = Vector((-1e9, -1e9, -1e9))
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    for obj in bpy.context.scene.objects:
+        if obj.type != "MESH":
+            continue
+        mesh = obj.evaluated_get(depsgraph).to_mesh()
+        for vertex in mesh.vertices:
+            world = obj.matrix_world @ vertex.co
+            low = Vector(map(min, low, world))
+            high = Vector(map(max, high, world))
+        obj.evaluated_get(depsgraph).to_mesh_clear()
+    return low, high
+
+
+def _add_scale_reference(bounds_low: Vector, bounds_high: Vector) -> None:
+    # A 1.8 m astronaut-height post beside the hull's -Y edge keeps human
+    # scale readable in every framed view without touching the asset data.
+    base_x = bounds_low.x + (bounds_high.x - bounds_low.x) * 0.25
+    base_y = bounds_low.y - 1.2
+    bpy.ops.mesh.primitive_cylinder_add(
+        vertices=12,
+        radius=0.22,
+        depth=SCALE_REFERENCE_HEIGHT_M,
+        location=(base_x, base_y, SCALE_REFERENCE_HEIGHT_M / 2),
+    )
+    post = bpy.context.object
+    post.name = "TC_ReviewScaleReference_1p8m"
+    marker = bpy.data.materials.new("TC_ReviewScaleReferenceOrange")
+    marker.diffuse_color = (0.85, 0.30, 0.05, 1)
+    post.data.materials.append(marker)
+
+
+def _render(name: str, view_direction: Vector, distance_multiplier: float, lens: float, neutral: bool) -> None:
     bpy.ops.wm.open_mainfile(filepath=str(SOURCE))
     if neutral:
         _apply_neutral_material()
-    bpy.ops.object.light_add(type="AREA", location=(0, -5, 6))
-    bpy.context.object.data.energy = 650
-    bpy.context.object.data.size = 5
+
+    low, high = _scene_bounds()
+    center = (low + high) / 2
+    radius = max((high - low).length / 2, 1.0)
+    _add_scale_reference(low, high)
+
+    camera_location = center + view_direction.normalized() * radius * distance_multiplier
+    camera_location.z = max(camera_location.z, center.z + radius * 0.15)
+
+    bpy.ops.object.light_add(type="AREA", location=(center.x, center.y - radius * 1.5, center.z + radius * 1.5))
+    bpy.context.object.data.energy = 650 * radius
+    bpy.context.object.data.size = radius * 1.5
     bpy.ops.object.light_add(type="AREA", location=camera_location)
-    bpy.context.object.data.energy = 450
-    bpy.context.object.data.size = 4
+    bpy.context.object.data.energy = 450 * radius
+    bpy.context.object.data.size = radius
+
     bpy.ops.object.camera_add(location=camera_location)
     camera = bpy.context.object
-    _look_at(camera, target)
+    _look_at(camera, center)
     camera.data.lens = lens
+    camera.data.clip_end = radius * 20
     bpy.context.scene.camera = camera
     bpy.context.scene.render.resolution_x = 1280
     bpy.context.scene.render.resolution_y = 720
@@ -58,9 +117,8 @@ def main() -> None:
     if not SOURCE.exists():
         raise SystemExit(f"missing generated source blend: {SOURCE}")
     for prefix, neutral in (("neutral", True), ("material", False)):
-        _render(f"{prefix}_front_three_quarter.png", (-8, -6, 4), neutral, (-1.2, -1.0, 1.35), 34)
-        _render(f"{prefix}_side_silhouette.png", (0, -10, 2.4), neutral, (0, -2.5, 1.25), 38)
-        _render(f"{prefix}_rear_engine.png", (13.0, -1.8, 2.4), neutral, (6.35, 0, 1.25), 30)
+        for view_name, (direction, multiplier, lens) in VIEWS.items():
+            _render(f"{prefix}_{view_name}", direction, multiplier, lens, neutral)
 
 
 if __name__ == "__main__":

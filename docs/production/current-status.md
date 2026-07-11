@@ -9,7 +9,7 @@
 - Stage A terrain-diorama evidence has moved from earlier NOT_GO to `PASS`: `TC_TerrainDioramaKit_V1` has regenerated review PNG evidence with a readable scale-reference view, a Visual Reviewer `PASS`, production integration sign-off, and `StageAVisualRoot` metadata in `scenes/Main/Main.tscn`.
 - Stage A generated binary source/export/review artifacts remain local or CI artifacts; tracked production state depends on text mesh resources, sign-off documentation, hashes/manifests, and scene metadata rather than committed `.blend`, `.glb`, or PNG binaries.
 - `TC_HullRibOccluder_V1` has been integrated as collisionless Stage A wreckage dressing with provenance/hash evidence and import/build/PNG capture evidence; this does not expand gameplay scope.
-- `TC_HeavyCrashHull_V1` still requires its own standalone artifact review and human or visual-reviewer verdict before production use.
+- `TC_HeavyCrashHull_V1` has its standalone artifact review with a Visual Reviewer `PASS` as a production asset candidate (`docs/art/reviews/heavy-crash-hull-v1-standalone-review.md`, 2026-07-10: six opened review PNGs with scale reference, provenance hashes, `BLENDER_ASSET_VALID`). Production scene placement remains a separate gated task with its own before/after captures and sign-off.
 - Gameplay MVP work should remain locked to the Crash Site loop and must not expand scope.
 - **MVP scope closure — 2026-07-09:** the Crash Site MVP scope is closed per
   `docs/production/mvp-closure-report-2026-07-09.md`: all 27 README §30 acceptance criteria are satisfied

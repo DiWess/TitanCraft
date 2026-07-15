@@ -52,6 +52,7 @@
     "PNG screenshots",
     "visual diagnosis naming focal point, route readability, silhouette, scale, material coherence",
     "before/after comparison",
+    "Blender source/export/provenance/hash evidence when Blender assets are changed",
     "human-review or visual-reviewer verdict"
   ],
   "required_memory_packs_cards": [
@@ -67,6 +68,7 @@
   "required_skills": [
     "screenshot_critique",
     "visual_art_direction",
+    "blender_visual_production",
     "evidence_reporting"
   ],
   "scope_warnings": [

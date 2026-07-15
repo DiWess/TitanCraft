@@ -4,6 +4,7 @@ requirements:
     - PNG screenshots
     - visual diagnosis naming focal point, route readability, silhouette, scale, material coherence
     - before/after comparison
+    - Blender source/export/provenance/hash evidence when Blender assets are changed
     - human-review or visual-reviewer verdict
   gameplay:
     - README Crash Site MVP scope confirmation

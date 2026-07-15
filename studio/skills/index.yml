@@ -6,6 +6,9 @@ skills:
   - id: SKILL-ASSET-PROVENANCE
     path: asset_provenance.md
     purpose: Asset Provenance workflow.
+  - id: SKILL-BLENDER-VISUAL-PRODUCTION
+    path: blender_visual_production.md
+    purpose: Blender Visual Production workflow.
   - id: SKILL-CI-CD-VALIDATION
     path: ci_cd_validation.md
     purpose: Ci Cd Validation workflow.

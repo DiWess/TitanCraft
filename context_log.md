@@ -102,3 +102,5 @@
 
 - 2026-07-07: Reconciled `docs/production/current-status.md` with the latest Stage A context-log evidence, narrowing old Stage A blockers to unreviewed future integrations while preserving separate release, Stage B, gameplay, and marketing gates.
 - 2026-07-15: Added Agent Studio Crash Site gameplay slice governance, routing, evidence gates, and tests for A-to-Z MVP gameplay workflow.
+
+- 2026-07-15: Added Blender-first Agent Studio visual-production routing and evidence gates so broad visual requests are narrowed to one Crash Site slice with provenance and opened-PNG review.

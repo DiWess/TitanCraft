@@ -101,3 +101,4 @@
 - 2026-07-07: Built `TC_HullRibOccluder_V1` through Blender as a committed text OBJ with provenance/hash evidence, then applied two collisionless Stage A wreckage instances to `Main.tscn` and verified import/build/PNG capture without expanding Crash Site gameplay scope.
 
 - 2026-07-07: Reconciled `docs/production/current-status.md` with the latest Stage A context-log evidence, narrowing old Stage A blockers to unreviewed future integrations while preserving separate release, Stage B, gameplay, and marketing gates.
+- 2026-07-15: Added Agent Studio Crash Site gameplay slice governance, routing, evidence gates, and tests for A-to-Z MVP gameplay workflow.

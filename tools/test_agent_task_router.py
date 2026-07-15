@@ -80,6 +80,18 @@ def test_gameplay_qa_keywords_outrank_agent_studio_governance():
 
 
 
+def test_agent_studio_gameplay_workflow_routes_to_gameplay_with_slice_skill():
+    packet = route("make Agent Studio gameplay workflow A-to-Z for Crash Site MVP")
+    assert packet["detected_task_category"] == "gameplay_bug"
+    assert packet["evidence_category"] == "gameplay"
+    assert packet["primary_agent"] == "gameplay_engineer"
+    assert "gameplay_slice" in packet["required_checklists"]
+    assert "crash_site_gameplay_slice" in packet["required_skills"]
+    blob = " | ".join(packet["required_evidence"]).lower()
+    assert "crash site mvp scope confirmation" in blob
+    assert "galaxabrain scout combat" in blob
+
+
 def test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets():
     packet = route("Audit and harden Crash Site MVP objective HUD consistency")
     memories = " | ".join(packet["required_memory_packs_cards"])
@@ -127,6 +139,7 @@ def test_hud_objective_search_terms_route_to_gameplay_qa():
 def main() -> int:
     test_gameplay_qa_keywords_outrank_agent_studio_governance()
     test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets()
+    test_agent_studio_gameplay_workflow_routes_to_gameplay_with_slice_skill()
     test_hud_objective_search_terms_route_to_gameplay_qa()
     files = sorted(p for p in REHEARSALS.glob("*.md") if p.is_file())
     if not files:

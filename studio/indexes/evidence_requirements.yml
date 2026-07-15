@@ -6,9 +6,12 @@ requirements:
     - before/after comparison
     - human-review or visual-reviewer verdict
   gameplay:
-    - unit tests when behavior changes
-    - integration tests when systems interact
-    - mission smoke test or documented manual procedure
+    - README Crash Site MVP scope confirmation
+    - changed gameplay or governance files list
+    - unit tests when behavior changes, including isolated gameplay logic
+    - integration tests when systems interact, including inventory, crafting, mission, enemy, save, HUD, beacon, victory, or defeat
+    - mission smoke test or documented manual procedure covering relevant spawn, resource collection, crafting, Galaxabrain Scout combat, component retrieval, beacon activation, victory, defeat, and save continuation checkpoints
+    - manual Godot playtest note or procedure for movement, combat, objective clarity, or game-feel claims
     - runtime flags or logs when applicable
   asset:
     - source URL

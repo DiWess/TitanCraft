@@ -16,8 +16,8 @@ CATEGORY_RULES = [
     ("build_failure", "build", ["windows export", "export", "build failure", "ci", "artifact", "release failure"]),
     ("godot_scene_change", "architecture", ["godot scene", "scene edit", "collision", ".tscn", "node", "import"]),
     ("gameplay_bug", "gameplay", [
-        "gameplay", "resource pickup", "pickup", "inventory", "mission", "player", "enemy", "bug",
-        "mvp loop", "smoke test", "integration test", "crash site gameplay", "playthrough",
+        "agent studio gameplay", "gameplay workflow", "gameplay governance", "gameplay", "resource pickup", "pickup", "inventory", "mission", "player", "enemy", "bug",
+        "mvp loop", "smoke test", "integration test", "crash site gameplay", "a-to-z crash site", "a to z crash site", "playthrough",
         "save continuation", "victory", "defeat", "resource collection", "crafting", "combat",
         "beacon", "galaxabrain", "hud objective", "objective hud", "objective consistency",
         "hudbreadcrumb", "crash site hud", "mission objective text", "mvp objective text",
@@ -28,7 +28,7 @@ CATEGORY_RULES = [
 ]
 CHECKLISTS = {
     "visual": ["before_task", "before_visual_claim", "visual_review", "before_pr"],
-    "gameplay": ["before_task", "gameplay_validation", "before_commit", "before_pr"],
+    "gameplay": ["before_task", "gameplay_slice", "gameplay_validation", "before_commit", "before_pr"],
     "asset": ["before_task", "asset_import", "before_pr"],
     "build": ["before_task", "release_readiness", "before_pr"],
     "architecture": ["before_task", "before_scene_edit", "before_commit", "before_pr"],

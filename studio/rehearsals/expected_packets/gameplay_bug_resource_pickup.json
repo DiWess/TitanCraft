@@ -23,14 +23,18 @@
   "primary_agent": "gameplay_engineer",
   "required_checklists": [
     "before_task",
+    "gameplay_slice",
     "gameplay_validation",
     "before_commit",
     "before_pr"
   ],
   "required_evidence": [
-    "unit tests when behavior changes",
-    "integration tests when systems interact",
-    "mission smoke test or documented manual procedure",
+    "README Crash Site MVP scope confirmation",
+    "changed gameplay or governance files list",
+    "unit tests when behavior changes, including isolated gameplay logic",
+    "integration tests when systems interact, including inventory, crafting, mission, enemy, save, HUD, beacon, victory, or defeat",
+    "mission smoke test or documented manual procedure covering relevant spawn, resource collection, crafting, Galaxabrain Scout combat, component retrieval, beacon activation, victory, defeat, and save continuation checkpoints",
+    "manual Godot playtest note or procedure for movement, combat, objective clarity, or game-feel claims",
     "runtime flags or logs when applicable"
   ],
   "required_memory_packs_cards": [
@@ -38,6 +42,7 @@
     "MEM-PRODUCT-001"
   ],
   "required_skills": [
+    "crash_site_gameplay_slice",
     "csharp_gameplay_validation",
     "production_debugging",
     "evidence_reporting"

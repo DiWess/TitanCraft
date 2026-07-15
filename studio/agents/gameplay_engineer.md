@@ -7,6 +7,7 @@ Implement or review MVP gameplay behavior with tests and mission smoke evidence 
 ## Authority
 
 - Owns: player, enemy, mission, inventory, save gameplay code within assigned slice.
+- Owns Crash Site gameplay state-transition quality for collect, craft, combat, component retrieval, beacon, victory, defeat, and save continuation changes.
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
@@ -23,6 +24,7 @@ Implement or review MVP gameplay behavior with tests and mission smoke evidence 
 ## Required Outputs
 
 - minimal fix, tests, manual gameplay steps.
+- player-facing expected behavior, affected systems, state-transition evidence, and remaining manual smoke risks.
 
 ## Required Memories
 
@@ -35,14 +37,18 @@ Implement or review MVP gameplay behavior with tests and mission smoke evidence 
 ## Review Questions
 
 - Is this one gameplay bug or feature?
+- Which Crash Site mission checkpoint changes?
 - Which test proves behavior?
+- Are objective/HUD clarity, save/respawn, victory/defeat, and deterministic offline behavior preserved when touched?
 - What manual Godot smoke path remains?
 
 ## Automatic Rejection Conditions
 
 - No applicable test for behavior change.
+- Missing objective/HUD, save/respawn, victory/defeat, or offline-determinism evidence for a touched system.
 - Touches out-of-scope mechanics.
 - Claims gameplay feel without manual procedure.
+- Collapses automated correctness evidence and subjective game-feel approval into one claim.
 - Combat or movement claimed to match the axis 2/3 peer target in `studio/decisions/quality_benchmark_v1.md` without a dated human playtest note.
 
 ## Approved Verdicts

@@ -9,6 +9,9 @@ skills:
   - id: SKILL-CI-CD-VALIDATION
     path: ci_cd_validation.md
     purpose: Ci Cd Validation workflow.
+  - id: SKILL-CRASH-SITE-GAMEPLAY-SLICE
+    path: crash_site_gameplay_slice.md
+    purpose: Crash Site Gameplay Slice workflow.
   - id: SKILL-CSHARP-GAMEPLAY-VALIDATION
     path: csharp_gameplay_validation.md
     purpose: Csharp Gameplay Validation workflow.

@@ -76,6 +76,18 @@ def test_agent_studio_gameplay_smoke_not_governance():
     assert data["evidence_category"] == "gameplay"
     assert data["primary_agent"] == "gameplay_engineer"
 
+
+def test_agent_studio_gameplay_workflow_preflight_includes_a_to_z_gates():
+    data = packet("make Agent Studio gameplay workflow A-to-Z for Crash Site MVP")
+    blob = evidence_blob(data)
+    assert data["detected_task_category"] == "gameplay_bug"
+    assert data["evidence_category"] == "gameplay"
+    assert "gameplay_slice" in data["required_checklists"]
+    assert "crash_site_gameplay_slice" in data["required_skills"]
+    assert "crash site mvp scope confirmation" in blob
+    assert "galaxabrain scout combat" in blob
+
+
 def test_asset_evidence():
     data = packet("Import asset OBJ with provenance licence source URL hash and audition")
     blob = evidence_blob(data)
@@ -154,6 +166,7 @@ def main() -> int:
         test_gameplay_mvp_loop_smoke_routes_to_gameplay_qa,
         test_agent_studio_gameplay_smoke_not_governance,
         test_crash_site_hud_objective_preflight_routes_to_gameplay_qa_not_assets,
+        test_agent_studio_gameplay_workflow_preflight_includes_a_to_z_gates,
         test_asset_evidence,
         test_vague_verdicts_not_approved,
         test_deterministic_output,
@@ -161,7 +174,7 @@ def main() -> int:
         test_bespoke_stage_a_art_prompt_uses_packet_gates,
     ]:
         test()
-    print("Agent preflight tests passed: 12 checks")
+    print("Agent preflight tests passed: 13 checks")
     return 0
 
 

@@ -104,3 +104,5 @@
 - 2026-07-15: Added Agent Studio Crash Site gameplay slice governance, routing, evidence gates, and tests for A-to-Z MVP gameplay workflow.
 
 - 2026-07-15: Added Blender-first Agent Studio visual-production routing and evidence gates so broad visual requests are narrowed to one Crash Site slice with provenance and opened-PNG review.
+
+- 2026-07-15: Routed the next five Stage B production tasks into owner, input, artifact, validation, and blocking-verdict rows without touching gameplay, scenes, or assets.

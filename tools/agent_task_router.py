@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "studio" / "indexes"
 
 CATEGORY_RULES = [
-    ("visual_scene_composition", "visual", ["screenshot", "visual", "stage a", "toy-like", "toy like", "route slab", "terrain", "hull", "composition", "png", "blender", "best version", "art direction", "design quality"]),
+    ("visual_scene_composition", "visual", ["screenshot", "visual", "stage a", "toy-like", "toy like", "route slab", "terrain", "hull", "composition", "png", "blender", "best version", "world-class", "worldclass", "workclass", "scene and objects", "art direction", "design quality"]),
     ("asset_import", "asset", ["asset", "provenance", "licence", "license", "source url", "obj", "hash", "audition"]),
     ("build_failure", "build", ["windows export", "export", "build failure", "ci", "artifact", "release failure"]),
     ("godot_scene_change", "architecture", ["godot scene", "scene edit", "collision", ".tscn", "node", "import"]),

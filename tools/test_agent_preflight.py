@@ -88,6 +88,19 @@ def test_agent_studio_gameplay_workflow_preflight_includes_a_to_z_gates():
     assert "galaxabrain scout combat" in blob
 
 
+def test_agent_studio_workclass_scene_objects_preflight_routes_to_visual_gates():
+    data = packet("Let the agebts studio Make all scene and objects of this MVP to be workclass")
+    blob = evidence_blob(data)
+    assert data["detected_task_category"] == "visual_scene_composition"
+    assert data["evidence_category"] == "visual"
+    assert data["primary_agent"] == "art_director"
+    assert "visual_reviewer" in data["secondary_agents"]
+    assert "before_visual_claim" in data["required_checklists"]
+    assert "screenshot_critique" in data["required_skills"]
+    assert "png screenshots" in blob
+    assert "visual diagnosis" in blob
+
+
 def test_asset_evidence():
     data = packet("Import asset OBJ with provenance licence source URL hash and audition")
     blob = evidence_blob(data)
@@ -167,6 +180,7 @@ def main() -> int:
         test_agent_studio_gameplay_smoke_not_governance,
         test_crash_site_hud_objective_preflight_routes_to_gameplay_qa_not_assets,
         test_agent_studio_gameplay_workflow_preflight_includes_a_to_z_gates,
+        test_agent_studio_workclass_scene_objects_preflight_routes_to_visual_gates,
         test_asset_evidence,
         test_vague_verdicts_not_approved,
         test_deterministic_output,
@@ -174,7 +188,7 @@ def main() -> int:
         test_bespoke_stage_a_art_prompt_uses_packet_gates,
     ]:
         test()
-    print("Agent preflight tests passed: 13 checks")
+    print("Agent preflight tests passed: 14 checks")
     return 0
 
 

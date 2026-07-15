@@ -92,6 +92,32 @@ def test_agent_studio_gameplay_workflow_routes_to_gameplay_with_slice_skill():
     assert "galaxabrain scout combat" in blob
 
 
+def test_agent_studio_worldclass_scene_objects_routes_to_visual_gates():
+    packet = route("Let the agents studio make all scene and objects of this MVP to be worldclass")
+    assert packet["detected_task_category"] == "visual_scene_composition"
+    assert packet["evidence_category"] == "visual"
+    assert packet["primary_agent"] == "art_director"
+    assert "visual_reviewer" in packet["secondary_agents"]
+    assert "before_visual_claim" in packet["required_checklists"]
+    assert "screenshot_critique" in packet["required_skills"]
+    blob = " | ".join(packet["required_evidence"]).lower()
+    assert "png screenshots" in blob
+    assert "visual diagnosis" in blob
+
+
+def test_agent_studio_workclass_typo_scene_objects_routes_to_visual_gates():
+    packet = route("Let the agebts studio Make all scene and objects of this MVP to be workclass")
+    assert packet["detected_task_category"] == "visual_scene_composition"
+    assert packet["evidence_category"] == "visual"
+    assert packet["primary_agent"] == "art_director"
+    assert "visual_reviewer" in packet["secondary_agents"]
+    assert "before_visual_claim" in packet["required_checklists"]
+    assert "screenshot_critique" in packet["required_skills"]
+    blob = " | ".join(packet["required_evidence"]).lower()
+    assert "png screenshots" in blob
+    assert "visual diagnosis" in blob
+
+
 def test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets():
     packet = route("Audit and harden Crash Site MVP objective HUD consistency")
     memories = " | ".join(packet["required_memory_packs_cards"])
@@ -140,6 +166,8 @@ def main() -> int:
     test_gameplay_qa_keywords_outrank_agent_studio_governance()
     test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets()
     test_agent_studio_gameplay_workflow_routes_to_gameplay_with_slice_skill()
+    test_agent_studio_worldclass_scene_objects_routes_to_visual_gates()
+    test_agent_studio_workclass_typo_scene_objects_routes_to_visual_gates()
     test_hud_objective_search_terms_route_to_gameplay_qa()
     files = sorted(p for p in REHEARSALS.glob("*.md") if p.is_file())
     if not files:

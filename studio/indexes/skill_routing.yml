@@ -1,6 +1,6 @@
 version: 1
 routes:
-  visual_scene_composition: [screenshot_critique, visual_art_direction, evidence_reporting]
+  visual_scene_composition: [screenshot_critique, visual_art_direction, blender_visual_production, evidence_reporting]
   gameplay_bug: [crash_site_gameplay_slice, csharp_gameplay_validation, production_debugging, evidence_reporting]
   build_failure: [ci_cd_validation, production_debugging, evidence_reporting]
   godot_scene_change: [godot_scene_editing, godot_runtime_contracts, screenshot_critique]

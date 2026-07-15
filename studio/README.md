@@ -37,7 +37,7 @@ Use `studio/indexes/agent_routing.yml` to select one primary agent and the relev
 
 Examples:
 
-- Visual scene composition routes to Art Director, Visual Reviewer, Technical Director, and QA Lead.
+- Visual scene composition routes to Art Director, Visual Reviewer, Technical Director, and QA Lead. Broad requests such as “make the best version” or “use Blender for all visual design” must be narrowed to one Crash Site visual slice and run through the Blender Asset Forge plus opened-PNG review gates before any approval claim.
 - Gameplay bugs route to Gameplay Engineer, QA Lead, and Technical Director.
 - Build failures route to Build Release Engineer, Tools Engineer, and QA Lead.
 
@@ -86,7 +86,7 @@ Visual task:
 python3 tools/agent_preflight.py "Review visual screenshot PNG route slab composition before Stage A approval"
 ```
 
-Expected evidence includes PNG screenshots and a visual diagnosis naming focal point, route readability, silhouette, scale, and material coherence.
+Expected evidence includes PNG screenshots and a visual diagnosis naming focal point, route readability, silhouette, scale, and material coherence. If Blender assets are changed, the packet also requires source/export/provenance/hash evidence and a standalone review artifact before production scene replacement.
 
 Gameplay task:
 

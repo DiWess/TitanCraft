@@ -106,3 +106,5 @@
 - 2026-07-15: Added Blender-first Agent Studio visual-production routing and evidence gates so broad visual requests are narrowed to one Crash Site slice with provenance and opened-PNG review.
 
 - 2026-07-15: Routed the next five Stage B production tasks into owner, input, artifact, validation, and blocking-verdict rows without touching gameplay, scenes, or assets.
+
+- 2026-07-16: Refreshed the next-five-tasks Stage B packet (`docs/production/next-five-tasks-2026-07-16.md`): re-verified the manifest still holds only 2 of 10 candidates and confirmed no Blender executable is available in this session's container, so the NOT_GO verdict carries forward unchanged with an added ENVIRONMENT_BLOCKED note on Task #1. Also closed a separate governance/cleanup pass this session: recorded the deterministic runtime terrain build as an accepted MVP-scope exception (`studio/decisions/procedural_terrain_deterministic_exception.md`), removed dead Phase 7 composition scaffolding, excluded Debug/Proof scenes from the Windows export filter, and corrected stale "not integrated" notes in the asset manifest for the MVP Asset Pack V1 and Polish Details entries.

@@ -1,10 +1,14 @@
 # Next Five Task Execution Packet — 2026-07-16 (Refresh)
 
 Owner: Agent Studio Producer
-Version: 2 (refresh of `next-five-tasks-2026-07-15.md`)
+Version: 2 (refresh of `next-five-tasks-2026-07-15.md`); see Correction below, added same day
 Date: 2026-07-16
 Review status: TASK_PACKET_READY
 Final verdict: NOT_GO (unchanged)
+
+## Correction (same-day, after initial publish)
+
+The `ENVIRONMENT_BLOCKED` finding below was wrong. It was based on `which blender` returning nothing, not on an actual attempt to make Blender available. Installing it was tried afterward, in the same session: `apt-get install -y blender` succeeded (candidate `4.0.2+dfsg-1ubuntu8`, matching the version this repo's own `docs/release/evidence/titancraft-base-camp-dressing-pass-2026-07-09.md` recorded using previously), and `xvfb-run -a blender --background --python-expr "import bpy; ..."` confirmed headless `bpy` scripting actually works (`xvfb-run` was already installed). Task #1 is therefore **not** environment-blocked — it is `HUMAN_BLOCKED` only, on an Art Director judgment call about what the 8 remaining candidates should look like, which is a creative-authorship decision outside Claude Code's role (`CLAUDE.md` §3/§9: Art Director owns art asset generation; Claude Code reviews it). The rest of this document is left as originally filed, with this correction taking precedence over the environment-capability claims in "Delta since 2026-07-15" and the task table below.
 
 ## Source-of-truth check
 
@@ -40,7 +44,7 @@ Net: **no material change.** The blocking chain identified yesterday is identica
 
 | # | Task | Owner | Blocked by | Verdict |
 |---|---|---|---|---|
-| 1 | Generate Blender candidates for the 8 remaining Stage B briefs. | Art Director | No Blender available in this container; candidate selection is a human/Art Director judgment call. | HUMAN_BLOCKED + ENVIRONMENT_BLOCKED |
+| 1 | Generate Blender candidates for the 8 remaining Stage B briefs. | Art Director | ~~No Blender available in this container~~ (superseded, see Correction above — Blender is installable and verified working); candidate selection remains a human/Art Director creative judgment call. | HUMAN_BLOCKED (ENVIRONMENT_BLOCKED corrected/removed) |
 | 2 | Document each candidate in the asset manifest. | Asset Librarian | Task #1 artifacts. | HUMAN_BLOCKED |
 | 3 | Generate PNG bundles from GLB exports. | Visual Artifact Factory | Task #1 exports. | HUMAN_BLOCKED |
 | 4 | Open PNGs and provide visual diagnosis. | Visual Reviewer | Task #3 PNG bundles; also requires genuine human/reviewer visual judgment, not a fabricated verdict. | HUMAN_BLOCKED |

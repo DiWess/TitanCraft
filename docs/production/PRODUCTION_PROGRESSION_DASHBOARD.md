@@ -1,15 +1,20 @@
 # TitanCraft Production Progression Dashboard
-**Date:** 2026-07-06  
+**Date:** 2026-07-06 (see 2026-07-16 correction below — everything from "Current Status" through Task #3 in this file is stale)
 **Scope:** Visual Experience Kickoff → MVP Ship  
 **Authority:** README.md (MVP definition), AGENTS.md (governance), studio/agents/ (agent missions)
 
 ---
 
-## Executive Summary
+## Correction — 2026-07-16 (Claude Code, verified against the working tree)
 
-TitanCraft visual production is structured as a **gated three-stage progression** from direction (Stage A) through asset generation (Stage B) to integration and ship (Stage C/Release). Each stage has parallel agent streams converging at Producer gates. No stage advances without evidence.
+This file's "Task #1 IN_PROGRESS" framing is wrong and has been since well before this date; it was never updated as work landed. Verified state as of commit `c04728a`:
 
-**Current Status:** Stage A PASS ✓ | Stage B IN_PROGRESS (#1) | Stage C–Release PENDING
+- **Task #1 (generate candidates):** effectively done. All 10 Stage B candidates have generated deliverables — `TC_HeavyCrashHull_V1` and `TC_TERRAIN_CrashBasin_V1` standalone, the other 8 via `create_mvp_asset_pack_v1.py` and the environment-dressing kits (Alien Shard, Distant Silhouettes, Rock Occluder, Base Camp Dressing, Hull Rib Occluder, Lighting Reference, Polish Details). See `studio/decisions/procedural_terrain_deterministic_exception.md` for why Terrain Basin was never swapped in (deliberate, not a gap).
+- **Task #2 (PNG bundles) and Task #3 (Visual Reviewer verdict):** done for every candidate as of `docs/art/reviews/*.md` (commit `8774951`). One real `NOT_GO` (`TC_ENV_DistantSilhouette_SmokePlume_V1`) and one flagged-not-failed deviation (`TC_PROP_Workbench_V1`) came out of that pass — see `studio/tasks/art-director-decision-packet-2026-07-16.md` for the handoff.
+- **Task #4 (Tech Director audit):** partially open. `TC_ENV_RockOccluder_V1`'s collision/navigation half is routed to Technical Director in the same decision packet. The GLB import/performance half cannot be run from this container — no Godot binary is available here (apt only has an incompatible 3.5.2; the CI-standard direct download from GitHub is blocked by this session's network egress policy) — so this stays `ENVIRONMENT_BLOCKED` until run somewhere Godot actually exists.
+- **Task #5 (Producer gate) through Task #8 (release gate):** genuinely still pending, and correctly so — these need Producer/QA/Build Engineer authority and, for #6/#7, Godot-based before/after evidence this container can't produce. The one real remaining content gap feeding into these is `TC_HeavyCrashHull_V1` scene placement — already has a full standalone review `PASS` (`docs/art/reviews/heavy-crash-hull-v1-standalone-review.md`), just never placed, and its own review already scopes that as "a separate gated task with its own before/after captures and sign-off."
+
+**Current Status (corrected):** Stage A PASS ✓ | Stage B — candidates generated and reviewed, one NOT_GO and one flagged item awaiting Art Director decision, Tech Director audit partially routed/partially environment-blocked | Stage C–Release PENDING, blocked on the above plus Godot availability.
 
 ---
 

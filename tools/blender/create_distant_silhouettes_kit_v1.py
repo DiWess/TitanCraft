@@ -35,7 +35,12 @@ SOURCE_DIR = ROOT / "assets/Source/Blender/Production/DistantSilhouettes_V1"
 # tools/blender/create_stage_a_terrain_diorama_kit_v1.py, for background-piece
 # palette consistency.
 DISTANT_VIOLET_BASALT = (0.16, 0.12, 0.21)
-DISTANT_HAZE = (0.20, 0.19, 0.24)
+# Lighter and desaturated relative to the rock palette above, specifically so
+# SmokePlume cannot be confused with BasaltRidge/AlienArc at a glance even in
+# neutral-grey silhouette review -- see docs/art/reviews/distant-silhouettes-kit-v1-review.md
+# (2026-07-16 NOT_GO: the previous cone-stack version was indistinguishable
+# from BasaltRidge's construction technique).
+DISTANT_SMOKE_VAPOR = (0.62, 0.60, 0.58)
 
 
 def reset_scene() -> None:
@@ -52,6 +57,24 @@ def pbr(name: str, color: tuple[float, float, float], rough: float = 0.85, metal
     bsdf.inputs["Base Color"].default_value = (*color, 1.0)
     bsdf.inputs["Roughness"].default_value = rough
     bsdf.inputs["Metallic"].default_value = metal
+    return mat
+
+
+def pbr_translucent(name: str, color: tuple[float, float, float], alpha: float, rough: float = 0.95) -> bpy.types.Material:
+    """Soft, semi-transparent material for vapor/atmospheric shapes -- distinct in kind,
+    not just color, from the fully-opaque pbr() material used for solid rock/structure."""
+    existing = bpy.data.materials.get(name)
+    if existing:
+        return existing
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    mat.blend_method = "BLEND"
+    mat.show_transparent_back = False
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    bsdf.inputs["Base Color"].default_value = (*color, 1.0)
+    bsdf.inputs["Roughness"].default_value = rough
+    bsdf.inputs["Metallic"].default_value = 0.0
+    bsdf.inputs["Alpha"].default_value = alpha
     return mat
 
 
@@ -72,6 +95,17 @@ def cone(name: str, mat: bpy.types.Material, loc: tuple[float, float, float], r_
          vertices: int = 5) -> bpy.types.Object:
     bpy.ops.mesh.primitive_cone_add(vertices=vertices, radius1=r_base, radius2=r_top, depth=depth,
                                     location=loc, rotation=[math.radians(a) for a in rot])
+    obj = bpy.context.object
+    obj.name = name
+    obj.scale = scale
+    return _finalize(obj, mat)
+
+
+def puff(name: str, mat: bpy.types.Material, loc: tuple[float, float, float], radius: float,
+         scale: tuple[float, float, float] = (1, 1, 1), subdivisions: int = 1) -> bpy.types.Object:
+    """Low-subdivision icosphere: rounded and low-poly (stays within the project's faceted
+    style) but unmistakably round rather than angular-tapered, unlike the rock-kit cones."""
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=subdivisions, radius=radius, location=loc)
     obj = bpy.context.object
     obj.name = name
     obj.scale = scale
@@ -112,17 +146,25 @@ def build_alien_arc() -> None:
 
 
 def build_smoke_plume() -> None:
-    """Simplified static silhouette of a rising smoke/haze column (no particle system)."""
-    haze = pbr("TC_DistantSilhouette_Haze", DISTANT_HAZE, rough=1.0, metal=0.0)
-    layers = (
-        (0.0, 0.0, 0.55, 0.42, 0.36, 1.1),
-        (0.15, 0.05, 1.35, 0.30, 0.42, 1.3),
-        (-0.1, 0.08, 2.15, 0.18, 0.48, 1.5),
-        (0.25, -0.05, 2.85, 0.05, 0.30, 1.1),
+    """Rising vapor column, deliberately built with different technique from the rock kit's
+    tapering cones: rounded low-subdivision puffs that WIDEN and drift laterally as they rise
+    (real smoke disperses upward, it doesn't narrow to a point like a rock spire), rendered in
+    a lighter, semi-transparent material so it reads as gas rather than solid mass even in a
+    flat-lit neutral-grey silhouette pass. Denser/smaller near the ground, larger/fainter high up.
+    """
+    # (x, y, z, radius, alpha, scale_x, scale_y, scale_z)
+    puffs = (
+        (0.00, 0.00, 0.35, 0.34, 0.85, 1.0, 1.0, 0.85),
+        (0.10, 0.05, 0.80, 0.40, 0.72, 1.1, 1.05, 0.9),
+        (-0.15, 0.10, 1.30, 0.46, 0.58, 1.25, 1.2, 0.95),
+        (0.30, -0.10, 1.85, 0.52, 0.42, 1.4, 1.3, 1.0),
+        (-0.35, 0.20, 2.40, 0.58, 0.28, 1.55, 1.45, 1.05),
+        (0.55, 0.05, 2.95, 0.60, 0.16, 1.7, 1.6, 1.05),
     )
-    for i, (x, y, z, r_top, r_base, height) in enumerate(layers):
-        cone(f"TC_DistantSilhouette_SmokePlume_Layer_{i}", haze, (x, y, z), r_base, r_top, height,
-             rot=(0, 0, i * 33), vertices=7)
+    for i, (x, y, z, radius, alpha, sx, sy, sz) in enumerate(puffs):
+        mat = pbr_translucent(f"TC_DistantSilhouette_Vapor_{i}", DISTANT_SMOKE_VAPOR, alpha=alpha)
+        puff(f"TC_DistantSilhouette_SmokePlume_Puff_{i}", mat, (x, y, z), radius,
+             scale=(sx, sy, sz), subdivisions=1)
 
 
 ASSETS = {

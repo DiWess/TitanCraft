@@ -32,6 +32,17 @@ Each of the 4 assets has 8 tracked PNGs under `artifacts/asset-review/TC_ENV_{Ca
 
 **Independent confirmation from what is visible:** CampAwning's hero shot (small in frame but legible) shows an orange canopy over a dark support frame, consistent with the 2026-07-09 description. Nothing in the visible portions of the other three contradicts that document's account.
 
+## Art Director Opinion (2026-07-16) — not the human sign-off
+
+By explicit human authorization, adding a considered opinion in the Art Director role, on top of the Visual Reviewer pass above. **This does not satisfy the "human/Art Director aesthetic sign-off" the record calls for** — it is a second agent's judgment, not a human's, and the 2026-07-09 document's own language draws that line deliberately. Recording it anyway because a reasoned opinion is more useful sitting here than not existing, as long as it isn't mistaken for the thing that's actually missing.
+
+Checked against `docs/art/titancraft-visual-identity.md`'s Automatic Visual Rejection Patterns:
+- Not cartoon/toy-like, not glossy/showroom, not voxel/block-based — the awning, crates, and light poles read as authored industrial structure (hazard-striped crates, a canopy over a support frame, pole fixtures), not primitives glued together.
+- Not excessive glow — the kit's job is functional light fixtures, and per the 2026-07-09 doc it fills four previously-bare `OmniLight3D` sources with visible housings rather than adding new light sources; that's the opposite of glow overuse.
+- The one disclosed nit (lamp housing floating slightly off its support arm) is a real but minor fit-and-finish issue, not a rejection-pattern violation.
+
+Opinion: this kit does what base-camp dressing should — it turns a functionally bare hub (bare light sources, empty crafting area) into a "lived-in" space without competing with the Workbench/Beacon/SavePoint focal points it surrounds, which matches Art Director's stated review question ("what is the first focal point?" — the answer stays the gameplay props, not the dressing). I'd sign off on this if I were the deciding role. I am not that role here.
+
 ## Verdict
 
-`PASS`, carried forward from 2026-07-09 and independently corroborated by this session as far as the (partially broken) standalone evidence allows — no contradiction found. **Human/Art Director aesthetic sign-off remains explicitly open**, exactly as the 2026-07-09 document itself states; that is not something an agent review, independent or not, can substitute for. Additionally recommend the standalone review PNGs for this specific kit be re-rendered with corrected camera framing before anyone relies on them in isolation from the production-scene captures.
+`PASS`, carried forward from 2026-07-09 and independently corroborated by this session as far as the (partially broken) standalone evidence allows — no contradiction found, and now with a considered Art Director-role opinion in favor. **Human/Art Director aesthetic sign-off remains explicitly open** — two agent passes agreeing is still not the human approval the record calls for. Additionally recommend the standalone review PNGs for this specific kit be re-rendered with corrected camera framing before anyone relies on them in isolation from the production-scene captures.

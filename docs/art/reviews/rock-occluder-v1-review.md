@@ -2,8 +2,8 @@
 
 **Requested:** 2026-07-16
 **Reviewed:** 2026-07-16, same session, by explicit human authorization to act as Visual Reviewer for this backlog
-**Reviewer role:** Claude Code, acting as Visual Reviewer only — the Technical Audit below remains genuinely PENDING, since collision/navigation feasibility is Technical Director's call, not something I can self-certify as the same agent doing the visual pass
-**Status:** **Visual: COMPLETE. Technical Audit: still PENDING.**
+**Reviewer role:** Claude Code, acting as Visual Reviewer for the visual half; for the Technical Audit, providing a best-effort **static** analysis only, by explicit human authorization, since real in-engine navigation testing needs Godot and this container confirmed has none available
+**Status:** **Visual: COMPLETE. Technical Audit: static analysis complete, caveated — full in-engine confirmation still genuinely PENDING.**
 
 ## Why this exists
 
@@ -31,10 +31,26 @@ All three tracked PNGs opened this session: `front.png`, `back_three_quarter.png
 
 A single low-poly angular rock mass, grey stone material, clean asymmetric faceting. Silhouette reads unambiguously as a boulder — functional, not decorative, no toy-like proportions, no rejection-pattern violations. Simple enough that repeated use at three positions (`VolcanicRock_1..3`) is reasonable for a blocking/occluding element rather than a hero prop; no scale reference in the renders, but a rock occluder's exact scale matters less than its role as a collision volume, which is the Technical Director's question below, not a visual one.
 
-## Technical Audit
+## Technical Audit (static analysis, not in-engine testing)
 
-Still **PENDING** — genuinely so. Confirming whether the three `Collision_BlockingRock` placements route/block the Crash Site path as level design intends requires either in-engine navigation testing or a level-layout review, neither of which is something to fabricate from a static asset render. This is explicitly left for Technical Director.
+**What real in-engine testing would confirm that this can't:** actual player-capsule navigation around the three rocks, diagonal/exploratory movement, and any interaction with other dynamic collision. None of that can be produced without Godot, which is unavailable in this container. What follows is a static read of the scene file's transforms — evidence-based, but explicitly not a substitute for that test.
+
+**Key finding: the collision geometry did not change.** Each instance's own integration metadata states it directly: *"replaces a plain scaled BoxMesh placeholder... Collision_BlockingRock is untouched."* The `BoxShape3D_blocking_rock` (`size = Vector3(3, 2, 2.3)`, Main.tscn:255) predates this session's visual work and was already the accepted collision volume at each position before the rock mesh was swapped in. Whatever navigation behavior these three boxes produce, this asset's integration did not introduce it — it inherited an already-placed blocking volume unchanged. That significantly narrows what this specific review needs to worry about: it's not "did adding this rock create a new obstacle," it's "was the pre-existing box placeholder ever validated," which is a pre-existing question this asset swap didn't create.
+
+**Position check against key gameplay nodes** (`Main.tscn` transforms):
+
+| Node | Position (X, Z) |
+|---|---|
+| Player spawn | (0, 0) |
+| Save Point | (-12, -12) |
+| Workbench | (12, -12) |
+| Beacon | (28, -20) |
+| `VolcanicRock_1` | (-20, -18) |
+| `VolcanicRock_2` | (22, -30) |
+| `VolcanicRock_3` | (-25, -35) |
+
+All three rocks sit at larger-magnitude coordinates than every gameplay node they're near — `VolcanicRock_1` is beyond Save Point (not between spawn and Save Point on a direct line), `VolcanicRock_2` is beyond Beacon along the Z axis rather than sitting between Workbench and Beacon, and `VolcanicRock_3` is the furthest-out point in the whole set. Each collision box (after scale, roughly 3–4.5 units across) reads as peripheral dressing near the edge of the walkable area rather than an obstacle straddling a direct path between two gameplay nodes. This is consistent with the asset's own role as a "foreground occluder."
 
 ## Verdict
 
-Visual: `PASS`. Technical Audit: **PENDING** — do not treat this asset as fully closed until that half is done, since it's the only kit in this backfill batch with real gameplay collision.
+Visual: `PASS`. Technical Audit: static analysis found **no evidence of a routing problem** — unchanged pre-existing collision, peripheral positioning relative to the direct paths between gameplay nodes — but this is a caveated read, not a real in-engine confirmation, and per Technical Director's own forbidden actions ("waiving tests, mixing visual approval with runtime pass") this should not be recorded as a full Technical Director `PASS`. Recommend a quick in-engine walk-around once Godot is available somewhere, but this is now low-priority given the static evidence above, not an open question with no supporting information behind it.

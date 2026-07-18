@@ -75,6 +75,35 @@ at spawn (bare visible), pre-craft (bare persists), post-craft (swap), and post-
 (swap persists); playthrough capture asserts the swap too. The crafted-arm capture script
 now also captures the pre-craft state (`precraft_arm_01_camp_backdrop`), opened and verified.
 
+## 7. Follow-up (same day): HUD reaction pulses, world animation, audio hooks
+
+Human direction: the dashboard must visibly react to collection events, all graphics should
+animate, and audio should follow. Findings and changes:
+
+- **HUD reactivity was already event-driven** (health, resources, arm progress, objective,
+  prompts all bound to `Changed` events — pre-existing, test-covered). What was missing was
+  visible *feedback*: `CrashSiteHud` now pulses the resources line orange on any gain
+  (including the mission component), pulses the arm-progress line when crafting progress
+  changes, and pulses health red on damage — short modulate tweens, one per label, replaced
+  mid-flight on rapid events.
+- **World animation (procedural, README-compliant "simple visual changes"):** uncollected
+  resource drops idle-spin and bob (stops on collection); the save-point visual breathes
+  (±2% scale) to mark it interactable; the activated beacon's sky beam pulses so the
+  completed objective reads as live map-wide.
+- **First-person attack feel:** every unblocked swing (hit or miss) now plays a quick
+  viewmodel jab tween on the mechanical arm plus the `Weapon_Swing` whoosh — the scene's
+  swing audio node was annotated "triggered on left-click attack input" but had never been
+  wired. Hit/craft/pickup/damage/objective/save audio was already in place, so this closes
+  the last silent interaction.
+- **Tests:** the integration smoke now asserts the pickup visual spins, the save point
+  breathes, the beacon beam pulses after activation (double-sampled to avoid sine-peak
+  flakes), and the HUD resources label pulses on collection.
+
+Not animated in this slice: the Galaxabrain Scout body (its movement comes from the existing
+state machine; skeletal/procedural gait is deferred — it risks the deterministic AI contract
+and needs its own reviewed slice) and material-level emissive animation (needs material
+plumbing; the light/scale pulses cover the same readability goals).
+
 ## Validation (this slice)
 
 - `dotnet build` — succeeded, 0 errors

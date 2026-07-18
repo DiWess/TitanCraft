@@ -48,6 +48,13 @@ public partial class ResourceDrop : Area3D, ICrashSiteInteractable, ILookHighlig
     private Material? _baseMaterial;
     private bool _isCollected;
 
+    private const float IdleSpinRadiansPerSecond = 0.9f;
+    private const float IdleBobAmplitude = 0.045f;
+    private const float IdleBobRadiansPerSecond = 2.2f;
+    private Node3D? _visualGroup;
+    private float _visualGroupBaseY;
+    private float _idleAnimationSeconds;
+
     public override void _Ready()
     {
         _itemMesh = GetNodeOrNull<MeshInstance3D>(ItemMeshPath);
@@ -58,11 +65,28 @@ public partial class ResourceDrop : Area3D, ICrashSiteInteractable, ILookHighlig
         _staticPhysicsBody = GetNodeOrNull<CollisionObject3D>(StaticPhysicsBodyPath);
         _spatialPickupPlayer = GetNodeOrNull<AudioStreamPlayer3D>(SpatialPickupPlayerPath);
         _baseMaterial = _itemMesh?.MaterialOverride;
+        _visualGroup = GetNodeOrNull<Node3D>("VisualGroup");
+        _visualGroupBaseY = _visualGroup?.Position.Y ?? 0f;
         AddToGroup(ResourceDropGroup);
 
         CollisionLayer = 1u << 2;
         CollisionMask = 1u;
         SetHighlighted(false);
+    }
+
+    public override void _Process(double delta)
+    {
+        // Idle spin + bob so uncollected drops read as interactable from a distance.
+        if (_isCollected || _visualGroup is null)
+        {
+            return;
+        }
+
+        _idleAnimationSeconds += (float)delta;
+        _visualGroup.RotateY(IdleSpinRadiansPerSecond * (float)delta);
+        var position = _visualGroup.Position;
+        position.Y = _visualGroupBaseY + IdleBobAmplitude * Mathf.Sin(_idleAnimationSeconds * IdleBobRadiansPerSecond);
+        _visualGroup.Position = position;
     }
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)

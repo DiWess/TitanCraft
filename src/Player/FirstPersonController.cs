@@ -51,6 +51,8 @@ public partial class FirstPersonController : CharacterBody3D
     private Node3D _head = null!;
     private MeshInstance3D? _mechanicalArmVisual;
     private MeshInstance3D? _bareArmVisual;
+    private Vector3 _mechanicalArmBaseRotation;
+    private Tween? _armSwingTween;
     private float _gravity;
     private float _cameraPitch;
     private float _bodyYaw;
@@ -90,6 +92,7 @@ public partial class FirstPersonController : CharacterBody3D
         _mechanicalArmRecipe = new MechanicalArmRecipe();
         _mechanicalArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
         _bareArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/BareArmVisual");
+        _mechanicalArmBaseRotation = _mechanicalArmVisual?.Rotation ?? Vector3.Zero;
         Inventory.Changed += UpdateMechanicalArmVisual;
         Health.Changed += OnHealthChanged;
         UpdateMechanicalArmVisual(Inventory);
@@ -216,6 +219,8 @@ public partial class FirstPersonController : CharacterBody3D
             return false;
         }
 
+        PlayArmSwingFeedback();
+
         var query = PhysicsRayQueryParameters3D.Create(
             _camera.GlobalPosition,
             _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * AttackRange);
@@ -250,6 +255,33 @@ public partial class FirstPersonController : CharacterBody3D
             ShowActionFeedback(GalaxabrainScoutHitFeedback);
         }
         return true;
+    }
+
+    private void PlayArmSwingFeedback()
+    {
+        // Viewmodel punch: quick forward jab and spring back, plus the swing
+        // whoosh — played for every unblocked swing, hit or miss, so attack
+        // input always has visible and audible weight.
+        AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Swing", GlobalPosition);
+        if (_mechanicalArmVisual is null)
+        {
+            return;
+        }
+
+        if (_armSwingTween is { } previous && previous.IsValid())
+        {
+            previous.Kill();
+        }
+
+        _mechanicalArmVisual.Rotation = _mechanicalArmBaseRotation;
+        var jabRotation = _mechanicalArmBaseRotation + new Vector3(-0.35f, 0f, 0f);
+        _armSwingTween = CreateTween();
+        _armSwingTween.TweenProperty(_mechanicalArmVisual, "rotation", jabRotation, 0.07f)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out);
+        _armSwingTween.TweenProperty(_mechanicalArmVisual, "rotation", _mechanicalArmBaseRotation, 0.16f)
+            .SetTrans(Tween.TransitionType.Back)
+            .SetEase(Tween.EaseType.Out);
     }
 
     public bool TryInteract()

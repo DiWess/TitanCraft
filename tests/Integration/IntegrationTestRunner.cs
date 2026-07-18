@@ -523,12 +523,23 @@ public partial class IntegrationTestRunner : Node
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon must reject activation before component recovery");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.CollectResources, "Invalid early interactions mutated mission state");
 
+        var metalPickupVisual = main.GetNode<Node3D>("ResourceDrop_MetalPickup/VisualGroup");
+        var pickupRotationBefore = metalPickupVisual.Rotation.Y;
+        var savePointVisual = main.GetNode<Node3D>("Placeholder_SavePoint/VisualRoot");
+        var savePointScaleBefore = savePointVisual.Scale.X;
+        await Frames(6);
+        var savePointScaleMid = savePointVisual.Scale.X;
+        await Frames(6);
+        Require(!Mathf.IsEqualApprox(metalPickupVisual.Rotation.Y, pickupRotationBefore), "Uncollected resource drop visual is not idle-spinning");
+        Require(!Mathf.IsEqualApprox(savePointScaleMid, savePointScaleBefore) || !Mathf.IsEqualApprox(savePointVisual.Scale.X, savePointScaleBefore), "Save point visual is not breathing");
+
         foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup" })
         {
             var pickup = main.GetNode<ResourceDrop>(pickupName);
             Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} could not be collected through the real pickup path");
             Require(!pickup.Interact(player.Inventory, player.Mission), $"{pickupName} was collectable twice");
         }
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Modulate != Colors.White, "HUD resources label did not pulse on collection");
 
         var finalPickup = main.GetNode<ResourceDrop>("ResourceDrop_ElectronicsPickup");
         player.GlobalPosition = finalPickup.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
@@ -632,6 +643,12 @@ public partial class IntegrationTestRunner : Node
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.BeaconActivationFeedback, "HUD did not show beacon activation feedback text");
         RequireHudObjective(hud, CrashSiteMissionStep.Victory, "after beacon activation/victory");
         LogMvpSmokeMilestone(8, "beacon activated");
+        var skyBeam = beacon.GetNode<SpotLight3D>("LandmarkVfx/SkyBeam");
+        var beamEnergyBefore = skyBeam.LightEnergy;
+        await Frames(6);
+        var beamEnergyMid = skyBeam.LightEnergy;
+        await Frames(6);
+        Require(!Mathf.IsEqualApprox(beamEnergyMid, beamEnergyBefore) || !Mathf.IsEqualApprox(skyBeam.LightEnergy, beamEnergyBefore), "Activated beacon sky beam is not pulsing");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
         await Frames(2);
         Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after beacon activation");

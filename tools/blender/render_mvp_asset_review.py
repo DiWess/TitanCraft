@@ -48,6 +48,33 @@ def scene_bounds() -> tuple[Vector, Vector]:
     return low, high
 
 
+SCALE_POST_HEIGHT = 1.8
+SCALE_POST_RADIUS = 0.06
+
+
+def add_scale_post(asset_high: Vector) -> Vector:
+    """Add a render-only 1.8 m orange post beside the asset and return its bounds max.
+
+    Review PNGs without a scale reference are not reviewable (MEM-VISFAIL series);
+    the post exists only in the render scene and never in the exported asset data.
+    """
+    offset_x = asset_high.x + max(0.45, SCALE_POST_RADIUS * 4)
+    bpy.ops.mesh.primitive_cylinder_add(
+        radius=SCALE_POST_RADIUS,
+        depth=SCALE_POST_HEIGHT,
+        location=(offset_x, 0, SCALE_POST_HEIGHT / 2),
+    )
+    post = bpy.context.object
+    mat = bpy.data.materials.new("ReviewScalePost")
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    bsdf.inputs["Base Color"].default_value = (0.80, 0.42, 0.05, 1)
+    bsdf.inputs["Roughness"].default_value = 0.6
+    post.data.materials.append(mat)
+    print(f"MVP_REVIEW_SCALE_POST {SCALE_POST_HEIGHT}m at x={offset_x:.2f}")
+    return Vector((offset_x + SCALE_POST_RADIUS, SCALE_POST_RADIUS, SCALE_POST_HEIGHT))
+
+
 def setup_stage(radius: float) -> None:
     scene = bpy.context.scene
     if scene.world is None:
@@ -125,6 +152,14 @@ def main() -> None:
     scene.view_settings.look = "Medium High Contrast"
     for name, (yaw, pitch, dist_mul) in VIEWS.items():
         render_view(name, yaw, pitch, dist_mul, center, radius, high - low, output_dir)
+    # Fourth view: same hero angle, reframed to include a render-only 1.8 m post.
+    post_high = add_scale_post(high)
+    frame_low = Vector(map(min, low, Vector((post_high.x - 2 * SCALE_POST_RADIUS, -post_high.y, 0))))
+    frame_high = Vector(map(max, high, post_high))
+    frame_center = (frame_low + frame_high) / 2
+    frame_radius = max((frame_high - frame_low).length / 2, 0.2)
+    render_view("scale_reference.png", *VIEWS["hero_three_quarter.png"],
+                frame_center, frame_radius, frame_high - frame_low, output_dir)
 
 
 if __name__ == "__main__":

@@ -106,3 +106,5 @@
 - 2026-07-15: Added Blender-first Agent Studio visual-production routing and evidence gates so broad visual requests are narrowed to one Crash Site slice with provenance and opened-PNG review.
 
 - 2026-07-15: Routed the next five Stage B production tasks into owner, input, artifact, validation, and blocking-verdict rows without touching gameplay, scenes, or assets.
+
+- 2026-07-18: Executed the routed Stage B chain for MVP Asset Pack V1 with repository-owned evidence — verified 29/29 manifest GLB hashes, added a render-only 1.8 m scale-reference view to the MVP review renderer and regenerated the 13 review bundles, issued a real opened-PNG Visual Reviewer verdict (13/13 PASS, three MINOR notes), a real Technical Director audit (build 0/0, tests 75/75, Godot import 0 errors), and the Producer Stage B re-gate plus Stage B→C `PASS` gate; Stage C integration routed as the next separately-gated slice.

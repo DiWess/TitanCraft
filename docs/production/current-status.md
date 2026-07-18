@@ -53,6 +53,12 @@
 - Known evidence gap: the first-person mechanical-arm capture does not show the crafted arm; wiring and runtime path are test-covered, but a crafted-state capture is required before any visual-approval claim for the arm.
 - Release: Windows export proof exists (`godot --headless --export-release "Windows Desktop"`, exit 0, exe SHA-256 recorded); the release gate itself remains `HUMAN_BLOCKED` on the README §27 manual Windows validation and human GO.
 
+## Polish Slice — 2026-07-18 (later same day)
+
+- Per `docs/production/polish-slice-2026-07-18.md`: fixed a BLOCKER-class first-person visual bug (legacy Quaternius George proxy mesh rendered over the crafted MVP arm — every crafted playthrough was affected), re-tuned the arm as a proper viewmodel, closed the crafted-arm capture gap with a new allowlisted capture script (both Stage C findings now closed), added collisionless foreground dressing off-route, and resolved the Stage B Biomass color note as a review-lighting artifact (asset data matches the brief; no change needed).
+- Validation after polish: build 0 errors, unit 75/75, MVP smoke 11/11, import clean, capture factory green with all new/changed views opened.
+- Remaining gate to ship: the human Windows playthrough and GO (README §27); gameplay feel tuning (provisional README §11 combat values) is deliberately deferred to that same human validation.
+
 ## Stage A Reconciliation — 2026-07-07
 
 - Earlier status lines that said Stage A generated art was not approved are superseded for the `TC_TerrainDioramaKit_V1` terrain-diorama slice only. The current evidence chain records regenerated review PNGs, opened-image visual diagnosis, Visual Reviewer `PASS`, production scene integration sign-off, and tracked `StageAVisualRoot` metadata.

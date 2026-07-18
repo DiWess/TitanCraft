@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://src/Player/FirstPersonController.cs" id="1_controller"]
 [ext_resource type="Script" path="res://src/Player/CameraShaker.cs" id="5_camera_shaker"]
 [ext_resource type="Script" path="res://src/Core/TimeManager.cs" id="6_time_manager"]
-[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedMechPack/Models/George.obj" id="2_mech_george"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/arm_hit.wav" id="3_arm_hit"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/player_damage.wav" id="4_player_damage"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PLAYER_MechanicalArm_V1.gltf" id="7_v1_arm"]
@@ -33,9 +32,8 @@ script = ExtResource("5_camera_shaker")
 
 [node name="MechanicalArmVisual" type="MeshInstance3D" parent="Head/Camera3D"]
 visible = false
-transform = Transform3D(0.18,0,0,0,0.18,0,0,0,0.18,0.55,-0.45,-0.9)
-mesh = ExtResource("2_mech_george")
-metadata/authentication = "Hidden legacy first-person arm proxy retained as script-controlled visibility node; V1 beta GLTF child supplies live visual."
+transform = Transform3D(0.27,-0.0101,-0.0718,0,0.277,-0.0389,0.0725,0.0376,0.2677,0.38,-0.33,-0.5)
+metadata/authentication = "Script-controlled visibility group for the crafted first-person arm; carries no mesh of its own (legacy Quaternius George proxy removed 2026-07-18 — it rendered as a full robot over the MVP arm when crafted). The MVP Pack V1 GLTF child supplies the sole live visual; transform frames it as the first-person viewmodel."
 
 [node name="V1BetaMechanicalArmModel" parent="Head/Camera3D/MechanicalArmVisual" instance=ExtResource("7_v1_arm")]
 transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, -0.5, 0.3)

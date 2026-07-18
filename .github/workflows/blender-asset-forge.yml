@@ -246,12 +246,13 @@ jobs:
       - name: Check for changes to commit
         id: check_changes
         run: |
-          # artifacts/asset-review renders are deliberately excluded: Cycles
-          # output is nondeterministic, so auto-committing renders produced an
-          # endless churn-commit loop and push races. Renders stay reviewable
-          # as uploaded workflow artifacts; tracked review PNGs are committed
-          # by humans/agents with the review that opens them.
-          if git diff --quiet -- assets/Source/Blender/ assets/Production/Generated/ && [ -z "$(git status --porcelain -- assets/Source/Blender/ assets/Production/Generated/)" ]; then
+          # Only GLB exports are byte-deterministic across regeneration runs.
+          # Cycles renders (artifacts/asset-review) and .blend sources embed
+          # nondeterministic data (noise, timestamps), so keying the commit on
+          # them produced an endless churn-commit loop and push races. Gate on
+          # real GLB changes; when a recipe genuinely changed its export, the
+          # matching blend/manifest updates are committed alongside it.
+          if git diff --quiet -- 'assets/Production/Generated/**/*.glb' && [ -z "$(git status --porcelain -- 'assets/Production/Generated/**/*.glb')" ]; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
@@ -271,7 +272,11 @@ jobs:
             -m "These remain standalone Blender Asset Forge candidates only: visual-only, collisionless, and not integrated into any production scene. Scene integration (Stage C) is a separate, human/visual-reviewer-gated step."
           # Rebase-retry: another push may have landed on the branch while this
           # job ran; replay the auto-forge commit on the new head instead of
-          # failing the whole job on a non-fast-forward rejection.
+          # failing the whole job on a non-fast-forward rejection. The tree
+          # must be clean first — regenerated outputs that were deliberately
+          # not committed (renders, churned blends) block pull --rebase.
+          git checkout -- .
+          git clean -fd artifacts/asset-review/ assets/Source/Blender/ assets/Production/Generated/
           for attempt in 1 2 3; do
             if git push -u origin HEAD:"${{ github.ref_name }}"; then
               exit 0

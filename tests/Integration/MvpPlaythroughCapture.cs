@@ -67,6 +67,7 @@ public partial class MvpPlaythroughCapture : Node
         MovePlayerToSee(player, workbench.GlobalPosition);
         Require(workbench.Interact(player.Inventory, player.Mission), "Crafting failed");
         Require(player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Visible, "Arm visual hidden after craft");
+        Require(!player.GetNode<MeshInstance3D>("Head/Camera3D/BareArmVisual").Visible, "Bare arm visual still shown after craft");
         await Capture("mechanical-arm-visible-live");
 
         MovePlayerToSee(player, scout.GlobalPosition);

@@ -50,6 +50,7 @@ public partial class FirstPersonController : CharacterBody3D
     private Camera3D _camera = null!;
     private Node3D _head = null!;
     private MeshInstance3D? _mechanicalArmVisual;
+    private MeshInstance3D? _bareArmVisual;
     private float _gravity;
     private float _cameraPitch;
     private float _bodyYaw;
@@ -88,6 +89,7 @@ public partial class FirstPersonController : CharacterBody3D
         _mechanicalArmAttack = new MechanicalArmAttackLogic(MechanicalArmDamage, AttackCooldownSeconds);
         _mechanicalArmRecipe = new MechanicalArmRecipe();
         _mechanicalArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        _bareArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/BareArmVisual");
         Inventory.Changed += UpdateMechanicalArmVisual;
         Health.Changed += OnHealthChanged;
         UpdateMechanicalArmVisual(Inventory);
@@ -124,10 +126,17 @@ public partial class FirstPersonController : CharacterBody3D
     private void UpdateMechanicalArmVisual(MvpInventory inventory)
     {
         // The inventory is the single authority for arm ownership; crafting and
-        // save restoration both flow through its Changed event.
+        // save restoration both flow through its Changed event. Exactly one of
+        // the two first-person arms is visible: bare suit arm before crafting,
+        // mechanical arm after.
         if (_mechanicalArmVisual is not null)
         {
             _mechanicalArmVisual.Visible = inventory.IsMechanicalArmBuilt;
+        }
+
+        if (_bareArmVisual is not null)
+        {
+            _bareArmVisual.Visible = !inventory.IsMechanicalArmBuilt;
         }
     }
 

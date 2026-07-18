@@ -57,6 +57,24 @@ binary churn and a pointless downstream re-review. The Stage B review note is cl
 feel tuning (combat values README §11 are explicitly provisional pending play testing), which
 requires the human Windows playthrough — routed to the existing `HUMAN_BLOCKED` release gate.
 
+## 6. Follow-up (same day): bare astronaut arm for the pre-craft state
+
+Human direction: "must be a naked arm before the user crafts." Implemented through the full
+asset pipeline: new `TC_PLAYER_BareArm_V1` builder in `tools/blender/create_mvp_asset_pack_v1.py`
+(astronaut suit sleeve + dark rubber glove + one orange suit stripe, zero emissives/metal,
+same forearm axis and envelope as the mechanical arm so the shared viewmodel transform frames
+both states), generated `.blend`/GLB, committed text `.gltf`, manifest regenerated (30 entries,
+`PASS`, hashes verified), and standalone review renders produced (including `scale_reference.png`)
+and opened — the sleeve/glove silhouette reads as unpowered suit gear on-palette.
+
+Wiring: `BareArmVisual` node in `Player.tscn` (visible by default) with the GLTF child;
+`FirstPersonController.UpdateMechanicalArmVisual` now swaps exactly one arm visible —
+bare before crafting, mechanical after — driven by the same inventory event that already
+covers crafting and save/load. Behavior change is test-covered: new integration assertions
+at spawn (bare visible), pre-craft (bare persists), post-craft (swap), and post-reload
+(swap persists); playthrough capture asserts the swap too. The crafted-arm capture script
+now also captures the pre-craft state (`precraft_arm_01_camp_backdrop`), opened and verified.
+
 ## Validation (this slice)
 
 - `dotnet build` — succeeded, 0 errors

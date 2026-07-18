@@ -107,6 +107,8 @@
 
 - 2026-07-15: Routed the next five Stage B production tasks into owner, input, artifact, validation, and blocking-verdict rows without touching gameplay, scenes, or assets.
 
+- 2026-07-18: Added the pre-craft bare astronaut arm per human direction — new pipeline-authored `TC_PLAYER_BareArm_V1` (blend/GLB/gltf/manifest/reviewed renders), `BareArmVisual` viewmodel node in Player.tscn, controller swap so exactly one first-person arm is visible (bare before craft, mechanical after, across save/load), new integration assertions at spawn/pre-craft/post-craft/reload, and an opened pre-craft capture; build, 75/75 unit, 11/11 smoke, import, and capture factory all green.
+
 - 2026-07-18: Polish slice — the new crafted-arm capture exposed and fixed a BLOCKER first-person bug (legacy George proxy mesh rendering over the crafted MVP arm), re-framed the arm as a real viewmodel, closed both Stage C findings (crafted-arm capture script added to the factory allowlist; collisionless foreground dressing added off-route), resolved the Stage B Biomass note as a review-lighting artifact with source provenance, and re-validated everything (build 0 errors, 75/75 unit, 11/11 smoke, captures opened).
 
 - 2026-07-18: Completed the Stage C validation slice — verified the pre-wired `MVP_Pack_V1` integration per prop, passed unit tests (75/75) and all 11 MVP smoke milestones on the integrated scenes, generated and opened eight in-engine captures (recording the missing crafted-arm first-person capture as an evidence gap), produced local Windows export proof with a recorded exe hash, marked Stage C `PASS`, and left the release gate `HUMAN_BLOCKED` on manual Windows validation.

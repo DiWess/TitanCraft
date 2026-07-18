@@ -12,9 +12,12 @@ const HEIGHT := 720
 const MAIN_SCENE := "res://scenes/Main/Main.tscn"
 
 # Yaw is applied to the player body, pitch to the head, matching the runtime rig.
+# arm_built false = default pre-craft state (bare astronaut arm visible);
+# arm_built true simulates the crafted state's visibility swap.
 const VIEWS := [
-	{"name": "crafted_arm_01_camp_backdrop", "yaw_degrees": -45.0, "pitch_degrees": -6.0},
-	{"name": "crafted_arm_02_crash_hull_backdrop", "yaw_degrees": 17.0, "pitch_degrees": -4.0},
+	{"name": "precraft_arm_01_camp_backdrop", "yaw_degrees": -45.0, "pitch_degrees": -6.0, "arm_built": false},
+	{"name": "crafted_arm_01_camp_backdrop", "yaw_degrees": -45.0, "pitch_degrees": -6.0, "arm_built": true},
+	{"name": "crafted_arm_02_crash_hull_backdrop", "yaw_degrees": 17.0, "pitch_degrees": -4.0, "arm_built": true},
 ]
 
 func _initialize() -> void:
@@ -47,18 +50,20 @@ func _capture_all() -> void:
 	var head := player.get_node_or_null("Head")
 	var camera := player.get_node_or_null("Head/Camera3D") as Camera3D
 	var arm_visual := player.get_node_or_null("Head/Camera3D/MechanicalArmVisual")
-	if head == null or camera == null or arm_visual == null:
-		printerr("Player camera rig or MechanicalArmVisual not found.")
+	var bare_arm_visual := player.get_node_or_null("Head/Camera3D/BareArmVisual")
+	if head == null or camera == null or arm_visual == null or bare_arm_visual == null:
+		printerr("Player camera rig, MechanicalArmVisual, or BareArmVisual not found.")
 		quit(4)
 		return
 
-	arm_visual.visible = true
 	camera.current = true
 
 	for i in 8:
 		await process_frame
 
 	for view in VIEWS:
+		arm_visual.visible = view["arm_built"]
+		bare_arm_visual.visible = not view["arm_built"]
 		player.rotation_degrees.y = view["yaw_degrees"]
 		head.rotation_degrees.x = view["pitch_degrees"]
 		for i in 3:

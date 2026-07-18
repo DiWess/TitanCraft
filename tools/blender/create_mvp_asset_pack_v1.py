@@ -458,6 +458,32 @@ def build_mechanical_arm() -> None:
     box("TC_Arm_Knuckle", purple, (0, 0.856, 0.245), (0.15, 0.02, 0.02), bevel=0)
 
 
+def build_player_bare_arm() -> None:
+    """Pre-craft first-person arm: bare astronaut suit sleeve and glove, no tech.
+
+    Same forearm axis and envelope as TC_PLAYER_MechanicalArm_V1 so the Player
+    viewmodel transform frames both states identically; deliberately soft and
+    unpowered (fabric, rubber glove, one suit stripe, zero emissives) so the
+    crafted mechanical arm reads as a real upgrade.
+    """
+    suit = pbr("TC_MVP_SuitFabric", (0.520, 0.500, 0.455), rough=0.88)
+    suit_dark = pbr("TC_MVP_SuitFabricDark", (0.330, 0.315, 0.285), rough=0.9)
+    rubber = pbr("TC_MVP_RubberDark", RUBBER_DARK, rough=0.78)
+    orange = pbr("TC_MVP_OrangePaint", ORANGE_PAINT, rough=0.42)
+    # Forearm along +Y from the elbow, resting on the ground plane for review.
+    segments = ((0.10, 0.150, 0.22), (0.34, 0.138, 0.20), (0.54, 0.126, 0.14))
+    for i, (y, r, depth) in enumerate(segments):
+        cyl(f"TC_BareArm_Sleeve_{i}", suit if i % 2 == 0 else suit_dark, (0, y, 0.17), r, depth,
+            rot=(90, 0, 0), vertices=10, bevel=0.02)
+    cyl("TC_BareArm_Elbow", suit_dark, (0, -0.04, 0.17), 0.158, 0.10, rot=(90, 0, 0), vertices=10, bevel=0.02)
+    cyl("TC_BareArm_SuitStripe", orange, (0, 0.455, 0.17), 0.132, 0.035, rot=(90, 0, 0), vertices=10, bevel=0)
+    cyl("TC_BareArm_GloveCuff", rubber, (0, 0.64, 0.17), 0.108, 0.09, rot=(90, 0, 0), vertices=10, bevel=0.012)
+    box("TC_BareArm_Palm", rubber, (0, 0.77, 0.17), (0.185, 0.15, 0.185), bevel=0.03)
+    for i, x in enumerate((-0.06, 0.0, 0.06)):
+        box(f"TC_BareArm_Finger_{i}", rubber, (x, 0.885, 0.185), (0.048, 0.10, 0.055), rot=(-10, 0, 0), bevel=0.015)
+    box("TC_BareArm_Thumb", rubber, (-0.115, 0.79, 0.115), (0.048, 0.085, 0.05), rot=(0, 0, -22), bevel=0.015)
+
+
 def build_mechanical_arm_unbuilt() -> None:
     """Unbuilt hint: salvaged Mechanical Arm Mk I parts loose on a tray, not yet assembled or powered.
 
@@ -524,6 +550,7 @@ ASSETS = {
     "TC_CHAR_GalaxabrainScout_Disabled_V1": build_scout_disabled,
     "TC_PLAYER_MechanicalArm_V1": build_mechanical_arm,
     "TC_PLAYER_MechanicalArmUnbuilt_V1": build_mechanical_arm_unbuilt,
+    "TC_PLAYER_BareArm_V1": build_player_bare_arm,
     "TC_PROP_SavePoint_V1": build_save_point,
     "TC_ENV_CrashDebris_A_V1": build_crash_debris,
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://titancraft_player"]
+[gd_scene load_steps=10 format=3 uid="uid://titancraft_player"]
 
 [ext_resource type="Script" path="res://src/Player/FirstPersonController.cs" id="1_controller"]
 [ext_resource type="Script" path="res://src/Player/CameraShaker.cs" id="5_camera_shaker"]
@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/temp/arm_hit.wav" id="3_arm_hit"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/player_damage.wav" id="4_player_damage"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PLAYER_MechanicalArm_V1.gltf" id="7_v1_arm"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PLAYER_BareArm_V1.gltf" id="8_v1_bare_arm"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.35
@@ -38,6 +39,14 @@ metadata/authentication = "Script-controlled visibility group for the crafted fi
 [node name="V1BetaMechanicalArmModel" parent="Head/Camera3D/MechanicalArmVisual" instance=ExtResource("7_v1_arm")]
 transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, -0.5, 0.3)
 metadata/integration = "MVP Pack V1 segmented arm child of script-critical MechanicalArmVisual, so inventory/save/load visibility still controls early hidden and crafted visible states."
+
+[node name="BareArmVisual" type="MeshInstance3D" parent="Head/Camera3D"]
+transform = Transform3D(0.27,-0.0101,-0.0718,0,0.277,-0.0389,0.0725,0.0376,0.2677,0.38,-0.33,-0.5)
+metadata/authentication = "Script-controlled visibility group for the pre-craft bare astronaut arm (visible by default; FirstPersonController hides it when the mechanical arm is crafted and restores it on save/load through the same inventory event). Carries no mesh of its own; the MVP Pack V1 GLTF child supplies the visual with the same viewmodel transform as MechanicalArmVisual."
+
+[node name="V1BareArmModel" parent="Head/Camera3D/BareArmVisual" instance=ExtResource("8_v1_bare_arm")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, -0.5, 0.3)
+metadata/integration = "MVP Pack V1 bare suit arm child of script-critical BareArmVisual: pre-craft first-person state, replaced by the mechanical arm on craft."
 
 [node name="ArmHitAudio" type="AudioStreamPlayer" parent="Head/Camera3D"]
 stream = ExtResource("3_arm_hit")

@@ -27,6 +27,7 @@ Standalone production asset candidates for the Crash Site MVP, authored in Blend
 | `TC_PICKUP_Component_V1` | Mission component pickup | ~0.45 wide | 900 | Purple emissive crystal cluster on dark rock shard |
 | `TC_CHAR_GalaxabrainScout_V1` | Scout enemy visual candidate | 2.4 × 2.4 × 1.7 | 3200 | Spindly raised-knee quadruped biomech, purple core/head glow |
 | `TC_PLAYER_MechanicalArm_V1` | Crafted arm reward (first-person) | 0.35 × 1.0 × 0.35 | 2600 | Segmented tapering forearm, purple energy seams, powered fist |
+| `TC_PLAYER_BareArm_V1` | Pre-craft first-person arm (added 2026-07-18) | 0.35 × 1.0 × 0.35 | 900 | Astronaut suit sleeve + dark rubber glove, one orange suit stripe, no tech/emissives; same axis/envelope as the mechanical arm so the viewmodel transform frames both states |
 | `TC_PROP_SavePoint_V1` | Save checkpoint interaction | 0.85 × 0.85 × 1.6 | 1400 | Hex pillar, cyan emissive ring/strip/emitter |
 | `TC_ENV_CrashDebris_A_V1` | Navigation landmark | ~2.6 wide × 1.9 tall | 1400 | Bent off-white hull plate, scorched edge, exposed ribs |
 

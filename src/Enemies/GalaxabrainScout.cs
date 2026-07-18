@@ -198,10 +198,20 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     public GalaxabrainScoutState State => _brain.State;
 
+    private const float GaitBobAmplitude = 0.05f;
+    private const float GaitBobRadiansPerSecond = 9f;
+    private const float GaitSwayRadians = 0.05f;
+    private const float FacingLerpPerSecond = 6f;
+    private Node3D? _aliveVisualAnimationRoot;
+    private float _aliveVisualBaseY;
+    private float _gaitSeconds;
+
     public override void _Ready()
     {
         _brain = new GalaxabrainScoutBrain(Health, DetectionRange, AttackRange, AttackCooldownSeconds);
         _hitFlinch = new ScoutHitFlinch(HitFlinchDurationSeconds, HitFlinchScalePunch);
+        _aliveVisualAnimationRoot = GetNodeOrNull<Node3D>(AliveVisualPath);
+        _aliveVisualBaseY = _aliveVisualAnimationRoot?.Position.Y ?? 0f;
         SetMissionComponentVisible(false);
         _previousState = GalaxabrainScoutState.Idle;
     }
@@ -227,6 +237,8 @@ public partial class GalaxabrainScout : CharacterBody3D
             _previousState = _brain.State;
         }
 
+        UpdateAliveVisualAnimation((float)delta, player);
+
         if (_brain.State == GalaxabrainScoutState.Chase)
         {
             Vector3 direction = (player.GlobalPosition - GlobalPosition).Normalized();
@@ -242,6 +254,45 @@ public partial class GalaxabrainScout : CharacterBody3D
             AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Attack", GlobalPosition);
             TryDamagePlayer(player);
         }
+    }
+
+    private void UpdateAliveVisualAnimation(float delta, Node3D player)
+    {
+        // Visual-only body language on the alive visual root: the biomech faces
+        // its target while hunting (authored model forward is +X) and skitter-bobs
+        // during chase. Physics, collision, and the deterministic brain are
+        // untouched — this animates a child visual node only.
+        if (_aliveVisualAnimationRoot is null)
+        {
+            return;
+        }
+
+        var rotation = _aliveVisualAnimationRoot.Rotation;
+        if (_brain.State is GalaxabrainScoutState.Chase or GalaxabrainScoutState.Attack)
+        {
+            Vector3 toPlayer = player.GlobalPosition - GlobalPosition;
+            if (new Vector2(toPlayer.X, toPlayer.Z).LengthSquared() > 0.0001f)
+            {
+                float targetYaw = Mathf.Atan2(-toPlayer.Z, toPlayer.X);
+                rotation.Y = Mathf.LerpAngle(rotation.Y, targetYaw, Mathf.Min(1f, FacingLerpPerSecond * delta));
+            }
+        }
+
+        var position = _aliveVisualAnimationRoot.Position;
+        if (_brain.State == GalaxabrainScoutState.Chase)
+        {
+            _gaitSeconds += delta;
+            position.Y = _aliveVisualBaseY + GaitBobAmplitude * Mathf.Abs(Mathf.Sin(_gaitSeconds * GaitBobRadiansPerSecond));
+            rotation.Z = GaitSwayRadians * Mathf.Sin(_gaitSeconds * GaitBobRadiansPerSecond * 0.5f);
+        }
+        else
+        {
+            position.Y = Mathf.Lerp(position.Y, _aliveVisualBaseY, Mathf.Min(1f, 8f * delta));
+            rotation.Z = Mathf.Lerp(rotation.Z, 0f, Mathf.Min(1f, 8f * delta));
+        }
+
+        _aliveVisualAnimationRoot.Position = position;
+        _aliveVisualAnimationRoot.Rotation = rotation;
     }
 
     public void ApplyDamage(int damage)

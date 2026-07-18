@@ -104,6 +104,18 @@ state machine; skeletal/procedural gait is deferred — it risks the determinist
 and needs its own reviewed slice) and material-level emissive animation (needs material
 plumbing; the light/scale pulses cover the same readability goals).
 
+## 8. Follow-up (same day): Scout body language (the deferred item above)
+
+Executed as its own slice: the Scout's **alive visual root** now turns toward the player
+while hunting (authored model forward is +X, verified from the builder source) and
+skitter-bobs with a slight roll sway during chase, easing back to neutral otherwise. The
+implementation animates only the child visual node — physics body, collision, and the
+deterministic `GalaxabrainScoutBrain` are untouched, which is what made the earlier deferral
+safe to lift. The workbench unbuilt-arm kit was audited for the same slice and found already
+wired (hides on craft). Integration smoke now asserts the chase facing turn and gait bob with
+double-sampling. A fresh Windows export was produced after this slice for local human
+testing (exit 0, 0 errors; delivered via the `Export Windows MVP artifact` CI job).
+
 ## Validation (this slice)
 
 - `dotnet build` — succeeded, 0 errors

@@ -574,6 +574,19 @@ public partial class IntegrationTestRunner : Node
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
 
         // The first combat hit goes through the real player attack path: aim the
+        // Chase body language: with the player 6 m away (inside detection, outside
+        // attack range) the scout chases; its alive visual must turn toward the
+        // player (target yaw -PI/2 from +Z approach) and skitter-bob while moving.
+        player.GlobalPosition = scout.GlobalPosition + new Vector3(0.0f, 0.0f, 6.0f);
+        var scoutAliveVisual = scout.GetNode<Node3D>("V1BetaScoutVisualRoot");
+        var scoutYawBefore = scoutAliveVisual.Rotation.Y;
+        var scoutVisualYBefore = scoutAliveVisual.Position.Y;
+        await Frames(4);
+        var scoutVisualYMid = scoutAliveVisual.Position.Y;
+        await Frames(4);
+        Require(!Mathf.IsEqualApprox(scoutAliveVisual.Rotation.Y, scoutYawBefore), "Chasing Scout visual did not turn toward the player");
+        Require(!Mathf.IsEqualApprox(scoutVisualYMid, scoutVisualYBefore) || !Mathf.IsEqualApprox(scoutAliveVisual.Position.Y, scoutVisualYBefore), "Chasing Scout visual is not gait-bobbing");
+
         // camera at the scout and raycast-attack so landed-hit HUD feedback is proven.
         player.GlobalPosition = scout.GlobalPosition + new Vector3(2.0f, 0.0f, 0.0f);
         await Frames(2);

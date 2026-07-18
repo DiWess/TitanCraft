@@ -107,6 +107,8 @@
 
 - 2026-07-15: Routed the next five Stage B production tasks into owner, input, artifact, validation, and blocking-verdict rows without touching gameplay, scenes, or assets.
 
+- 2026-07-18: Scout body-language slice — the alive visual root now faces the hunted player and skitter-bobs during chase (visual-only; brain/physics untouched), verified by new integration assertions; workbench unbuilt-arm kit audited as already wired; fresh Windows export produced for local human testing (exit 0, 0 errors).
+
 - 2026-07-18: Reaction/animation slice per human direction — HUD now pulses on resource gains, arm-progress changes, and damage (state binding was already event-driven); resource drops idle-spin/bob until collected; save point breathes; activated beacon sky-beam pulses; every unblocked arm swing plays a viewmodel jab tween plus the previously-unwired Weapon_Swing whoosh; all covered by new integration assertions (build 0 errors, 75/75 unit, 11/11 smoke).
 
 - 2026-07-18: Added the pre-craft bare astronaut arm per human direction — new pipeline-authored `TC_PLAYER_BareArm_V1` (blend/GLB/gltf/manifest/reviewed renders), `BareArmVisual` viewmodel node in Player.tscn, controller swap so exactly one first-person arm is visible (bare before craft, mechanical after, across save/load), new integration assertions at spawn/pre-craft/post-craft/reload, and an opened pre-craft capture; build, 75/75 unit, 11/11 smoke, import, and capture factory all green.

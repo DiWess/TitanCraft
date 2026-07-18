@@ -9,7 +9,7 @@
 
 TitanCraft visual production is structured as a **gated three-stage progression** from direction (Stage A) through asset generation (Stage B) to integration and ship (Stage C/Release). Each stage has parallel agent streams converging at Producer gates. No stage advances without evidence.
 
-**Current Status:** Stage A PASS ✓ | Stage B PASS ✓ (2026-07-18, `docs/production/stage-b-producer-gate-2026-07-18.md`) | Stage C IN_PROGRESS (#6) | Release PENDING
+**Current Status:** Stage A PASS ✓ | Stage B PASS ✓ (2026-07-18, `docs/production/stage-b-producer-gate-2026-07-18.md`) | Stage C PASS ✓ (2026-07-18, `docs/production/stage-c-integration-validation-2026-07-18.md`) | Release HUMAN_BLOCKED (export proof done; human Windows validation + GO pending)
 
 ---
 
@@ -19,8 +19,8 @@ TitanCraft visual production is structured as a **gated three-stage progression*
 |-------|-----------|-----------------|-----------------|--------|
 | **A** | Lock visual identity & environment direction | Creative Director, Art Director | Producer | ✓ PASS |
 | **B** | Generate & validate standalone asset candidates | Art Director, Visual Reviewer, Tech Director | Producer | ✓ PASS (2026-07-18) |
-| **C** | Integrate approved assets & validate experience | Level Designer, Gameplay Engineer, QA | Producer | 🔄 IN_PROGRESS (#6) |
-| **Release** | Final export & deployment readiness | Build Engineer, Producer | Human approval | ⏳ PENDING (#8) |
+| **C** | Integrate approved assets & validate experience | Level Designer, Gameplay Engineer, QA | Producer | ✓ PASS (2026-07-18) |
+| **Release** | Final export & deployment readiness | Build Engineer, Producer | Human approval | ⛔ HUMAN_BLOCKED (export proof done 2026-07-18) |
 
 ---
 
@@ -191,9 +191,9 @@ TitanCraft visual production is structured as a **gated three-stage progression*
 | #3: Visual Reviewer verdict | ✓ PASS (`docs/art/reviews/mvp-pack-v1-visual-review-2026-07-18.md`) | Visual Reviewer | #5 |
 | #4: Tech Director audit | ✓ PASS (`docs/production/mvp-pack-v1-technical-audit-2026-07-18.md`) | Technical Director | #5 |
 | #5: Producer gate (B→C) | ✓ PASS (`docs/production/stage-b-producer-gate-2026-07-18.md`) | Producer | #6 |
-| #6: Integrate into scene | ⏳ PENDING (next slice) | Level Designer | #7 |
-| #7: Final validation | ⏳ PENDING | QA + Visual Reviewer | #8 |
-| #8: Release gate | ⏳ PENDING | Producer + Build Engineer | SHIP |
+| #6: Integrate into scene | ✓ DONE (found pre-wired; verified 2026-07-18) | Level Designer | #7 |
+| #7: Final validation | ✓ PASS (tests 75/75 + 11 smoke milestones; 8 captures opened, arm-capture gap noted) | QA + Visual Reviewer | #8 |
+| #8: Release gate | ⛔ HUMAN_BLOCKED (Windows export proof done; human playthrough + GO pending) | Producer + Build Engineer | SHIP |
 
 ### Evidence Standards (Per Stage)
 

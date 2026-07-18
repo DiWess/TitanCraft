@@ -47,6 +47,12 @@
 - Stage B is `PASS` for MVP Asset Pack V1: 13 GLB candidates with verified manifest hashes, tracked PNG review bundles (regenerated with a `scale_reference.png` view containing a render-only 1.8 m post), a real opened-PNG Visual Reviewer verdict (13/13 PASS with three MINOR corrective notes — `docs/art/reviews/mvp-pack-v1-visual-review-2026-07-18.md`), and a real Technical Director audit (build 0/0, tests 75/75, import 0 errors — `docs/production/mvp-pack-v1-technical-audit-2026-07-18.md`).
 - The 2026-07-06 simulation cluster (`PRODUCER_GATE_VERDICT_STAGE_B.md` etc.) remains NOT REAL and was not cited as evidence.
 
+## Stage C Validation & Release Evidence — 2026-07-18
+
+- Stage C is `PASS` per `docs/production/stage-c-integration-validation-2026-07-18.md`: the approved `MVP_Pack_V1` candidates were found already wired into the production scenes via committed text `.gltf` deliverables; the wiring was verified per-prop, the full gameplay loop passed (`./tools/test.sh`: unit 75/75 plus all 11 MVP smoke milestones on the integrated scenes), and eight in-engine captures were generated with the allowlisted factory and opened for visual diagnosis.
+- Known evidence gap: the first-person mechanical-arm capture does not show the crafted arm; wiring and runtime path are test-covered, but a crafted-state capture is required before any visual-approval claim for the arm.
+- Release: Windows export proof exists (`godot --headless --export-release "Windows Desktop"`, exit 0, exe SHA-256 recorded); the release gate itself remains `HUMAN_BLOCKED` on the README §27 manual Windows validation and human GO.
+
 ## Stage A Reconciliation — 2026-07-07
 
 - Earlier status lines that said Stage A generated art was not approved are superseded for the `TC_TerrainDioramaKit_V1` terrain-diorama slice only. The current evidence chain records regenerated review PNGs, opened-image visual diagnosis, Visual Reviewer `PASS`, production scene integration sign-off, and tracked `StageAVisualRoot` metadata.

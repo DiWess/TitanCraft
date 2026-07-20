@@ -46,6 +46,7 @@ budgets = {
     'TC_CHAR_GalaxabrainScout_Disabled_V1.blend': 900,
     'TC_PLAYER_MechanicalArm_V1.blend': 2600,
     'TC_PLAYER_MechanicalArmUnbuilt_V1.blend': 600,
+    'TC_PLAYER_BareArm_V1.blend': 900,
     'TC_PROP_SavePoint_V1.blend': 1400,
     'TC_ENV_CrashDebris_A_V1.blend': 1400,
     'TC_LightingReference_V1.blend': 800,

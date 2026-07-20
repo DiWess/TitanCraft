@@ -21,7 +21,7 @@
 ## Blocked
 
 - Any additional Stage A visual replacement or generated asset integration that lacks standalone review artifacts, hashes/manifests, opened-PNG diagnosis, and human or visual-reviewer verdict.
-- Stage B work until a producer re-gate explicitly cites the reconciled Stage A evidence and confirms remaining prerequisites.
+- Stage C production-scene integration of `MVP_Pack_V1` assets without its own before/after captures, preserved gameplay collision contracts, and integration sign-off (Stage B approval is candidate-level only).
 - Marketing screenshots or public-facing visual claims.
 - Production asset approval without standalone review artifacts, hashes, manifest evidence, and review verdict.
 
@@ -39,6 +39,25 @@
   the Visual Reviewer agent on opened CI captures; feel adjectives still require a dated human note).
 - Documentation-only reconciliation of Stage A status against `context_log.md`, `docs/art/reviews/stage-a-visual-approval-verdict.md`, `docs/production/stage-a-production-integration-signoff.md`, and `docs/production/visual-completion-checklist.md`.
 - Phase 7 planning (composition guide, balance playtesting, audio design, polish, platform testing) pending Phase 6 completion.
+- Stage C Task #6 (Level Designer): visual-only integration of the approved `MVP_Pack_V1` candidates into the Crash Site scene, per `docs/production/stage-b-producer-gate-2026-07-18.md`.
+
+## Stage B Completion — 2026-07-18
+
+- The producer re-gate required above was issued in `docs/production/stage-b-producer-gate-2026-07-18.md`, citing the reconciled Stage A evidence (terrain diorama PASS, hull rib occluder integration, heavy crash hull standalone PASS).
+- Stage B is `PASS` for MVP Asset Pack V1: 13 GLB candidates with verified manifest hashes, tracked PNG review bundles (regenerated with a `scale_reference.png` view containing a render-only 1.8 m post), a real opened-PNG Visual Reviewer verdict (13/13 PASS with three MINOR corrective notes — `docs/art/reviews/mvp-pack-v1-visual-review-2026-07-18.md`), and a real Technical Director audit (build 0/0, tests 75/75, import 0 errors — `docs/production/mvp-pack-v1-technical-audit-2026-07-18.md`).
+- The 2026-07-06 simulation cluster (`PRODUCER_GATE_VERDICT_STAGE_B.md` etc.) remains NOT REAL and was not cited as evidence.
+
+## Stage C Validation & Release Evidence — 2026-07-18
+
+- Stage C is `PASS` per `docs/production/stage-c-integration-validation-2026-07-18.md`: the approved `MVP_Pack_V1` candidates were found already wired into the production scenes via committed text `.gltf` deliverables; the wiring was verified per-prop, the full gameplay loop passed (`./tools/test.sh`: unit 75/75 plus all 11 MVP smoke milestones on the integrated scenes), and eight in-engine captures were generated with the allowlisted factory and opened for visual diagnosis.
+- Known evidence gap: the first-person mechanical-arm capture does not show the crafted arm; wiring and runtime path are test-covered, but a crafted-state capture is required before any visual-approval claim for the arm.
+- Release: Windows export proof exists (`godot --headless --export-release "Windows Desktop"`, exit 0, exe SHA-256 recorded); the release gate itself remains `HUMAN_BLOCKED` on the README §27 manual Windows validation and human GO.
+
+## Polish Slice — 2026-07-18 (later same day)
+
+- Per `docs/production/polish-slice-2026-07-18.md`: fixed a BLOCKER-class first-person visual bug (legacy Quaternius George proxy mesh rendered over the crafted MVP arm — every crafted playthrough was affected), re-tuned the arm as a proper viewmodel, closed the crafted-arm capture gap with a new allowlisted capture script (both Stage C findings now closed), added collisionless foreground dressing off-route, and resolved the Stage B Biomass color note as a review-lighting artifact (asset data matches the brief; no change needed).
+- Validation after polish: build 0 errors, unit 75/75, MVP smoke 11/11, import clean, capture factory green with all new/changed views opened.
+- Remaining gate to ship: the human Windows playthrough and GO (README §27); gameplay feel tuning (provisional README §11 combat values) is deliberately deferred to that same human validation.
 
 ## Stage A Reconciliation — 2026-07-07
 

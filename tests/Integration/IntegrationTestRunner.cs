@@ -503,6 +503,7 @@ public partial class IntegrationTestRunner : Node
         var navigator = main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
         navigator.EnableSceneChanges = false;
         var arm = player.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
+        var bareArm = player.GetNode<MeshInstance3D>("Head/Camera3D/BareArmVisual");
         var scout = main.GetNode<GalaxabrainScout>("Placeholder_GalaxabrainScout");
         var component = scout.GetNode<GalaxabrainComponentPickup>("GalaxabrainComponentPickup");
         var workbench = main.GetNode<Workbench>("Placeholder_Workbench");
@@ -515,11 +516,22 @@ public partial class IntegrationTestRunner : Node
         RequireHudObjective(hud, CrashSiteMissionStep.CollectResources, "initial spawn");
         Require(player.IsInsideTree(), "Player did not spawn into the Crash Site scene");
         Require(!arm.Visible, "Mechanical arm visual should start hidden");
+        Require(bareArm.Visible, "Bare astronaut arm should be visible before crafting");
         LogMvpSmokeMilestone(1, "player spawned");
         Require(!workbench.Interact(player.Inventory, player.Mission), "Workbench must reject crafting before resources are collected");
         Require(!component.Interact(player.Inventory, player.Mission), "Component must reject recovery before Galaxabrain defeat");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon must reject activation before component recovery");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.CollectResources, "Invalid early interactions mutated mission state");
+
+        var metalPickupVisual = main.GetNode<Node3D>("ResourceDrop_MetalPickup/VisualGroup");
+        var pickupRotationBefore = metalPickupVisual.Rotation.Y;
+        var savePointVisual = main.GetNode<Node3D>("Placeholder_SavePoint/VisualRoot");
+        var savePointScaleBefore = savePointVisual.Scale.X;
+        await Frames(6);
+        var savePointScaleMid = savePointVisual.Scale.X;
+        await Frames(6);
+        Require(!Mathf.IsEqualApprox(metalPickupVisual.Rotation.Y, pickupRotationBefore), "Uncollected resource drop visual is not idle-spinning");
+        Require(!Mathf.IsEqualApprox(savePointScaleMid, savePointScaleBefore) || !Mathf.IsEqualApprox(savePointVisual.Scale.X, savePointScaleBefore), "Save point visual is not breathing");
 
         foreach (var pickupName in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup" })
         {
@@ -527,6 +539,7 @@ public partial class IntegrationTestRunner : Node
             Require(pickup.Interact(player.Inventory, player.Mission), $"{pickupName} could not be collected through the real pickup path");
             Require(!pickup.Interact(player.Inventory, player.Mission), $"{pickupName} was collectable twice");
         }
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Modulate != Colors.White, "HUD resources label did not pulse on collection");
 
         var finalPickup = main.GetNode<ResourceDrop>("ResourceDrop_ElectronicsPickup");
         player.GlobalPosition = finalPickup.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
@@ -541,6 +554,7 @@ public partial class IntegrationTestRunner : Node
         RequireHudObjective(hud, CrashSiteMissionStep.BuildMechanicalArm, "after resources complete");
         Require(!player.Inventory.IsMechanicalArmBuilt, "Mechanical Arm Mk I was granted before workbench crafting");
         Require(!arm.Visible, "Mechanical arm visual appeared before workbench crafting");
+        Require(bareArm.Visible, "Bare astronaut arm disappeared before workbench crafting");
         LogMvpSmokeMilestone(2, "resources collected");
 
         player.GlobalPosition = workbench.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
@@ -550,6 +564,7 @@ public partial class IntegrationTestRunner : Node
         Require(player.Inventory.IsMechanicalArmBuilt, "Crafting did not build the mechanical arm");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefeatGalaxabrain, "Crafting did not advance to the defeat step");
         Require(arm.Visible, "Mechanical arm visual did not appear after crafting");
+        Require(!bareArm.Visible, "Bare astronaut arm still visible after crafting the mechanical arm");
         Require(lastActionFeedback == FirstPersonController.MechanicalArmCraftSuccessFeedback, "Workbench crafting did not emit Mechanical Arm Mk I success feedback");
         Require(lastActionFeedback.Contains("Mechanical Arm Mk I online") && lastActionFeedback.Contains("defeat the Galaxabrain Scout"), "Mechanical Arm Mk I success feedback did not confirm arm readiness and Galaxabrain guidance");
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.MechanicalArmCraftSuccessFeedback, "HUD did not show Mechanical Arm Mk I success feedback text");
@@ -559,6 +574,19 @@ public partial class IntegrationTestRunner : Node
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable while the Galaxabrain is alive");
 
         // The first combat hit goes through the real player attack path: aim the
+        // Chase body language: with the player 6 m away (inside detection, outside
+        // attack range) the scout chases; its alive visual must turn toward the
+        // player (target yaw -PI/2 from +Z approach) and skitter-bob while moving.
+        player.GlobalPosition = scout.GlobalPosition + new Vector3(0.0f, 0.0f, 6.0f);
+        var scoutAliveVisual = scout.GetNode<Node3D>("V1BetaScoutVisualRoot");
+        var scoutYawBefore = scoutAliveVisual.Rotation.Y;
+        var scoutVisualYBefore = scoutAliveVisual.Position.Y;
+        await Frames(4);
+        var scoutVisualYMid = scoutAliveVisual.Position.Y;
+        await Frames(4);
+        Require(!Mathf.IsEqualApprox(scoutAliveVisual.Rotation.Y, scoutYawBefore), "Chasing Scout visual did not turn toward the player");
+        Require(!Mathf.IsEqualApprox(scoutVisualYMid, scoutVisualYBefore) || !Mathf.IsEqualApprox(scoutAliveVisual.Position.Y, scoutVisualYBefore), "Chasing Scout visual is not gait-bobbing");
+
         // camera at the scout and raycast-attack so landed-hit HUD feedback is proven.
         player.GlobalPosition = scout.GlobalPosition + new Vector3(2.0f, 0.0f, 0.0f);
         await Frames(2);
@@ -628,6 +656,12 @@ public partial class IntegrationTestRunner : Node
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.BeaconActivationFeedback, "HUD did not show beacon activation feedback text");
         RequireHudObjective(hud, CrashSiteMissionStep.Victory, "after beacon activation/victory");
         LogMvpSmokeMilestone(8, "beacon activated");
+        var skyBeam = beacon.GetNode<SpotLight3D>("LandmarkVfx/SkyBeam");
+        var beamEnergyBefore = skyBeam.LightEnergy;
+        await Frames(6);
+        var beamEnergyMid = skyBeam.LightEnergy;
+        await Frames(6);
+        Require(!Mathf.IsEqualApprox(beamEnergyMid, beamEnergyBefore) || !Mathf.IsEqualApprox(skyBeam.LightEnergy, beamEnergyBefore), "Activated beacon sky beam is not pulsing");
         Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
         await Frames(2);
         Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after beacon activation");
@@ -711,6 +745,7 @@ public partial class IntegrationTestRunner : Node
         Require(reloadedComponent.Visible && reloadedComponent.Monitoring, "Unrecovered component was not available after reload");
         Require(reloadedPlayer.Inventory.IsMechanicalArmBuilt, "Mechanical arm ownership was lost across reload");
         Require(reloadedPlayer.GetNode<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual").Visible, "Mechanical arm visual was not restored after reload");
+        Require(!reloadedPlayer.GetNode<MeshInstance3D>("Head/Camera3D/BareArmVisual").Visible, "Bare astronaut arm reappeared after reload with the mechanical arm built");
         Require(reloadedPlayer.Mission.CurrentStep == CrashSiteMissionStep.RecoverGalaxabrainComponent, "Mission step was not restored");
 
         Require(reloadedComponent.Interact(reloadedPlayer.Inventory, reloadedPlayer.Mission), "Component recovery failed after reload");

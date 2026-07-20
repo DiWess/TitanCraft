@@ -17,6 +17,7 @@ LOG_DIR = OUTPUT_ROOT / "logs"
 MANIFEST = OUTPUT_ROOT / "visual_artifact_factory_scene_manifest.json"
 ALLOWLIST = [
     "tools/visual_review/capture_phase3a_production_integration.gd",
+    "tools/visual_review/capture_crafted_arm_first_person.gd",
     "tools/visual_review/capture_stage_a_custom_audition.gd",
     "tools/visual_review/capture_stage_a_custom_final.gd",
     "tools/visual_review/capture_stage_a_custom_final_v2.gd",

@@ -32,7 +32,21 @@ public partial class CrashSiteHud : CanvasLayer
         SetActionFeedback("Left click: Mk I not built yet — craft it at the workbench first.");
     }
 
-    public void SetHealth(int current, int maximum) => _health.Text = $"Health: {current}/{maximum}";
+    private static readonly Color GainAccent = new(1.0f, 0.62f, 0.18f);
+    private static readonly Color DamageAccent = new(1.0f, 0.28f, 0.22f);
+    private int _lastHealth = -1;
+    private (int Metal, int Biomass, int Electronics, bool Component) _lastResources = (-1, -1, -1, false);
+    private string _lastArmProgress = string.Empty;
+
+    public void SetHealth(int current, int maximum)
+    {
+        _health.Text = $"Health: {current}/{maximum}";
+        if (_lastHealth >= 0 && current < _lastHealth)
+        {
+            PulseLabel(_health, DamageAccent);
+        }
+        _lastHealth = current;
+    }
 
     public void SetObjective(string objective) => _objective.Text = objective;
 
@@ -42,6 +56,34 @@ public partial class CrashSiteHud : CanvasLayer
         // confirms every pickup required by the Crash Site loop.
         var missionComponent = hasGalaxabrainComponent ? "Recovered" : "Missing";
         _resources.Text = $"Metal: {metal}  Biomass: {biomass}  Electronics: {electronicComponents}  Galaxabrain Component: {missionComponent}";
+
+        var current = (metal, biomass, electronicComponents, hasGalaxabrainComponent);
+        var gained = _lastResources.Metal >= 0
+            && (metal > _lastResources.Metal
+                || biomass > _lastResources.Biomass
+                || electronicComponents > _lastResources.Electronics
+                || (hasGalaxabrainComponent && !_lastResources.Component));
+        if (gained)
+        {
+            PulseLabel(_resources, GainAccent);
+        }
+        _lastResources = current;
+    }
+
+    private void PulseLabel(Label label, Color accent)
+    {
+        // One tween per label; a new pulse replaces the previous one mid-flight.
+        if (label.HasMeta("pulse_tween") && label.GetMeta("pulse_tween").As<Tween>() is { } previous && previous.IsValid())
+        {
+            previous.Kill();
+        }
+
+        label.Modulate = accent;
+        var tween = CreateTween();
+        tween.TweenProperty(label, "modulate", Colors.White, 0.45f)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out);
+        label.SetMeta("pulse_tween", tween);
     }
 
     public void SetInteractionPrompt(string prompt)
@@ -58,6 +100,11 @@ public partial class CrashSiteHud : CanvasLayer
 
     public void SetMechanicalArmProgress(string progressText)
     {
+        if (_lastArmProgress.Length > 0 && progressText != _lastArmProgress)
+        {
+            PulseLabel(_armState, GainAccent);
+        }
+        _lastArmProgress = progressText;
         _armState.Text = progressText;
     }
 

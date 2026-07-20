@@ -27,6 +27,7 @@ Standalone production asset candidates for the Crash Site MVP, authored in Blend
 | `TC_PICKUP_Component_V1` | Mission component pickup | ~0.45 wide | 900 | Purple emissive crystal cluster on dark rock shard |
 | `TC_CHAR_GalaxabrainScout_V1` | Scout enemy visual candidate | 2.4 × 2.4 × 1.7 | 3200 | Spindly raised-knee quadruped biomech, purple core/head glow |
 | `TC_PLAYER_MechanicalArm_V1` | Crafted arm reward (first-person) | 0.35 × 1.0 × 0.35 | 2600 | Segmented tapering forearm, purple energy seams, powered fist |
+| `TC_PLAYER_BareArm_V1` | Pre-craft first-person arm (added 2026-07-18) | 0.35 × 1.0 × 0.35 | 900 | Astronaut suit sleeve + dark rubber glove, one orange suit stripe, no tech/emissives; same axis/envelope as the mechanical arm so the viewmodel transform frames both states |
 | `TC_PROP_SavePoint_V1` | Save checkpoint interaction | 0.85 × 0.85 × 1.6 | 1400 | Hex pillar, cyan emissive ring/strip/emitter |
 | `TC_ENV_CrashDebris_A_V1` | Navigation landmark | ~2.6 wide × 1.9 tall | 1400 | Bent off-white hull plate, scorched edge, exposed ribs |
 
@@ -34,8 +35,15 @@ Forbidden shapes: no multiplayer/grapple/mecha/rocket props, no organic humanoid
 
 ## Review angles
 
-`hero_three_quarter.png`, `front.png`, `back_three_quarter.png` per asset under `artifacts/asset-review/<AssetName>/` (workflow artifact, not committed).
+`hero_three_quarter.png`, `front.png`, `back_three_quarter.png`, and `scale_reference.png`
+(hero angle plus a render-only 1.8 m orange post, added 2026-07-18 per the MEM-VISFAIL
+scale-evidence rule) per asset under `artifacts/asset-review/<AssetName>/` (tracked review
+evidence).
 
 ## Verdict
 
-Pending human visual review (`BLENDER_ASSET_FORGE_READY` was reached mechanically: source validation, GLB export, Godot import, manifest, and PNG evidence all pass; visual approval is a human decision per README).
+Visual Reviewer `PASS` (2026-07-18), 13/13 candidates with three MINOR corrective notes — see
+`docs/art/reviews/mvp-pack-v1-visual-review-2026-07-18.md` (README accepts "human or
+visual-reviewer verdicts" for visual work). Technical audit and Producer Stage B gate:
+`docs/production/mvp-pack-v1-technical-audit-2026-07-18.md`,
+`docs/production/stage-b-producer-gate-2026-07-18.md`.

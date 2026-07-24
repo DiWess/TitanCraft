@@ -12,6 +12,11 @@ if str(ROOT / "tools") not in sys.path:
     sys.path.insert(0, str(ROOT / "tools"))
 
 from agent_task_router import route_task  # noqa: E402
+from agent_ownership import (  # noqa: E402
+    HUMAN_OWNER,
+    OwnershipError,
+    load_entries as load_ownership_entries,
+)
 
 GENERAL_FORBIDDEN_ACTIONS = [
     "Do not edit files before reading README.md and this preflight packet.",
@@ -24,12 +29,56 @@ GENERAL_FORBIDDEN_ACTIONS = [
 BEFORE_EDITING_CHECKLIST = [
     "Read README.md and confirm the task does not conflict with MVP Crash Site scope.",
     "Read root AGENTS.md and any scoped AGENTS.md files for touched paths.",
+    "Resolve ownership for every file you intend to change with python3 tools/agent_ownership.py <path>.",
     "Load the required memories listed in this packet.",
     "Review the required skills and checklists listed in this packet.",
     "Confirm forbidden actions, forbidden scope, and scope warnings are understood.",
     "Confirm required evidence can be produced; otherwise stop with a blocking verdict.",
     "Plan three to seven steps before modifying the minimum necessary files.",
 ]
+
+
+def ownership_rights(primary_agent: str) -> list[str]:
+    """State the primary agent's write authority, per AGENTS.md section 11.
+
+    Fails closed: an unreadable ownership index yields a blocking instruction
+    rather than a silent packet with no ownership gate.
+    """
+    try:
+        entries = load_ownership_entries()
+    except OwnershipError as error:
+        return [
+            f"Ownership index unavailable: {error}",
+            "Stop and return NOT_GO; do not edit files without resolvable ownership.",
+        ]
+
+    owned = [entry["path"] for entry in entries if entry["owner"] == primary_agent]
+    human_owned = [entry["path"] for entry in entries if entry["owner"] == HUMAN_OWNER]
+
+    notes = [
+        "Resolve the owner of every file before editing: python3 tools/agent_ownership.py <path>",
+    ]
+    if owned:
+        notes.append(f"{primary_agent} may write (agent_write): {', '.join(owned)}")
+    else:
+        notes.append(
+            f"{primary_agent} owns no repository paths; it is a review-only role "
+            "and must not author changes."
+        )
+    notes.append(
+        "A path owned by another agent must be authored by its owner; "
+        "escalate disagreements to the producer."
+    )
+    if human_owned:
+        notes.append(
+            "Human approval required, no agent may write without explicit human "
+            f"instruction in the task: {', '.join(human_owned)}"
+        )
+    notes.append(
+        "A path matching no ownership entry is unowned: route it to the producer and "
+        "add it to studio/indexes/ownership.yml before editing."
+    )
+    return notes
 
 
 def build_packet(description: str) -> dict:
@@ -43,6 +92,7 @@ def build_packet(description: str) -> dict:
         "forbidden MVP features listed in README.md and AGENTS.md",
     ]
     packet["before_editing_files_checklist"] = BEFORE_EDITING_CHECKLIST
+    packet["ownership_rights"] = ownership_rights(packet["primary_agent"])
     return packet
 
 
@@ -73,6 +123,7 @@ def render_human(packet: dict) -> str:
         ("Required Skills", packet["required_skills"]),
         ("Required Checklists", packet["required_checklists"]),
         ("Required Evidence", packet["required_evidence"]),
+        ("Ownership Rights", packet["ownership_rights"]),
         ("Forbidden Actions", packet["forbidden_actions"]),
         ("Forbidden Scope", packet["forbidden_scope"]),
         ("Forbidden Verdicts", packet["forbidden_verdicts"]),

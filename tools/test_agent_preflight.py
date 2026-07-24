@@ -170,6 +170,48 @@ def test_crash_site_hud_objective_preflight_routes_to_gameplay_qa_not_assets():
     assert "audition screenshot" not in blob
     assert "integration tests" in blob or "mission smoke test" in blob
 
+def test_every_packet_carries_an_ownership_gate():
+    for task in [
+        "Fix gameplay bug where player inventory mission pickup fails",
+        "Review visual screenshot PNG route slab composition before Stage A approval",
+        "Agent Studio governance routing rehearsal before PR",
+        "Import asset OBJ with provenance licence source URL hash and audition",
+    ]:
+        data = packet(task)
+        notes = data["ownership_rights"]
+        assert notes, f"{task}: packet has no ownership gate"
+        blob = " | ".join(notes)
+        assert "tools/agent_ownership.py" in blob, task
+        assert "unowned" in blob.lower(), f"{task}: packet omits the unowned-path rule"
+
+
+def test_packet_names_the_primary_agent_write_authority():
+    data = packet("Fix gameplay bug where player inventory mission pickup fails")
+    assert data["primary_agent"] == "gameplay_engineer"
+    blob = " | ".join(data["ownership_rights"])
+    assert "gameplay_engineer may write" in blob
+    assert "src/Player/**" in blob
+    assert "scenes/**" not in blob, "a packet must not grant paths the primary agent does not own"
+
+
+def test_packet_protects_human_owned_files():
+    blob = " | ".join(packet("Agent Studio governance routing rehearsal before PR")["ownership_rights"])
+    for protected in ["README.md", "AGENTS.md", "CLAUDE.md"]:
+        assert protected in blob, f"packet must name {protected} as human-owned"
+    assert "Human approval required" in blob
+
+
+def test_before_editing_checklist_requires_ownership_resolution():
+    data = packet("Agent Studio governance routing rehearsal before PR")
+    blob = " | ".join(data["before_editing_files_checklist"]).lower()
+    assert "agent_ownership.py" in blob, "the pre-edit checklist must require ownership resolution"
+
+
+def test_human_output_renders_ownership_section():
+    output = run(["Fix gameplay bug where player inventory mission pickup fails"])
+    assert "## Ownership Rights" in output
+
+
 def main() -> int:
     for test in [
         test_human_output,
@@ -186,9 +228,14 @@ def main() -> int:
         test_deterministic_output,
         test_bespoke_stage_a_art_dry_run_packet,
         test_bespoke_stage_a_art_prompt_uses_packet_gates,
+        test_every_packet_carries_an_ownership_gate,
+        test_packet_names_the_primary_agent_write_authority,
+        test_packet_protects_human_owned_files,
+        test_before_editing_checklist_requires_ownership_resolution,
+        test_human_output_renders_ownership_section,
     ]:
         test()
-    print("Agent preflight tests passed: 14 checks")
+    print("Agent preflight tests passed: 19 checks")
     return 0
 
 

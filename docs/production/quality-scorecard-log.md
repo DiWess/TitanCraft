@@ -414,3 +414,29 @@ axis's quality-bar gate, which scores the overall visual presentation against a 
 asset's process gate can close while the axis-level quality gate stays open. `docs/production/known-blockers.md`
 has been updated the same day to state this distinction explicitly, so future entries should keep citing axis 6
 as blocked on overall quality, not imply that the terrain-diorama reconciliation raises this axis.
+
+### 2026-07-24 — claude/agent-studio-ownership-rights-ou8s4q (path ownership rights, governance + tooling only)
+
+Ownership of repository paths existed only as prose in `studio/agents/*.md` (`Owns: composition,
+silhouette, ...`), so `CLAUDE.md` § 9's rule "do not modify work owned by another agent" had no
+resolvable answer for any given file. This change set adds `studio/indexes/ownership.yml` (one
+accountable owner, required reviewers, and a write right per path glob), `tools/agent_ownership.py`
+(most-specific-glob resolution), `AGENTS.md` § 11 (rights vocabulary, one-owner rule, unowned-path
+routing, and the rule that ownership never grants scope authority over `README.md`), an
+`## Owned Paths` declaration in all 18 agent files, and enforcement in
+`tools/validate_agent_studio.py` (fails on agent/index drift, unknown owner or reviewer, duplicate
+path, self-review, or a human-owned path opened to agent writes). `README.md`, `AGENTS.md`,
+`CLAUDE.md`, and `PROJECT_DIRECTOR_START_HERE.md` are marked `human_approval_required`. The gate
+also runs before editing: every `tools/agent_preflight.py` packet now carries an `Ownership Rights`
+section and fails closed with a `NOT_GO` instruction if the index is unreadable.
+
+No axis scores move. Consistent with the 2026-07-11 entry's precedent, this adds the *mechanism*
+for attributing authorship and review authority, not evidence that any axis improved. Axis 10 stays
+2.0: the model's path-to-agent assignments are derived from each agent's existing declared authority
+and `studio/indexes/agent_routing.yml`, not from a human ownership decision, and that derivation is
+stated in the PR rather than presented as an approved allocation. Two assignments are explicitly
+flagged for human confirmation (`src/UI/**` → gameplay_engineer with ux_designer as reviewer;
+`scenes/**` → technical_director). One real defect was found and fixed during the work rather than
+left silent: `normalize()` used `lstrip("./")`, which strips characters rather than a prefix, so every
+`.github/**` path resolved as UNOWNED and silently dropped the release lane's ownership; it carries a
+named regression test. No gameplay code, production scenes, assets, or `tests/` files were touched.

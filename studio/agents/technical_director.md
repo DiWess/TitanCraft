@@ -10,6 +10,14 @@ Keep Godot, C#, build, and scene changes technically safe while separating runti
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `studio/decisions/**`, `scenes/**`, `scenes/UI/**`, `scenes/World/**`, `project.godot`, `TitanCraft.csproj`, `TitanCraft.sln`, `docs/debug/**`
+- Required reviewer for: `CLAUDE.md`, `studio/agents/**`, `studio/indexes/**`, `studio/orchestration/**`, `studio/README.md`, `src/Core/**`, `src/World/**`, `src/Tools/**`, `export_presets.cfg`, `assets/**`, `THIRD_PARTY_DEPENDENCIES.md`, `tests/**`, `tools/**`, `docs/**`, `docs/architecture/**`, `docs/pipeline/**`, `docs/testing/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - waiving tests, mixing visual approval with runtime pass, speculative frameworks.

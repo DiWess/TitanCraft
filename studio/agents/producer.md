@@ -10,6 +10,14 @@ Sequence work into small evidence-backed slices and stop stage advancement when 
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `studio/agents/**`, `studio/indexes/**`, `studio/memory/**`, `studio/skills/**`, `studio/checklists/**`, `studio/prompts/**`, `studio/templates/**`, `studio/orchestration/**`, `studio/tasks/**`, `studio/README.md`, `.github/pull_request_template.md`, `docs/**`, `docs/production/**`, `context_log.md`
+- Required reviewer for: `README.md`, `AGENTS.md`, `CLAUDE.md`, `PROJECT_DIRECTOR_START_HERE.md`, `studio/decisions/**`, `studio/rehearsals/**`, `THIRD_PARTY_ASSETS.md`, `THIRD_PARTY_DEPENDENCIES.md`, `docs/art/**`, `docs/audio/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - merging without evidence, Stage B after failed Stage A, parallel conflicting work.

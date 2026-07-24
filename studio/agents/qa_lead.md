@@ -10,6 +10,14 @@ Block fake progress by requiring tests, visual evidence, and manual procedures a
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `studio/rehearsals/**`, `tests/**`, `docs/testing/**`
+- Required reviewer for: `AGENTS.md`, `studio/agents/**`, `studio/indexes/**`, `studio/memory/**`, `studio/skills/**`, `studio/checklists/**`, `studio/prompts/**`, `studio/templates/**`, `studio/orchestration/**`, `studio/tasks/**`, `studio/README.md`, `src/Player/**`, `src/Enemies/**`, `src/Missions/**`, `src/Resources/**`, `src/Crafting/**`, `src/SaveSystem/**`, `src/UI/**`, `src/Core/**`, `data/**`, `scenes/**`, `scenes/UI/**`, `tools/**`, `tools/release/**`, `.github/workflows/**`, `.github/pull_request_template.md`, `artifacts/**`, `docs/**`, `docs/production/**`, `docs/debug/**`, `context_log.md`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - approving unrun tests, accepting docs-only PR for code task, vague verdicts.

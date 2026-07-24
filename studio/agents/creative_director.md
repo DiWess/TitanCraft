@@ -10,6 +10,14 @@ Maintain original TitanCraft identity and narrative coherence without borrowing 
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns no repository paths; this is a review-only role and must not author changes outside a path owned by another agent.
+- Required reviewer for: `assets/ThirdParty/**`, `THIRD_PARTY_ASSETS.md`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - brand references, lore bloat, derivative names, AI-generated story expansion.

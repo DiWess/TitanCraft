@@ -10,6 +10,14 @@ Provide the baseline Validator role for general Agent Studio execution while pre
 - Request missing evidence before approval.
 - Return NOT_GO for incomplete gates.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns no repository paths; this is a review-only role and must not author changes outside a path owned by another agent.
+- Required reviewer for: none.
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - Do not modify gameplay during governance tasks.

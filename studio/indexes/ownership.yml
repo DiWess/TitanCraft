@@ -1,0 +1,257 @@
+version: 1
+
+# TitanCraft Agent Studio ownership rights.
+#
+# This file is the machine-readable source of truth for "who owns this file".
+# Root AGENTS.md section 11 defines the rules; this index defines the mapping.
+#
+# Resolution: python3 tools/agent_ownership.py <path>
+# Validation: python3 tools/validate_agent_studio.py
+#
+# Every entry must declare path, owner, reviewers, and rights.
+# Every owner and reviewer must be a real file in studio/agents/, or the
+# reserved owner `human`. Each agent file must declare the same paths under
+# its `## Owned Paths` heading; validate_agent_studio.py fails on drift.
+
+rights_vocabulary:
+  agent_write: Owner may author changes to the path inside an authorized task, then satisfy the listed reviewers.
+  human_approval_required: No agent may change the path without explicit human instruction in the task. The owner acts as steward and reviewer only.
+
+precedence: most_specific_path_wins
+
+unmatched_path_rule: A path with no matching entry is unowned. Unowned paths must be routed to the producer and added to this index before an agent changes them.
+
+ownership:
+  # --- Constitutional documents: human-owned, never agent-owned ---
+  - path: README.md
+    owner: human
+    reviewers: [game_director, producer]
+    rights: human_approval_required
+  - path: AGENTS.md
+    owner: human
+    reviewers: [producer, qa_lead]
+    rights: human_approval_required
+  - path: CLAUDE.md
+    owner: human
+    reviewers: [producer, technical_director]
+    rights: human_approval_required
+  - path: PROJECT_DIRECTOR_START_HERE.md
+    owner: human
+    reviewers: [producer]
+    rights: human_approval_required
+
+  # --- Agent Studio governance ---
+  - path: studio/agents/**
+    owner: producer
+    reviewers: [qa_lead, technical_director]
+    rights: agent_write
+  - path: studio/indexes/**
+    owner: producer
+    reviewers: [qa_lead, technical_director]
+    rights: agent_write
+  - path: studio/memory/**
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: studio/skills/**
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: studio/checklists/**
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: studio/decisions/**
+    owner: technical_director
+    reviewers: [producer, engine_architect]
+    rights: agent_write
+  - path: studio/prompts/**
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: studio/templates/**
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: studio/orchestration/**
+    owner: producer
+    reviewers: [qa_lead, technical_director]
+    rights: agent_write
+  - path: studio/rehearsals/**
+    owner: qa_lead
+    reviewers: [producer]
+    rights: agent_write
+  - path: studio/tasks/**
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: studio/README.md
+    owner: producer
+    reviewers: [qa_lead, technical_director]
+    rights: agent_write
+
+  # --- Gameplay runtime code ---
+  - path: src/Player/**
+    owner: gameplay_engineer
+    reviewers: [engine_architect, qa_lead]
+    rights: agent_write
+  - path: src/Enemies/**
+    owner: gameplay_engineer
+    reviewers: [engine_architect, qa_lead]
+    rights: agent_write
+  - path: src/Missions/**
+    owner: gameplay_engineer
+    reviewers: [game_director, qa_lead]
+    rights: agent_write
+  - path: src/Resources/**
+    owner: gameplay_engineer
+    reviewers: [engine_architect, qa_lead]
+    rights: agent_write
+  - path: src/Crafting/**
+    owner: gameplay_engineer
+    reviewers: [game_director, qa_lead]
+    rights: agent_write
+  - path: src/SaveSystem/**
+    owner: gameplay_engineer
+    reviewers: [engine_architect, qa_lead]
+    rights: agent_write
+  - path: src/UI/**
+    owner: gameplay_engineer
+    reviewers: [ux_designer, qa_lead]
+    rights: agent_write
+  - path: src/Core/**
+    owner: engine_architect
+    reviewers: [technical_director, qa_lead]
+    rights: agent_write
+  - path: src/World/**
+    owner: engine_architect
+    reviewers: [level_designer, technical_director]
+    rights: agent_write
+  - path: src/Tools/**
+    owner: tools_engineer
+    reviewers: [technical_director]
+    rights: agent_write
+  - path: data/**
+    owner: gameplay_engineer
+    reviewers: [game_director, qa_lead]
+    rights: agent_write
+
+  # --- Godot scenes and project configuration ---
+  - path: scenes/**
+    owner: technical_director
+    reviewers: [engine_architect, visual_reviewer, qa_lead]
+    rights: agent_write
+  - path: scenes/UI/**
+    owner: technical_director
+    reviewers: [ux_designer, qa_lead]
+    rights: agent_write
+  - path: scenes/World/**
+    owner: technical_director
+    reviewers: [level_designer, visual_reviewer]
+    rights: agent_write
+  - path: project.godot
+    owner: technical_director
+    reviewers: [engine_architect, build_release_engineer]
+    rights: agent_write
+  - path: export_presets.cfg
+    owner: build_release_engineer
+    reviewers: [technical_director]
+    rights: agent_write
+  - path: TitanCraft.csproj
+    owner: technical_director
+    reviewers: [build_release_engineer]
+    rights: agent_write
+  - path: TitanCraft.sln
+    owner: technical_director
+    reviewers: [build_release_engineer]
+    rights: agent_write
+
+  # --- Assets and art production ---
+  - path: assets/**
+    owner: asset_librarian
+    reviewers: [art_director, technical_director]
+    rights: agent_write
+  - path: assets/ThirdParty/**
+    owner: asset_librarian
+    reviewers: [creative_director, art_director]
+    rights: agent_write
+  - path: art/blender/**
+    owner: art_director
+    reviewers: [asset_librarian, visual_reviewer]
+    rights: agent_write
+  - path: THIRD_PARTY_ASSETS.md
+    owner: asset_librarian
+    reviewers: [creative_director, producer]
+    rights: agent_write
+  - path: THIRD_PARTY_DEPENDENCIES.md
+    owner: asset_librarian
+    reviewers: [technical_director, producer]
+    rights: agent_write
+
+  # --- Tests and validation tooling ---
+  - path: tests/**
+    owner: qa_lead
+    reviewers: [gameplay_engineer, technical_director]
+    rights: agent_write
+  - path: tools/**
+    owner: tools_engineer
+    reviewers: [technical_director, qa_lead]
+    rights: agent_write
+  - path: tools/blender/**
+    owner: tools_engineer
+    reviewers: [art_director, asset_librarian]
+    rights: agent_write
+  - path: tools/release/**
+    owner: build_release_engineer
+    reviewers: [tools_engineer, qa_lead]
+    rights: agent_write
+  - path: .github/workflows/**
+    owner: build_release_engineer
+    reviewers: [tools_engineer, qa_lead]
+    rights: agent_write
+  - path: .github/pull_request_template.md
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: artifacts/**
+    owner: build_release_engineer
+    reviewers: [qa_lead]
+    rights: agent_write
+
+  # --- Documentation ---
+  - path: docs/**
+    owner: producer
+    reviewers: [technical_director, qa_lead]
+    rights: agent_write
+  - path: docs/art/**
+    owner: art_director
+    reviewers: [visual_reviewer, producer]
+    rights: agent_write
+  - path: docs/architecture/**
+    owner: engine_architect
+    reviewers: [technical_director]
+    rights: agent_write
+  - path: docs/production/**
+    owner: producer
+    reviewers: [game_director, qa_lead]
+    rights: agent_write
+  - path: docs/pipeline/**
+    owner: tools_engineer
+    reviewers: [art_director, technical_director]
+    rights: agent_write
+  - path: docs/testing/**
+    owner: qa_lead
+    reviewers: [technical_director]
+    rights: agent_write
+  - path: docs/audio/**
+    owner: asset_librarian
+    reviewers: [ux_designer, producer]
+    rights: agent_write
+  - path: docs/debug/**
+    owner: technical_director
+    reviewers: [qa_lead]
+    rights: agent_write
+  - path: context_log.md
+    owner: producer
+    reviewers: [qa_lead]
+    rights: agent_write

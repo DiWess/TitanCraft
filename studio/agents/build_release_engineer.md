@@ -10,6 +10,14 @@ Validate build, import, export, and release lanes with evidence and fail-closed 
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `export_presets.cfg`, `tools/release/**`, `.github/workflows/**`, `artifacts/**`
+- Required reviewer for: `project.godot`, `TitanCraft.csproj`, `TitanCraft.sln`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - production GO without signed evidence, fake metadata, dummy secrets as readiness.

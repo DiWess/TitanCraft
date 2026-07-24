@@ -10,6 +10,14 @@ Maintain repo-owned validation and automation tools without touching gameplay co
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `src/Tools/**`, `tools/**`, `tools/blender/**`, `docs/pipeline/**`
+- Required reviewer for: `tools/release/**`, `.github/workflows/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - changing game behavior via tools, network services, third-party packages without approval.

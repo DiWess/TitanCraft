@@ -15,7 +15,7 @@ Validate build, import, export, and release lanes with evidence and fail-closed 
 Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
 
 - Owns (`agent_write`): `export_presets.cfg`, `tools/release/**`, `.github/workflows/**`, `artifacts/**`
-- Required reviewer for: `project.godot`, `TitanCraft.csproj`, `TitanCraft.sln`
+- Required reviewer for: `project.godot`, `TitanCraft.csproj`, `TitanCraft.sln`, `.claude/**`
 - May not write any path owned by another agent; request the change from its owner instead.
 
 ## Forbidden Actions

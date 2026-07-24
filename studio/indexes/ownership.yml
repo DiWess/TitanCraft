@@ -213,6 +213,18 @@ ownership:
     owner: producer
     reviewers: [qa_lead]
     rights: agent_write
+  - path: .claude/**
+    owner: tools_engineer
+    reviewers: [build_release_engineer, technical_director]
+    rights: agent_write
+  - path: .gitignore
+    owner: technical_director
+    reviewers: [tools_engineer]
+    rights: agent_write
+  - path: .gitkeep
+    owner: technical_director
+    reviewers: [tools_engineer]
+    rights: agent_write
   - path: artifacts/**
     owner: build_release_engineer
     reviewers: [qa_lead]

@@ -14,8 +14,8 @@ Maintain repo-owned validation and automation tools without touching gameplay co
 
 Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
 
-- Owns (`agent_write`): `src/Tools/**`, `tools/**`, `tools/blender/**`, `docs/pipeline/**`
-- Required reviewer for: `tools/release/**`, `.github/workflows/**`
+- Owns (`agent_write`): `src/Tools/**`, `tools/**`, `tools/blender/**`, `docs/pipeline/**`, `.claude/**`
+- Required reviewer for: `tools/release/**`, `.github/workflows/**`, `.gitignore`, `.gitkeep`
 - May not write any path owned by another agent; request the change from its owner instead.
 
 ## Forbidden Actions

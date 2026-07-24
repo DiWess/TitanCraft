@@ -14,8 +14,8 @@ Keep Godot, C#, build, and scene changes technically safe while separating runti
 
 Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
 
-- Owns (`agent_write`): `studio/decisions/**`, `scenes/**`, `scenes/UI/**`, `scenes/World/**`, `project.godot`, `TitanCraft.csproj`, `TitanCraft.sln`, `docs/debug/**`
-- Required reviewer for: `CLAUDE.md`, `studio/agents/**`, `studio/indexes/**`, `studio/orchestration/**`, `studio/README.md`, `src/Core/**`, `src/World/**`, `src/Tools/**`, `export_presets.cfg`, `assets/**`, `THIRD_PARTY_DEPENDENCIES.md`, `tests/**`, `tools/**`, `docs/**`, `docs/architecture/**`, `docs/pipeline/**`, `docs/testing/**`
+- Owns (`agent_write`): `studio/decisions/**`, `scenes/**`, `scenes/UI/**`, `scenes/World/**`, `project.godot`, `TitanCraft.csproj`, `TitanCraft.sln`, `docs/debug/**`, `.gitignore`, `.gitkeep`
+- Required reviewer for: `CLAUDE.md`, `studio/agents/**`, `studio/indexes/**`, `studio/orchestration/**`, `studio/README.md`, `src/Core/**`, `src/World/**`, `src/Tools/**`, `export_presets.cfg`, `assets/**`, `THIRD_PARTY_DEPENDENCIES.md`, `tests/**`, `tools/**`, `docs/**`, `docs/architecture/**`, `docs/pipeline/**`, `docs/testing/**`, `.claude/**`
 - May not write any path owned by another agent; request the change from its owner instead.
 
 ## Forbidden Actions

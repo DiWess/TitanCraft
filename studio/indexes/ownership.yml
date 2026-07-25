@@ -8,6 +8,12 @@ version: 1
 # Resolution: python3 tools/agent_ownership.py <path>
 # Validation: python3 tools/validate_agent_studio.py
 #
+# Human confirmation 2026-07-24: the repository owner reviewed the two derived
+# judgment calls and confirmed both as written — `src/UI/**` stays with
+# gameplay_engineer (ux_designer reviews wording and flow), and `scenes/**`
+# stays with technical_director, matching the godot_scene_change route in
+# studio/indexes/agent_routing.yml. These are approved, not inferred.
+#
 # Every entry must declare path, owner, reviewers, and rights.
 # Every owner and reviewer must be a real file in studio/agents/, or the
 # reserved owner `human`. Each agent file must declare the same paths under

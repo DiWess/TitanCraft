@@ -440,3 +440,15 @@ flagged for human confirmation (`src/UI/**` → gameplay_engineer with ux_design
 left silent: `normalize()` used `lstrip("./")`, which strips characters rather than a prefix, so every
 `.github/**` path resolved as UNOWNED and silently dropped the release lane's ownership; it carries a
 named regression test. No gameplay code, production scenes, assets, or `tests/` files were touched.
+
+### Clarification — ownership assignments confirmed by the human owner (2026-07-24)
+
+The 2026-07-24 ownership entry above recorded that the path-to-agent allocation was *derived* from
+existing declared authority and `studio/indexes/agent_routing.yml` rather than decided by a human,
+and flagged two assignments for confirmation. The repository owner has since reviewed both and
+confirmed them as written: `src/UI/**` stays with `gameplay_engineer` with `ux_designer` as required
+reviewer, and `scenes/**` stays with `technical_director`. That limitation is therefore closed —
+the allocation is approved, not inferred. A coverage audit in the same pass assigned the four
+remaining unowned paths (`.claude/**`, `.gitignore`, `.gitkeep`), bringing coverage to 960/960
+tracked files. Axis 10 still does not move: human confirmation of an allocation is not evidence that
+any product axis improved.

@@ -3,6 +3,10 @@
 **Scope:** Visual Experience Kickoff → MVP Ship  
 **Authority:** README.md (MVP definition), AGENTS.md (governance), studio/agents/ (agent missions)
 
+**Last reconciled:** 2026-07-24 — the stage sections and gate conditions below were still reading
+`IN_PROGRESS`/`PENDING` for Stage B and Stage C while the executive summary and task list recorded
+both as `PASS`. Reconciled against the cited evidence; see "Reconciliation note" at the end.
+
 ---
 
 ## Executive Summary
@@ -47,77 +51,91 @@ TitanCraft visual production is structured as a **gated three-stage progression*
 
 ---
 
-### Stage B: Asset Generation & Validation (IN_PROGRESS 🔄)
+### Stage B: Asset Generation & Validation (COMPLETE ✓ 2026-07-18)
 
-**Task #1 IN_PROGRESS**
+**Tasks #1–#5 DONE.** The 10 briefs produced **13** `MVP_Pack_V1` candidates; counts below are the
+delivered figures, not the original brief count.
 
 | Agent | Role | Output | Verdict | Status |
 |-------|------|--------|---------|--------|
-| **Art Director** | Generate standalone Blender candidates per briefs | 10 Blender `.blend` + GLB exports + manifest | Generation (N/A) | 🔄 IN_PROGRESS (#1) |
-| **Visual Artifact Factory** | Render PNG evidence bundles | 10 PNG pairs (silhouette + material) per candidate | Automation (N/A) | ⏳ PENDING (#2) |
-| **Visual Reviewer** | Independent review of PNG evidence | Visual diagnosis per candidate, PASS/NOT_GO verdict | PASS / NOT_GO | ⏳ PENDING (#3) |
-| **Technical Director** | Pipeline & performance audit | Godot import test, draw call estimates, feasibility verdict | PASS / NOT_GO | ⏳ PENDING (#4) |
-| **Producer** | Gate Stage B → Stage C or return to rework | Gate verdict (PASS / NOT_GO), advancement decision | PASS / NOT_GO / INTENTIONAL_GATE | ⏳ PENDING (#5) |
+| **Art Director** | Generate standalone Blender candidates per briefs | 13 `MVP_Pack_V1` GLBs + tracked `.blend` sources via `tools/blender/create_mvp_asset_pack_v1.py` | Generation (N/A) | ✓ DONE (#1) |
+| **Visual Artifact Factory** | Render PNG evidence bundles | 13 review bundles, plus `scale_reference` views added 2026-07-18 | Automation (N/A) | ✓ DONE (#2) |
+| **Visual Reviewer** | Independent review of PNG evidence | `docs/art/reviews/mvp-pack-v1-visual-review-2026-07-18.md` — 13/13, three MINOR notes | PASS | ✓ PASS (#3) |
+| **Technical Director** | Pipeline & performance audit | `docs/production/mvp-pack-v1-technical-audit-2026-07-18.md` — build 0/0, tests 75/75, import 0 errors, 13/13 under triangle budgets | PASS | ✓ PASS (#4) |
+| **Producer** | Gate Stage B → Stage C or return to rework | `docs/production/stage-b-producer-gate-2026-07-18.md` | PASS | ✓ PASS (#5) |
 
-**Stage B Deliverables (In Progress):**
-- 🔄 10 Blender candidates with materials (Art Director)
-- ⏳ Asset manifest with source, brief, hash, material assignments
-- ⏳ PNG evidence bundles (silhouette clarity, material coherence, scale reference)
-- ⏳ Visual Reviewer diagnosis document (focal point, silhouette, scale, material, glow per candidate)
-- ⏳ Technical Director audit log (GLB import test, performance, scale validation per candidate)
+**Stage B Deliverables (Complete):**
+- ✓ 13 Blender candidates with materials (Art Director)
+- ✓ Asset manifest with source, brief, hash, material assignments — `assets/Production/Generated/asset_manifest.json`, 29 entries, 29/29 GLB SHA-256 recomputed and matched
+- ✓ PNG evidence bundles (silhouette clarity, material coherence, scale reference)
+- ✓ Visual Reviewer diagnosis document (13/13 PASS, real opened-PNG review)
+- ✓ Technical Director audit log (13/13 GLBs imported, all under triangle budgets)
 
-**Gate Conditions (Before Stage C):**
-- ⏳ All 10 candidates PASS Visual Reviewer verdict
-- ⏳ All 10 candidates PASS Technical Director audit
-- ⏳ Asset manifest complete and auditable
-- ⏳ PNG evidence bundles present and opened
-- ⏳ Producer issues PASS verdict
+**Gate Conditions (Before Stage C) — all met:**
+- ✓ All candidates PASS Visual Reviewer verdict (13/13)
+- ✓ All candidates PASS Technical Director audit (13/13)
+- ✓ Asset manifest complete and auditable (29 entries, hashes verified)
+- ✓ PNG evidence bundles present and opened
+- ✓ Producer issues PASS verdict (2026-07-18)
 
 ---
 
-### Stage C: Integration & Final Validation (PENDING ⏳)
+### Stage C: Integration & Final Validation (COMPLETE ✓ 2026-07-18)
 
-**Task #6–#7 PENDING**
+**Tasks #6–#7 DONE** — `docs/production/stage-c-integration-validation-2026-07-18.md`.
 
 | Agent | Role | Output | Verdict | Status |
 |-------|------|--------|---------|--------|
-| **Level Designer** | Integrate candidates into Crash Site scene, verify layout & gameplay | Updated `src/Scenes/CrashSite.tscn` with placed assets | N/A | ⏳ PENDING (#6) |
-| **Gameplay Engineer** | Verify gameplay mechanics work with integrated assets (resource pickup, crafting, combat) | Gameplay validation (movement, resource gather, craft, fight, beacon) | PASS / NOT_GO | ⏳ PENDING (#7) |
-| **QA Lead** | Visual & gameplay coherence in integrated scene | In-engine screenshots, visual diagnosis, smoke test results | PASS / NOT_GO | ⏳ PENDING (#7) |
-| **Visual Reviewer** | Final visual approval of integrated composition | Scene screenshot diagnosis, overall coherence verdict | PASS / NOT_GO | ⏳ PENDING (#7) |
-| **Producer** | Gate Stage C → Release or return to rework | Release readiness verdict (GO / INTENTIONAL_GATE / NOT_GO) | GO / INTENTIONAL_GATE / NOT_GO | ⏳ PENDING (#8) |
+| **Level Designer** | Integrate candidates into Crash Site scene, verify layout & gameplay | `scenes/Main/Main.tscn` plus `scenes/World/`, `scenes/Enemies/`, `scenes/Resources/`, `scenes/Player/` — found already wired by prior committed work, then verified per-prop | N/A | ✓ DONE (#6) |
+| **Gameplay Engineer** | Verify gameplay mechanics work with integrated assets (resource pickup, crafting, combat) | `./tools/test.sh` — unit 75/75, all 11 `MVP_SMOKE_MILESTONE` entries on the integrated scenes | PASS | ✓ PASS (#7) |
+| **QA Lead** | Visual & gameplay coherence in integrated scene | 8 in-engine captures via the allowlisted factory; import exit 0, 0 errors | PASS | ✓ PASS (#7) |
+| **Visual Reviewer** | Final visual approval of integrated composition | All 8 production-integration PNGs opened and diagnosed | PASS | ✓ PASS (#7) |
+| **Producer** | Gate Stage C → Release or return to rework | Stage C `PASS`; release gate held separately | PASS | ✓ PASS (#8 gate held) |
 
-**Stage C Deliverables (Pending):**
-- ⏳ Updated Crash Site scene with integrated, placed assets
-- ⏳ In-engine screenshots (scene composition, gameplay actions)
-- ⏳ Visual diagnosis of integrated composition (focal point, route, visual coherence)
-- ⏳ Gameplay validation (movement, resource gathering, crafting, combat, beacon flow)
-- ⏳ QA sign-off (visual polish, collision, performance, no new blockers)
+**Stage C Deliverables (Complete):**
+- ✓ Crash Site scene integrates the approved candidates (verified per-prop; gameplay collision nodes unmodified)
+- ✓ In-engine screenshots (8 production-integration views, opened)
+- ✓ Visual diagnosis of integrated composition (focal point, route, visual coherence)
+- ✓ Gameplay validation (movement, resource gathering, crafting, combat, beacon flow — 11/11 smoke milestones)
+- ✓ QA sign-off (visual polish, collision, performance, no new blockers)
 
-**Gate Conditions (Before Release):**
-- ⏳ All gameplay mechanics work with integrated assets
-- ⏳ Visual composition is coherent and supports gameplay
-- ⏳ No new performance or rendering issues
-- ⏳ All evidence documented
-- ⏳ Producer issues GO verdict
+**Gate Conditions (Before Release) — all met:**
+- ✓ All gameplay mechanics work with integrated assets (75/75 unit, 11/11 smoke)
+- ✓ Visual composition is coherent and supports gameplay
+- ✓ No new performance or rendering issues
+- ✓ All evidence documented
+- ✓ Producer issues Stage C PASS verdict
+
+**Findings raised in Stage C and since closed** (`docs/production/polish-slice-2026-07-18.md`): the
+first-person capture did not show the crafted arm, which exposed a BLOCKER-class bug — a legacy
+proxy mesh rendering over the crafted MVP arm, affecting every crafted playthrough. Fixed, the arm
+re-framed as a proper viewmodel, and the crafted-arm capture added to the factory allowlist.
 
 ---
 
-### Release: Export & Deployment Readiness (PENDING ⏳)
+### Release: Export & Deployment Readiness (HUMAN_BLOCKED ⛔)
 
-**Task #8 PENDING**
+**Task #8 — export proof done, gate held.**
 
 | Agent | Role | Output | Verdict | Status |
 |-------|------|--------|---------|--------|
-| **Build Release Engineer** | Windows export, executable validation, release bundle | Windows `.exe` build artifact, export log, performance verification | PASS / NOT_GO | ⏳ PENDING |
-| **Producer** | Final release gate, approval for public deployment | Release gate verdict (GO / HOLD / NOT_GO) | GO / INTENTIONAL_GATE / NOT_GO | ⏳ PENDING (#8) |
+| **Build Release Engineer** | Windows export, executable validation, release bundle | `godot --headless --export-release "Windows Desktop"` exit 0, exe SHA-256 recorded (2026-07-18) | PASS | ✓ PASS (export proof only) |
+| **Producer** | Final release gate, approval for public deployment | Release gate verdict (GO / HOLD / NOT_GO) | GO / INTENTIONAL_GATE / NOT_GO | ⛔ HELD |
 | **Human (Producer)** | Final sign-off on visual experience readiness | Approval recorded in issue/PR | GO / NOT_GO | ⏳ Awaits |
 
-**Release Deliverables (Pending):**
-- ⏳ Windows executable build artifact
-- ⏳ Export validation log (no errors, performance targets met)
+**Release Deliverables:**
+- ✓ Windows executable build artifact (local export proof, exe hash recorded)
+- ✓ Export validation log (export exit 0, 0 errors) — **performance targets not yet measured on Windows hardware**
 - ⏳ Release notes (visual changes, gameplay scope locked to MVP)
-- ⏳ Producer release gate verdict
+- ⛔ Producer release gate verdict — held
+
+**Actual blocker (2026-07-24):** the agent-gated Windows playtest journey has **never been
+dispatched**. All three `windows-playtest-journey.yml` runs were `push`/`pull_request` events, but
+the `windows-export-smoke` job is gated on `workflow_dispatch`, so the Windows runner has never
+executed and `docs/production/playtests/` is empty. See
+`docs/production/windows-release-gate-analysis-2026-07-24.md`. The aesthetic lane is verified
+working and the smoke lane's two defects are fixed; only the Windows-runner measurement requires
+the manual dispatch.
 
 ---
 
@@ -137,46 +155,57 @@ TitanCraft visual production is structured as a **gated three-stage progression*
 
 ---
 
-### Stage B → Stage C Gate (PENDING ⏳)
+### Stage B → Stage C Gate (PASSED ✓)
 
 **Conditions:**
-- ⏳ All 10 candidates PASS Visual Reviewer verdict
-- ⏳ All 10 candidates PASS Technical Director audit
-- ⏳ Asset manifest complete with hashes and provenance
-- ⏳ PNG evidence bundles generated and opened
-- ⏳ No new scope conflicts or blockers
+- ✓ All candidates PASS Visual Reviewer verdict (13/13)
+- ✓ All candidates PASS Technical Director audit (13/13)
+- ✓ Asset manifest complete with hashes and provenance (29 entries, 29/29 hashes matched)
+- ✓ PNG evidence bundles generated and opened
+- ✓ No new scope conflicts or blockers
 
-**Verdict:** PENDING (awaits Stream 1-5 completion)  
+**Verdict:** PASS (2026-07-18, `docs/production/stage-b-producer-gate-2026-07-18.md`)
+
 **Authority:** Producer (studio/agents/producer.md)
 
 ---
 
-### Stage C → Release Gate (PENDING ⏳)
+### Stage C → Release Gate (PASSED ✓)
 
 **Conditions:**
-- ⏳ Crash Site scene integrates approved assets
-- ⏳ Gameplay mechanics validated (movement, resources, crafting, combat, beacon)
-- ⏳ Visual composition is coherent and readable
-- ⏳ In-engine screenshots show final visual polish
-- ⏳ QA sign-off (visual + gameplay + performance)
-- ⏳ No rendering or collision surprises
+- ✓ Crash Site scene integrates approved assets (verified per-prop)
+- ✓ Gameplay mechanics validated (75/75 unit, 11/11 MVP smoke milestones)
+- ✓ Visual composition is coherent and readable
+- ✓ In-engine screenshots show final visual polish (8 captures opened)
+- ✓ QA sign-off (visual + gameplay + performance)
+- ✓ No rendering or collision surprises — one BLOCKER found in review (legacy proxy mesh over the crafted arm) and fixed in the same-day polish slice
 
-**Verdict:** PENDING (awaits Stage C completion)  
+**Verdict:** PASS (2026-07-18, `docs/production/stage-c-integration-validation-2026-07-18.md`)
+
 **Authority:** Producer (studio/agents/producer.md)
+
+This gate advances Stage C only. The Release → Ship gate below is separate and remains held.
 
 ---
 
-### Release → Ship Gate (PENDING ⏳)
+### Release → Ship Gate (HUMAN_BLOCKED ⛔)
 
 **Conditions:**
-- ⏳ Windows executable builds without errors
-- ⏳ Export validation confirms 60 FPS target on Windows
+- ✓ Windows executable builds without errors (export exit 0, exe SHA-256 recorded 2026-07-18)
+- ⛔ Export validation confirms 60 FPS target on Windows (README § 28) — **not measured.** No frame-rate figure exists from Windows hardware. The journey's frame-pacing number is a *headless proxy* and, per `studio/decisions/quality_benchmark_v2_agent_gate_delegation.md`, must never be presented as a rendered-performance claim.
 - ⏳ Release artifact is auditable and reproducible
 - ⏳ All evidence documented
-- ⏳ No gameplay scope expansion (locked to MVP Crash Site)
+- ✓ No gameplay scope expansion (locked to MVP Crash Site)
 
-**Verdict:** PENDING (awaits Build Engineer + Producer)  
+**Verdict:** HUMAN_BLOCKED (awaits the journey dispatch, then Producer + human GO)
+
 **Authority:** Producer + Human approval (studio/agents/producer.md, README.md)
+
+**Open conflict, recorded not resolved:** the Stage C entries of 2026-07-18 name "the human Windows
+playthrough and GO (README § 27)" as the remaining gate, written a week after the ADR that delegated
+those evidence lanes to CI and the Visual Reviewer. That ADR states a verdict citing measured proxies
+can reach `PASS`/`GO`/`NOT_GO` without a human. Whether the **final ship GO** is delegated is a
+product decision the human owner still holds; this dashboard does not resolve it either way.
 
 ---
 
@@ -203,23 +232,24 @@ TitanCraft visual production is structured as a **gated three-stage progression*
 - ✓ 10 asset briefs (markdown documents)
 - ✓ Producer gate verdict recorded
 
-**Stage B Evidence (In Progress):**
-- ⏳ Blender candidates + asset manifest (Art Director output)
-- ⏳ PNG bundles (Visual Artifact Factory CI output)
-- ⏳ Visual Reviewer diagnosis document (per candidate)
-- ⏳ Technical Director audit log (per candidate)
-- ⏳ Producer gate verdict (when all evidence is in)
+**Stage B Evidence (Complete ✓ 2026-07-18):**
+- ✓ Blender candidates + asset manifest — 13 `MVP_Pack_V1` GLBs, `assets/Production/Generated/asset_manifest.json` (29 entries, 29/29 hashes matched)
+- ✓ PNG bundles (Visual Artifact Factory, incl. `scale_reference` views)
+- ✓ Visual Reviewer diagnosis — `docs/art/reviews/mvp-pack-v1-visual-review-2026-07-18.md` (13/13 PASS)
+- ✓ Technical Director audit — `docs/production/mvp-pack-v1-technical-audit-2026-07-18.md` (13/13 PASS)
+- ✓ Producer gate verdict — `docs/production/stage-b-producer-gate-2026-07-18.md`
 
-**Stage C Evidence (Pending):**
-- ⏳ Updated Crash Site scene file (`src/Scenes/CrashSite.tscn`)
-- ⏳ In-engine screenshots (composition, gameplay actions)
-- ⏳ Visual + gameplay diagnosis document
-- ⏳ QA smoke test results
-- ⏳ Producer gate verdict
+**Stage C Evidence (Complete ✓ 2026-07-18):**
+- ✓ Integrated Crash Site scene — `scenes/Main/Main.tscn` with subscenes under `scenes/World/`, `scenes/Enemies/`, `scenes/Resources/`, `scenes/Player/`
+- ✓ In-engine screenshots — 8 production-integration captures, all opened
+- ✓ Visual + gameplay diagnosis document — `docs/production/stage-c-integration-validation-2026-07-18.md`
+- ✓ QA smoke test results — unit 75/75, 11/11 `MVP_SMOKE_MILESTONE` entries
+- ✓ Producer gate verdict — Stage C `PASS`
 
-**Release Evidence (Pending):**
-- ⏳ Windows build artifact (`.exe`)
-- ⏳ Export validation log
+**Release Evidence (Partial ⛔):**
+- ✓ Windows build artifact (`.exe`) — local export proof, exe SHA-256 recorded 2026-07-18
+- ✓ Export validation log — export exit 0, 0 errors
+- ⛔ Measured Windows smoke + frame data — **absent**; the journey has never been dispatched (`docs/production/windows-release-gate-analysis-2026-07-24.md`)
 - ⏳ Release notes
 - ⏳ Producer release gate verdict
 
@@ -342,3 +372,39 @@ SHIP: Deploy MVP to public (awaits all gates)
 **Target Ship Date:** Dependent on Stage B + C timelines; estimate 3-4 weeks from Stage A completion
 
 ---
+
+---
+
+## Reconciliation note — 2026-07-24
+
+This dashboard was internally inconsistent and is the document agents route from when deciding what
+to work on next. The executive summary and the Current Task List correctly recorded Stage B and
+Stage C as `PASS` (2026-07-18), while the detailed stage sections and the "Gate Conditions by Stage"
+blocks still read `IN_PROGRESS`/`PENDING` with every condition unchecked. An agent reading the stage
+sections rather than the summary would have concluded Stage B was still generating candidates and
+redone completed work.
+
+Corrected in this pass, each against cited evidence rather than by flipping a status:
+
+- Stage B section: `IN_PROGRESS` → `COMPLETE ✓`, agent statuses and deliverables filled from the
+  Visual Reviewer review, Technical Director audit, and Producer gate documents.
+- Stage C section: `PENDING` → `COMPLETE ✓`, with the validation figures (75/75 unit, 11/11 smoke,
+  8 opened captures) and the BLOCKER found in review and closed the same day.
+- Stage B → C and Stage C → Release gate blocks: `PENDING` → `PASSED`, conditions checked.
+- Release section: `PENDING` → `HUMAN_BLOCKED`, separating the completed export proof from the
+  unmeasured performance target and the held gate.
+
+Two factual errors were corrected in the same pass:
+
+1. **Candidate count.** The stage tables said "10 candidates" throughout, taken from the brief count.
+   Stage B actually delivered **13** `MVP_Pack_V1` candidates and a 29-entry manifest. Every
+   downstream verdict is 13/13, not 10/10.
+2. **Scene path.** Two places — the Stage C agent row and the Stage C evidence list — pointed at
+   `src/Scenes/CrashSite.tscn`, which does not exist anywhere in the repository (`src/Scenes/` is
+   not a directory). The integrated scene is `scenes/Main/Main.tscn` with subscenes under
+   `scenes/World/`, `scenes/Enemies/`, `scenes/Resources/`, and `scenes/Player/`.
+
+No stage verdict was advanced by this reconciliation. Every status here now matches a dated evidence
+document that already existed; where evidence is absent — the Windows performance measurement — the
+condition is marked unmet rather than quietly checked. No gameplay code, scenes, assets, or tests
+were changed.

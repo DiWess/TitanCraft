@@ -81,6 +81,35 @@ Residual risk not fixed, because it cannot be verified from this container: the 
 honours them is unverified until the first dispatch. If the smoke step fails on argument handling,
 that is the first thing to check.
 
+## Finding 5 — the aesthetic lane is verified working; only the Windows lane needs the dispatch
+
+The other two `workflow_dispatch`-gated jobs were audited the same way. Both are sound as written:
+
+- `aesthetic-captures` runs `tools/visual_review/run_visual_artifact_factory.py` with no `xvfb-run`
+  prefix, which looks wrong against the 2026-07-06 capability note — but the script wraps
+  `xvfb-run -a` internally (line 62), and the job installs `xvfb`. Correct as written.
+- `verdict-scaffold` consumes the downloaded capture bundle via
+  `captures_dir.rglob("*.png")` (`tools/build_playtest_verdict_draft.py` line 28), so artifact
+  nesting cannot break it, and a zero-capture result emits an explicit
+  "capture job must be investigated before any PASS" line rather than a silent pass.
+
+The aesthetic lane runs on `ubuntu-latest`, so it was **executed in this container rather than only
+read**: `python3 tools/visual_review/run_visual_artifact_factory.py` exited 0 and produced 28 PNGs
+(160–245 KB each) across `phase3a-production-integration`, `crafted-arm-first-person`,
+`stage-a-custom-final`, and `stage-a-custom-audition`, with a scene manifest. One was opened to
+confirm real rendered content rather than the null-viewport black frame that `--headless` produces:
+`production_01_spawn_overview.png` shows the crash hull, light poles, crate stacks, red biomass and
+cyan pickups, terrain, and distant crystal silhouettes.
+
+This is a pipeline verification, not a Visual Reviewer verdict — issuing that verdict remains the
+routed Visual Reviewer's task on the artifacts from a real dispatched run.
+
+Captures are gitignored (`.gitignore` line 77) and were not committed, per the repo binary policy.
+
+**Net effect on the blocker:** of the journey's three evidence lanes, the aesthetic lane is proven
+to work, the smoke lane's two defects are fixed, and only the Windows-runner measurement genuinely
+requires the manual dispatch — it cannot be produced from a Linux container at all.
+
 ## Required action — one human step
 
 The agent cannot dispatch the workflow. `POST .../workflows/windows-playtest-journey.yml/dispatches`

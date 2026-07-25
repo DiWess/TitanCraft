@@ -58,6 +58,29 @@ is satisfying") is rejected in any verdict document lacking a dated `Human note 
 an experience it never had, and the provisional README § 11 combat-feel tuning still depends on a
 human at the controls.
 
+## Finding 4 — two defects in the never-executed job, now fixed
+
+Code that has never run is where bugs accumulate. Auditing `windows-export-smoke` before the first
+dispatch found two, both fixed in this change set so the single manual run produces complete
+evidence rather than needing a second attempt:
+
+1. **The export log was uploaded from a path that never exists.** `tools/test.ps1` line 78 writes
+   the export log to `tests/TestResults/export.log`, but the upload step listed
+   `builds/Windows/export.log`. Because the other upload patterns match real files,
+   `if-no-files-found: error` would not fire — the run would go green while silently dropping the
+   export log that ADR rule 1 ("no number without a source") relies on. The upload now points at
+   the real path and also collects `tests/TestResults/import.log`.
+2. **The Godot version pin was decorative.** The check piped `--version` into `Select-String` and
+   then tested `$LASTEXITCODE`. `Select-String` is a cmdlet and never sets `$LASTEXITCODE`, so the
+   variable held Godot's own exit code (`0`) and a version *mismatch* passed silently. The pin is
+   now asserted against the captured output string.
+
+Residual risk not fixed, because it cannot be verified from this container: the measured smoke runs
+`--headless --quit-after 600` against the *exported* binary rather than the editor binary.
+`tools/test.ps1` proves those flags work on the editor build; whether the release export template
+honours them is unverified until the first dispatch. If the smoke step fails on argument handling,
+that is the first thing to check.
+
 ## Required action — one human step
 
 The agent cannot dispatch the workflow. `POST .../workflows/windows-playtest-journey.yml/dispatches`

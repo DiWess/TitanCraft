@@ -1,0 +1,89 @@
+# Windows Release Gate — Blocker Analysis (2026-07-24)
+
+**Routed packet:** `release_readiness` → build_release_engineer primary, producer / qa_lead secondary
+**Owner of this document:** producer (`studio/indexes/ownership.yml`)
+**Status:** `ENVIRONMENT_BLOCKED` for the agent; one human action unblocks the delegated chain.
+
+## Finding 1 — the delegated journey has never been dispatched
+
+`.github/workflows/windows-playtest-journey.yml` was added 2026-07-11 to implement
+`studio/decisions/quality_benchmark_v2_agent_gate_delegation.md`. It has three runs on record, all
+`conclusion: success`:
+
+| Run | Event | Date | What actually executed |
+|---|---|---|---|
+| 1 | `push` | 2026-07-11 | `validate-committed-verdicts` only |
+| 2 | `pull_request` | 2026-07-11 | `validate-committed-verdicts` only |
+| 3 | `push` (merge of #124) | 2026-07-11 | `validate-committed-verdicts` only |
+
+The `windows-export-smoke` job carries `if: github.event_name == 'workflow_dispatch'`. None of the
+three runs was a `workflow_dispatch`, so **the Windows runner job has never executed**. The three
+green checks certify only that zero committed verdict documents contain zero errors.
+
+`docs/production/playtests/` does not exist. `tools/validate_playtest_evidence.py` reports this
+honestly rather than faking a pass — it prints "no committed verdict documents yet" and exits 0 —
+so nothing in the repository is claiming evidence that does not exist. The gap is real but it has
+not been papered over.
+
+**Consequence:** the pipeline that the 2026-07-11 ADR built to replace the human in the chain has
+produced no evidence at all. This is why `docs/production/quality-scorecard-log.md` still reads
+"Axis 10 stays 2.0 until the journey produces its first validated verdict document."
+
+## Finding 2 — the stated blocker predates the delegation it ignores
+
+`docs/production/current-status.md` cites the v2 ADR at line 38 for aesthetic verdicts, but the
+Stage C entries from 2026-07-18 (a week *after* the ADR) still record the remaining gate as
+"the human Windows playthrough and GO (README §27)" and the release gate as `HUMAN_BLOCKED` on
+"the README §27 manual Windows validation."
+
+These are not obviously reconcilable, and the distinction matters:
+
+- The ADR delegates the **evidence lanes** — stability/performance numbers to the Windows runner,
+  the aesthetic verdict to the Visual Reviewer agent on opened PNGs — and states that a verdict
+  document citing measured proxies "can reach `PASS`/`GO`/`NOT_GO` without a human."
+- Several README §27 criteria are directly machine-checkable on a Windows runner: launches without
+  the IDE, runs with no network, no account or API key, local save works, clean exit, resume from
+  save.
+- Whether the **final ship GO** is delegated is a separate product decision. The ADR's language
+  permits an agent `GO`; the Stage C documents assume the human retains it.
+
+This document does not resolve that on the human's behalf. It records the conflict per
+`CLAUDE.md` § 1 rather than picking the reading that would let the gate close faster.
+
+## Finding 3 — what remains genuinely human-only
+
+Unchanged by anything above, per ADR lane 3: subjective feel language ("feels responsive", "combat
+is satisfying") is rejected in any verdict document lacking a dated `Human note (YYYY-MM-DD)`.
+`tools/validate_playtest_evidence.py` enforces this with `BANNED_FEEL_PHRASES`. No agent may assert
+an experience it never had, and the provisional README § 11 combat-feel tuning still depends on a
+human at the controls.
+
+## Required action — one human step
+
+The agent cannot dispatch the workflow. `POST .../workflows/windows-playtest-journey.yml/dispatches`
+returns `403 Resource not accessible by integration`: this session's GitHub App lacks `actions:
+write`. (The same session also cannot open pull requests — `POST /pulls` returns `500` on four
+attempts — so both GitHub write paths are unavailable here.)
+
+To unblock, the repository owner runs the journey once:
+
+1. Open <https://github.com/DiWess/TitanCraft/actions/workflows/windows-playtest-journey.yml>
+2. **Run workflow** → branch `main` → **Run workflow**.
+3. The Windows runner exports the build, runs the measured smoke (exit code, frames, wall seconds,
+   exe SHA-256), captures the allowlisted scene PNGs, and uploads `smoke_report.json` plus the
+   verdict draft scaffold as run artifacts.
+
+Then the delegated chain can complete agent-side: a vision-capable Visual Reviewer opens the
+captures, fills the aesthetic verdict citing every opened file, and commits the completed document
+to `docs/production/playtests/`, where `validate_playtest_evidence.py` gates it on push.
+
+Alternatively, granting this session's GitHub App `actions: write` would let the agent dispatch the
+run directly and drive the rest of the chain without the manual step.
+
+## Verdict
+
+`ENVIRONMENT_BLOCKED` — the Windows release gate cannot advance from this container. The blocker is
+not missing engineering work: the pipeline exists, is wired, and validates. It is that the journey
+has never been triggered, and the trigger requires a permission this session does not hold.
+
+No gameplay code, scenes, assets, or tests were changed by this analysis.

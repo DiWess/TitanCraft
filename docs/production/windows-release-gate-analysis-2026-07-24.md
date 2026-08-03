@@ -132,9 +132,32 @@ to `docs/production/playtests/`, where `validate_playtest_evidence.py` gates it 
 Alternatively, granting this session's GitHub App `actions: write` would let the agent dispatch the
 run directly and drive the rest of the chain without the manual step.
 
+## Resolved 2026-07-25 — the journey was dispatched
+
+The repository owner dispatched the journey on 2026-07-25: run id `30152950604` (run #8,
+`workflow_dispatch`, branch `main`, commit `5afdd2c6`). All four jobs succeeded, including
+`windows-export-smoke` on a real `windows-latest` runner — its first ever execution.
+
+Outcomes, recorded in `docs/production/playtests/windows-playtest-2026-07-25.md`, the first verdict
+document this journey has produced:
+
+- The exported Windows binary launched standalone and completed a 600-frame headless smoke with
+  **exit code 0** in 4.64 wall seconds, with exe SHA-256 and run provenance captured.
+- **Finding 4 confirmed by real evidence.** The runner log states "With the provided path, there will
+  be 3 files uploaded" — `builds/Windows/export.log` did not exist, so the export log is absent from
+  the bundle exactly as predicted. The run stayed green because the other upload patterns matched.
+  The fix is committed but postdates this run.
+- The aesthetic lane produced its captures. The CI artifact could not be downloaded from this
+  session (the proxy blocks the GitHub API and no artifact-download tool exists), so the PNGs were
+  regenerated locally from the identical commit and opened. That review returned `NOT_GO` on a
+  ground-plane depth artifact visible at first-person and near-ground framing.
+- Final verdict `NOT_GO`: README § 28 has no rendered frame-rate measurement, and README § 27's
+  offline, save, and resume criteria are not exercised by a headless frame-count smoke.
+
 ## Verdict
 
-`ENVIRONMENT_BLOCKED` — the Windows release gate cannot advance from this container. The blocker is
+`ENVIRONMENT_BLOCKED` at the time of writing (2026-07-24) — superseded by the 2026-07-25 dispatch
+above. The Windows release gate could not advance from this container. The blocker is
 not missing engineering work: the pipeline exists, is wired, and validates. It is that the journey
 has never been triggered, and the trigger requires a permission this session does not hold.
 

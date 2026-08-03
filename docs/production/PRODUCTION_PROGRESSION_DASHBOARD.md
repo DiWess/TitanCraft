@@ -129,13 +129,23 @@ re-framed as a proper viewmodel, and the crafted-arm capture added to the factor
 - ⏳ Release notes (visual changes, gameplay scope locked to MVP)
 - ⛔ Producer release gate verdict — held
 
-**Actual blocker (2026-07-24):** the agent-gated Windows playtest journey has **never been
-dispatched**. All three `windows-playtest-journey.yml` runs were `push`/`pull_request` events, but
-the `windows-export-smoke` job is gated on `workflow_dispatch`, so the Windows runner has never
-executed and `docs/production/playtests/` is empty. See
-`docs/production/windows-release-gate-analysis-2026-07-24.md`. The aesthetic lane is verified
-working and the smoke lane's two defects are fixed; only the Windows-runner measurement requires
-the manual dispatch.
+**Journey dispatched 2026-07-25** (run id `30152950604`, commit `5afdd2c6`) — first ever execution
+of the Windows runner job, and the first verdict document the journey has produced:
+`docs/production/playtests/windows-playtest-2026-07-25.md`.
+
+- ✓ Exported Windows binary launches standalone, 600-frame headless smoke, **exit code 0** in 4.64 s,
+  exe SHA-256 `2a19485b…` with full run provenance.
+- ⛔ **Aesthetic verdict `NOT_GO`** — ground-plane depth artifact (shadow acne) across first-person
+  and near-ground framing. The crafted-arm viewmodel fix is confirmed holding at this commit.
+- ⛔ **README § 28 unmet** — no rendered frame-rate measurement exists; the journey's 129.3 figure is
+  an explicitly-labelled headless proxy and is not a rendered-performance claim.
+- ⛔ **README § 27 partially unestablished** — offline operation, local save in the build, and resume
+  after relaunch are not exercised by a headless frame-count smoke.
+- ⚠ The bundle is missing `export.log` (3 files uploaded, not 4), confirming the upload-path defect;
+  the fix postdates this run.
+
+**Final verdict: `NOT_GO`.** The machine lanes succeeded and this is the project's first real Windows
+evidence, but it is not a ship decision.
 
 ---
 

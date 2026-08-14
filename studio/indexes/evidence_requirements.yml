@@ -1,5 +1,12 @@
 version: 1
 requirements:
+  fast_lane:
+    - task confirmed inside Polish Mode Fast Lane allowed work
+    - files changed list
+    - build success (dotnet build or equivalent)
+    - relevant unit/integration tests when behavior changes
+    - short manual check note when movement/combat/feel is affected
+    - verdict PASS or FAIL_REPO_OWNED only
   visual:
     - PNG screenshots
     - visual diagnosis naming focal point, route readability, silhouette, scale, material coherence

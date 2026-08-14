@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-14  
 **Authority:** Project Director / Agent Studio  
-**Status:** Active
+**Status:** READY FOR FINAL AGENT GATE
 
 ## Purpose
 
@@ -35,6 +35,14 @@ Within existing meshes and materials only:
 
 These are visual-only value tweaks in `scenes/Main/Main.tscn` (Environment + DirectionalLight3D + BaseLamp_*). No new meshes, no scene hierarchy changes, no collision changes, no gameplay code changes.
 
+**Exact values locked:**
+- `sky_top_color = Color(0.05, 0.04, 0.16, 1)`
+- `sky_horizon_color = Color(0.58, 0.28, 0.14, 1)`
+- `ambient_light_color = Color(0.20, 0.16, 0.34, 1)`
+- `fog_light_color = Color(0.22, 0.13, 0.12, 1)`
+- DirectionalLight: `Color(1.0, 0.72, 0.48, 1)`, energy `1.22`
+- BaseLamp_*: `Color(1.0, 0.52, 0.22, 1)`, energy `1.35`
+
 ## Gameplay lock (Crash Site MVP)
 
 The Crash Site loop is **locked**:
@@ -63,9 +71,16 @@ Primary ship/release gate remains the agent-gated Windows playtest journey (`win
 - [x] Comorian atmospheric direction applied within style bible  
 - [x] Visual-only (no gameplay / collision / light-count change)  
 - [x] Gameplay lock documented and active  
-- [ ] Fresh agent playtest journey captures under the new ceiling (next run)  
+- [ ] Full Main.tscn restored on main (assemble the two chunks on this branch — see RESTORE_FROM_CHUNKS.md)  
+- [ ] Fresh agent playtest journey captures under the new ceiling  
 - [ ] Visual Reviewer opens new PNGs and records aesthetic verdict  
 
 ## Relationship to prior polish
 
 Builds on Stage A/B/C sign-off, polish-slice-2026-07-18, and polish-mode.md. Does not reopen closed MVP acceptance criteria.
+
+**Next action to close MVP 100%:**
+1. Assemble the two chunks into `scenes/Main/Main.tscn`
+2. Merge this branch to main
+3. Re-trigger `windows-playtest-journey`
+4. Record the final aesthetic verdict from the new captures

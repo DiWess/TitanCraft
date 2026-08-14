@@ -30,6 +30,9 @@ skills:
   - id: SKILL-GODOT-SCENE-EDITING
     path: godot_scene_editing.md
     purpose: Godot Scene Editing workflow.
+  - id: SKILL-HUMAN-PLAYTEST-INTAKE
+    path: human_playtest_intake.md
+    purpose: Intake human Windows playtest notes into prioritized tasks without inventing feel claims.
   - id: SKILL-PRODUCTION-DEBUGGING
     path: production_debugging.md
     purpose: Production Debugging workflow.

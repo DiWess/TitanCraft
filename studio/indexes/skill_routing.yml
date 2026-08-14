@@ -6,5 +6,7 @@ routes:
   godot_scene_change: [godot_scene_editing, godot_runtime_contracts, screenshot_critique]
   asset_import: [asset_provenance, asset_audition, evidence_reporting]
   windows_export: [windows_export_validation, windows_playtest_journey, ci_cd_validation, evidence_reporting]
+  human_playtest: [human_playtest_intake, evidence_reporting, crash_site_gameplay_slice]
+  fast_lane_polish: [csharp_gameplay_validation, evidence_reporting]
   prompt_or_agent_governance: [prompt_design, pull_request_review, evidence_reporting]
   stage_gate: [stage_gate_execution, failure_postmortem, pull_request_review]

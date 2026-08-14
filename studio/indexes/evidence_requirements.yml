@@ -7,6 +7,12 @@ requirements:
     - relevant unit/integration tests when behavior changes
     - short manual check note when movement/combat/feel is affected
     - verdict PASS or FAIL_REPO_OWNED only
+  human_playtest:
+    - dated human note under docs/production/playtests/ or completed human-playtest-checklist fields
+    - explicit HUMAN_GO or HUMAN_BLOCKED or NEEDS_TUNING
+    - quoted human feel lines when feel is cited downstream
+    - finding severity table when issues exist
+    - no agent-invented feel adjectives
   visual:
     - PNG screenshots
     - visual diagnosis naming focal point, route readability, silhouette, scale, material coherence

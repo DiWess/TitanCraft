@@ -1,65 +1,63 @@
-# Human Windows Playtest Checklist — Crash Site MVP
+# Human Windows Playtest Checklist — Crash Site MVP (OPTIONAL)
 
-**Purpose:** Close the remaining `HUMAN_BLOCKED` gate for gameplay feel, readability, and offline Windows validation (README §27 / §30).
+**Status:** Optional enrichment only (as of 2026-08-14).
 
-**Owner:** Human (parent or designated tester)
-**Environment:** Target Windows PC, offline, native exported build preferred (or Godot editor play if export unavailable).
+The **required** validation chain is agent-complete. See:
 
-Record date, machine (CPU/GPU/RAM), and whether you used the exported build or editor.
+- `docs/production/agent-playtest-primary-gate.md`
+- `studio/decisions/quality_benchmark_v2_agent_gate_delegation.md`
+- skill `windows_playtest_journey`
+
+Use this checklist only when a human wants to add dated feel notes or subjective tuning preference. It does **not** block agent `GO` / `PASS` on the primary journey.
+
+**Owner:** Human (optional)  
+**Environment:** Target Windows PC, offline, native exported build preferred.
+
+Record date, machine (CPU/GPU/RAM), and editor vs export.
 
 ## Setup
 
 - [ ] Fresh save / New Game
-- [ ] No internet required (confirm game does not demand network)
+- [ ] No internet required
 - [ ] Mouse capture works; Esc opens pause
 
-## Core loop (must complete once)
+## Core loop (optional full pass)
 
-- [ ] Walk, look, jump, sprint feel acceptable (note any floatiness, sluggishness, or camera issues)
-- [ ] Collect Metal, Biomass, Electronics — counters update on HUD
-- [ ] Objectives / prompts are understandable without a long tutorial
-- [ ] Craft Mechanical Arm Mk I at workbench — resources consumed correctly
-- [ ] First-person arm visual switches from bare to mechanical arm after craft
-- [ ] Attack Galaxabrain Scout with arm (cooldown, hit feedback, damage readable)
-- [ ] Scout detects, chases, and attacks; player can die and reload from checkpoint
-- [ ] Scout dies; component appears and can be recovered
-- [ ] Beacon activates only after component; victory screen appears
-- [ ] Full loop finishes in under ~30 minutes
+- [ ] Walk, look, jump, sprint feel notes
+- [ ] Collect Metal, Biomass, Electronics — HUD
+- [ ] Objectives / prompts clarity
+- [ ] Craft Mechanical Arm Mk I
+- [ ] First-person arm visual after craft
+- [ ] Combat vs Galaxabrain Scout
+- [ ] Death → checkpoint
+- [ ] Component recovery + beacon + victory
+- [ ] Loop under ~30 minutes
 
-## Feel notes (required for any "feel" claim)
+## Feel notes (only place agents may quote feel adjectives)
 
-Write short dated notes. Examples:
+Must be dated. Example header: `Human note (2026-08-14)`
 
-- Movement: too slow / too fast / ok
-- Combat: arm feels weak / strong / cooldown too long
-- Enemy: too aggressive / too passive / ok
-- Readability: objectives clear / confusing
-- Performance: stable 60 / dips / unplayable on this machine
+- Movement:
+- Combat:
+- Enemy:
+- Readability:
+- Performance:
 
-## Save / resume
+## Save / resume / export
 
-- [ ] Save at checkpoint works
-- [ ] Quit and Continue restores progress correctly
-- [ ] Death returns to last save without soft-lock
+- [ ] Checkpoint / Continue / death reload
+- [ ] Native export offline launch (if tested)
 
-## Export / offline (if testing native build)
+## Optional verdict labels
 
-- [ ] Executable launches without Godot editor
-- [ ] No account / login / online requirement
-- [ ] Quit is clean
+- `HUMAN_NOTE_ONLY` — enrichment, no claim to supersede agent journey
+- `HUMAN_TUNING_REQUEST` — list desired value changes for Fast Lane
+- `HUMAN_P0_REPORT` — human found a blocking bug agents should treat as P0
 
-## Verdict
+Save under `docs/production/playtests/` with date in the filename if filed.
 
-After the playthrough, record one of:
+## Out of scope
 
-- `HUMAN_GO` — ready to treat remaining work as polish only; no P0/P1 blockers found
-- `HUMAN_BLOCKED` — list blocking issues (P0/P1) that must be fixed before GO
-- `NEEDS_TUNING` — playable but specific feel values should be adjusted (list them)
-
-Attach this note under `docs/production/playtests/` with date in the filename, e.g. `2026-08-14-windows-human-playtest.md`.
-
-## Out of scope for this checklist
-
+- Replacing the agent journey as the primary gate
 - Marketing screenshots
-- New features beyond Crash Site MVP
-- Claiming quality-benchmark 10/10 without peer-anchored evidence
+- Scope expansion beyond Crash Site MVP

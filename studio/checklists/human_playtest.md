@@ -1,29 +1,22 @@
-# Human Playtest Checklist (Agent Studio)
+# Human Playtest Checklist (Agent Studio) — OPTIONAL PATH
 
-For **humans** running the game, use `docs/production/human-playtest-checklist.md`.
+Primary gate is **agent** Windows playtest journey (`windows_playtest_journey` skill).
+Human notes are optional. Use this only when a human note exists.
 
-This checklist is for **agents** after a human note exists.
+## Intake (if human note present)
 
-## Intake
-
-- [ ] Dated note exists under `docs/production/playtests/`
-- [ ] Verdict is exactly one of: `HUMAN_GO` | `HUMAN_BLOCKED` | `NEEDS_TUNING`
-- [ ] Machine / editor-vs-export context recorded if provided
+- [ ] Dated note under `docs/production/playtests/` or checklist fields
+- [ ] Label is enrichment / tuning request / P0 report — does not override agent journey GO by itself
+- [ ] Feel adjectives only quoted from dated human lines
 
 ## Classification
 
 - [ ] Each issue has severity P0 / P1 / P2
-- [ ] Feel language is quoted from the human, not invented
-- [ ] No scope expansion proposed
+- [ ] No scope expansion
+- [ ] Value-only → Fast Lane
 
 ## Response
 
-- [ ] P0/P1 mapped to minimal tasks
-- [ ] Value-only tuning uses Fast Lane (`docs/production/polish-mode.md`)
-- [ ] Visual claims still require full visual evidence route
-- [ ] `docs/production/current-status.md` updated only with evidence-backed lines
-
-## Forbidden
-
-- [ ] No “agents say feel is fine” without human note
-- [ ] No release `GO` without `HUMAN_GO` (or explicit human waiver documented)
+- [ ] P0/P1 → minimal tasks
+- [ ] Agent journey remains source of truth for release stability/aesthetic proxies
+- [ ] Never claim human is required for primary gate clearance

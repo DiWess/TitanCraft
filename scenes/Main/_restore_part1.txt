@@ -1,0 +1,658 @@
+[gd_scene load_steps=108 format=3 uid="uid://titancraft_main"]
+
+[ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
+[ext_resource type="Script" path="res://src/World/Workbench.cs" id="3_workbench"]
+[ext_resource type="Script" path="res://src/World/SavePoint.cs" id="5_save_point"]
+[ext_resource type="Script" path="res://src/World/Beacon.cs" id="6_beacon"]
+[ext_resource type="PackedScene" path="res://scenes/Enemies/GalaxabrainScout.tscn" id="7_galaxabrain_scout"]
+[ext_resource type="PackedScene" path="res://scenes/Resources/ResourceDrop.tscn" id="43_resource_drop"]
+[ext_resource type="PackedScene" path="res://scenes/World/Workbench.tscn" id="44_workbench_scene"]
+[ext_resource type="PackedScene" path="res://scenes/World/Beacon.tscn" id="45_beacon_scene"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Environment/VolcanicRockCluster_A.tscn" id="46_rock_cluster"]
+[ext_resource type="PackedScene" path="res://scenes/Props/Wreckage/ShipWreckageShard_A.tscn" id="47_wreckage_shard"]
+[ext_resource type="PackedScene" path="res://scenes/UI/HUD.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://scenes/UI/PauseMenu.tscn" id="9_pause"]
+[ext_resource type="PackedScene" path="res://scenes/UI/IntroTitleCard.tscn" id="90_intro_title_card"]
+[ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
+[ext_resource type="Script" path="res://src/UI/CrashSiteEndScreenNavigator.cs" id="11_end_nav"]
+[ext_resource type="Script" path="res://src/SaveSystem/CrashSiteSaveCoordinator.cs" id="12_save"]
+[ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="13_ivory"]
+[ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="14_graphite"]
+[ext_resource type="Material" path="res://assets/Materials/HumanBronze.tres" id="15_bronze"]
+[ext_resource type="Material" path="res://assets/Materials/HumanOrangeInteractive.tres" id="16_orange"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicRock.tres" id="17_rock"]
+[ext_resource type="Material" path="res://assets/Materials/AlienBlack.tres" id="18_alien_black"]
+[ext_resource type="Material" path="res://assets/Materials/AlienVioletEmissive.tres" id="19_violet"]
+[ext_resource type="Material" path="res://assets/Materials/Landmarks/MoonGlow.tres" id="120_moon_glow"]
+[ext_resource type="Material" path="res://assets/Materials/Landmarks/SignalSpireBeam.tres" id="121_spire_beam"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CampAwning_V1.gltf" id="130_camp_awning"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_SupplyCrateStack_V1.gltf" id="131_crate_stack"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_LightPole_V1.gltf" id="132_light_pole"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CableOccluder_V1.gltf" id="133_cable_occluder"]
+[ext_resource type="AudioStream" path="res://assets/audio/temp/pickup_chime.wav" id="40_pickup_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/temp/craft_confirm.wav" id="41_craft_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/temp/beacon_activate.wav" id="42_beacon_audio"]
+[ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_HullMain.obj" id="50_tc_hull"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_NoseCrushed.obj" id="51_tc_nose"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_WingSheared.obj" id="52_tc_wing"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_EngineExposed.obj" id="53_tc_engine"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_InternalRibs.obj" id="54_tc_ribs"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_HullRibOccluder_V1.obj" id="113_tc_rib_occluder"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BreachDebris.obj" id="55_tc_debris"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltForeground.obj" id="56_tc_basalt_fg"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltMidgroundA.obj" id="57_tc_basalt_mid_a"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_BasaltMidgroundB.obj" id="58_tc_basalt_mid_b"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_RidgeA.obj" id="59_tc_ridge_a"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_RidgeB.obj" id="60_tc_ridge_b"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_RidgeC.obj" id="61_tc_ridge_c"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_FracturedGround.obj" id="62_tc_fractured_ground"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Custom/StageA/TC_AshPatch.obj" id="63_tc_ash_patch"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_HullOffWhite.tres" id="64_tc_hull_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_WornSteel.tres" id="65_tc_steel_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Graphite.tres" id="66_tc_graphite_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Basalt.tres" id="67_tc_basalt_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Ash.tres" id="68_tc_ash_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_Scorch.tres" id="69_tc_scorch_mat"]
+[ext_resource type="Material" path="res://assets/Production/Custom/StageA/TC_CyanBreach.tres" id="70_tc_cyan_mat"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Spaceship_BarbaraTheBee.obj" id="21_ship"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Base_Large.obj" id="22_base_large"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="24_robot"]
+[ext_resource type="PackedScene" path="res://scenes/Environment/ProceduralCrashSiteTerrain.tscn" id="25_procedural_terrain"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicAsh.tres" id="26_ash"]
+[ext_resource type="Material" path="res://assets/Materials/VolcanicSoil.tres" id="27_soil"]
+[ext_resource type="Material" path="res://assets/Materials/HumanWornSteel.tres" id="28_steel"]
+[ext_resource type="Material" path="res://assets/Materials/HumanSootBurn.tres" id="29_soot"]
+[ext_resource type="Material" path="res://assets/Materials/AlienCyanEmissive.tres" id="30_cyan"]
+[ext_resource type="ArrayMesh" path="res://assets/Production/Environment/CrashSite/ship_hull_body.obj" id="31_prod_hull"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_nose_a.obj" id="32_nose"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/hull_wing_b.obj" id="33_wing"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/engine_pod_a.obj" id="34_enginepod"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/ship_panel_d.obj" id="35_ship_panel"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_a.obj" id="36_rock_a"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_irregular_b.obj" id="37_rock_b"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_ridge_f.obj" id="38_rock_ridge"]
+[ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/StylizedNatureMegaKit/Models/rock_spire_g.obj" id="39_rock_spire"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PROP_SavePoint_V1.gltf" id="71_v1_savepoint"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CrashDebris_A_V1.gltf" id="72_v1_debris"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_DistantSilhouette_BasaltRidge_V1.gltf" id="91_v1_silhouette_basalt"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_DistantSilhouette_AlienArc_V1.gltf" id="92_v1_silhouette_arc"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_DistantSilhouette_SmokePlume_V1.gltf" id="93_v1_silhouette_smoke"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/wind_ambience_loop_01.wav" id="80_wind_ambient"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/volcanic_rumble_loop_01.wav" id="81_rumble_ambient"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/machinery_hum_loop_01.wav" id="82_machinery_hum"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/metal_walk_01.wav" id="83_footsteps_metal"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/rock_walk_01.wav" id="84_footsteps_rock"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/ash_walk_01.wav" id="85_footsteps_ash"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/swing_01.wav" id="86_weapon_swing"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/impact_01.wav" id="87_weapon_impact"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/ready_tone_01.wav" id="88_weapon_ready"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/alert_01.wav" id="89_enemy_alert"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/attack_01.wav" id="90_enemy_attack"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/hurt_01.wav" id="91_enemy_hurt"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/death_01.wav" id="92_enemy_death"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/select_01.wav" id="93_ui_select"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/hover_01.wav" id="94_ui_hover"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/craft_complete_01.wav" id="95_ui_craft"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ui/menu_toggle_01.wav" id="96_ui_menu"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/metal_01.wav" id="97_pickup_metal"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/glass_01.wav" id="98_pickup_glass"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/organic_01.wav" id="99_pickup_organic"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/generic_01.wav" id="100_pickup_generic"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/objective_complete_01.wav" id="101_state_objective"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/victory_01.wav" id="102_state_victory"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/defeat_01.wav" id="103_state_defeat"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/mission_complete_01.wav" id="104_state_mission"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_complete_01.wav" id="105_save_complete"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_progress_01.wav" id="106_save_progress"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/save/load_complete_01.wav" id="107_load_complete"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_RockOccluder_V1.gltf" id="108_v1_rock_occluder"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Small_V1.gltf" id="109_v1_shard_small"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Medium_V1.gltf" id="110_v1_shard_medium"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_EmbeddedCluster_V1.gltf" id="111_v1_shard_cluster"]
+[ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PolishDetails_V1.gltf" id="112_v1_polish_details"]
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
+albedo_color = Color(0.88, 0.85, 0.80, 1)
+metallic = 0.2
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Graphite"]
+albedo_color = Color(0.22, 0.22, 0.24, 1)
+metallic = 0.3
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_WornSteel"]
+albedo_color = Color(0.48, 0.48, 0.50, 1)
+metallic = 0.6
+roughness = 0.58
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_MutedOrange"]
+albedo_color = Color(0.68, 0.50, 0.28, 1)
+metallic = 0.1
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Basalt"]
+albedo_color = Color(0.28, 0.28, 0.32, 1)
+metallic = 0.0
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Ash"]
+albedo_color = Color(0.72, 0.70, 0.65, 1)
+metallic = 0.15
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Scorch"]
+albedo_color = Color(0.08, 0.07, 0.09, 1)
+metallic = 0.15
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_AlienCyan"]
+albedo_color = Color(0.3, 0.9, 1.0, 1)
+metallic = 0.5
+roughness = 0.2
+emission = Color(0.5, 1.0, 1.0, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="BoxMesh" id="PROD_HullMain"]
+size = Vector3(11.0, 3.5, 5.2)
+
+[sub_resource type="CylinderMesh" id="PROD_NoseCrushed"]
+height = 2.2
+bottom_radius = 1.05
+top_radius = 0.35
+
+[sub_resource type="BoxMesh" id="PROD_Wing"]
+size = Vector3(6.2, 0.42, 1.3)
+
+[sub_resource type="CylinderMesh" id="PROD_Engine"]
+height = 2.5
+bottom_radius = 1.15
+top_radius = 1.0
+radial_segments = 10
+
+[sub_resource type="BoxMesh" id="PROD_InternalRib"]
+size = Vector3(3.0, 2.0, 0.25)
+
+[sub_resource type="BoxMesh" id="PROD_Debris"]
+size = Vector3(1.5, 0.5, 1.2)
+
+[sub_resource type="BoxMesh" id="PROD_Basalt"]
+size = Vector3(4.8, 3.2, 2.8)
+
+[sub_resource type="BoxMesh" id="PROD_Ridge"]
+size = Vector3(8.5, 5.0, 3.2)
+
+[sub_resource type="BoxMesh" id="PROD_Ground"]
+size = Vector3(8.0, 0.08, 6.0)
+
+[sub_resource type="StandardMaterial3D" id="PROD_MAT_Smoke"]
+albedo_color = Color(0.06, 0.06, 0.07, 0.5)
+metallic = 0.0
+roughness = 1.0
+shading_mode = 0
+transparency = 1
+
+[sub_resource type="SphereMesh" id="PROD_SmokePuff"]
+radius = 0.35
+height = 0.7
+radial_segments = 6
+rings = 3
+
+[sub_resource type="SphereMesh" id="PROD_EmberMote"]
+radius = 0.08
+height = 0.16
+radial_segments = 5
+rings = 2
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_CyanEmbers"]
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 0.2
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0.25, 0)
+scale_min = 0.5
+scale_max = 1.3
+color = Color(0.4, 1.0, 1.0, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_CrashSmoke"]
+direction = Vector3(0, 1, 0)
+spread = 15.0
+initial_velocity_min = 0.25
+initial_velocity_max = 0.55
+gravity = Vector3(0, 0.05, 0)
+scale_min = 0.8
+scale_max = 2.0
+color = Color(0.08, 0.08, 0.09, 1)
+
+[sub_resource type="StandardMaterial3D" id="MAT_MetalPickup_Bright"]
+albedo_color = Color(0.7, 0.72, 0.75, 1)
+metallic = 0.8
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="MAT_BiomassPickup_Bright"]
+albedo_color = Color(0.24, 0.37, 0.27, 1)
+metallic = 0.05
+roughness = 0.68
+
+[sub_resource type="StandardMaterial3D" id="MAT_ElectronicsPickup_Bright"]
+albedo_color = Color(0.145, 0.165, 0.188, 1)
+metallic = 0.7
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+size = Vector3(150, 0.2, 150)
+material = ExtResource("17_rock")
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(150, 0.2, 150)
+[sub_resource type="BoxShape3D" id="BoxShape3D_crate"]
+size = Vector3(1.5, 1.5, 1.5)
+[sub_resource type="BoxShape3D" id="BoxShape3D_c7_wall"]
+size = Vector3(4, 2.6, 0.35)
+[sub_resource type="BoxShape3D" id="BoxShape3D_blocking_rock"]
+size = Vector3(3, 2, 2.3)
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+size = Vector3(1.5, 1.5, 1.5)
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_panel"]
+size = Vector3(4, 2.6, 0.35)
+material = ExtResource("13_ivory")
+[sub_resource type="BoxMesh" id="BoxMesh_orange_strip"]
+size = Vector3(2.5, 0.18, 0.08)
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_metal"]
+size = Vector3(1.8, 0.45, 1.2)
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_pickup_orange_band"]
+size = Vector3(1.95, 0.12, 0.18)
+material = ExtResource("16_orange")
+[sub_resource type="SphereMesh" id="SphereMesh_biomass"]
+radial_segments = 8
+rings = 4
+radius = 0.75
+height = 1.1
+material = SubResource("MAT_BiomassPickup_Bright")
+[sub_resource type="CylinderMesh" id="CylinderMesh_biomass_stem"]
+radial_segments = 5
+top_radius = 0.16
+bottom_radius = 0.22
+height = 0.72
+material = ExtResource("16_orange")
+[sub_resource type="CylinderMesh" id="CylinderMesh_electronics"]
+radial_segments = 6
+top_radius = 0.55
+bottom_radius = 0.65
+height = 1.1
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_electronics_cyan_screen"]
+size = Vector3(0.72, 0.08, 0.36)
+material = ExtResource("30_cyan")
+[sub_resource type="BoxMesh" id="BoxMesh_workbench"]
+size = Vector3(3.2, 0.8, 1.5)
+material = ExtResource("13_ivory")
+[sub_resource type="CylinderMesh" id="CylinderMesh_save"]
+radial_segments = 8
+top_radius = 0.8
+bottom_radius = 0.95
+height = 0.35
+material = ExtResource("16_orange")
+[sub_resource type="CylinderMesh" id="CylinderMesh_beacon"]
+radial_segments = 6
+top_radius = 0.35
+bottom_radius = 0.65
+height = 2.4
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_readability_pylon"]
+size = Vector3(0.24, 1.4, 0.24)
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_readability_marker"]
+size = Vector3(0.42, 0.42, 0.08)
+material = ExtResource("16_orange")
+[sub_resource type="CylinderMesh" id="CylinderMesh_save_core"]
+radial_segments = 8
+top_radius = 0.28
+bottom_radius = 0.36
+height = 1.05
+material = ExtResource("30_cyan")
+[sub_resource type="BoxMesh" id="BoxMesh_beacon_wing"]
+size = Vector3(1.6, 0.18, 0.22)
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_beacon_crown"]
+size = Vector3(0.72, 0.16, 0.72)
+material = ExtResource("19_violet")
+[sub_resource type="SphereMesh" id="SphereMesh_moon"]
+radial_segments = 24
+rings = 12
+radius = 8.0
+material = ExtResource("120_moon_glow")
+[sub_resource type="BoxMesh" id="BoxMesh_spire_tower"]
+size = Vector3(2.6, 14.0, 2.6)
+material = ExtResource("14_graphite")
+[sub_resource type="BoxMesh" id="BoxMesh_spire_fin"]
+size = Vector3(0.7, 9.0, 2.0)
+material = ExtResource("28_steel")
+[sub_resource type="CylinderMesh" id="CylinderMesh_spire_beam"]
+radial_segments = 8
+top_radius = 0.3
+bottom_radius = 0.55
+height = 52.0
+material = ExtResource("121_spire_beam")
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.05, 0.04, 0.16, 1)
+sky_horizon_color = Color(0.58, 0.28, 0.14, 1)
+sky_curve = 0.11
+ground_bottom_color = Color(0.05, 0.03, 0.06, 1)
+ground_horizon_color = Color(0.28, 0.14, 0.09, 1)
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.20, 0.16, 0.34, 1)
+ambient_light_energy = 0.65
+tonemap_mode = 2
+tonemap_exposure = 0.88
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 0.55
+glow_enabled = true
+glow_intensity = 0.38
+glow_strength = 0.72
+glow_bloom = 0.08
+fog_enabled = true
+fog_light_color = Color(0.22, 0.13, 0.12, 1)
+fog_density = 0.012
+fog_aerial_perspective = 0.15
+
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ground"]
+radial_segments = 10
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.08
+material = ExtResource("17_rock")
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ash"]
+radial_segments = 8
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.05
+material = ExtResource("27_soil")
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_soil"]
+radial_segments = 7
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.055
+material = ExtResource("27_soil")
+[sub_resource type="BoxMesh" id="BoxMesh_stage_a_scorch"]
+size = Vector3(2.6, 0.06, 1.4)
+material = ExtResource("29_soot")
+[sub_resource type="BoxMesh" id="BoxMesh_stage_a_patch"]
+size = Vector3(1.8, 0.08, 0.55)
+material = ExtResource("28_steel")
+[sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_marker"]
+radial_segments = 6
+top_radius = 0.12
+bottom_radius = 0.2
+height = 0.75
+material = ExtResource("16_orange")
+[sub_resource type="BoxMesh" id="BoxMesh_stage_a_cyan_slit"]
+size = Vector3(0.5, 0.06, 0.14)
+material = ExtResource("30_cyan")
+
+[node name="Main" type="Node3D"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+[node name="ProceduralCrashSiteTerrain" parent="." instance=ExtResource("25_procedural_terrain")]
+visible = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
+light_color = Color(1.0, 0.72, 0.48, 1)
+light_energy = 1.22
+shadow_enabled = true
+shadow_bias = 0.25
+shadow_normal_bias = 3.0
+[node name="Ground" type="StaticBody3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+visible = false
+mesh = SubResource("BoxMesh_ground")
+[node name="Collision_Ground" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+[node name="Moon" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.9,0,0,0,1.9,0,0,0,1.9,-46,34,-92)
+mesh = SubResource("SphereMesh_moon")
+cast_shadow = 0
+[node name="C7_Wall_1" type="StaticBody3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-12,1.4,-10)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_1"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_1"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_1"]
+shape = SubResource("BoxShape3D_c7_wall")
+[node name="C7_Wall_2" type="StaticBody3D" parent="."]
+transform = Transform3D(1.2,0,0,0,1,0,0,0,1,0,1.4,-14)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_2"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_2"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_2"]
+shape = SubResource("BoxShape3D_c7_wall")
+[node name="C7_Wall_3" type="StaticBody3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,10,1.4,-10)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_3"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_3"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_3"]
+shape = SubResource("BoxShape3D_c7_wall")
+[node name="C7_Wall_4" type="StaticBody3D" parent="."]
+transform = Transform3D(0.8,0,0,0,1,0,0,0,1.4,15,1.4,-16)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="C7_Wall_4"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_panel")
+[node name="OrangeVent" type="MeshInstance3D" parent="C7_Wall_4"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.22)
+mesh = SubResource("BoxMesh_orange_strip")
+[node name="Collision_C7Wall" type="CollisionShape3D" parent="C7_Wall_4"]
+shape = SubResource("BoxShape3D_c7_wall")
+[node name="BaseLamp_1" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-10,3.0,-8)
+light_color = Color(1.0, 0.52, 0.22, 1)
+light_energy = 1.35
+omni_range = 9.5
+[node name="BaseLamp_2" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,4,3.0,-12)
+light_color = Color(1.0, 0.52, 0.22, 1)
+light_energy = 1.35
+omni_range = 9.5
+[node name="BaseLamp_3" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,14,3.0,-14)
+light_color = Color(1.0, 0.52, 0.22, 1)
+light_energy = 1.35
+omni_range = 9.5
+[node name="BaseLamp_4" type="OmniLight3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-2,3.0,-4)
+light_color = Color(1.0, 0.52, 0.22, 1)
+light_energy = 1.35
+omni_range = 9.5
+[node name="CrashWreck_PolishDetails" type="Node3D" parent="."]
+transform = Transform3D(2.8, 0, 0, 0, 2.8, 0, 0, 0, 2.8, -8.2, 1.35, -10.3)
+
+[node name="PolishDetailsModel" parent="CrashWreck_PolishDetails" instance=ExtResource("112_v1_polish_details")]
+
+[node name="Workbench_PolishDetails" type="Node3D" parent="."]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0.0, 1.1, 17.0)
+
+[node name="PolishDetailsModel" parent="Workbench_PolishDetails" instance=ExtResource("112_v1_polish_details")]
+
+[node name="BeaconRoute_PolishDetails" type="Node3D" parent="."]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 26.0, 0.8, 27.5)
+
+[node name="PolishDetailsModel" parent="BeaconRoute_PolishDetails" instance=ExtResource("112_v1_polish_details")]
+
+[node name="AudioLayer_Ambient" type="Node" parent="."]
+metadata/category = "Ambient environment loops (wind, rumble, machinery)"
+metadata/positioning = "3D positional audio at origin"
+[node name="AmbientLoop_Wind" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
+stream = ExtResource("80_wind_ambient")
+volume_db = -12.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with wind_ambience_loop_01.wav)"
+metadata/notes = "Continuous loop at 0.3 volume baseline, 120s duration, stereo"
+[node name="AmbientLoop_Rumble" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
+stream = ExtResource("81_rumble_ambient")
+volume_db = -14.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with mechanical_rumble_01.wav)"
+metadata/notes = "Distant volcanic rumble, subtle, very low profile (0.2 volume)"
+[node name="AmbientLoop_Machinery" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
+stream = ExtResource("82_machinery_hum")
+volume_db = -16.0
+metadata/source = "Freesound.org / CC0 / machinery_hum_loop_01.wav"
+metadata/notes = "Residual ship machinery hum, extremely subtle (0.15 volume)"
+[node name="AudioLayer_Player" type="Node" parent="."]
+metadata/category = "Player movement, weapon, mechanical arm"
+metadata/positioning = "3D positional audio from player origin"
+[node name="Footsteps_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("83_footsteps_metal")
+volume_db = -8.0
+metadata/source = "Freesound.org / CC0 / footsteps_metal_walk_01.wav"
+metadata/notes = "Single metal footstep, triggered on grounded movement intervals (0.4s walk, 0.3s sprint)"
+[node name="Footsteps_Rock" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("84_footsteps_rock")
+volume_db = -8.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_rock_crunch_01.wav)"
+metadata/notes = "Rock/basalt footstep, terrain-specific trigger"
+[node name="Footsteps_Ash" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("85_footsteps_ash")
+volume_db = -8.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_ash_shuffle_01.wav)"
+metadata/notes = "Volcanic ash shuffle footstep, soft terrain variant"
+[node name="Weapon_Swing" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("86_weapon_swing")
+volume_db = -6.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_swing_01.wav)"
+metadata/notes = "Mechanical arm swing/whoosh, triggered on left-click attack input (0.4s duration)"
+[node name="Weapon_Impact" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("87_weapon_impact")
+volume_db = -5.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_impact_hit_01.wav)"
+metadata/notes = "Weapon hit confirmation, only plays on raycast success; high priority feedback"
+[node name="Weapon_Ready" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("88_weapon_ready")
+volume_db = -10.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_ready_tone_01.wav)"
+metadata/notes = "Mechanical ready tone when attack cooldown completes; brief chime (0.2s)"
+[node name="AudioLayer_Enemy" type="Node" parent="."]
+metadata/category = "Scout enemy state and behavior audio"
+metadata/positioning = "3D positional audio from scout position"
+[node name="Scout_Alert" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("89_enemy_alert")
+volume_db = -7.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_alert_01.wav)"
+metadata/notes = "Scout detection alert, triggered when player enters 12m detection range"
+[node name="Scout_Attack" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("90_enemy_attack")
+volume_db = -6.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_attack_strike_01.wav)"
+metadata/notes = "Scout melee attack strike, triggered when entering 2m attack range"
+[node name="Scout_Hurt" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("91_enemy_hurt")
+volume_db = -8.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_hurt_01.wav)"
+metadata/notes = "Scout damage feedback, played when HP reduced; variable intensity"
+[node name="Scout_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("92_enemy_death")
+volume_db = -4.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_death_01.wav)"
+metadata/notes = "Scout defeat fanfare, triggered when HP reaches 0; high priority audio"
+[node name="Scout_Idle" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("40_pickup_audio")
+volume_db = -15.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_idle_ambient_01.wav)"
+metadata/notes = "Scout breathing/ambient idle loop, very subtle background presence"
+[node name="AudioLayer_UI" type="Node" parent="."]
+metadata/category = "UI menu and confirmation audio"
+metadata/positioning = "2D non-positional audio (screen-relative)"
+[node name="UI_Select" type="AudioStreamPlayer" parent="AudioLayer_UI"]
+stream = ExtResource("93_ui_select")
+volume_db = -10.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_select_01.wav)"
+metadata/notes = "Menu confirmation click, triggered on UI selection (high UI priority)"
+[node name="UI_Hover" type="AudioStreamPlayer" parent="AudioLayer_UI"]
+stream = ExtResource("94_ui_hover")
+volume_db = -12.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_hover_01.wav)"
+metadata/notes = "Menu hover/focus audio, subtle over-confirmation feedback"
+[node name="UI_Craft_Complete" type="AudioStreamPlayer" parent="AudioLayer_UI"]
+stream = ExtResource("95_ui_craft")
+volume_db = -7.0
+metadata/source = "Existing: craft_confirm.wav (temporary placeholder)"
+metadata/notes = "Crafting completion confirmation, triggered after crafting countdown"
+[node name="UI_Menu_Toggle" type="AudioStreamPlayer" parent="AudioLayer_UI"]
+stream = ExtResource("96_ui_menu")
+volume_db = -9.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_menu_toggle_01.wav)"
+metadata/notes = "Pause/resume menu toggle, briefing audio on state change"
+[node name="AudioLayer_Pickup" type="Node" parent="."]
+metadata/category = "Resource pickup and collection audio"
+metadata/positioning = "3D positional audio at pickup location"
+[node name="Pickup_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
+stream = ExtResource("97_pickup_metal")
+volume_db = -6.0
+metadata/source = "Existing: pickup_chime.wav (temporary placeholder, will differentiate)"
+metadata/notes = "Metal resource collection cue, bright metallic chime, 0.3s"
+[node name="Pickup_Glass" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
+stream = ExtResource("98_pickup_glass")
+volume_db = -6.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_glass_01.wav)"
+metadata/notes = "Electronics resource collection, distinct glass/crystal tones"
+[node name="Pickup_Organic" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
+stream = ExtResource("99_pickup_organic")
+volume_db = -7.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_organic_01.wav)"
+metadata/notes = "Biomass resource collection, soft organic tones"
+[node name="Pickup_Generic" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
+stream = ExtResource("100_pickup_generic")
+volume_db = -8.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_generic_01.wav)"
+metadata/notes = "Generic fallback pickup cue, used if specific type unavailable"
+[node name="AudioLayer_State" type="Node" parent="."]
+metadata/category = "Game state transition audio (objectives, victory, defeat)"
+metadata/positioning = "2D non-positional audio (screen-relative, high priority)"
+[node name="State_Objective" type="AudioStreamPlayer" parent="AudioLayer_State"]
+stream = ExtResource("101_state_objective")
+volume_db = -8.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_objective_complete_01.wav)"
+metadata/notes = "Objective completion chime, triggered when mission phase completes (60 FPS)"
+[node name="State_Victory" type="AudioStreamPlayer" parent="AudioLayer_State"]
+stream = ExtResource("102_state_victory")
+volume_db = -6.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_victory_fanfare_01.wav)"
+metadata/notes = "Victory fanfare, high-priority audio on game victory condition, 3.2s"
+[node name="State_Defeat" type="AudioStreamPlayer" parent="AudioLayer_State"]
+stream = ExtResource("103_state_defeat")
+volume_db = -5.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_defeat_horn_01.wav)"
+metadata/notes = "Defeat fanfare/horn, triggered on player death condition"
+[node name="State_Mission_Complete" type="AudioStreamPlayer" parent="AudioLayer_State"]
+stream = ExtResource("104_state_mission")
+volume_db = -7.0
+metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_mission_complete_01.wav)"
+metadata/notes = "Full mission completion audio, plays after beacon activation succeeds"
+[node name="AudioLayer_Save" type="Node" parent="."]

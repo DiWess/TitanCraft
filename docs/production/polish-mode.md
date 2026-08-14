@@ -3,19 +3,22 @@
 **Status:** Active as of 2026-08-14
 
 The Crash Site MVP scope is closed (see `docs/production/mvp-closure-report-2026-07-09.md`).
-The project is now in a **Polish + Human Validation** phase.
+The project is in a **Polish + Agent-Gated Validation** phase.
 
-Agent Studio remains the source of truth for high-risk work. For small, low-risk polish work a lighter **Fast Lane** is allowed so agents and humans can iterate on feel without full ceremony.
+**Primary validation chain:** Agent Studio Windows playtest journey replaces the human as the required gate. See `docs/production/agent-playtest-primary-gate.md` and `studio/decisions/quality_benchmark_v2_agent_gate_delegation.md`.
+
+Agent Studio remains the source of truth for high-risk work. For small, low-risk polish work a lighter **Fast Lane** is allowed so agents can iterate without full ceremony.
 
 ## When Polish Mode applies
 
 - MVP scope is closed and must not expand.
-- Remaining gates are human Windows playthrough, feel tuning, and selective visual polish.
+- Remaining **required** gate is the agent-complete Windows playtest journey (smoke + aesthetic PNG review + validated verdict doc).
+- Human playtest notes are optional enrichment only.
 - Full Agent Studio preflight + multi-agent packets remain mandatory for:
   - Visual asset production / Stage gates
   - Scene structure or collision contract changes
   - New systems or scope expansion
-  - Release / export claims
+  - Release / export claims (must cite agent journey evidence)
   - Quality-benchmark axis claims
 
 ## Fast Lane — allowed work
@@ -35,7 +38,7 @@ Fast Lane may be used for:
 - Scene hierarchy / collision / navigation mesh structural changes
 - Production asset replacement or new Stage A/B/C visual claims
 - Scope expansion beyond README Crash Site MVP
-- Release readiness or "ship it" claims without human GO
+- Release readiness claims without a validator-passing agent playtest verdict
 
 ## Fast Lane process (agents)
 
@@ -48,30 +51,27 @@ Fast Lane may be used for:
 5. Report:
    - files changed
    - commands run + result
-   - short manual check note (if gameplay feel is involved)
+   - short note if behavior changed
    - verdict: `PASS` or `FAIL_REPO_OWNED`
 
-No full preflight packet, multi-agent secondary review, or formal memory/skill loading is required for pure Fast Lane tasks.
+No full preflight packet is required for pure Fast Lane tasks.
 
-If the task touches visuals, scene structure, assets, or release claims, exit Fast Lane and use the normal Agent Studio route.
+If the task touches visuals, scene structure, assets, or release claims, exit Fast Lane and use the normal Agent Studio route (including agent playtest journey for release).
 
 ## Core roles during Polish Mode
 
-Prefer these roles; treat others as reference only unless the task clearly needs them:
-
 1. Gameplay Engineer — movement, combat, feedback, juice
 2. Technical Director — scene safety, performance, architecture
-3. Visual Reviewer — only when PNGs / visual claims are involved
-4. Producer — stage gates and human GO coordination
-5. QA Lead — test evidence and playtest procedures
+3. Visual Reviewer — PNG / aesthetic journey verdicts
+4. Producer — stage gates and agent journey coordination
+5. QA Lead — test evidence and playtest verdict validation
 
-## Human gate (still required)
+## Human role
 
-Human Windows playthrough and GO remain `HUMAN_BLOCKED`.
-Use `docs/production/human-playtest-checklist.md` for the required procedure and notes.
+Optional. See `docs/production/human-playtest-checklist.md` only if optional feel prose is desired. **Not required** to clear the primary agent gate.
 
 ## Relationship to existing gates
 
-- README.md remains the product source of truth.
+- README.md remains the product source of truth for scope.
 - AGENTS.md and studio/ indexes remain binding for non-Fast-Lane work.
 - Fast Lane does not weaken visual, asset, or release evidence requirements.

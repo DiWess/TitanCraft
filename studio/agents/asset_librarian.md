@@ -10,6 +10,14 @@ Verify asset provenance, license, hashes, and audition evidence before assets in
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `assets/**`, `assets/ThirdParty/**`, `THIRD_PARTY_ASSETS.md`, `THIRD_PARTY_DEPENDENCIES.md`, `docs/audio/**`
+- Required reviewer for: `art/blender/**`, `tools/blender/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - fake placeholder OBJ, unknown license, untracked source, modifying binary assets unnecessarily.

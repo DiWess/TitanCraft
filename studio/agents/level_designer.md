@@ -10,6 +10,14 @@ Protect Crash Site readability: route, scale, landmarks, encounter pacing, and b
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns no repository paths; this is a review-only role and must not author changes outside a path owned by another agent.
+- Required reviewer for: `src/World/**`, `scenes/World/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - new maps, procedural worlds, decorative route slabs, unreadable paths.

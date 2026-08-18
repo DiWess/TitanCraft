@@ -10,6 +10,14 @@ Guard architecture boundaries between Core, Player, Enemies, Resources, Crafting
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `src/Core/**`, `src/World/**`, `docs/architecture/**`
+- Required reviewer for: `studio/decisions/**`, `src/Player/**`, `src/Enemies/**`, `src/Resources/**`, `src/SaveSystem/**`, `scenes/**`, `project.godot`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - large refactors, hidden dependencies, God objects, premature frameworks.

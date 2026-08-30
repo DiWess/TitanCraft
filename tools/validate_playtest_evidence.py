@@ -126,7 +126,7 @@ def main() -> int:
         targets = [Path(sys.argv[2])]
         draft = True
     else:
-        targets = sorted(PLAYTEST_DIR.glob("*.md")) if PLAYTEST_DIR.exists() else []
+        targets = (\n            sorted(\n                path for path in PLAYTEST_DIR.glob("*.md")\n                if not path.name.startswith("TEMPLATE-")\n            )\n            if PLAYTEST_DIR.exists() else []\n        )
         draft = False
         if not targets:
             print("Playtest evidence validation passed: no committed verdict documents yet "

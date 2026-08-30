@@ -10,6 +10,14 @@ Enforce readable grounded sci-fi visuals and reject visually failed screenshots 
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `art/blender/**`, `docs/art/**`
+- Required reviewer for: `assets/**`, `assets/ThirdParty/**`, `tools/blender/**`, `docs/pipeline/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - self-approving art, decorating toy-like hulls, accepting route slabs as terrain.

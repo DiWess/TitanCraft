@@ -10,6 +10,7 @@
   "before_editing_files_checklist": [
     "Read README.md and confirm the task does not conflict with MVP Crash Site scope.",
     "Read root AGENTS.md and any scoped AGENTS.md files for touched paths.",
+    "Resolve ownership for every file you intend to change with python3 tools/agent_ownership.py <path>.",
     "Load the required memories listed in this packet.",
     "Review the required skills and checklists listed in this packet.",
     "Confirm forbidden actions, forbidden scope, and scope warnings are understood.",
@@ -40,6 +41,13 @@
   "minimum_validation_commands": [
     "python3 tools/validate_agent_studio.py",
     "git diff --check"
+  ],
+  "ownership_rights": [
+    "Resolve the owner of every file before editing: python3 tools/agent_ownership.py <path>",
+    "art_director may write (agent_write): art/blender/**, docs/art/**",
+    "A path owned by another agent must be authored by its owner; escalate disagreements to the producer.",
+    "Human approval required, no agent may write without explicit human instruction in the task: README.md, AGENTS.md, CLAUDE.md, PROJECT_DIRECTOR_START_HERE.md",
+    "A path matching no ownership entry is unowned: route it to the producer and add it to studio/indexes/ownership.yml before editing."
   ],
   "primary_agent": "art_director",
   "required_checklists": [

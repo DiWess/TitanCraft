@@ -40,3 +40,17 @@ human checklist. For required ship validation, use `windows_playtest_journey` in
 
 - Agent journey doc path when making release claims
 - Human quotes only when feel language is used
+
+## example_good_output
+
+- Agent journey status: `PASS`
+- Human note path (or none): `docs/production/playtests/windows-playtest-2026-07-25.md`
+- Findings / tasks: one dated P1 tuning request, routed as a minimal value-only slice
+- Verdict: `PASS`
+
+## example_bad_output
+
+- Agent journey status: unknown
+- Human note path (or none): none
+- Findings / tasks: "the game feels great" with no dated human evidence
+- Verdict: `PASS`

@@ -1,5 +1,13 @@
 version: 1
 routes:
+  # Fast Lane (Polish Mode) — small low-risk work; lighter process
+  fast_lane_polish:
+    primary: gameplay_engineer
+    secondary: []
+  # Human Windows playtest — intake and tasking after human note exists
+  human_playtest:
+    primary: producer
+    secondary: [qa_lead, gameplay_engineer]
   visual_scene_composition:
     primary: art_director
     secondary: [visual_reviewer, technical_director, qa_lead]

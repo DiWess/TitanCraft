@@ -5,6 +5,7 @@ using TitanCraft.Crafting;
 using TitanCraft.Enemies;
 using TitanCraft.Missions;
 using TitanCraft.Resources;
+using TitanCraft.UI;
 using TitanCraft.World;
 
 namespace TitanCraft.Player;
@@ -41,6 +42,11 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float WalkFootstepIntervalSeconds { get; set; } = 0.45f;
     [Export] public float SprintFootstepIntervalSeconds { get; set; } = 0.32f;
 
+    // Upward pitch punch with a slight rightward bias, matching the arm's jab.
+    public const float HitKickPitchRadians = 0.035f;
+    public const float HitKickYawRadians = 0.012f;
+    public const float SwingKickPitchRadians = 0.014f;
+
     public MvpInventory Inventory { get; } = new();
 
     public CrashSiteMissionState Mission { get; } = new();
@@ -67,6 +73,14 @@ public partial class FirstPersonController : CharacterBody3D
     private float _footstepTimer;
     private int _footstepAudioIndex;
     private bool _wasAttackOnCooldown;
+    private readonly ViewmodelSway _viewmodelSway = new();
+    private CombatFeedbackOverlay? _combatOverlay;
+    private Vector3 _mechanicalArmBasePosition;
+    private Vector3 _bareArmBasePosition;
+    private Vector3 _bareArmBaseRotation;
+    private Vector2 _lookDeltaThisFrame;
+    private bool _wasOnFloor = true;
+    private float _previousFallSpeed;
 
     // No ground-material tagging exists yet, so this is a fixed rotation across
     // all three recorded surfaces rather than genuine surface detection -- it
@@ -93,6 +107,9 @@ public partial class FirstPersonController : CharacterBody3D
         _mechanicalArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual");
         _bareArmVisual = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/BareArmVisual");
         _mechanicalArmBaseRotation = _mechanicalArmVisual?.Rotation ?? Vector3.Zero;
+        _mechanicalArmBasePosition = _mechanicalArmVisual?.Position ?? Vector3.Zero;
+        _bareArmBasePosition = _bareArmVisual?.Position ?? Vector3.Zero;
+        _bareArmBaseRotation = _bareArmVisual?.Rotation ?? Vector3.Zero;
         Inventory.Changed += UpdateMechanicalArmVisual;
         Health.Changed += OnHealthChanged;
         UpdateMechanicalArmVisual(Inventory);
@@ -108,12 +125,34 @@ public partial class FirstPersonController : CharacterBody3D
     }
 
 
+    /// <summary>
+    /// Resolved lazily through the scene group rather than at _Ready: the HUD
+    /// is a sibling of the player in Main.tscn, so node-ready ordering is not
+    /// guaranteed, and the overlay is optional in test scenes that instance the
+    /// player on its own.
+    /// </summary>
+    private CombatFeedbackOverlay? CombatOverlay
+    {
+        get
+        {
+            if (_combatOverlay is not null && GodotObject.IsInstanceValid(_combatOverlay))
+            {
+                return _combatOverlay;
+            }
+
+            _combatOverlay = GetTree()?.GetFirstNodeInGroup(CombatFeedbackOverlay.OverlayGroup)
+                as CombatFeedbackOverlay;
+            return _combatOverlay;
+        }
+    }
+
     private void OnHealthChanged(PlayerHealth health)
     {
         if (health.CurrentHealth < _lastHealth)
         {
             _cameraShaker?.AddTrauma(0.4f);
             AudioCue.Play(this, DamageAudioPath);
+            ShowDamageDirection();
         }
 
         if (health.IsDead && _lastHealth > 0)
@@ -178,6 +217,9 @@ public partial class FirstPersonController : CharacterBody3D
                 mouseMotion.Relative,
                 MouseSensitivity,
                 MaxLookAngleDegrees);
+            // Accumulated here and consumed in _PhysicsProcess so viewmodel sway
+            // reacts to the whole frame's turn, not to one input event of many.
+            _lookDeltaThisFrame += new Vector2(look.X - _bodyYaw, look.Y - _cameraPitch);
             _bodyYaw = look.X;
             _cameraPitch = look.Y;
             Rotation = new Vector3(0.0f, _bodyYaw, 0.0f);
@@ -249,7 +291,12 @@ public partial class FirstPersonController : CharacterBody3D
         scout.ApplyDamage(_mechanicalArmAttack.Damage);
         _timeManager?.TriggerDefaultHitStop();
         _cameraShaker?.AddTrauma(0.22f);
+        // A confirmed hit punches the view up and slightly across, so landing a
+        // strike feels different from swinging at air.
+        _cameraShaker?.AddKick(HitKickPitchRadians, HitKickYawRadians);
         AudioCue.Play(this, ArmHitAudioPath);
+        AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Impact", GlobalPosition);
+        CombatOverlay?.ShowHitMarker(scout.Brain.IsDead);
         if (!scout.Brain.IsDead)
         {
             ShowActionFeedback(GalaxabrainScoutHitFeedback);
@@ -263,6 +310,7 @@ public partial class FirstPersonController : CharacterBody3D
         // whoosh — played for every unblocked swing, hit or miss, so attack
         // input always has visible and audible weight.
         AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Swing", GlobalPosition);
+        _cameraShaker?.AddKick(SwingKickPitchRadians, 0.0f);
         if (_mechanicalArmVisual is null)
         {
             return;
@@ -523,9 +571,86 @@ public partial class FirstPersonController : CharacterBody3D
         velocity.X = moveDirection.X * speed;
         velocity.Z = moveDirection.Z * speed;
         Velocity = velocity;
+
+        // Captured before MoveAndSlide, because landing zeroes the fall speed
+        // the impact strength has to be measured from.
+        var fallSpeedBeforeMove = _previousFallSpeed;
         MoveAndSlide();
+        UpdateLandingFeel(fallSpeedBeforeMove);
+        UpdateCameraFeel(inputDirection, isSprinting, (float)delta);
+        UpdateViewmodelSway(inputDirection, (float)delta);
+        _previousFallSpeed = Velocity.Y < 0.0f ? -Velocity.Y : 0.0f;
 
         UpdateFootstepAudio(inputDirection, isSprinting, (float)delta);
+    }
+
+    private void UpdateLandingFeel(float fallSpeedBeforeMove)
+    {
+        var onFloor = IsOnFloor();
+        if (onFloor && !_wasOnFloor && _cameraShaker?.ReportLanding(fallSpeedBeforeMove) == true)
+        {
+            // Reuse the existing footstep bank for the touchdown thud rather
+            // than adding an audio asset for a single cue.
+            AudioCue.Play3D(this, FootstepAudioPaths[0], GlobalPosition);
+        }
+
+        _wasOnFloor = onFloor;
+    }
+
+    private void UpdateCameraFeel(Vector2 inputDirection, bool isSprinting, float deltaSeconds)
+    {
+        if (_cameraShaker is null)
+        {
+            return;
+        }
+
+        var grounded = IsOnFloor();
+        var horizontalSpeed = new Vector2(Velocity.X, Velocity.Z).Length();
+        var travelled = grounded ? horizontalSpeed * deltaSeconds : 0.0f;
+        // Sprinting bobs harder; airborne does not bob at all.
+        var intensity = grounded && horizontalSpeed > 0.1f
+            ? Mathf.Clamp(horizontalSpeed / WalkSpeed, 0.0f, 1.0f) * (isSprinting ? 1.25f : 1.0f)
+            : 0.0f;
+        _cameraShaker.UpdateMovementFeel(travelled, intensity, grounded ? inputDirection.X : 0.0f);
+    }
+
+    private void UpdateViewmodelSway(Vector2 inputDirection, float deltaSeconds)
+    {
+        _viewmodelSway.Update(_lookDeltaThisFrame, inputDirection.X, inputDirection.Y, deltaSeconds);
+        _lookDeltaThisFrame = Vector2.Zero;
+
+        // The swing tween owns the mechanical arm's rotation while it plays, so
+        // sway is applied to position only there and to both on the bare arm.
+        if (_mechanicalArmVisual is not null)
+        {
+            _mechanicalArmVisual.Position = _mechanicalArmBasePosition + _viewmodelSway.Offset;
+        }
+
+        if (_bareArmVisual is not null)
+        {
+            _bareArmVisual.Position = _bareArmBasePosition + _viewmodelSway.Offset;
+            _bareArmVisual.Rotation = _bareArmBaseRotation + _viewmodelSway.TiltRadians;
+        }
+    }
+
+    private void ShowDamageDirection()
+    {
+        var overlay = CombatOverlay;
+        if (overlay is null)
+        {
+            return;
+        }
+
+        // The MVP has exactly one damage source, so the living Scout is the
+        // only thing that can have hit the player.
+        foreach (var node in GetTree().GetNodesInGroup(GalaxabrainScout.GalaxabrainScoutGroup))
+        {
+            if (node is GalaxabrainScout scout && GodotObject.IsInstanceValid(scout) && !scout.Brain.IsDead)
+            {
+                overlay.ShowDamageFrom(GlobalPosition, _bodyYaw, scout.GlobalPosition);
+                return;
+            }
+        }
     }
 
     private void UpdateFootstepAudio(Vector2 inputDirection, bool isSprinting, float deltaSeconds)

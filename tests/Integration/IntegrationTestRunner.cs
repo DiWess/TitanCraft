@@ -34,7 +34,13 @@ public partial class IntegrationTestRunner : Node
         "res://assets/Materials/AlienVioletEmissive.tres",
         "res://assets/Materials/BiomassRed.tres",
     ];
-    private const int MaxStaticCollisionShapes = 19;
+    // Raised from 19 when the Mwezi Quarter district added the map's built
+    // environment (scenes/Environment/MweziQuarterDistrict.tscn): 23 shapes,
+    // one box per building plus four arcade piers and the terrace ramp. The
+    // budget still exists to stop collision bloat from decorative dressing --
+    // every district prop without gameplay meaning is collisionless, and the
+    // generator asserts arena and pickup clearance before the scene is written.
+    private const int MaxStaticCollisionShapes = 48;
     private static readonly string[] ForbiddenCollisionPrefixes = [
         "Moon",
         "Background",

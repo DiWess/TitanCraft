@@ -320,15 +320,24 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     public static Color ColorForZone(TerrainZone zone) => ColorFor(zone, CorridorHeight);
 
+    // Coastal ground palette for the Mwezi Quarter. The walked surfaces are
+    // packed coral sand, pale enough to stay readable at a grazing sun angle;
+    // the earlier volcanic values (0.14-0.40) rendered the whole play area as
+    // a black plate under any lighting the quarter's lime-rendered stone needs.
+    // The distant horizon ridge stays dark volcanic rock: it is what still
+    // reads the location as an alien planet, and the tonal gap between pale
+    // foreground and dark ridge is what gives the skyline depth.
+    // The zone ordering the integration suite asserts is preserved: the route
+    // stays the brightest surface, and the ridges stay materially darker.
     private static Color ColorFor(TerrainZone zone, float height) => zone switch
     {
-        TerrainZone.AshRoute => new Color(0.40f, 0.35f, 0.29f),
-        TerrainZone.CentralPlateau => new Color(0.27f, 0.24f, 0.20f),
-        TerrainZone.SpawnBasaltShelf or TerrainZone.ResourceBasaltShelf or TerrainZone.BeaconBasaltShelf => new Color(0.22f, 0.20f, 0.18f),
-        TerrainZone.WorkbenchRidge or TerrainZone.CombatRidge => new Color(0.18f, 0.17f, 0.16f),
-        TerrainZone.ImpactCrater => new Color(0.16f, 0.135f, 0.115f),
-        TerrainZone.HorizonRidge => new Color(0.145f, 0.135f, 0.13f),
-        _ => height < 0.5f ? new Color(0.24f, 0.215f, 0.19f) : new Color(0.20f, 0.185f, 0.17f)
+        TerrainZone.AshRoute => new Color(0.74f, 0.70f, 0.60f),
+        TerrainZone.CentralPlateau => new Color(0.60f, 0.56f, 0.47f),
+        TerrainZone.SpawnBasaltShelf or TerrainZone.ResourceBasaltShelf or TerrainZone.BeaconBasaltShelf => new Color(0.52f, 0.48f, 0.41f),
+        TerrainZone.WorkbenchRidge or TerrainZone.CombatRidge => new Color(0.43f, 0.39f, 0.34f),
+        TerrainZone.ImpactCrater => new Color(0.30f, 0.25f, 0.21f),
+        TerrainZone.HorizonRidge => new Color(0.195f, 0.185f, 0.18f),
+        _ => height < 0.5f ? new Color(0.56f, 0.52f, 0.44f) : new Color(0.47f, 0.43f, 0.37f)
     };
 
     public static float HeightAt(float x, float z, IReadOnlyDictionary<string, Vector3> targets)

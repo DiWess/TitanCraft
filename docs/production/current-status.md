@@ -18,6 +18,33 @@
   validation remains `HUMAN_BLOCKED`, and the quality benchmark composite remains 4.3/10 — closure does
   not claim, and must not be quoted as, a 10/10 quality result.
 
+## Mwezi Quarter District — 2026-09-17
+
+- Per explicit human direction, the single MVP map's **setting** was amended from empty volcanic terrain to
+  a built coastal coral-stone quarter, the **Mwezi Quarter** (`README.md` sections 3/14/15 and the section 34
+  locked-decision table amended). MVP scope is unchanged: one map, one enemy, the same mission anchors, the
+  same loop, and nothing added from the section 6 forbidden list.
+- Ten project-authored Blender assets (`docs/art/briefs/mwezi-quarter-district-v1.md`), all
+  `BLENDER_ASSET_VALID`, hashed in `assets/Production/Generated/asset_manifest.json`, with 30 tracked
+  opened review PNGs under `artifacts/asset-review/TC_ENV_*_V1/`.
+- District layout is generated, not hand-placed: `tools/level/build_mwezi_quarter_district.py` solves ground
+  height against the procedural terrain and refuses to emit a scene that violates mission-anchor, route,
+  Scout-arena or passage clearance. It rejected four faulty layouts during authoring.
+- Lighting/post reworked (ACES, sky-sourced ambient, SSAO/SSIL, glow, aerial haze, grade, re-aimed key
+  light) and the walkable ground palette recoloured to coral sand, with the distant ridge kept dark
+  volcanic rock. Three lighting faults were caught by opening captures and fixed.
+- Game-feel layer added: stride-locked view bob, strafe lean, landing impact, weapon kick, viewmodel sway,
+  plus a procedurally drawn crosshair / hit marker / damage-direction overlay. 20 new unit tests.
+- Validation: build Debug+Release 0/0, unit 95/95, integration `TITANCRAFT_INTEGRATION_TESTS_PASS`,
+  MVP smoke 11/11, import 0 errors, Windows export produced.
+- Verdict `PASS` as a candidate set with integration evidence
+  (`docs/art/reviews/mwezi-quarter-district-v1-review.md`). **Not** an aesthetic or feel sign-off: the
+  quality composite moved 4.5 → 5.1, not to 10/10, and axes 2/3/6 remain `HUMAN_BLOCKED` on a dated human
+  Windows playtest.
+- Known pre-existing failure, untouched and not caused by this slice: `python3 tools/validate_agent_studio.py`
+  fails on `studio/skills/human_playtest_intake.md` (missing `example_good_output` / `example_bad_output`
+  headings). Verified identical on a clean tree; owned by the Studio governance surface, not this change.
+
 ## Blocked
 
 - Any additional Stage A visual replacement or generated asset integration that lacks standalone review artifacts, hashes/manifests, opened-PNG diagnosis, and human or visual-reviewer verdict.

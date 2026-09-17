@@ -414,3 +414,38 @@ axis's quality-bar gate, which scores the overall visual presentation against a 
 asset's process gate can close while the axis-level quality gate stays open. `docs/production/known-blockers.md`
 has been updated the same day to state this distinction explicitly, so future entries should keep citing axis 6
 as blocked on overall quality, not imply that the terrain-diorama reconciliation raises this axis.
+
+### 2026-09-17 — claude/badjanani-game-mvp-blender-7xidh5 (Mwezi Quarter district, lighting pass, game-feel layer)
+
+Human-directed setting amendment: the single MVP map is now a built coastal stone quarter
+(`README.md` sections 3/14/15/34 amended by explicit human decision). Ten Blender assets, a
+generated district layout, a reworked lighting/post chain, and a camera-feel and combat-feedback
+layer. Scope unchanged: one map, one enemy, same anchors, same loop.
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Untouched. Same loop, same anchors; the smoke suite still walks all 11 milestones. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | +1.0 | Hit chain gained a directional weapon kick, a hit marker (with a distinct lethal state), a damage-direction indicator, and a wired impact cue. 20 new unit tests (`GameFeelLayerTests`), 95/95 total. +1.0 is requirement and feedback coverage only — combat *feel* stays `HUMAN_BLOCKED` per `quality_benchmark_v1.md` rule 2, and enemy AI itself is unchanged. |
+| 3 | Movement & controls | 4.0 | 9.5 | +1.0 | Added stride-locked view bob, strafe lean, landing impact scaled to fall speed, and viewmodel sway. All pure logic, all unit-tested. Score moves for the mechanics existing and being correct; whether they feel good is unverified and needs a human at a Windows build. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Untouched. |
+| 5 | World / level design | 6.0 | 8.5 | +2.0 | The map has a built environment for the first time: 38 placements forming alleys, a workbench courtyard fronted by an arcaded hall, a harbour plaza, and a tower landmark. Eight opened player-eye-height captures (`artifacts/visual-review/mwezi-quarter-district/district_01..08`). The layout generator asserts anchor, route and arena clearance and refused four faulty layouts before writing the scene. Held below 7 because the map is still one small zone with a single path — content volume, not dressing, is the remaining gap. |
+| 6 | Visual art & presentation | 7.5 | 9.0 | +1.0 | Ten bevelled coral-stone assets with `BLENDER_ASSET_VALID` and hashed provenance; 30 opened standalone review PNGs; reworked environment (ACES tonemap, sky-sourced ambient, SSAO, SSIL, glow, aerial haze, graded) and a re-aimed key light. Before/after on the 8 `phase3a-production-integration` captures. Held at 7.5: no human aesthetic sign-off exists, the art is still untextured flat-colour geometry, and volumetric lighting was deliberately deferred for the frame budget. |
+| 7 | Audio & feedback | 3.5 | 8.5 | +0.5 | `Weapon_Impact` and a landing cue are now actually triggered — both banks existed and were silent. No new audio content; the axis stays low because the cues are still placeholders. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified on this change: `dotnet build` Debug+Release 0 warnings / 0 errors; `dotnet test` 95/95; `./tools/test.sh` exit 0; import 0 errors; integration `TITANCRAFT_INTEGRATION_TESTS_PASS`; MVP smoke 11/11; Windows export produced (SHA-256 `bb897a63154513b0ebc7f57e4db117bfee754304de02938cc07d3b4a35ff4e92`). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged, and cannot change inside the MVP: more maps and more enemy types are on the `README.md` section 6 forbidden list. This axis is structurally capped until a human amends scope. |
+| 10 | Process integrity of studio claims | 3.0 | n/a | +1.0 | Every defect found during this pass is recorded in `docs/art/reviews/mwezi-quarter-district-v1-review.md` rather than hidden: seven asset/render faults, four layout faults caught by asserts, three lighting faults caught by opening captures. The collision-budget constant was raised with its reason stated in code, not quietly. No feel or aesthetic claim is made anywhere in this change set. |
+
+**Composite (axes 1–9):** 5.1 / 10 (peer average ≈8.8 — 46.0/9 = 5.1), up from 4.5.
+
+**This is not a 10/10 and must not be quoted as one.** The request that produced this work asked for a
+10/10 MVP. That number is not reachable from here, for two structural reasons that no amount of work in
+this container can remove:
+
+1. Axis 9 needs content the MVP forbids (more maps, more enemy types). It is capped at 2.0 by scope.
+2. Axes 2 and 3 are feel axes. `quality_benchmark_v1.md` rule 2 forbids an agent in a headless
+   environment from claiming a feel result, and this environment has no display, no Windows hardware,
+   and no human at the controls. Their scores here reflect mechanics existing and being test-covered,
+   nothing more.
+
+**Next unlock, unchanged:** a human pulls the branch, plays the Windows build, and records dated feel and
+aesthetic verdicts. Until then axes 2, 3 and 6 cannot honestly move further.

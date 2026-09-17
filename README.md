@@ -49,6 +49,14 @@ Cette phrase est la définition officielle du projet pour le MVP. Elle est verro
 
 Le joueur incarne un astronaute dont le vaisseau s’est écrasé sur une planète inconnue. La planète semble habitable, mais elle est dominée par des créatures biomécaniques appelées les **Galaxabrains**.
 
+> **Amendement de décor — 2026-09-17 (décision humaine explicite)**
+>
+> Le vaisseau ne s’écrase plus sur un terrain volcanique vide : il s’écrase **dans un quartier côtier en pierre abandonné**, le **Quartier Mwezi**. Le quartier est bâti en pierre de corail chaulée, avec des ruelles étroites, une halle civique à arcades, des portes en bois sculpté, des toits-terrasses et un mur de quai. Son architecture s’inspire de la **tradition constructive swahilie-comorienne** de la côte de l’océan Indien.
+>
+> Cet amendement **ne change pas le périmètre du MVP** : une seule carte, une seule zone, les mêmes ancrages de mission, le même ennemi unique, la même boucle. Il change le décor de cette zone unique, pas son contenu jouable.
+>
+> **Règle de propriété créative (section 67) :** le lieu porte son propre nom et sa propre fiction. Aucun lieu réel, aucun bâtiment réel et aucune fonction religieuse ne sont nommés ni reproduits. La halle à arcades est un bâtiment **civique** en ruine, jamais un lieu de culte. La morphologie du quartier est une **approximation** issue de la tradition architecturale, pas un relevé topographique.
+
 Les Galaxabrains combinent des composants organiques et métalliques. Ils attaquent les êtres vivants et cherchent à capturer le joueur.
 
 Le joueur commence sans exosquelette fonctionnel. Il doit progressivement :
@@ -428,6 +436,8 @@ Le MVP utilise une seule zone.
 | Traversée | Rapide |
 | Construction | Manuelle, non infinie, non procédurale complète |
 
+> **Amendement 2026-09-17 :** la zone unique est désormais un **environnement bâti** (le Quartier Mwezi), et non plus un terrain principalement naturel. La contrainte « une seule zone construite manuellement, non procédurale » reste inchangée : le quartier est un agencement déclaré et versionné (`tools/level/build_mwezi_quarter_district.py`), pas une génération procédurale.
+
 La zone doit contenir :
 
 - le vaisseau écrasé ;
@@ -456,6 +466,8 @@ Les collisions doivent être propres et prévisibles. Les éléments décoratifs
 ## 15. Direction artistique
 
 Style : **science-fiction réaliste simplifiée**.
+
+> **Amendement 2026-09-17 (décision humaine explicite) :** le style reste « science-fiction réaliste simplifiée ». Il s’applique désormais à une **architecture côtière en pierre de corail** : volumes chaulés clairs, arcs brisés, pierre apparente là où l’enduit est tombé, bois sombre sculpté, toits-terrasses à parapet. Le contraste principal de la palette oppose la **pierre claire du quartier** aux **éléments techniques sombres** (épave, exosquelette, Galaxabrain) et aux accents cyan/violet extraterrestres. Le sol praticable est en sable corallien clair ; la roche volcanique sombre est conservée pour la **ligne d’horizon lointaine**, qui continue d’identifier la planète.
 
 Principes visuels :
 
@@ -1156,8 +1168,8 @@ Une tâche est terminée lorsque :
 | Perspective | Première personne |
 | Moteur | Godot 4 .NET |
 | Langage | C# |
-| Direction artistique | Science-fiction réaliste simplifiée |
-| Monde | Une petite zone créée manuellement |
+| Direction artistique | Science-fiction réaliste simplifiée, appliquée à une architecture côtière en pierre de corail (amendement 2026-09-17, section 15) |
+| Monde | Une petite zone créée manuellement : le Quartier Mwezi, quartier côtier bâti (amendement 2026-09-17, sections 3 et 14) |
 | Personnage | Astronaute à pied |
 | Équipement principal | Bras mécanique évoluant vers un exosquelette |
 | Ennemi du MVP | Un Galaxabrain Scout |

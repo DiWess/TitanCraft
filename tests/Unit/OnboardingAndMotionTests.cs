@@ -1,3 +1,9 @@
+// These tests use Godot value-type math only (Vector2/Vector3/Mathf); keeping them
+// runtime-free prevents the GdUnit adapter connection timeout in CI, which is why
+// this suite suppresses GdUnit0501 rather than adding [RequireGodotRuntime].
+// Same rationale and pattern as tests/Unit/FirstPersonMovementTests.cs.
+#pragma warning disable GdUnit0501
+
 using Godot;
 using GdUnit4;
 using TitanCraft.UI;

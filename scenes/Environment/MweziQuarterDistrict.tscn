@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://mwezi_quarter_district"]
+[gd_scene load_steps=23 format=3 uid="uid://mwezi_quarter_district"]
 
 [ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_CoralWallSegment_V1.gltf" id="1_coralwallsegment"]
 [ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_ArcadeBay_V1.gltf" id="2_arcadebay"]
@@ -10,6 +10,11 @@
 [ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_MarketStall_V1.gltf" id="8_marketstall"]
 [ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_PalmCluster_V1.gltf" id="9_palmcluster"]
 [ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_CoralRubble_V1.gltf" id="10_coralrubble"]
+[ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_PalmSway_V1.gltf" id="11_palmsway"]
+[ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_LaundryLine_V1.gltf" id="12_laundryline"]
+[ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_AwningCloth_V1.gltf" id="13_awningcloth"]
+[ext_resource type="PackedScene" path="res://assets/models/mwezi_quarter_v1/TC_ENV_BannerCloth_V1.gltf" id="14_bannercloth"]
+[ext_resource type="Script" path="res://src/World/EnvironmentMotionPlayer.cs" id="900_motion_player"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_quarter_0"]
 size = Vector3(7.2, 6.2, 6.2)
@@ -32,6 +37,7 @@ metadata/collision_policy = "Structures carry explicit BoxShape3D gameplay colli
 metadata/reference = "Approximate coastal coral-stone quarter morphology; not survey data, and no real place or building is named or reproduced."
 [node name="Structures" type="Node3D" parent="."]
 [node name="Dressing" type="Node3D" parent="."]
+[node name="Motion" type="Node3D" parent="."]
 [node name="Quarter_StoneHouse_1" type="StaticBody3D" parent="Structures"]
 transform = Transform3D(0.9976, 0, -0.0698, 0, 1, 0, 0.0698, 0, 0.9976, -8.5, -0.0782, 4.2)
 metadata/placement = "terrain_height=0.042 sink=0.12 zone=CentralPlateau route_distance=6.22"
@@ -253,3 +259,53 @@ metadata/placement = "terrain_height=0.030 sink=0.12 zone=AshRoute route_distanc
 transform = Transform3D(0.6157, 0, 0.788, 0, 1, 0, -0.788, 0, 0.6157, 26.4, -0.09, -24.2)
 metadata/placement = "terrain_height=0.030 sink=0.12 zone=AshRoute route_distance=2.49"
 [node name="Model" parent="Dressing/Quarter_CoralRubble_7" instance=ExtResource("10_coralrubble")]
+[node name="Quarter_PalmSway_1" type="Node3D" parent="Motion"]
+transform = Transform3D(0.9781, 0, -0.2079, 0, 1, 0, 0.2079, 0, 0.9781, 6.2, -0.0836, 1.2)
+metadata/placement = "terrain_height=0.036 sink=0.12 zone=CentralPlateau route_distance=3.50"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_PalmSway_1" instance=ExtResource("11_palmsway")]
+[node name="Quarter_PalmSway_2" type="Node3D" parent="Motion"]
+transform = Transform3D(0.8829, 0, 0.4695, 0, 1, 0, -0.4695, 0, 0.8829, -10.6, -0.09, -9.4)
+metadata/placement = "terrain_height=0.030 sink=0.12 zone=AshRoute route_distance=0.95"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_PalmSway_2" instance=ExtResource("11_palmsway")]
+[node name="Quarter_PalmSway_3" type="Node3D" parent="Motion"]
+transform = Transform3D(0.7193, 0, -0.6947, 0, 1, 0, 0.6947, 0, 0.7193, 16.4, -0.09, -11.2)
+metadata/placement = "terrain_height=0.030 sink=0.12 zone=AshRoute route_distance=2.47"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_PalmSway_3" instance=ExtResource("11_palmsway")]
+[node name="Quarter_PalmSway_4" type="Node3D" parent="Motion"]
+transform = Transform3D(0.9903, 0, 0.1392, 0, 1, 0, -0.1392, 0, 0.9903, 25.6, 0.0255, -14.4)
+metadata/placement = "terrain_height=0.146 sink=0.12 zone=BeaconBasaltShelf route_distance=3.82"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_PalmSway_4" instance=ExtResource("11_palmsway")]
+[node name="Quarter_LaundryLine_1" type="Node3D" parent="Motion"]
+transform = Transform3D(0.2079, 0, -0.9781, 0, 1, 0, 0.9781, 0, 0.2079, -9.8, -0.09, -6.4)
+metadata/placement = "terrain_height=0.030 sink=0.12 zone=AshRoute route_distance=1.00"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_LaundryLine_1" instance=ExtResource("12_laundryline")]
+[node name="Quarter_LaundryLine_2" type="Node3D" parent="Motion"]
+transform = Transform3D(-0.1045, 0, -0.9945, 0, 1, 0, 0.9945, 0, -0.1045, 9.2, -0.09, -5.6)
+metadata/placement = "terrain_height=0.030 sink=0.12 zone=AshRoute route_distance=0.00"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_LaundryLine_2" instance=ExtResource("12_laundryline")]
+[node name="Quarter_AwningCloth_1" type="Node3D" parent="Motion"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -8.5, -0.0734, 0.9)
+metadata/placement = "terrain_height=0.047 sink=0.12 zone=SpawnBasaltShelf route_distance=2.93"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_AwningCloth_1" instance=ExtResource("13_awningcloth")]
+[node name="Quarter_AwningCloth_2" type="Node3D" parent="Motion"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 12.2, -0.0826, -6.1)
+metadata/placement = "terrain_height=0.037 sink=0.12 zone=ResourceBasaltShelf route_distance=2.70"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_AwningCloth_2" instance=ExtResource("13_awningcloth")]
+[node name="Quarter_BannerCloth_1" type="Node3D" parent="Motion"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -12.5, -0.0875, -3.2)
+metadata/placement = "terrain_height=0.032 sink=0.12 zone=SpawnBasaltShelf route_distance=2.57"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_BannerCloth_1" instance=ExtResource("14_bannercloth")]
+[node name="Quarter_BannerCloth_2" type="Node3D" parent="Motion"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 20.2, 0.0986, -22.6)
+metadata/placement = "terrain_height=0.219 sink=0.12 zone=CombatRidge route_distance=4.08"
+script = ExtResource("900_motion_player")
+[node name="Model" parent="Motion/Quarter_BannerCloth_2" instance=ExtResource("14_bannercloth")]

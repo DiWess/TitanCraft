@@ -69,6 +69,12 @@ budgets = {
     'TC_ENV_MarketStall_V1.blend': 950,
     'TC_ENV_PalmCluster_V1.blend': 3200,
     'TC_ENV_CoralRubble_V1.blend': 860,
+    # Mwezi Quarter motion kit: skinned, animated props. Same bevel treatment
+    # as the static kit so a swaying palm matches the wall behind it.
+    'TC_ENV_PalmSway_V1.blend': 1650,
+    'TC_ENV_LaundryLine_V1.blend': 560,
+    'TC_ENV_AwningCloth_V1.blend': 420,
+    'TC_ENV_BannerCloth_V1.blend': 340,
 }
 max_triangles = budgets.get(Path(path).name, 500)
 if triangles > max_triangles:

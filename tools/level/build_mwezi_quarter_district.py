@@ -40,6 +40,7 @@ from typing import NamedTuple
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "scenes/Environment/MweziQuarterDistrict.tscn"
 MODEL_DIR = "res://assets/models/mwezi_quarter_v1"
+MOTION_SCRIPT_ID = "900_motion_player"
 
 # ---------------------------------------------------------------------------
 # Terrain height, mirrored from src/World/ProceduralCrashSiteTerrain.cs so that
@@ -252,6 +253,20 @@ LAYOUT = [
     ("SeawallRun", 34.6, -17.6, 96.0, 1.0, SEAWALL_COLLISION),
     ("PalmCluster", 31.6, -21.8, -12.0, 1.0, None),
     ("CoralRubble", 26.4, -24.2, -52.0, 1.0, None),
+
+    # --- Motion pass: the quarter has to look lived-in, not abandoned -------
+    # Placed on the routes the player actually walks, at the heights they
+    # actually look at, because motion the player never sees is wasted.
+    ("PalmSway", 6.2, 1.2, 12.0, 1.0, None),
+    ("PalmSway", -10.6, -9.4, -28.0, 1.0, None),
+    ("PalmSway", 16.4, -11.2, 44.0, 1.0, None),
+    ("PalmSway", 25.6, -14.4, -8.0, 1.0, None),
+    ("LaundryLine", -9.8, -6.4, 78.0, 1.0, None),
+    ("LaundryLine", 9.2, -5.6, 96.0, 1.0, None),
+    ("AwningCloth", -8.5, 0.9, 0.0, 1.0, None),
+    ("AwningCloth", 12.2, -6.1, 90.0, 1.0, None),
+    ("BannerCloth", -12.5, -3.2, 0.0, 1.0, None),
+    ("BannerCloth", 20.2, -22.6, 0.0, 1.0, None),
 ]
 
 ASSET_FILES = {
@@ -265,7 +280,18 @@ ASSET_FILES = {
     "MarketStall": "TC_ENV_MarketStall_V1",
     "PalmCluster": "TC_ENV_PalmCluster_V1",
     "CoralRubble": "TC_ENV_CoralRubble_V1",
+    # Animated (skinned) assets from the motion kit. These are placed as
+    # EnvironmentMotionPlayer nodes so their imported clip is looped and
+    # phase-offset per instance.
+    "PalmSway": "TC_ENV_PalmSway_V1",
+    "LaundryLine": "TC_ENV_LaundryLine_V1",
+    "AwningCloth": "TC_ENV_AwningCloth_V1",
+    "BannerCloth": "TC_ENV_BannerCloth_V1",
 }
+
+# Assets whose placements carry EnvironmentMotionPlayer instead of a plain
+# Node3D. All are visual-only dressing: motion never gains collision.
+ANIMATED_ASSETS = {"PalmSway", "LaundryLine", "AwningCloth", "BannerCloth"}
 
 # Sink each placement slightly so the base is buried rather than hovering over
 # a facet edge of the vertex-coloured terrain.
@@ -352,6 +378,10 @@ def build() -> str:
             f'path="{MODEL_DIR}/{ASSET_FILES[key]}.gltf" id="{index + 1}_{key.lower()}"]'
         )
     resource_ids = {key: f"{index + 1}_{key.lower()}" for index, key in enumerate(ASSET_FILES)}
+    resources.append(
+        f'[ext_resource type="Script" path="res://src/World/EnvironmentMotionPlayer.cs" '
+        f'id="{MOTION_SCRIPT_ID}"]'
+    )
 
     shapes: dict[tuple[float, float, float], str] = {}
     shape_blocks: list[str] = []
@@ -364,7 +394,8 @@ def build() -> str:
         name = f"Quarter_{asset}_{counters[asset]}"
         ground = terrain_height(x, z)
         y = ground - BASE_SINK
-        group = "Structures" if collision else "Dressing"
+        animated = asset in ANIMATED_ASSETS
+        group = "Structures" if collision else ("Motion" if animated else "Dressing")
         node_type = "StaticBody3D" if collision else "Node3D"
         nodes.append(f'[node name="{name}" type="{node_type}" parent="{group}"]')
         nodes.append(f"transform = {_transform(_yaw_basis(yaw, scale), (x, y, z))}")
@@ -373,6 +404,8 @@ def build() -> str:
             f'zone={_zone(x, z, distance_to_route(x, z), _bounds())} '
             f'route_distance={distance_to_route(x, z):.2f}"'
         )
+        if animated:
+            nodes.append(f'script = ExtResource("{MOTION_SCRIPT_ID}")')
         nodes.append(
             f'[node name="Model" parent="{group}/{name}" '
             f'instance=ExtResource("{resource_ids[asset]}")]'
@@ -425,6 +458,7 @@ def build() -> str:
         'data, and no real place or building is named or reproduced."',
         '[node name="Structures" type="Node3D" parent="."]',
         '[node name="Dressing" type="Node3D" parent="."]',
+        '[node name="Motion" type="Node3D" parent="."]',
     ]
     return "\n".join([header, "", *resources, "", *shape_blocks, "", *root, *nodes]) + "\n"
 

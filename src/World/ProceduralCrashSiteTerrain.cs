@@ -210,7 +210,11 @@ public partial class ProceduralCrashSiteTerrain : Node3D
             right.Add(new Vector3(points[i].X - n.X * half, y, points[i].Z - n.Y * half));
         }
         var v = new List<Vector3>(); var colors = new List<Color>(); var normals = new List<Vector3>();
-        for (int i = 0; i < points.Count - 1; i++) { AddTriangle(v,normals,colors,left[i],left[i+1],right[i+1],TerrainZone.AshRoute); AddTriangle(v,normals,colors,left[i],right[i+1],right[i],TerrainZone.AshRoute); }
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            AddUpwardTriangle(v, normals, colors, left[i], left[i + 1], right[i + 1]);
+            AddUpwardTriangle(v, normals, colors, left[i], right[i + 1], right[i]);
+        }
         return MeshFrom(v,normals,colors);
     }
 
@@ -307,6 +311,32 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         var mesh = new ArrayMesh();
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
         return mesh;
+    }
+
+    /// <summary>
+    /// Adds a route-ribbon triangle that always faces up.
+    ///
+    /// The ribbon's left/right edges swap sides wherever the route doubles
+    /// back, which gave the generic builder mixed winding: 42 of 48 vertices
+    /// ended up with downward normals, so the ash route -- the brightest
+    /// surface in the map and the player's main navigation aid (README
+    /// section 7) -- was shaded as though it faced the ground, and parts of it
+    /// were backface-culled from above. The ribbon is horizontal by
+    /// construction, so its normal is known: up.
+    /// </summary>
+    private static void AddUpwardTriangle(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c)
+    {
+        Color color = ColorFor(TerrainZone.AshRoute, (a.Y + b.Y + c.Y) / 3.0f);
+        // Keep winding consistent with the upward normal so nothing is culled.
+        bool facesUp = (c - a).Cross(b - a).Y >= 0.0f;
+        vertices.Add(a);
+        vertices.Add(facesUp ? b : c);
+        vertices.Add(facesUp ? c : b);
+        for (int i = 0; i < 3; i++)
+        {
+            normals.Add(Vector3.Up);
+            colors.Add(color);
+        }
     }
 
     private static void AddTriangle(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, Vector3 a, Vector3 b, Vector3 c, TerrainZone zone)

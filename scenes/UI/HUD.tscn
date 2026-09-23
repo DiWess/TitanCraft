@@ -84,6 +84,23 @@ vertical_alignment = 1
 label_settings = SubResource("LabelSettings_hud")
 theme_override_colors/font_color = Color(1, 0.72, 0.24, 1)
 
+[node name="OnboardingPrompt" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -420.0
+offset_top = 64.0
+offset_right = 420.0
+offset_bottom = 104.0
+text = ""
+visible = false
+horizontal_alignment = 1
+vertical_alignment = 1
+label_settings = SubResource("LabelSettings_hud")
+theme_override_colors/font_color = Color(0.94, 0.92, 0.86, 1)
+metadata/integration = "Action-driven onboarding step, one line at a time, driven by OnboardingTutorialState via CrashSiteHudBinder. Separate from StartTutorial, which stays the compact controls reference."
+
 [node name="CombatFeedbackOverlay" type="Control" parent="."]
 anchors_preset = 15
 anchor_right = 1.0

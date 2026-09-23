@@ -449,3 +449,30 @@ this container can remove:
 
 **Next unlock, unchanged:** a human pulls the branch, plays the Windows build, and records dated feel and
 aesthetic verdicts. Until then axes 2, 3 and 6 cannot honestly move further.
+
+### 2026-09-23 — claude/badjanani-game-mvp-blender-7xidh5 (environment motion, onboarding, grade fix)
+
+Human-directed follow-up: Blender-authored micro-animation and environment movement, an onboarding
+tutorial, and a green play journey. Chasing a black box in a capture also uncovered two pre-existing
+presentation defects that a still-screenshot review cannot catch.
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Untouched. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | = | Untouched this pass. |
+| 3 | Movement & controls | 4.0 | 9.5 | = | Untouched this pass. Onboarding teaches the controls; it does not change how they feel, and feel remains `HUMAN_BLOCKED`. |
+| 4 | Crafting & progression | 5.5 | 8.5 | +0.5 | The craft step is now taught rather than inferred: onboarding walks look → move → jump → collect → craft → attack, advancing only on real gameplay, and pulls a player who ignores it forward instead of stranding them on a stale prompt. 21 new unit tests plus an integration walk of the flow. +0.5 is guidance coverage only; the recipe and economy are unchanged. |
+| 5 | World / level design | 6.5 | 8.5 | +0.5 | The quarter is no longer static: ten looping animated placements (palm sway, laundry, awnings, banners) on the walked routes, each phase- and rate-offset per instance. Verified in-engine (10/10 playing, looping, distinct phases) and evidenced by two capture frames 1.5 s apart. Held below 7 for the same reason as before — one small zone, one path. |
+| 6 | Visual art & presentation | 8.0 | 9.0 | +0.5 | Four skinned animated assets, all `BLENDER_ASSET_VALID` with hashed provenance and 16 motion review PNGs. Two real presentation defects fixed: the grade's contrast boost was crushing every dark prop to pure black (measured: albedo 0.5 → 0.133, 0.235 → 0.008, with a crate rendering exactly `(0,0,0)` under a 12-energy sun with shadows off), and the ash route — the map's main navigation aid — was shaded as a downward-facing surface with 42 of 48 normals inverted. Still held below human sign-off: the art remains untextured flat-colour geometry. |
+| 7 | Audio & feedback | 3.5 | 8.5 | = | Untouched. The new motion is silent — no wind or cloth audio exists. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified: build Debug+Release 0/0; `dotnet test` 116/116; `./tools/test.sh` exit 0; import 0 errors; integration `TITANCRAFT_INTEGRATION_TESTS_PASS`; MVP smoke 11/11; Windows export produced (SHA-256 `5d85ab1ed26d87a5b0430f33a0db064809f807e6d91b77283398c11469925b9a`). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged and still structurally capped by `README.md` section 6. Animated dressing is not content. |
+| 10 | Process integrity of studio claims | 3.5 | n/a | +0.5 | The black-box investigation is written up with its measurements rather than the fix being quietly applied, including the two wrong hypotheses (shadow, then material) that measurement ruled out. The motion pipeline's silent-failure mode — an exporter that would have stripped every skin and produced files that look correct and never move — is guarded by an exporter that refuses such a source and by integration assertions on loop mode and phase spread. |
+
+**Composite (axes 1–9):** 5.3 / 10 (peer average ≈8.8 — 48.0/9 = 5.3), up from 5.1.
+
+**Still not a 10/10.** Both structural caps from the previous entry are unchanged: axis 9 needs content
+the MVP forbids, and axes 2/3 are feel axes that `quality_benchmark_v1.md` rule 2 bars an agent in a
+headless container from scoring. Nothing in this pass changes either.
+
+**Next unlock, unchanged:** a human plays the Windows build and records dated feel and aesthetic verdicts.

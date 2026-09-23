@@ -363,10 +363,10 @@ sky = SubResource("Sky_main")
 ambient_light_source = 3
 ambient_light_color = Color(0.298, 0.376, 0.51, 1)
 ambient_light_sky_contribution = 0.85
-ambient_light_energy = 1.45
+ambient_light_energy = 2.1
 reflected_light_source = 2
 tonemap_mode = 3
-tonemap_exposure = 1.05
+tonemap_exposure = 1.22
 tonemap_white = 1.0
 ; Contact shadows where stone meets stone and ground; without this an arcade
 ; pier and the wall behind it merge into one silhouette.
@@ -401,9 +401,14 @@ fog_sun_scatter = 0.18
 fog_density = 0.0045
 fog_aerial_perspective = 0.22
 fog_sky_affect = 0.4
+; Contrast stays neutral. A 1.08 boost on top of ACES gave the tone curve a
+; brutal toe: measured on the scene, an albedo of 0.5 rendered at 0.13 and
+; 0.235 rendered at 0.008, so every dark "tech" prop -- crates, spire, lamp
+; poles, the Scout's plates -- collapsed into a flat black void as soon as it
+; sat in shade. Exposure and ambient carry the image instead.
 adjustment_enabled = true
 adjustment_brightness = 1.0
-adjustment_contrast = 1.08
+adjustment_contrast = 1.0
 adjustment_saturation = 1.02
 
 

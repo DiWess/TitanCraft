@@ -43,12 +43,63 @@ These are recorded because the first render of each was wrong, not because the p
 7. **Four layout faults**, caught by the generator's clearance asserts rather than by eye: arcade piers inside the Scout arena, a house standing on the metal→workbench walk, a seawall 0.13 m from the beacon, a house a metre off the save point.
 8. **Three lighting faults**, each caught by opening the capture: a western sun put the entire spawn square inside a 12 m building shadow; at 32° the entry houses' shadows still merged into one dark field; and the procedural sky's saturated red ground hemisphere was bouncing red onto every horizontal surface in the quarter.
 
+## Second pass — 2026-09-23 (motion, onboarding, and three defects it exposed)
+
+### Added
+
+- **Motion kit**: four skinned, looping animated assets (palm sway, laundry
+  line, awning cloth, banner cloth), ten placements on the walked routes.
+  Verified in-engine: all 10 `EnvironmentMotionPlayer` nodes playing, looping,
+  with distinct start phases and playback rates. Motion evidence is four frames
+  across each asset's loop plus two in-engine frames 1.5 s apart.
+- **Onboarding**: a six-step, action-driven flow (look → move → jump → collect
+  → craft → attack) showing one short line at a time and retiring itself. It
+  advances only on real gameplay, and a player who ignores it and simply plays
+  is pulled forward rather than left behind. Deliberately additive: the existing
+  controls-reference line is unchanged, because README section 7 forbids leaning
+  on a long text tutorial and the reference line is a reminder, not a teacher.
+
+### Defects this pass found and fixed
+
+1. **Environment motion would have shipped frozen.** glTF carries no looping
+   flag, so Godot imported every clip with looping disabled. Without
+   `EnvironmentMotionPlayer` setting it, each prop swayed once and then stood
+   still for the rest of the session — and would have rendered identically in
+   any still screenshot. The integration suite now asserts loop mode, playback,
+   and distinct phases.
+2. **Near-identical motion seeds.** The first per-instance hash was a single
+   weighted sum; two awnings 21 m apart produced seeds 0.7257 and 0.7253, so
+   they swayed in visible lockstep. Replaced with an FNV-1a plus avalanche mix,
+   now asserted to keep every district placement more than 0.02 apart.
+3. **The tone curve was crushing every dark prop to pure black.** Chasing a
+   black box in a capture, measurement on the live scene showed the grade's
+   response: albedo 1.0 rendered at 0.494, 0.5 at 0.133, and 0.235 at 0.008.
+   The cargo crate two metres from the player was rendering `(0, 0, 0)` even
+   with the sun at 12 energy and shadows disabled — it was not a shadow, a
+   material fault or a normals fault, but an `adjustment_contrast = 1.08` boost
+   stacked on ACES. Contrast is now neutral, with exposure and ambient carrying
+   the image; the crate reads as a dark object again. This affected every dark
+   "tech" surface in the game, not just the crate.
+4. **The ash route was shaded as if it faced the ground.** The route ribbon's
+   left/right edges swap sides wherever the route doubles back, which gave the
+   generic triangle builder mixed winding: 42 of 48 vertices carried downward
+   normals. The brightest surface in the map and the player's main navigation
+   aid (README section 7) was being lit as a downward face, with parts
+   backface-culled from above. The ribbon is horizontal by construction, so it
+   now gets an explicit upward normal and consistent winding — 48 of 48 up.
+
+Defects 3 and 4 were pre-existing in the first pass and are exactly the kind of
+fault that a still screenshot review does not catch: both produce an image that
+looks deliberate.
+
 ## Known limitations
 
 - The market stall canopy is oversized relative to its posts; cosmetic, not fixed.
 - `district_04_workbench_courtyard` is partly occluded by a foreground timber. The camera position, not the layout, is at fault; left as captured rather than choosing a flattering angle.
 - The harbour has no water. The procedural terrain rises to 4.2 m at the map bounds and would occlude any water plane behind the seawall, so the seawall is a retaining wall over a dry tidal flat.
 - The wide composition view still shows the ground plate's hard boundary edge against the void. Pre-existing, outside this change.
+- The motion kit's palm is a single straight trunk while the static palm cluster
+  has two leaning trunks, so the two read as different plants at close range.
 - Volumetric fog was deliberately not enabled. Light shafts through the arcade would be the single strongest remaining image, but README section 28 forbids expensive visual effects without a measured frame budget, and no frame budget can be measured from this headless container.
 
 ## Verdict

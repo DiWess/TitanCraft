@@ -45,6 +45,27 @@
   fails on `studio/skills/human_playtest_intake.md` (missing `example_good_output` / `example_bad_output`
   headings). Verified identical on a clean tree; owned by the Studio governance surface, not this change.
 
+## Mwezi Quarter — Motion, Onboarding and Grade — 2026-09-23
+
+- Blender-authored environment motion: four skinned, looping assets (palm sway, laundry line, awning
+  cloth, banner cloth), ten placements on the walked routes, each phase- and rate-offset per instance by
+  `src/World/EnvironmentMotionPlayer.cs`. glTF carries no looping flag, so without that node every prop
+  would sway once and freeze — the integration suite now asserts loop mode, playback and phase spread.
+- Animated assets use armatures because the asset contract requires meshes at a clean origin, and ship
+  through `tools/blender/export_animated_asset.py`: the static exporter applies modifiers and would have
+  stripped every skin, producing files that look correct and never move.
+- Action-driven onboarding (look → move → jump → collect → craft → attack), one short line at a time,
+  advancing only on real gameplay and retiring itself. Additive: the existing controls-reference line and
+  its assertions are unchanged, per README section 7's ban on a long text tutorial.
+- Two pre-existing presentation defects fixed, both found by measurement rather than by looking: the
+  grade's `adjustment_contrast = 1.08` on top of ACES was crushing every dark prop to pure black
+  (albedo 0.5 rendered at 0.133, 0.235 at 0.008), and the ash route ribbon carried 42 of 48 inverted
+  normals so the map's main navigation aid was shaded as a downward face.
+- Validation: build Debug+Release 0/0, unit 116/116, integration `TITANCRAFT_INTEGRATION_TESTS_PASS`,
+  MVP smoke 11/11, import 0 errors, Windows export produced.
+- Quality composite 5.1 → 5.3. Still not a 10/10 and still not an aesthetic or feel sign-off; the
+  structural caps on axes 9 and 2/3 are unchanged.
+
 ## Blocked
 
 - Any additional Stage A visual replacement or generated asset integration that lacks standalone review artifacts, hashes/manifests, opened-PNG diagnosis, and human or visual-reviewer verdict.

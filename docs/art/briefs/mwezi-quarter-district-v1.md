@@ -45,6 +45,42 @@ Authorised by an explicit human decision on 2026-09-17, recorded as an amendment
 
 Kit total: ~14.2k triangles across 10 assets. Well inside the README section 28 target of 60 FPS on a mid-range Windows PC, where draw calls and dynamic light count — not triangle count at this scale — are the limiting factor.
 
+## Motion kit (animated dressing)
+
+An empty stone quarter reads as a diorama. Four skinned, looping assets give it
+weather and life, authored by `tools/blender/create_mwezi_quarter_motion_kit_v1.py`.
+
+**Why skeletal animation.** The asset contract requires every mesh at a clean
+origin, so a cloth or frond animated as a separate child object — sitting at its
+own pivot — fails validation outright. An armature keeps one mesh at the origin
+and drives the motion through bones. That also survives glTF export and gives
+Godot a real `AnimationPlayer`.
+
+**Why a separate exporter.** `tools/blender/export_animated_asset.py` exists
+because the static exporter passes `export_apply=True`, which applies modifiers
+— including the Armature modifier carrying the skin. That would bake the rest
+pose and silently strip the motion, producing a file that looks right and never
+moves. The animated exporter refuses a source with no armature or no action, so
+the failure is loud rather than silent.
+
+| Asset | Motion | Triangles | Bones |
+| --- | --- | ---: | ---: |
+| `TC_ENV_PalmSway_V1` | Trunk and crown bend through a slow gust cycle; the lower trunk barely moves and the crown carries the travel | 1400 | 3 |
+| `TC_ENV_LaundryLine_V1` | Three sheets swinging on offset beats, because washing on one line never moves in unison | 456 | 4 |
+| `TC_ENV_AwningCloth_V1` | The unsecured front edge lifts and settles | 344 | 2 |
+| `TC_ENV_BannerCloth_V1` | Hanging cloth swinging, the lower half lagging the upper | 268 | 3 |
+
+All four run a 5-second, 120-frame loop at 24 fps. Every bone track starts and
+ends on the same pose; the builder raises an error otherwise, because a
+mismatched loop snaps visibly every five seconds in-engine.
+
+**Runtime.** `src/World/EnvironmentMotionPlayer.cs` does two things the glTF
+importer cannot: it sets the clip to loop (glTF has no looping concept, so Godot
+imports every clip with looping disabled and each prop would sway once then
+freeze), and it offsets each instance's start phase and playback rate from a
+hash of its own world position — deterministic, so captures and tests
+reproduce. Ten motion placements sit on the routes the player actually walks.
+
 ## Provenance
 
 | Asset | Triangles | Source `.blend` SHA-256 | GLB SHA-256 | Review PNGs |
@@ -76,6 +112,21 @@ It solves two things that hand-placement cannot hold stable:
    - any structure marked permeable (the arcade, whose arches are walk-through) has an opening of at least 1.6 m.
 
    The check refuses to write the scene on failure. It caught four real layout faults during authoring: arcade piers standing inside the Scout arena, a house swallowing the metal→workbench walk, a seawall 0.13 m from the beacon, and a house a metre off the save point.
+
+## Motion provenance
+
+| Asset | Triangles | GLB SHA-256 | Motion review PNGs |
+| --- | ---: | --- | ---: |
+| `TC_ENV_PalmSway_V1` | 1400 | `436a8fbb7582…` | 4 |
+| `TC_ENV_LaundryLine_V1` | 456 | `f8a908370996…` | 4 |
+| `TC_ENV_AwningCloth_V1` | 344 | `c03a9fdee142…` | 4 |
+| `TC_ENV_BannerCloth_V1` | 268 | `709f101b4f86…` | 4 |
+
+A still cannot distinguish a playing rig from a frozen one, so each animated
+asset is rendered at four frames across its loop from one fixed camera
+(`tools/blender/render_mwezi_quarter_motion_reviews.py`): the displacement
+between frames is the evidence. In-engine, two capture frames 1.5 s apart
+(`district_12`/`district_13`) show the same measurable change.
 
 ## Known limitations
 

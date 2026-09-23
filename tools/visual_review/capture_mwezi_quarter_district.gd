@@ -99,6 +99,25 @@ func _capture_all() -> void:
 			if not await _save("district_11_lethal_hit_marker"):
 				quit(3)
 
+	# Motion evidence: one fixed view sampled twice, seconds apart, so the
+	# district's animated dressing has visibly moved between the two frames.
+	# A single still cannot distinguish a playing rig from a frozen one.
+	if hud != null:
+		hud.visible = false
+	camera.current = true
+	camera.fov = 75.0
+	camera.global_position = Vector3(6.5, EYE_HEIGHT, -3.0)
+	camera.look_at(Vector3(-9.8, 2.2, -6.4), Vector3.UP)
+	for i in 3:
+		await process_frame
+	if not await _save("district_12_motion_sample_a"):
+		quit(3)
+	# ~1.5 s of scene time at 60 fps: a quarter of the 5 s sway loop.
+	for i in 90:
+		await process_frame
+	if not await _save("district_13_motion_sample_b"):
+		quit(3)
+
 	quit(0)
 
 func _find_overlay(_scene: Node) -> Node:

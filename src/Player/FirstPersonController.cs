@@ -23,6 +23,18 @@ public partial class FirstPersonController : CharacterBody3D
     public const string MechanicalArmCraftSuccessFeedback = "Mechanical Arm Mk I online — defeat the Galaxabrain Scout.";
 
     public event Action<string>? ActionFeedbackChanged;
+
+    /// <summary>Look travel this frame, in radians — drives onboarding step 1.</summary>
+    public event Action<float>? LookTravelled;
+
+    /// <summary>Ground distance travelled this frame, in metres — onboarding step 2.</summary>
+    public event Action<float>? GroundTravelled;
+
+    /// <summary>Raised on a jump that actually left the floor — onboarding step 3.</summary>
+    public event Action? Jumped;
+
+    /// <summary>Raised when a Mk I strike connects — onboarding step 6.</summary>
+    public event Action? AttackLanded;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
     [Export] public float JumpVelocity { get; set; } = 4.5f;
     [Export] public float MouseSensitivity { get; set; } = 0.0025f;
@@ -297,6 +309,7 @@ public partial class FirstPersonController : CharacterBody3D
         AudioCue.Play(this, ArmHitAudioPath);
         AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Impact", GlobalPosition);
         CombatOverlay?.ShowHitMarker(scout.Brain.IsDead);
+        AttackLanded?.Invoke();
         if (!scout.Brain.IsDead)
         {
             ShowActionFeedback(GalaxabrainScoutHitFeedback);
@@ -559,6 +572,7 @@ public partial class FirstPersonController : CharacterBody3D
         if (Input.IsActionJustPressed("jump") && IsOnFloor())
         {
             velocity.Y = JumpVelocity;
+            Jumped?.Invoke();
         }
 
         var inputDirection = Input.GetVector("move_left", "move_right", "move_forward", "move_backward");
@@ -607,6 +621,11 @@ public partial class FirstPersonController : CharacterBody3D
         var grounded = IsOnFloor();
         var horizontalSpeed = new Vector2(Velocity.X, Velocity.Z).Length();
         var travelled = grounded ? horizontalSpeed * deltaSeconds : 0.0f;
+        if (travelled > 0.0f)
+        {
+            GroundTravelled?.Invoke(travelled);
+        }
+
         // Sprinting bobs harder; airborne does not bob at all.
         var intensity = grounded && horizontalSpeed > 0.1f
             ? Mathf.Clamp(horizontalSpeed / WalkSpeed, 0.0f, 1.0f) * (isSprinting ? 1.25f : 1.0f)
@@ -617,6 +636,7 @@ public partial class FirstPersonController : CharacterBody3D
     private void UpdateViewmodelSway(Vector2 inputDirection, float deltaSeconds)
     {
         _viewmodelSway.Update(_lookDeltaThisFrame, inputDirection.X, inputDirection.Y, deltaSeconds);
+        LookTravelled?.Invoke(_lookDeltaThisFrame.Length());
         _lookDeltaThisFrame = Vector2.Zero;
 
         // The swing tween owns the mechanical arm's rotation while it plays, so

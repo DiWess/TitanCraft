@@ -11,7 +11,7 @@ TitanCraft Agent Studio is the repository-local operating system for agent gover
 | `agents/` | Specialist role contracts with authority, required memories, required skills, rejection rules, and escalation rules. |
 | `memory/` | Indexed atomic memory cards for scope, visual failures, Godot safety, C# safety, assets, CI, prompts, gates, architecture, and debugging. |
 | `skills/` | Practical repeatable workflows with required inputs, procedures, automatic failures, output format, and evidence. |
-| `indexes/` | Routing maps for agents, memories, skills, verdict vocabulary, and evidence requirements. |
+| `indexes/` | Routing maps for agents, memories, skills, verdict vocabulary, evidence requirements, and path ownership rights. |
 | `decisions/` | Architecture Decision Record templates. |
 | `prompts/` | Reusable task prompts with placeholders for scope, evidence, tests, and verdicts. |
 | `checklists/` | Short fail-closed checklists for task start, scene edits, visual claims, commits, PRs, merges, assets, gameplay, and release readiness. |
@@ -40,6 +40,34 @@ Examples:
 - Visual scene composition routes to Art Director, Visual Reviewer, Technical Director, and QA Lead. Broad requests such as “make the best version” or “use Blender for all visual design” must be narrowed to one Crash Site visual slice and run through the Blender Asset Forge plus opened-PNG review gates before any approval claim.
 - Gameplay bugs route to Gameplay Engineer, QA Lead, and Technical Director.
 - Build failures route to Build Release Engineer, Tools Engineer, and QA Lead.
+
+## How Ownership Rights Work
+
+`studio/indexes/ownership.yml` maps repository path globs to one accountable owning agent, its required reviewers, and its write right. Root `AGENTS.md` section 11 defines the rules. Routing decides who reviews a task; ownership decides who may write a file.
+
+Before editing any file, resolve its owner:
+
+```bash
+python3 tools/agent_ownership.py src/Player/PlayerController.cs
+python3 tools/agent_ownership.py --json scenes/UI/Hud.tscn
+python3 tools/agent_ownership.py --list
+```
+
+Rules that matter in practice:
+
+- `agent_write` means the owner authors the change and the listed reviewers must review before `PASS`.
+- `human_approval_required` means no agent may touch the path without explicit human instruction. `README.md`, `AGENTS.md`, `CLAUDE.md`, and `PROJECT_DIRECTOR_START_HERE.md` are human-owned.
+- The most specific matching path wins, so `scenes/UI/**` outranks `scenes/**`.
+- An unowned path is a routing signal, not permission: escalate to the Producer and add the path to the index first.
+- Review-only roles such as Visual Reviewer, Game Director, Level Designer, UX Designer, and Creative Director own no paths by design; they appear as required reviewers instead.
+
+Each agent file repeats its assignment under `## Owned Paths`. The index and the agent files must agree, and `python3 tools/validate_agent_studio.py` fails on drift.
+
+## How to Change Ownership
+
+1. Edit the entry in `studio/indexes/ownership.yml`.
+2. Update the `## Owned Paths` section of every affected agent file in the same commit.
+3. Run `python3 tools/validate_agent_studio.py` and `python3 tools/test_agent_ownership.py`.
 
 ## How Evidence Gates Work
 
@@ -123,9 +151,10 @@ Expected evidence includes source URL, licence, file hash, audition screenshot, 
 ## How to Add a New Agent
 
 1. Create a markdown file in `studio/agents/`.
-2. Include mission, authority, forbidden actions, required inputs, required outputs, required memories, required skills, review questions, automatic rejection conditions, approved verdicts, and escalation rules.
+2. Include mission, authority, owned paths, forbidden actions, required inputs, required outputs, required memories, required skills, review questions, automatic rejection conditions, approved verdicts, and escalation rules.
 3. Add or update routes in `studio/indexes/agent_routing.yml`.
-4. Run `python3 tools/validate_agent_studio.py`.
+4. Declare the agent's write authority in `studio/indexes/ownership.yml`, or state in `## Owned Paths` that the agent owns no paths. The `## Owned Paths` section must match the index exactly.
+5. Run `python3 tools/validate_agent_studio.py` and `python3 tools/test_agent_ownership.py`.
 
 ## Validation
 
@@ -135,6 +164,7 @@ Run:
 python3 tools/validate_agent_studio.py
 python3 tools/test_agent_task_router.py
 python3 tools/test_agent_preflight.py
+python3 tools/test_agent_ownership.py
 git diff --check
 ```
 

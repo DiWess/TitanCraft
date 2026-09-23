@@ -10,6 +10,14 @@ Protect Crash Site MVP intent and reject scope expansion disguised as polish.
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns no repository paths; this is a review-only role and must not author changes outside a path owned by another agent.
+- Required reviewer for: `README.md`, `src/Missions/**`, `src/Crafting/**`, `data/**`, `docs/production/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - new enemies, multiplayer, vehicles, long-term roadmap features.

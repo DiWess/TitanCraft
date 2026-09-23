@@ -60,8 +60,13 @@ jobs:
           if (-not $godotExe) { throw 'Godot_v4.7-stable_mono_win64.exe not found after extraction' }
           $godotExe.DirectoryName | Out-File -FilePath $env:GITHUB_PATH -Append
           "GODOT_BIN=$($godotExe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-          & $godotExe.FullName --headless --version | Select-String '4.7.stable.mono.official.5b4e0cb0f'
+          $godotVersion = (& $godotExe.FullName --headless --version | Select-Object -Last 1).Trim()
           if ($LASTEXITCODE -ne 0) { throw "Godot version check failed with exit code $LASTEXITCODE" }
+          # Select-String is a cmdlet and never sets $LASTEXITCODE, so the pin must be
+          # asserted on the captured output or a version mismatch passes silently.
+          if ($godotVersion -notmatch '^4\.7\.stable\.mono\.official\.5b4e0cb0f$') {
+            throw "Unexpected Godot version '$godotVersion'; expected 4.7.stable.mono.official.5b4e0cb0f"
+          }
       - name: Prepare temporary audio assets
         shell: pwsh
         run: python tools/prepare_audio_assets.py
@@ -131,7 +136,8 @@ jobs:
           path: |
             artifacts/playtest-journey/**
             builds/Windows/TitanCraft.exe
-            builds/Windows/export.log
+            tests/TestResults/export.log
+            tests/TestResults/import.log
 
   aesthetic-captures:
     name: Godot scene captures for aesthetic review

@@ -7,8 +7,16 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 STUDIO = ROOT / "studio"
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from agent_ownership import (  # noqa: E402
+    HUMAN_OWNER,
+    RIGHTS as OWNERSHIP_RIGHTS,
+    OwnershipError,
+    load_entries as load_ownership_entries,
+)
+
 AGENT_HEADINGS = [
-    "Mission", "Authority", "Forbidden Actions", "Required Inputs",
+    "Mission", "Authority", "Owned Paths", "Forbidden Actions", "Required Inputs",
     "Required Outputs", "Required Memories", "Required Skills", "Review Questions",
     "Automatic Rejection Conditions", "Approved Verdicts", "Escalation Rules",
 ]
@@ -22,8 +30,9 @@ SKILL_HEADINGS = [
 ]
 ROUTING_FILES = [
     "agent_routing.yml", "memory_routing.yml", "skill_routing.yml",
-    "verdicts.yml", "evidence_requirements.yml",
+    "verdicts.yml", "evidence_requirements.yml", "ownership.yml",
 ]
+OWNERSHIP_FIELDS = ["path", "owner", "reviewers", "rights"]
 FORBIDDEN_VAGUE = ["done", "improved", "looks good", "should be fine", "tests passed"]
 
 errors = []
@@ -94,6 +103,88 @@ def validate_indexes():
         if re.search(rf"\b{re.escape(vague)}\b", approved_section, re.I):
             errors.append(f"Forbidden vague verdict appears in approved verdicts: {vague}")
 
+def declared_owned_paths(text: str) -> set:
+    """Read the globs an agent file claims under its `## Owned Paths` heading."""
+    match = re.search(r"^##\s+Owned Paths\s*$", text, re.I | re.M)
+    if not match:
+        return set()
+    rest = text[match.end():]
+    nxt = re.search(r"^##\s", rest, re.M)
+    section = rest[: nxt.start()] if nxt else rest
+    line = re.search(r"^-\s+Owns\s+\(`agent_write`\):\s*(.+)$", section, re.M)
+    if not line:
+        return set()
+    return set(re.findall(r"`([^`]+)`", line.group(1)))
+
+
+def validate_ownership():
+    agents = {path.stem for path in (STUDIO / "agents").glob("*.md")}
+    try:
+        entries = load_ownership_entries(STUDIO / "indexes" / "ownership.yml")
+    except OwnershipError as error:
+        errors.append(f"Ownership index unreadable: {error}")
+        return
+
+    seen = set()
+    owned_by_agent = {}
+    for entry in entries:
+        label = entry.get("path", "<missing path>")
+        for field in OWNERSHIP_FIELDS:
+            if field not in entry:
+                errors.append(f"Ownership entry '{label}' missing field '{field}'")
+        if "owner" not in entry or "rights" not in entry:
+            continue
+
+        if label in seen:
+            errors.append(f"Duplicate ownership path: {label}")
+        seen.add(label)
+
+        if entry["rights"] not in OWNERSHIP_RIGHTS:
+            errors.append(
+                f"Ownership entry '{label}' has unknown rights '{entry['rights']}'"
+            )
+
+        owner = entry["owner"]
+        if owner != HUMAN_OWNER and owner not in agents:
+            errors.append(f"Ownership entry '{label}' names unknown owner '{owner}'")
+        if owner == HUMAN_OWNER and entry["rights"] != "human_approval_required":
+            errors.append(
+                f"Ownership entry '{label}' is human-owned but not human_approval_required"
+            )
+        if owner != HUMAN_OWNER and entry["rights"] == "human_approval_required":
+            errors.append(
+                f"Ownership entry '{label}' requires human approval but names agent owner '{owner}'"
+            )
+
+        if not entry["reviewers"]:
+            errors.append(f"Ownership entry '{label}' declares no reviewers")
+        for reviewer in entry["reviewers"]:
+            if reviewer not in agents:
+                errors.append(
+                    f"Ownership entry '{label}' names unknown reviewer '{reviewer}'"
+                )
+        if owner in entry["reviewers"]:
+            errors.append(f"Ownership entry '{label}' lists its owner as its own reviewer")
+
+        if owner != HUMAN_OWNER:
+            owned_by_agent.setdefault(owner, set()).add(label)
+
+    # Agent files and the index must not drift apart.
+    for path in sorted((STUDIO / "agents").glob("*.md")):
+        declared = declared_owned_paths(read(path))
+        indexed = owned_by_agent.get(path.stem, set())
+        for extra in sorted(declared - indexed):
+            errors.append(
+                f"Agent {path.stem} declares owned path '{extra}' "
+                "that studio/indexes/ownership.yml does not assign to it"
+            )
+        for missing in sorted(indexed - declared):
+            errors.append(
+                f"Agent {path.stem} does not declare owned path '{missing}' "
+                "assigned to it by studio/indexes/ownership.yml"
+            )
+
+
 def validate_no_empty_placeholders():
     for path in STUDIO.rglob("*"):
         if path.is_file():
@@ -107,6 +198,7 @@ validate_agents()
 validate_memory()
 validate_skills()
 validate_indexes()
+validate_ownership()
 validate_no_empty_placeholders()
 
 if errors:
@@ -116,4 +208,4 @@ if errors:
     sys.exit(1)
 
 print("Agent Studio validation passed.")
-print("Checked agents, memory cards, memory/skills indexes, skill headings, routing indexes, verdict index, and empty placeholders.")
+print("Checked agents, memory cards, memory/skills indexes, skill headings, routing indexes, verdict index, ownership rights, and empty placeholders.")

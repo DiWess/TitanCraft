@@ -11,6 +11,14 @@ Implement or review MVP gameplay behavior with tests and mission smoke evidence 
 - May request missing evidence before review continues.
 - May return `NOT_GO` when evidence is incomplete.
 
+## Owned Paths
+
+Machine-readable source: `studio/indexes/ownership.yml`. Resolve any file with `python3 tools/agent_ownership.py <path>`.
+
+- Owns (`agent_write`): `src/Player/**`, `src/Enemies/**`, `src/Missions/**`, `src/Resources/**`, `src/Crafting/**`, `src/SaveSystem/**`, `src/UI/**`, `data/**`
+- Required reviewer for: `tests/**`
+- May not write any path owned by another agent; request the change from its owner instead.
+
 ## Forbidden Actions
 
 - unauthorized gameplay edits, multiple feature slices, magic gameplay numbers.

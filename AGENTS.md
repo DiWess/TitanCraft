@@ -139,3 +139,34 @@ git diff --check
 ## 10. Pull Request Rule
 
 Pull requests must include evidence, tests, manual verification, risks, and a final verdict. A PR must not claim memories are exhaustive or imply gameplay scope has changed.
+
+## 11. Ownership Rights
+
+`studio/indexes/ownership.yml` is the machine-readable source of truth for which agent owns which repository path. Prose statements in `studio/agents/*.md` describe an agent's domain; the index decides file authority.
+
+Resolve ownership before editing:
+
+```bash
+python3 tools/agent_ownership.py <path>
+```
+
+### Rights Vocabulary
+
+- `agent_write`: the owning agent may author changes to the path inside an authorized task, then satisfy the listed reviewers before claiming `PASS`.
+- `human_approval_required`: no agent may change the path without explicit human instruction in the task. The listed owner acts as steward and reviewer only. `README.md`, `AGENTS.md`, `CLAUDE.md`, and `PROJECT_DIRECTOR_START_HERE.md` are human-owned.
+
+### Rules
+
+1. One accountable owner per path. Reviewers may block; reviewers may not silently author.
+2. An agent must not write a path owned by another agent. Request the change from the owner and escalate to the Producer if the owner disagrees.
+3. When several patterns match, the most specific path wins. `scenes/UI/**` outranks `scenes/**`.
+4. An owner may not be listed as its own reviewer.
+5. A path that matches no entry is unowned. Route it to the Producer and add it to the index before changing it; do not assume ownership by editing.
+6. Review-only roles own no paths. Owning nothing is a valid, enforced state, not a gap to fill.
+7. Ownership grants write authority only. It never grants scope authority: an owner may not expand MVP scope beyond `README.md` inside a path it owns.
+
+### Enforcement
+
+Every file in `studio/agents/` must declare an `## Owned Paths` section listing exactly the paths the index assigns to it. `python3 tools/validate_agent_studio.py` fails when an agent file and the index disagree, when an owner or reviewer does not exist, when a path is duplicated, or when a human-owned path is opened to agent writes.
+
+Changing ownership is a governance change: update `studio/indexes/ownership.yml` and the affected agent files in the same commit, then run `python3 tools/validate_agent_studio.py` and `python3 tools/test_agent_ownership.py`.

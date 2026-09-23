@@ -42,6 +42,10 @@ ASSETS = [
     "TC_ENV_MarketStall_V1",
     "TC_ENV_PalmCluster_V1",
     "TC_ENV_CoralRubble_V1",
+    # Seafront kit, built from data/art/comorian_seafront_spec.json.
+    "TC_ENV_SeaWallQuay_V1",
+    "TC_ENV_CivicHallSeafront_V1",
+    "TC_ENV_LavaShoreline_V1",
 ]
 
 RESOLUTION_X = 1280

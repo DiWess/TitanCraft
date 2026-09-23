@@ -1,0 +1,172 @@
+{
+  "schema": "titancraft.art.seafront_reference.v1",
+  "spec_version": "1.0.0",
+  "updated": "2026-09-23",
+  "purpose": "Machine-readable reference for the Mwezi Quarter seafront. tools/blender/create_seafront_kit_v1.py reads this file and builds the assets from it; docs/art/references/comorian-seafront-reference-v1.md documents every field and its source. Change a value here and regenerate -- never hand-edit the generated assets.",
+  "provenance": {
+    "photographs_consulted": false,
+    "photograph_note": "No photographs, maps, aerial imagery or survey data were available to the authoring environment, and none were used. Every value below is derived from the text sources listed in `sources`, from general knowledge of Swahili-Comorian coral-rag building tradition, or is an explicit authoring assumption marked `assumed`. Fields marked `needs_photo` are the ones a photograph would settle; they currently hold a defensible default.",
+    "creative_property": "README section 67 and the 2026-09-17 human decision keep the in-game place renamed and fictional. This spec captures architectural morphology, not identity: no real building, real place name or religious function is reproduced. The hall is a secular civic ruin.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Moroni,_Comoros",
+      "https://en.wikivoyage.org/wiki/Grand_Comore",
+      "https://madainproject.com/badjanani_mosque_(moroni)",
+      "https://www.archnet.org/sites/15056"
+    ]
+  },
+  "site": {
+    "description": "A stone quarter meeting the sea on a volcanic coast. The quarter's civic hall stands at the water's edge on a raised platform; a quay runs along the harbour front; black lava rock forms the shoreline where there is no built edge; the medina's alleys run back from the water.",
+    "confidence": "text-sourced",
+    "notes": "Wikivoyage: the mosque 'sits on the harbor adjacent to a shipyard and the medina'; the medina is 'winding alleys between ancient buildings'. Wikipedia: Moroni has 'a rocky volcanic coastline, mostly without beaches'."
+  },
+  "sea": {
+    "water_level_m": -0.35,
+    "extent_m": [
+      140.0,
+      120.0
+    ],
+    "colour_deep": [
+      0.043,
+      0.129,
+      0.184
+    ],
+    "colour_shallow": [
+      0.11,
+      0.325,
+      0.365
+    ],
+    "roughness": 0.08,
+    "metallic": 0.0,
+    "swell_amplitude_m": 0.09,
+    "swell_wavelength_m": 12.0,
+    "confidence": "assumed",
+    "notes": "Indian Ocean off a reef coast reads deep blue-green offshore and turquoise over shallow coral. Level sits below the quay coping so the wall has visible freeboard. Swell wavelength is a long ocean swell, not a wind chop: at 140 m across a 36-column grid the sample spacing is ~3.9 m, so a short wavelength aliases rather than reads."
+  },
+  "shoreline": {
+    "material_colour": [
+      0.086,
+      0.082,
+      0.078
+    ],
+    "roughness": 0.94,
+    "block_count": 26,
+    "block_size_range_m": [
+      0.5,
+      2.4
+    ],
+    "band_depth_m": 6.0,
+    "tide_stain_colour": [
+      0.16,
+      0.149,
+      0.129
+    ],
+    "confidence": "text-sourced",
+    "notes": "Wikivoyage describes the island's first impression as a 'volcanic island of harsh black rock'; Wikipedia confirms a rocky volcanic coastline mostly without beaches. Near-black basalt is the single strongest contrast against the lime-washed stone."
+  },
+  "quay": {
+    "real_reference_length_m": 80.0,
+    "segment_length_m": 12.0,
+    "height_above_water_m": 1.9,
+    "depth_m": 2.2,
+    "coping_overhang_m": 0.18,
+    "bollard_count_per_segment": 3,
+    "bollard_height_m": 0.7,
+    "stair_count_per_segment": 1,
+    "confidence": "text-sourced",
+    "notes": "Wikipedia gives Moroni's port an '80 metres quay with a draught of 3.5 metres'. The 80 m is the real-world reference; the asset is a 12 m tile so the level can lay any run length."
+  },
+  "civic_hall": {
+    "description": "The quarter's landmark at the water's edge: a low whitewashed coral-stone hall with an arcaded seaward front, a flat roof behind a parapet, and a square tower at one corner. Secular civic ruin in fiction.",
+    "footprint_m": [
+      16.0,
+      11.0
+    ],
+    "wall_height_m": 5.2,
+    "parapet_height_m": 0.9,
+    "arcade_bay_count": 5,
+    "arcade_span_m": 2.4,
+    "arcade_pier_width_m": 0.72,
+    "arcade_spring_height_m": 2.3,
+    "arch_point_ratio": 0.22,
+    "tower_base_m": 3.4,
+    "tower_height_m": 13.5,
+    "tower_stage_count": 3,
+    "tower_gallery": true,
+    "platform_height_m": 1.2,
+    "confidence": "mixed",
+    "needs_photo": [
+      "arcade_bay_count",
+      "tower_height_m",
+      "tower_stage_count",
+      "footprint_m"
+    ],
+    "notes": "Dates are firm (built 1427, tower added 1921 per Wikipedia/Madain) but no source gives dimensions, bay counts or tower height. Values are proportioned from the coral-rag tradition and from what reads at player scale. A photograph would settle the four fields listed."
+  },
+  "materials": {
+    "lime_render": [
+      0.858824,
+      0.831373,
+      0.760784
+    ],
+    "coral_rag": [
+      0.560784,
+      0.509804,
+      0.423529
+    ],
+    "weathered_stone": [
+      0.352941,
+      0.317647,
+      0.262745
+    ],
+    "carved_hardwood": [
+      0.223529,
+      0.145098,
+      0.086275
+    ],
+    "lava_rock": [
+      0.086,
+      0.082,
+      0.078
+    ],
+    "confidence": "text-sourced",
+    "notes": "Sources repeatedly name coral stone and whitewashed walls, with carved wooden doors, against dark volcanic rock. The first four match the existing Mwezi Quarter kit exactly so the seafront and the inland district read as one place."
+  },
+  "vegetation": {
+    "palm_cluster_count": 6,
+    "palm_height_range_m": [
+      4.5,
+      7.5
+    ],
+    "confidence": "assumed",
+    "needs_photo": [
+      "palm_cluster_count"
+    ],
+    "notes": "Coconut palms are standard on this coast. Count is an authoring choice for skyline break-up, not a sourced figure."
+  },
+  "assets": [
+    {
+      "name": "TC_ENV_SeaWallQuay_V1",
+      "builder": "quay",
+      "triangle_budget": 1400,
+      "collision": "authored-in-scene"
+    },
+    {
+      "name": "TC_ENV_CivicHallSeafront_V1",
+      "builder": "civic_hall",
+      "triangle_budget": 5200,
+      "collision": "authored-in-scene"
+    },
+    {
+      "name": "TC_ENV_LavaShoreline_V1",
+      "builder": "shoreline",
+      "triangle_budget": 1800,
+      "collision": "authored-in-scene"
+    },
+    {
+      "name": "TC_ENV_HarbourSea_V1",
+      "builder": "sea",
+      "triangle_budget": 2400,
+      "collision": "none"
+    }
+  ]
+}

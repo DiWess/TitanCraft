@@ -75,6 +75,11 @@ budgets = {
     'TC_ENV_LaundryLine_V1.blend': 560,
     'TC_ENV_AwningCloth_V1.blend': 420,
     'TC_ENV_BannerCloth_V1.blend': 340,
+    # Seafront kit, budgets taken from data/art/comorian_seafront_spec.json.
+    'TC_ENV_SeaWallQuay_V1.blend': 1400,
+    'TC_ENV_CivicHallSeafront_V1.blend': 5200,
+    'TC_ENV_LavaShoreline_V1.blend': 1800,
+    'TC_ENV_HarbourSea_V1.blend': 2400,
 }
 max_triangles = budgets.get(Path(path).name, 500)
 if triangles > max_triangles:

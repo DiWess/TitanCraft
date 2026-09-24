@@ -1,6 +1,6 @@
 {
   "schema": "titancraft.blender_asset_forge.manifest.v1",
-  "generated_at": "2026-09-24T00:03:04.534945+00:00",
+  "generated_at": "2026-09-24T04:42:18.271042+00:00",
   "entries": [
     {
       "asset_name": "TC_ENV_AlienShard_EmbeddedCluster_V1",
@@ -19,8 +19,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -44,8 +43,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -69,8 +67,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -94,7 +91,6 @@
       "triangle_count": 248,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/back.png",
-        "artifacts/asset-review/TC_ENV_CableOccluder_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/front.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/left.png",
@@ -125,7 +121,6 @@
       "triangle_count": 124,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_CampAwning_V1/back.png",
-        "artifacts/asset-review/TC_ENV_CampAwning_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/front.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/left.png",
@@ -157,7 +152,6 @@
       "triangle_count": 92,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_LightPole_V1/back.png",
-        "artifacts/asset-review/TC_ENV_LightPole_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/front.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/left.png",
@@ -189,7 +183,6 @@
       "triangle_count": 96,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/back.png",
-        "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/front.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/left.png",
@@ -254,8 +247,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -282,8 +274,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -310,8 +301,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -338,8 +328,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_RockOccluder_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_RockOccluder_V1/front.png",
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/scale_reference.png"
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -368,8 +357,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_LightingReference_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_LightingReference_V1/front.png",
-        "artifacts/asset-review/TC_LightingReference_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_LightingReference_V1/scale_reference.png"
+        "artifacts/asset-review/TC_LightingReference_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -1365,8 +1353,7 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_PolishDetails_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_PolishDetails_V1/front.png",
-        "artifacts/asset-review/TC_PolishDetails_V1/hero_three_quarter.png",
-        "artifacts/asset-review/TC_PolishDetails_V1/scale_reference.png"
+        "artifacts/asset-review/TC_PolishDetails_V1/hero_three_quarter.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,

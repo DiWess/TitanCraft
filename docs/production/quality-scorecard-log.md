@@ -476,3 +476,35 @@ the MVP forbids, and axes 2/3 are feel axes that `quality_benchmark_v1.md` rule 
 headless container from scoring. Nothing in this pass changes either.
 
 **Next unlock, unchanged:** a human plays the Windows build and records dated feel and aesthetic verdicts.
+
+---
+
+## 2026-09-24 — Description-sourced material correction, and the first human visual verdict
+
+The seafront spec's highest-value fields were labelled `needs_photo` and parked on defaults, waiting on
+an input this environment cannot receive. Written descriptions of Moroni's two medina quarters replaced
+them, and contradicted three values the kits had already shipped. Separately, a human viewed three of
+the resulting renders and recorded the first human verdict against this art pass
+(`docs/art/reviews/2026-09-24-human-render-verdict.md`).
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Untouched. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | = | Untouched. Still `HUMAN_BLOCKED` — the human viewed static renders, not gameplay. |
+| 3 | Movement & controls | 4.0 | 9.5 | = | Untouched. `HUMAN_BLOCKED` for the same reason. |
+| 4 | Crafting & progression | 5.5 | 8.5 | = | Untouched. |
+| 5 | World / level design | 6.5 | 8.5 | = | `TC_ENV_BeachPocket_V1` is built and validated but is **not placed in any scene**, so it changes no level. Held. |
+| 6 | Visual art & presentation | 8.5 | 9.0 | +0.5 | Three shipped values were wrong against written description and are corrected: plaster loss reveals ink-black basalt (`0.090, 0.086, 0.082`) not pale coral rag; quarter timber is age-bleached (`0.435, 0.400, 0.353`) not dark hardwood; the civic hall stands on a 1.6 m dark volcanic base, restoring the composition's strongest value contrast. Plaster loss is now real geometry — a rubble core carrying a boolean-cut plaster skin — after two render-diagnosed failures. **Also the first human aesthetic sign-off on this pass** (`docs/art/reviews/2026-09-24-human-render-verdict.md`), which is what allows any movement here at all. Held below 9: only 3 of ~49 assets were shown to the human, and the art is still untextured flat-colour geometry. |
+| 7 | Audio & feedback | 3.5 | 8.5 | = | Untouched. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified: build 0/0; `dotnet test` 116/116; `./tools/test.sh` exit 0; import 0 errors; `TITANCRAFT_INTEGRATION_TESTS_PASS`; MVP smoke 11/11; Windows export produced; `BLENDER_ASSET_VALID` on all 15 kit assets; manifest regenerated to 49 entries with no non-passing status. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged and still capped by `README.md` section 6. One new unplaced environment asset is not content. |
+| 10 | Process integrity of studio claims | 4.0 | n/a | +0.5 | The reference document now records, in a table, three values it proved **wrong** rather than merely unconfirmed — a reference that never corrects the art is not doing any work. The three-attempt failure sequence on the plaster geometry is written up rather than only the fix. `platform_height_m` and `carved_hardwood` were deleted rather than left beside their replacements, because two values for one thing is how a correction quietly comes back. The human verdict artifact states its own limits explicitly so it cannot later be cited as a playtest. |
+
+**Composite (axes 1–9):** 5.4 / 10 (48.5/9 = 5.39), up from 5.3.
+
+**Still not a 10/10,** and the caps are unchanged. Axis 9 needs content the MVP forbids. Axes 2, 3 and 7
+are feel axes that `quality_benchmark_v1.md` rule 2 bars from moving without a dated human *playtest*
+note — and the 2026-09-24 human verdict is explicitly **not** one. It is a verdict on three images.
+
+**Next unlock, unchanged:** a human runs the Windows build, walks the quarter, and files a dated note
+under `docs/production/playtests/`.

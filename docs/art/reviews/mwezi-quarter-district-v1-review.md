@@ -135,8 +135,15 @@ Full detail, including the contested dating of the reference building and the
 religious features deliberately omitted under README section 67, is in
 `docs/art/references/comorian-seafront-reference-v1.md`.
 
-Unchanged by this addendum: no human has reviewed any of it visually, and the
-verdict below still stands on its original terms.
+**Human verdict, 2026-09-24.** A human viewed three of these renders --
+`TC_ENV_CoralWallSegment_V1/player_eye_level.png`,
+`TC_ENV_CivicHallSeafront_V1/hero_three_quarter.png` and
+`TC_ENV_BeachPocket_V1/hero_three_quarter.png` -- and validated them. That is
+the first human visual sign-off on this pass and it is recorded, with its
+limits, in `docs/art/reviews/2026-09-24-human-render-verdict.md`. It covers
+three images. It is not a playtest, it does not approve the ~46 assets that
+were not shown, and the feel axes stay `HUMAN_BLOCKED` under
+`studio/decisions/quality_benchmark_v1.md` rule 2.
 
 ## Verdict
 

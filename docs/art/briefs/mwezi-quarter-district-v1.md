@@ -13,7 +13,7 @@ Authorised by an explicit human decision on 2026-09-17, recorded as an amendment
 ## Creative-property contract (README section 67)
 
 - The in-game place is the **Mwezi Quarter** and carries its own name and fiction.
-- The architecture draws on the **Swahili-Comorian coral-rag building tradition** of the Indian Ocean coast: lime-washed coral stone, pointed arcading on square piers, carved hardwood doors under heavy lintels, flat roofs with parapets, external stairs, harbour retaining walls.
+- The architecture draws on the **Swahili-Comorian coral-rag building tradition** of the Indian Ocean coast: lime-washed plaster over a rubble core of basalt, crushed coral and sea sand; pointed arcading on square piers; carved timber doors under heavy lintels, the timber split and bleached grey by age and salt air; flat roofs with parapets; external stairs; harbour retaining walls.
 - **No real place, real building, or religious function is named or reproduced.** The arcaded hall is a secular civic ruin — a former harbour assembly hall — never a place of worship.
 - The quarter's morphology is an **approximation** derived from architectural tradition. It is not survey data: no maps, aerial imagery, photographs or measurements were available to the authoring environment, and none were used. Any resemblance to a specific real street plan is neither claimed nor intended.
 
@@ -21,7 +21,7 @@ Authorised by an explicit human decision on 2026-09-17, recorded as an amendment
 
 - Scale: 1 Blender/Godot unit = 1 metre, Z-up authoring, Y-up GLB export.
 - Origin: world zero at ground contact for every asset.
-- Palette: lime render `(0.859, 0.831, 0.761)`, coral rag `(0.561, 0.510, 0.424)`, weathered stone `(0.353, 0.318, 0.263)`, carved hardwood `(0.224, 0.145, 0.086)`, terracotta cloth, dry palm frond. Graphite / worn steel / interactive orange are lifted from the existing repo materials so the quarter and the wreck share one tonal family.
+- Palette: lime render `(0.859, 0.831, 0.761)`, dressed coral rag `(0.561, 0.510, 0.424)`, weathered stone `(0.353, 0.318, 0.263)`, plaster-loss core `(0.090, 0.086, 0.082)`, bleached timber `(0.435, 0.400, 0.353)`, terracotta cloth, dry palm frond. The last two were corrected on 2026-09-24 against written description of the quarters: broken stone is ink-black basalt, not pale coral rag, and the woodwork is bleached rather than dark. `docs/art/references/comorian-seafront-reference-v1.md` section 3.5 is authoritative for all of them and governs the seafront kit too. Graphite / worn steel / interactive orange are lifted from the existing repo materials so the quarter and the wreck share one tonal family.
 - Materials: Principled BSDF node materials only; the tower lamp uses Emission Strength.
 - Edge treatment: every asset carries a single 18 mm angle-limited bevel, applied before export. Flat-shaded primitive architecture reads as paper until its edges catch light; this roughly triples raw primitive counts and is the reason the budgets below are higher than a prop's.
 - Collision policy: `none` on every mesh (`titancraft_collision` custom property), enforced by `tools/blender/validate_blender_asset.py`.
@@ -35,7 +35,7 @@ Authorised by an explicit human decision on 2026-09-17, recorded as an amendment
 | `TC_ENV_CoralWallSegment_V1` | Alley edges, courtyard boundaries | 6.5 × 1.0 × 3.2 | 396 | Rendered wall run with coping ledge, damp-course plinth, two shallow buttress piers, and patches where the lime render has fallen to bare rag |
 | `TC_ENV_ArcadeBay_V1` | Civic hall front; west face of the workbench courtyard | 12.0 × 1.4 × 6.3 | 2288 | Three pointed arches on square piers with bases and capitals, spandrel wall, cornice, merlon skyline |
 | `TC_ENV_QuarterTower_V1` | Primary navigation landmark | 3.7 × 3.7 × 11.9 | 1460 | Three tapering stages with string courses, recessed slit openings, open belvedere, salvaged signal lamp |
-| `TC_ENV_CarvedDoorway_V1` | Eye-level detail along the alleys | 3.6 × 0.9 × 3.5 | 2100 | Heavy stone surround with dentil frieze, recessed dark reveal, twin hardwood leaves with brass boss studs |
+| `TC_ENV_CarvedDoorway_V1` | Eye-level detail along the alleys | 3.6 × 0.9 × 3.5 | 2100 | Heavy stone surround with dentil frieze, recessed dark reveal, twin bleached-timber leaves with brass boss studs |
 | `TC_ENV_StoneHouse_V1` | The quarter's residential mass | 7.0 × 6.0 × 6.4 | 1848 | Two storeys, parapet roof, recessed shuttered windows with sills, external stair to the roof terrace |
 | `TC_ENV_StairTerrace_V1` | The map's vertical element | 6.3 × 9.0 × 3.0 | 616 | Stepped flight between cheek walls onto a parapeted platform |
 | `TC_ENV_SeawallRun_V1` | Harbour edge of the quarter | 10.3 × 1.4 × 2.6 | 956 | Coped retaining wall with tide band, mooring bollards, eroded gaps |

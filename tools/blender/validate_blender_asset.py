@@ -59,7 +59,11 @@ budgets = {
     # totals ~12.2k triangles, well inside the README section 28 target of
     # 60 FPS on a mid-range Windows PC, where draw calls and dynamic lights --
     # not triangle count at this scale -- are the limiting factor.
-    'TC_ENV_CoralWallSegment_V1.blend': 460,
+    # Raised 460 -> 1060 when the plaster-loss patches became recessed rubble
+    # rather than flat slabs: a hole in the render costs a back slab plus four
+    # core stones per patch, three patches, all bevelled. Measured 924 plus
+    # ~15% authoring headroom.
+    'TC_ENV_CoralWallSegment_V1.blend': 1060,
     'TC_ENV_ArcadeBay_V1.blend': 2650,
     'TC_ENV_QuarterTower_V1.blend': 1700,
     'TC_ENV_CarvedDoorway_V1.blend': 2450,
@@ -79,6 +83,9 @@ budgets = {
     'TC_ENV_SeaWallQuay_V1.blend': 1400,
     'TC_ENV_CivicHallSeafront_V1.blend': 5200,
     'TC_ENV_LavaShoreline_V1.blend': 1800,
+    # Sand is a 22x12 displaced grid, not boxes, so most of this budget is the
+    # grid itself; the rocks are the only bevelled geometry in the asset.
+    'TC_ENV_BeachPocket_V1.blend': 1400,
     'TC_ENV_HarbourSea_V1.blend': 2400,
 }
 max_triangles = budgets.get(Path(path).name, 500)

@@ -10,11 +10,15 @@ whole point of the system:
     blender --background --python tools/blender/create_seafront_kit_v1.py
     blender --background --python tools/blender/export_asset.py -- <blend> <glb>
 
-The spec records, per field, whether the value is text-sourced, assumed, or
-`needs_photo`. No photographs were available to the authoring environment, so
-the `needs_photo` fields currently hold defensible defaults; supplying a
-photograph means changing those numbers in the spec and re-running this
-script, with no code change at all.
+The spec records, per field, whether the value is text-sourced,
+description-sourced, assumed, or unresolved. No photographs were available to
+the authoring environment and none were used; spec 2.0.0 replaced the earlier
+photo-gated placeholders with values taken from written descriptions of the two
+historic quarters of Moroni's medina. The handful of `unresolved` fields (hall
+footprint, bay count, tower height and stage count) are the ones no consulted
+description measures, and they still hold defensible defaults. Correcting any
+of them means changing a number in the spec and re-running this script, with no
+code change at all.
 
 Assets built (all visual-only and collisionless, per the asset contract --
 gameplay collision is authored separately in the scene):
@@ -22,6 +26,7 @@ gameplay collision is authored separately in the scene):
   TC_ENV_SeaWallQuay_V1        -- harbour quay tile with coping, bollards, steps
   TC_ENV_CivicHallSeafront_V1  -- arcaded hall on a sea platform, corner tower
   TC_ENV_LavaShoreline_V1      -- black volcanic rock shore band
+  TC_ENV_BeachPocket_V1        -- sand pocket that interrupts the lava run
   TC_ENV_HarbourSea_V1         -- water surface with a low swell
 
 Run:
@@ -189,13 +194,19 @@ def build_civic_hall() -> None:
     render = pbr("TC_MAT_HallRender", mats["lime_render"], rough=0.92)
     stone = pbr("TC_MAT_HallStone", mats["coral_rag"], rough=0.94)
     shadow = pbr("TC_MAT_HallWeathered", mats["weathered_stone"], rough=0.95)
-    wood = pbr("TC_MAT_HallDoor", mats["carved_hardwood"], rough=0.62)
+    # The description is explicit that the woodwork is split and bleached by age
+    # and salt air, not dark oiled hardwood; see the materials note in the spec.
+    wood = pbr("TC_MAT_HallDoor", mats["weathered_timber"], rough=0.76)
+    volcanic = pbr("TC_MAT_HallVolcanicBase", mats["lava_rock"], rough=0.94)
     void = pbr("TC_MAT_HallOpening", (0.07, 0.065, 0.06), rough=0.98)
 
     width, depth = (float(v) for v in hall["footprint_m"])
     wall_h = float(hall["wall_height_m"])
     parapet_h = float(hall["parapet_height_m"])
-    platform_h = float(hall["platform_height_m"])
+    # The plinth IS the dark volcanic base the description names ("roches
+    # volcaniques sombres a sa base" under "murs d'un blanc immacule"), so there
+    # is one height here, not a pale platform with a base sitting on it.
+    platform_h = float(hall["volcanic_base_height_m"])
     bays = int(hall["arcade_bay_count"])
     span = float(hall["arcade_span_m"])
     pier_w = float(hall["arcade_pier_width_m"])
@@ -203,11 +214,14 @@ def build_civic_hall() -> None:
     point_ratio = float(hall["arch_point_ratio"])
 
     parts = []
-    # Sea platform: the hall stands out of the water on its own plinth.
+    # Sea platform: the hall stands out of the water on a base of dark volcanic
+    # rock. This is the value contrast the whole composition rests on -- white
+    # walls sitting on black stone -- and the first version lost it by making
+    # the platform pale coral.
     parts.append(_box("platform", (width + 1.6, depth + 1.6, platform_h),
-                      (0.0, 0.0, platform_h / 2.0), stone))
+                      (0.0, 0.0, platform_h / 2.0), volcanic))
     parts.append(_box("platform_lip", (width + 2.0, depth + 2.0, 0.18),
-                      (0.0, 0.0, platform_h), shadow))
+                      (0.0, 0.0, platform_h), volcanic))
 
     base = platform_h
     # Main mass, set back behind the arcade.
@@ -349,10 +363,99 @@ def build_sea() -> None:
     grid["titancraft_collision"] = "none"
 
 
+def build_beach_pocket() -> None:
+    """The sand pocket that interrupts the lava run.
+
+    Moroni's coast is described island-wide as rocky and mostly without
+    beaches, but the northern quarter of the medina is specifically credited
+    with some of the finest beaches in the town. Both are true, and the shore
+    that results is lava rock interrupted by sand -- not one or the other. This
+    is a separate asset rather than a variant of the lava tile because at 18 m
+    it is wider than most of the 22 m lava run, so folding it in would make
+    every shore tile part beach.
+    """
+    shore = spec_section("shoreline")
+    pocket = shore.get("beach_pocket")
+    if not isinstance(pocket, dict) or not pocket.get("present"):
+        raise SystemExit("spec shoreline.beach_pocket is absent or not present")
+
+    sand = pbr("TC_MAT_BeachSand", pocket["sand_colour"], rough=0.96)
+    wet = pbr("TC_MAT_BeachWetSand", pocket["wet_sand_colour"], rough=0.62)
+    rock = pbr("TC_MAT_BeachEdgeRock", shore["material_colour"],
+               rough=float(shore["roughness"]))
+
+    width = float(pocket["width_m"])
+    band = float(shore["band_depth_m"])
+
+    # A beach is a graded surface, and box primitives cannot make one. Two
+    # attempts proved it: five sand strips read as white decking because every
+    # seam caught the key light as a plank edge, and merging them into three
+    # tilted slabs just made three larger boards. So the sand is a displaced
+    # grid -- the same technique build_sea() already uses for the swell -- and
+    # the only boxes left are the rocks, which are supposed to look like boxes
+    # of stone.
+    columns, rows = 22, 12
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=columns, y_subdivisions=rows,
+                                    size=1.0, location=(0.0, 0.0, 0.0))
+    grid = bpy.context.object
+    grid.name = "beach_sand"
+    grid.scale = (width, band, 1.0)
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    for vertex in grid.data.vertices:
+        # u runs 0 at the waterline to 1 at the landward berm.
+        u = min(1.0, max(0.0, vertex.co.y / band + 0.5))
+        # Concave profile: beaches are steeper at the top of the swash than at
+        # the water's edge, which is what makes the berm read.
+        vertex.co.z = -0.55 + 0.78 * (u ** 1.35)
+        # Low ripples, strongest on the dry sand, so the surface is not a plane.
+        vertex.co.z += 0.035 * math.sin(vertex.co.x * 2.1) * u
+        vertex.co.z += 0.02 * math.sin(vertex.co.y * 3.4 + 0.7) * u
+
+    grid.data.materials.append(sand)
+    grid.data.materials.append(wet)
+    wet_limit = -band * 0.5 + band * float(pocket.get("wet_fraction", 0.30))
+    for polygon in grid.data.polygons:
+        # Slot 1 (wet sand) for everything below the swash line.
+        polygon.material_index = 1 if polygon.center.y < wet_limit else 0
+
+    # Lava outcrops crowding both ends: the pocket has to meet the rock it
+    # interrupts, or it reads as a seam rather than a cove. Bevel these before
+    # the final join, because the grid must NOT be bevelled -- a bevel on a
+    # displaced grid rounds every quad and turns sand into quilting.
+    rock_parts = []
+    for i in range(12):
+        rx = _hash01(i, 17)
+        ry = _hash01(i, 29)
+        rz = _hash01(i, 41)
+        size = 0.55 + 1.25 * rz
+        side = -1.0 if i % 2 == 0 else 1.0
+        inset = 0.08 + 0.30 * (rx * rx)
+        x = side * (width / 2.0) * (1.0 - inset)
+        y = (ry - 0.5) * band * 0.86
+        u = min(1.0, max(0.0, y / band + 0.5))
+        ground = -0.55 + 0.78 * (u ** 1.35)
+        rock_parts.append(_box(f"edge_rock_{i}", (size, size * (0.7 + 0.5 * rx), size * 0.85),
+                               (x, y, ground + size * 0.30), rock,
+                               rot=(rz * 0.3 - 0.15, rx * 0.25 - 0.12, ry * math.tau)))
+    # A few stones stranded out on the sand, so the two ends do not read as two
+    # unrelated walls of rock with a clean gap between them.
+    for i, (fx, fy, fs) in enumerate([(-0.28, 0.10, 0.52), (0.19, -0.24, 0.42), (0.34, 0.26, 0.36)]):
+        y = fy * band
+        u = min(1.0, max(0.0, y / band + 0.5))
+        ground = -0.55 + 0.78 * (u ** 1.35)
+        rock_parts.append(_box(f"stranded_rock_{i}", (fs, fs * 0.8, fs * 0.6),
+                               (fx * width, y, ground + fs * 0.22), rock,
+                               rot=(0.08, -0.05, fx * 3.0)))
+    rocks = _join("beach_rocks", rock_parts, bevel_width=0.012)
+
+    _join("TC_ENV_BeachPocket_V1", [grid, rocks], bevel_width=0.0)
+
+
 BUILDERS = {
     "quay": build_quay,
     "civic_hall": build_civic_hall,
     "shoreline": build_shoreline,
+    "beach_pocket": build_beach_pocket,
     "sea": build_sea,
 }
 

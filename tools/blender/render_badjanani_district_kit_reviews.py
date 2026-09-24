@@ -46,6 +46,7 @@ ASSETS = [
     "TC_ENV_SeaWallQuay_V1",
     "TC_ENV_CivicHallSeafront_V1",
     "TC_ENV_LavaShoreline_V1",
+    "TC_ENV_BeachPocket_V1",
 ]
 
 RESOLUTION_X = 1280

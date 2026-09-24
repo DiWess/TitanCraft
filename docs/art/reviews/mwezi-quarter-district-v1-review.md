@@ -28,7 +28,7 @@ Every PNG below was rendered and **opened and looked at** during this pass, not 
 
 **Scale.** Correct and checkable. Doorways are 2.6 m, house floor bands sit at 2.9 m, the arcade springs at 2.2 m. In `district_09` the first-person view sits below the door heads and window sills, which is the read that matters.
 
-**Material coherence.** The quarter's lime render, coral rag and weathered stone form one family, and the graphite/worn-steel/orange tones are lifted directly from the existing repo materials, so the wreck and the camp dressing do not read as a different game. The alien cyan and violet emissives still stand out as the only saturated hues in frame, which preserves the interactive-vs-decor contrast README section 15 asks for.
+**Material coherence (revised 2026-09-24).** The quarter's lime render, dressed coral rag, ink-black plaster-loss core and weathered stone form one family, and the graphite/worn-steel/orange tones are lifted directly from the existing repo materials, so the wreck and the camp dressing do not read as a different game. The alien cyan and violet emissives still stand out as the only saturated hues in frame, which preserves the interactive-vs-decor contrast README section 15 asks for.
 
 ## Defects found and fixed during this pass
 
@@ -101,6 +101,42 @@ looks deliberate.
 - The motion kit's palm is a single straight trunk while the static palm cluster
   has two leaning trunks, so the two read as different plants at close range.
 - Volumetric fog was deliberately not enabled. Light shafts through the arcade would be the single strongest remaining image, but README section 28 forbids expensive visual effects without a measured frame budget, and no frame budget can be measured from this headless container.
+
+## Addendum, 2026-09-24 — description-sourced material correction
+
+Written descriptions of Badjanani and Mtsangani replaced the spec's photo-gated
+placeholders. Three of the values in the shipped kits were not merely
+unconfirmed, they were **wrong**, and are recorded here because a reference that
+never corrects the art is not doing any work:
+
+| What | Was | Now |
+| --- | --- | --- |
+| Plaster-loss core | pale coral rag `0.561, 0.510, 0.424` | ink-black `0.090, 0.086, 0.082` |
+| Quarter woodwork | dark hardwood `0.224, 0.145, 0.086` | bleached `0.435, 0.400, 0.353` |
+| Civic hall plinth | pale coral platform | dark volcanic base, 1.6 m |
+
+Recolouring the wall patches was only half of the first fix, and the review
+renders were what proved it. Three attempts, each opened and diagnosed:
+
+1. Patch slab proud of the wall face — read as dark panels hung on a white wall,
+   the same protruding-void failure caught earlier on the window openings.
+2. Patch slab recessed into the wall — the patches disappeared entirely. A
+   recess buried inside a solid render box is not a hole, it is hidden geometry.
+3. Rubble core carrying a plaster skin, the skin boolean-cut at each patch —
+   correct. A fourth render then caught z-fighting where the core and skin
+   shared a coplanar end face, fixed by insetting the core on X and Z as well.
+
+`TC_ENV_CoralWallSegment_V1` rose 396 → 992 triangles and its budget 460 → 1060
+as a result. `TC_ENV_BeachPocket_V1` is new, and took two failed attempts of its
+own before the sand became a displaced grid rather than box strips reading as
+white decking.
+
+Full detail, including the contested dating of the reference building and the
+religious features deliberately omitted under README section 67, is in
+`docs/art/references/comorian-seafront-reference-v1.md`.
+
+Unchanged by this addendum: no human has reviewed any of it visually, and the
+verdict below still stands on its original terms.
 
 ## Verdict
 

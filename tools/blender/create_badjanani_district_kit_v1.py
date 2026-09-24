@@ -13,9 +13,10 @@ world/level-design and visual-presentation gaps recorded in
 This kit adds the built environment the crash site lands in: a weathered
 coastal stone quarter whose architecture, materials and street grain are drawn
 from the Swahili-Comorian coral-rag tradition of the Indian Ocean coast --
-lime-washed coral stone walls, arcaded courtyards on square piers, carved
-hardwood doors with heavy lintels, flat roofs with parapets, external stairs,
-and a seawall facing the water.
+lime-washed coral stone walls over a basalt and crushed-coral rubble core,
+arcaded courtyards on square piers, carved timber doors bleached grey by age
+and salt air, heavy lintels, flat roofs with parapets, external stairs, and a
+seawall facing the water.
 
 Creative-property note (README section 67, "Regles de propriete creative")
 -------------------------------------------------------------------------
@@ -31,10 +32,10 @@ Assets (all visual-only, collisionless -- gameplay collision stays authored in
 the scene as explicit BoxShape3D volumes, per the scene collision contract
 asserted by `tests/Integration/IntegrationTestRunner.cs`):
 
-- TC_ENV_CoralWallSegment_V1 -- coral-rag wall run with plaster loss and ledge
+- TC_ENV_CoralWallSegment_V1 -- rendered wall run with plaster loss to the dark core
 - TC_ENV_ArcadeBay_V1        -- three-bay pointed arcade on square piers
 - TC_ENV_QuarterTower_V1     -- tapering stone tower with belvedere (landmark)
-- TC_ENV_CarvedDoorway_V1    -- carved hardwood double door in a stone surround
+- TC_ENV_CarvedDoorway_V1    -- carved bleached-timber double door in a stone surround
 - TC_ENV_StoneHouse_V1       -- two-storey flat-roof house with external stair
 - TC_ENV_StairTerrace_V1     -- stepped terrace, the map's vertical element
 - TC_ENV_SeawallRun_V1       -- seawall coping with mooring bollards
@@ -57,13 +58,25 @@ import bpy
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_DIR = ROOT / "assets/Source/Blender/Production/MweziQuarter_V1"
 
-# Palette. The first three tones are the quarter's own coral/lime family; the
-# last three are matched to existing repo materials so the district sits in the
-# same scene as the wreck without a tonal seam.
+# Palette. The first four tones are the quarter's own coral/lime/basalt family;
+# the last three are matched to existing repo materials so the district sits in
+# the same scene as the wreck without a tonal seam. Every value here is mirrored
+# in data/art/comorian_seafront_spec.json so the seafront kit and this kit read
+# as one settlement; change it there and here together.
 LIME_WASH = (0.858824, 0.831373, 0.760784)   # sun-bleached lime render
-CORAL_STONE = (0.560784, 0.509804, 0.423529) # exposed coral rag under the render
+CORAL_STONE = (0.560784, 0.509804, 0.423529) # dressed coral rag: copings, jambs, trim
 CORAL_SHADOW = (0.352941, 0.317647, 0.262745) # weathered/eroded stone
-HARDWOOD = (0.223529, 0.145098, 0.086275)    # carved door timber
+# Where the render has actually fallen away, the wall's rubble core shows, and
+# written description of the quarter is specific about it: the stones behind the
+# collapsed grey plaster are "noires comme de l'encre" -- ink-black. The core is
+# a basalt / crushed-coral / sea-sand mix, so it reads near-black, NOT as the
+# pale coral rag this kit first used. See section 3.5 of
+# docs/art/references/comorian-seafront-reference-v1.md.
+PLASTER_LOSS_CORE = (0.090196, 0.086275, 0.082353)
+# The quarter's woodwork is described as "d'un bois fendille, blanchi par l'age
+# et le climat" -- split and bleached by age and salt air. A dark oiled hardwood
+# is what a new door looks like; nothing in this ruined quarter is new.
+BLEACHED_TIMBER = (0.435294, 0.400000, 0.352941)
 TERRACOTTA = (0.615686, 0.325490, 0.211765)  # tile, pot, awning cloth
 PALM_FROND = (0.278431, 0.341176, 0.203922)  # dry coastal frond
 GRAPHITE = (0.145098, 0.164706, 0.188235)    # assets/Materials/HumanGraphite.tres
@@ -176,20 +189,81 @@ def _pointed_arch(parts: list[bpy.types.Object], tag: str, center_x: float, spri
     return apex
 
 
+def _cut_plaster_loss(skin: bpy.types.Object, patches: list[tuple[float, float, float, float]],
+                      skin_depth: float, plaster: float) -> None:
+    """Cut patch openings through both faces of a plaster skin.
+
+    The cutters pass clean through the skin so the opening is a real hole and
+    the rubble core behind it is what the camera sees. Cutting only part-way
+    would leave a dimple in the plaster with more plaster at the bottom of it,
+    which is the failure mode this helper exists to avoid.
+    """
+    for i, (x, z, w, h) in enumerate(patches):
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=(x, 0.0, z))
+        cutter = bpy.context.object
+        cutter.name = f"cut_plaster_loss_{i}"
+        # Overshoot the skin depth so the boolean has no coplanar faces to
+        # resolve; coplanar cutters are the usual source of boolean artefacts.
+        cutter.scale = (w, skin_depth + plaster * 4.0, h)
+        modifier = skin.modifiers.new(f"TC_PlasterLoss_{i}", "BOOLEAN")
+        modifier.operation = "DIFFERENCE"
+        modifier.object = cutter
+        modifier.solver = "EXACT"
+        bpy.context.view_layer.objects.active = skin
+        bpy.ops.object.modifier_apply(modifier=modifier.name)
+        bpy.data.objects.remove(cutter, do_unlink=True)
+
+
 def build_coral_wall_segment() -> None:
-    """A 6 m wall run: rendered above, exposed coral rag where the render failed."""
+    """A 6 m wall run: lime render above, dark rubble core where the render failed."""
     render_mat = pbr("TC_MAT_LimeRender", LIME_WASH, rough=0.92)
     stone_mat = pbr("TC_MAT_CoralRag", CORAL_STONE, rough=0.95)
     shadow_mat = pbr("TC_MAT_CoralWeathered", CORAL_SHADOW, rough=0.96)
+    core_mat = pbr("TC_MAT_PlasterLossCore", PLASTER_LOSS_CORE, rough=0.97)
     parts: list[bpy.types.Object] = []
     length, height, thick = 6.0, 3.0, 0.45
-    parts.append(_box("wall_core", (length, thick, height), (0.0, 0.0, height / 2.0), render_mat))
+    # The wall is modelled the way it is actually built: a rubble core of
+    # basalt, crushed coral and sea sand, carrying a thin lime-plaster skin.
+    # That ordering is what makes plaster loss free -- cut the skin and the
+    # dark core is already there behind it.
+    #
+    # Two earlier attempts got this wrong and the review renders showed it.
+    # Making each patch a slab slightly THICKER than the wall read as three
+    # dark panels hung on a white wall, the same protruding-void failure caught
+    # on the window openings. Recessing the slab instead made the patches
+    # vanish entirely: a recess buried inside a solid render box is not a hole,
+    # it is hidden geometry. A hole needs the skin genuinely cut away.
+    #
+    # The core is inset by the plaster thickness on X and Z as well as Y, so the
+    # skin wraps it on every face. Sharing a coplanar end face with the skin
+    # z-fights, and the review render showed exactly that as a hatched stripe
+    # down the end of the wall.
+    plaster = 0.04
+    parts.append(_box("wall_core", (length - plaster * 2.0, thick, height - plaster * 2.0),
+                      (0.0, 0.0, height / 2.0), core_mat))
+    skin = _box("wall_plaster", (length, thick + plaster * 2.0, height),
+                (0.0, 0.0, height / 2.0), render_mat)
+    # Patch 3 is pulled in from the wall end so its opening still lands on core
+    # rather than on the inset gap between core and skin.
+    patches = [(-2.0, 0.55, 1.5, 1.1), (1.1, 1.5, 1.9, 0.9), (2.35, 0.4, 0.9, 0.8)]
+    _cut_plaster_loss(skin, patches, thick + plaster * 2.0, plaster)
+    parts.append(skin)
     # Coping ledge: the shadow line that makes the silhouette read at distance.
     parts.append(_box("wall_coping", (length + 0.24, thick + 0.22, 0.18), (0.0, 0.0, height + 0.09), stone_mat))
     parts.append(_box("wall_string_course", (length + 0.1, thick + 0.1, 0.1), (0.0, 0.0, height * 0.62), stone_mat))
-    # Patches where the lime render has fallen away and the rag shows through.
-    for i, (x, z, w, h) in enumerate([(-2.0, 0.55, 1.5, 1.1), (1.1, 1.5, 1.9, 0.9), (2.5, 0.4, 1.0, 0.8)]):
-        parts.append(_box(f"wall_patch_{i}", (w, thick + 0.04, h), (x, 0.0, z), stone_mat))
+    # Loose rubble stones standing proud of the core inside each opening, so a
+    # patch reads as broken masonry rather than a flat dark rectangle. They stop
+    # short of the plaster face, which is what keeps the recess legible.
+    for i, (x, z, w, h) in enumerate(patches):
+        for j, (ox, oz, sw, sh) in enumerate([
+            (-0.26, -0.24, 0.42, 0.30), (0.22, -0.30, 0.34, 0.24),
+            (-0.10, 0.18, 0.48, 0.26), (0.30, 0.26, 0.30, 0.22),
+        ]):
+            parts.append(_box(
+                f"wall_patch_{i}_stone_{j}",
+                (w * sw, thick + plaster, h * sh),
+                (x + w * ox, 0.0, z + h * oz), core_mat,
+                rot=(0.0, 0.05 * (1 if j % 2 else -1), 0.0)))
     # Plinth: damp course, always darker on a real coastal wall.
     parts.append(_box("wall_plinth", (length + 0.16, thick + 0.16, 0.42), (0.0, 0.0, 0.21), shadow_mat))
     # Two shallow buttress piers for shadow rhythm along the run.
@@ -278,10 +352,10 @@ def build_quarter_tower() -> None:
 
 
 def build_carved_doorway() -> None:
-    """Carved hardwood double door in a heavy stone surround."""
+    """Carved double door, timber bleached grey by age, in a heavy stone surround."""
     stone_mat = pbr("TC_MAT_DoorSurroundStone", CORAL_STONE, rough=0.94)
     render_mat = pbr("TC_MAT_DoorRender", LIME_WASH, rough=0.9)
-    wood_mat = pbr("TC_MAT_DoorHardwood", HARDWOOD, rough=0.6)
+    wood_mat = pbr("TC_MAT_DoorTimber", BLEACHED_TIMBER, rough=0.74)
     brass_mat = pbr("TC_MAT_DoorBrass", (0.541176, 0.396078, 0.180392), rough=0.42, metal=0.75)
     parts: list[bpy.types.Object] = []
     opening_w, opening_h, wall_t = 1.9, 2.6, 0.5
@@ -320,7 +394,7 @@ def build_stone_house() -> None:
     render_mat = pbr("TC_MAT_HouseRender", LIME_WASH, rough=0.92)
     stone_mat = pbr("TC_MAT_HouseStone", CORAL_STONE, rough=0.94)
     shadow_mat = pbr("TC_MAT_HouseShadow", CORAL_SHADOW, rough=0.95)
-    shutter_mat = pbr("TC_MAT_HouseShutter", HARDWOOD, rough=0.62)
+    shutter_mat = pbr("TC_MAT_HouseShutter", BLEACHED_TIMBER, rough=0.76)
     dark_mat = pbr("TC_MAT_HouseOpening", (0.08, 0.075, 0.07), rough=0.98)
     parts: list[bpy.types.Object] = []
     w, d, h = 7.0, 6.0, 5.6
@@ -408,7 +482,7 @@ def build_seawall_run() -> None:
 
 def build_market_stall() -> None:
     """Shaded stall: a small, human-scale silhouette for street dressing."""
-    wood_mat = pbr("TC_MAT_StallTimber", HARDWOOD, rough=0.7)
+    wood_mat = pbr("TC_MAT_StallTimber", BLEACHED_TIMBER, rough=0.8)
     cloth_mat = pbr("TC_MAT_StallCloth", TERRACOTTA, rough=0.95)
     basket_mat = pbr("TC_MAT_StallBasket", (0.482353, 0.376471, 0.219608), rough=0.9)
     stone_mat = pbr("TC_MAT_StallStone", CORAL_STONE, rough=0.94)
@@ -471,27 +545,31 @@ def build_coral_rubble() -> None:
     stone_mat = pbr("TC_MAT_RubbleStone", CORAL_STONE, rough=0.96)
     shadow_mat = pbr("TC_MAT_RubbleShadow", CORAL_SHADOW, rough=0.97)
     render_mat = pbr("TC_MAT_RubbleRender", LIME_WASH, rough=0.93)
+    core_mat = pbr("TC_MAT_RubbleCore", PLASTER_LOSS_CORE, rough=0.97)
     parts: list[bpy.types.Object] = []
     # Deterministic scatter: fixed tuples rather than random, so the asset
     # regenerates byte-comparably for provenance hashing. Weathered stone
     # dominates and lime-rendered faces are the exception -- a collapsed wall
     # shows mostly its broken core, and the first review render read as a pile
-    # of clean white boxes precisely because that ratio was inverted.
+    # of clean white boxes precisely because that ratio was inverted. Some of
+    # the broken blocks are core_mat: the wall mix is "un melange de basalte, de
+    # corail broye et de sable de mer", so a collapsed wall shows ink-black
+    # basalt among the pale coral, not one uniform grey.
     blocks = [
-        (-1.35, -0.42, 0.26, (1.05, 0.72, 0.52), (0.14, 0.38, 0.35), shadow_mat),
+        (-1.35, -0.42, 0.26, (1.05, 0.72, 0.52), (0.14, 0.38, 0.35), core_mat),
         (0.15, 0.18, 0.36, (1.25, 0.95, 0.72), (-0.22, 0.12, -0.5), stone_mat),
-        (1.42, -0.25, 0.20, (0.82, 0.78, 0.4), (0.34, -0.26, 0.9), shadow_mat),
+        (1.42, -0.25, 0.20, (0.82, 0.78, 0.4), (0.34, -0.26, 0.9), core_mat),
         (0.62, -1.15, 0.17, (0.66, 0.6, 0.34), (-0.08, 0.44, 1.5), stone_mat),
         (-0.55, 1.02, 0.25, (0.9, 0.55, 0.5), (0.41, -0.18, -1.1), render_mat),
         (1.05, 1.15, 0.14, (0.52, 0.48, 0.28), (0.19, 0.29, 0.4), shadow_mat),
         (-1.85, 0.72, 0.13, (0.46, 0.42, 0.26), (-0.31, 0.09, 2.2), stone_mat),
-        (0.05, 0.05, 0.58, (1.5, 1.3, 0.3), (0.06, -0.09, 0.15), shadow_mat),
+        (0.05, 0.05, 0.58, (1.5, 1.3, 0.3), (0.06, -0.09, 0.15), core_mat),
         (2.0, 0.45, 0.11, (0.4, 0.36, 0.22), (0.46, 0.31, 0.7), stone_mat),
         (-0.2, -1.75, 0.10, (0.42, 0.34, 0.2), (-0.27, 0.2, 1.9), shadow_mat),
         # Chips and spall: the small debris that keeps a rubble pile from
         # reading as a stack of crates.
         (0.95, -0.62, 0.07, (0.26, 0.22, 0.13), (0.5, 0.35, 1.2), stone_mat),
-        (-0.85, -0.05, 0.08, (0.3, 0.19, 0.15), (-0.42, 0.55, 0.3), shadow_mat),
+        (-0.85, -0.05, 0.08, (0.3, 0.19, 0.15), (-0.42, 0.55, 0.3), core_mat),
         (1.72, 0.92, 0.06, (0.22, 0.2, 0.11), (0.28, -0.4, 2.6), render_mat),
         (-1.15, 1.55, 0.07, (0.25, 0.23, 0.12), (0.6, 0.15, 1.7), stone_mat),
         (0.38, 1.62, 0.06, (0.2, 0.18, 0.1), (-0.35, 0.48, 0.85), shadow_mat),
@@ -499,7 +577,7 @@ def build_coral_rubble() -> None:
     for i, (x, y, z, size, rot, mat) in enumerate(blocks):
         parts.append(_box(f"rubble_{i}", size, (x, y, z), mat, rot=rot))
     # Two protruding timbers from the collapsed roof structure.
-    timber_mat = pbr("TC_MAT_RubbleTimber", HARDWOOD, rough=0.78)
+    timber_mat = pbr("TC_MAT_RubbleTimber", BLEACHED_TIMBER, rough=0.84)
     parts.append(_box("timber_a", (2.2, 0.16, 0.14), (-0.3, -0.5, 0.72), timber_mat, rot=(0.0, 0.34, 0.5)))
     parts.append(_box("timber_b", (1.7, 0.13, 0.12), (0.8, 0.6, 0.58), timber_mat, rot=(0.0, -0.2, -0.8)))
     _join("TC_ENV_CoralRubble_V1", parts)

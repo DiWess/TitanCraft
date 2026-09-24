@@ -1,12 +1,12 @@
 {
   "schema": "titancraft.blender_asset_forge.manifest.v1",
-  "generated_at": "2026-09-24T03:05:00.968972+00:00",
+  "generated_at": "2026-09-24T05:37:47.363122+00:00",
   "entries": [
     {
       "asset_name": "TC_ENV_AlienShard_EmbeddedCluster_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.blend",
-      "source_sha256": "cab2f89aef3376cad0e8944583ef01d11eb92106792de643c0c539418d076cfa",
+      "source_sha256": "b5a5621f0aec710521ec418482cf3dab5c35f9e4ac331e83e01c00512daeb622",
       "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.glb",
       "production_sha256": "c241e441438eaa03f1690c05647a017bab5ee03fbef13b7e180c44904b21986e",
       "export_format": "GLB",
@@ -19,7 +19,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -30,7 +31,7 @@
       "asset_name": "TC_ENV_AlienShard_Medium_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.blend",
-      "source_sha256": "2e19b2d333ad712675916dcd2d250586a81779606a30c17143b2b75611fb4c0d",
+      "source_sha256": "2299ab783649650f7244f9e2897fe5376f246799f01c8e1a7390fd46a60d2974",
       "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.glb",
       "production_sha256": "d79469ce5b6e8b4d3263934526193b995ad19c41ec9b49c89720e832b5c4ae9f",
       "export_format": "GLB",
@@ -43,7 +44,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -54,7 +56,7 @@
       "asset_name": "TC_ENV_AlienShard_Small_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Small_V1.blend",
-      "source_sha256": "ce66c819c899e7f085b697ec6411e25766555137b69fb7241955f749083bb50a",
+      "source_sha256": "64a89ed04824623398dd107e59b2343840dba8130834dedc8d2a2f241ad674fd",
       "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Small_V1.glb",
       "production_sha256": "f7163a87f82aa548c8db4373651e53c5d6782794047ee93d766f1d758cb6e646",
       "export_format": "GLB",
@@ -67,7 +69,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -78,7 +81,7 @@
       "asset_name": "TC_ENV_CableOccluder_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_CableOccluder_V1.blend",
-      "source_sha256": "7bc12cb50a0f8e5cac0c5781f443d683e362ee6f6a2a7ada50da199e520e28a3",
+      "source_sha256": "a277af08171d743fd81150e8a7c4eb321a7432f1f5fd887e745b3731ef37007d",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_CableOccluder_V1.glb",
       "production_sha256": "5fb10ce1689529b65ca94701ce3b96bbf0da215f58bca6d07121e73a6f53d5cc",
       "export_format": "GLB",
@@ -91,6 +94,7 @@
       "triangle_count": 248,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/back.png",
+        "artifacts/asset-review/TC_ENV_CableOccluder_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/front.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/left.png",
@@ -108,7 +112,7 @@
       "asset_name": "TC_ENV_CampAwning_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_CampAwning_V1.blend",
-      "source_sha256": "0c8640bb3ba234c15e264782bfcd43e31d9be0ddf9fac458af05700e87089d54",
+      "source_sha256": "a0fa2b0ce6ab31200cdfd713d58fa6f6d1432e7c2fde0110ab09575163b37aec",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_CampAwning_V1.glb",
       "production_sha256": "3972228dc29e7d19ab2732769a2cc4750cefb201c389e58323d21681b18afa4b",
       "export_format": "GLB",
@@ -121,6 +125,7 @@
       "triangle_count": 124,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_CampAwning_V1/back.png",
+        "artifacts/asset-review/TC_ENV_CampAwning_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/front.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/left.png",
@@ -138,7 +143,7 @@
       "asset_name": "TC_ENV_LightPole_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_LightPole_V1.blend",
-      "source_sha256": "334f7c21b3cc7473bba4a4891cbd4e7057cb68191c83964906c400f6743ffba3",
+      "source_sha256": "27881e78d566dbb4e77e1d0397e3f7d2cc0f8d07a856dc9edf41b8f3fc1d7f96",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_LightPole_V1.glb",
       "production_sha256": "f04eb694c715c7f714f36048eeeed82398f3cece625de90546858adcf9f6e585",
       "export_format": "GLB",
@@ -152,6 +157,7 @@
       "triangle_count": 92,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_LightPole_V1/back.png",
+        "artifacts/asset-review/TC_ENV_LightPole_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/front.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/left.png",
@@ -169,7 +175,7 @@
       "asset_name": "TC_ENV_SupplyCrateStack_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_SupplyCrateStack_V1.blend",
-      "source_sha256": "6319058df5bcd859e0272e60d29aa6dd0ca81fb7bade7a47281b1caed47c66d1",
+      "source_sha256": "ce25e15029271e73024186657deba8c1f6c4e400be1e511ca3f037b30d54dcd1",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_SupplyCrateStack_V1.glb",
       "production_sha256": "efa149e34edf45677d69e65fdbe72763b19666e4011c2e28de0af4c7534f36ad",
       "export_format": "GLB",
@@ -183,6 +189,7 @@
       "triangle_count": 96,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/back.png",
+        "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/front.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/left.png",
@@ -200,7 +207,7 @@
       "asset_name": "TC_HeavyCrashHull_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend",
-      "source_sha256": "8a7d128867d4ef36f11b8eba0538537b2a3b5fd14012b1970c1673bc904ddcee",
+      "source_sha256": "278261dfe3b0a6e81d168cfb33360dbe7819fee8d6079157616bbe18fe78cb99",
       "production_export": "assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb",
       "production_sha256": "69b77c1dc737f23221da6cdf0a7a5676babc2ec69ce8a7132bdbb12e54d120f5",
       "export_format": "GLB",
@@ -234,7 +241,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_AlienArc_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_AlienArc_V1.blend",
-      "source_sha256": "63c3fc7107d2256629c9dda928ebc908caea0dc6c6e694f7059f9a09d2118c91",
+      "source_sha256": "9f01cd88894e825e8570af4ece9167bad74f82a280ff37a41f5cfdbb75a896c2",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_AlienArc_V1.glb",
       "production_sha256": "3ae0fbdf3591ad4b8d1a5e5e01f137b3e3cd8090f927ffc9c4ff1bca9c5f3ab4",
       "export_format": "GLB",
@@ -247,7 +254,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -261,7 +269,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_BasaltRidge_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_BasaltRidge_V1.blend",
-      "source_sha256": "ec5b3df0382a20796102c2f3592f5c502e4e1b2d737c502e792815e0a52a2ec8",
+      "source_sha256": "fd93bbdac2ada8aa132cd966631872649d569fc3364266310f6891d1b43ba386",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_BasaltRidge_V1.glb",
       "production_sha256": "d501e1e3f2e09332bf4abdf22dfba4ad42b83c2b2c8328a6c20d556dd55f90df",
       "export_format": "GLB",
@@ -274,7 +282,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -288,7 +297,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_SmokePlume_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_SmokePlume_V1.blend",
-      "source_sha256": "90871c5b9adccca06acab6236f74091dd786829af32a1537f66e6b939edb4d40",
+      "source_sha256": "632c4c66609afdde03dbc917197d10fdbed1bbf78d5436016cb7e5259077fc7f",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_SmokePlume_V1.glb",
       "production_sha256": "cd362f11144fa98280ffcfac992759fc9dc833239ea716b0ccdd3ff4a1a6a75f",
       "export_format": "GLB",
@@ -301,7 +310,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -315,7 +325,7 @@
       "asset_name": "TC_ENV_RockOccluder_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_RockOccluder_V1.blend",
-      "source_sha256": "c0fd6857dd5079da9a2f4f49ffe451f44bd388b7c0d5a4707f193bb381f8dcfc",
+      "source_sha256": "9cbce8a72fea1eb22ff6e62a89c5cbb9280857e6436261c0a8e529231bea1de9",
       "production_export": "assets/Production/Generated/Environment/TC_ENV_RockOccluder_V1.glb",
       "production_sha256": "e8d26ad1136639ebd7c5eb5d7f203af7c379fb975c7b711aa0cdd1edacb32305",
       "export_format": "GLB",
@@ -328,7 +338,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_RockOccluder_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_RockOccluder_V1/front.png",
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -339,7 +350,7 @@
       "asset_name": "TC_LightingReference_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_LightingReference_V1.blend",
-      "source_sha256": "78b954c681f0ece2aa83ce45f12361967f8b10de80d2b86b03fb3bf4e70d3716",
+      "source_sha256": "7d1e07b560081d53476a35e13bfd48725c46cdfe0108948c4f079bbdeaa78a04",
       "production_export": "assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb",
       "production_sha256": "b6ab7ffde8a7c03ac20ba1d02fbb50694c30f3220ed8c340eccd658b0b7c12ef",
       "export_format": "GLB",
@@ -357,7 +368,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_LightingReference_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_LightingReference_V1/front.png",
-        "artifacts/asset-review/TC_LightingReference_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_LightingReference_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_LightingReference_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -371,7 +383,7 @@
       "asset_name": "TC_CHAR_GalaxabrainScout_Disabled_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_Disabled_V1.blend",
-      "source_sha256": "eadd0fe2a4d73f36ba2282f4090065335517f8ca14db8dd8036b5414faf80c5b",
+      "source_sha256": "292d207aefc3e86ba471f61cd751ec440a4809d78a501e76dabbd3ff5785fa9e",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_Disabled_V1.glb",
       "production_sha256": "ea2ff0523f9e4517db1251f29c29652b7737dcb98741f6e46a8d114e5e7bb58d",
       "export_format": "GLB",
@@ -402,7 +414,7 @@
       "asset_name": "TC_CHAR_GalaxabrainScout_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_V1.blend",
-      "source_sha256": "c83f55ca51d8e7779e7f1a59f2a2be91045dd2bc50f66b9a5f1985f9c880156b",
+      "source_sha256": "92ea1cd69b69fe419960bf8454c7d3d125c391aaf6674ca2c2598cc2d93a70f8",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_V1.glb",
       "production_sha256": "ef908a2210ba49cf6c8e7754b8be6c29446148ab121c851a572dcae220812a26",
       "export_format": "GLB",
@@ -433,7 +445,7 @@
       "asset_name": "TC_ENV_CrashDebris_A_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_ENV_CrashDebris_A_V1.blend",
-      "source_sha256": "20ba274ecc4f6f00600e7515f7d94c765fe6897afd50d0f01c1402e68344514a",
+      "source_sha256": "4dcbb433613be3fc9dc410f1273d0da42440c06640335f01e9cdbcb750a02adb",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_ENV_CrashDebris_A_V1.glb",
       "production_sha256": "766d1a2ee9bb7d772e87be967aeded53fd79d09983eac31bad46908a1534c974",
       "export_format": "GLB",
@@ -464,7 +476,7 @@
       "asset_name": "TC_PICKUP_Biomass_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Biomass_V1.blend",
-      "source_sha256": "ac41d701c050d0230d12fdeff4061c4af2a87fa397e89bb03129eb0dae28e0ad",
+      "source_sha256": "c28e815eb8550f557a3add0ac51a8a44d736000d25ce0abe4255c6af30ebb2ee",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Biomass_V1.glb",
       "production_sha256": "bf10c5f75dedf5e0c136793400d6a95e9f1be3a5fbb92ab60184014b7da5fde3",
       "export_format": "GLB",
@@ -493,7 +505,7 @@
       "asset_name": "TC_PICKUP_Component_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Component_V1.blend",
-      "source_sha256": "79b118597628fb8eeb5fdd4be03a36f96e131cc96dca7b886873613b668160c4",
+      "source_sha256": "789e351765415e4765c7a5034b25e50c95a32577bc98c5a49c62a81d89d90bf9",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Component_V1.glb",
       "production_sha256": "0fc4f6d3dee62c3bc2efb87597a45745db7b0e0af61d253afdc3daefa7e140b3",
       "export_format": "GLB",
@@ -522,7 +534,7 @@
       "asset_name": "TC_PICKUP_Electronics_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Electronics_V1.blend",
-      "source_sha256": "d1482c5adde16eefb727691b5b30b489fc6b5e5aeae4404dda8876ac209dbed2",
+      "source_sha256": "dcc1cbd1dc9721bbce54ab018267861e239e7cff1b88bb15eacdecf9d283b979",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Electronics_V1.glb",
       "production_sha256": "d7519950f230c0d0a349fa342e6ba9950227ae6b94e8d24b840ef8194f234386",
       "export_format": "GLB",
@@ -553,7 +565,7 @@
       "asset_name": "TC_PICKUP_Metal_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Metal_V1.blend",
-      "source_sha256": "a043a77e5faaf80f44e3ff89303fb6697d36c96ce6652af401cc3b1fa4ba901d",
+      "source_sha256": "45b43ab24901dbf399c6ac234049b1c85d139fedda120cb50dae892320948747",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Metal_V1.glb",
       "production_sha256": "da587a5167feb267fb8f964ff91c36135f6dcd8f0b0f793bb50ac657cfd2900c",
       "export_format": "GLB",
@@ -583,7 +595,7 @@
       "asset_name": "TC_PLAYER_BareArm_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_BareArm_V1.blend",
-      "source_sha256": "a77c2beaa0efb3c0252244cd44c4d6d9747bb8124fd4074bf4518c46e7dccbfb",
+      "source_sha256": "8625cb0def0c4acd45c9efba9ccb97efe18b5504c1d8df774f052b6c438b059b",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_BareArm_V1.glb",
       "production_sha256": "f1b913a53431e9b4d969f46254fbae30c767ade0422ed4d8d292a0766ccfd3f3",
       "export_format": "GLB",
@@ -611,7 +623,7 @@
       "asset_name": "TC_PLAYER_MechanicalArmUnbuilt_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_MechanicalArmUnbuilt_V1.blend",
-      "source_sha256": "1a72d7091479ecef5e49e2176ec585a1c2a6dd2a518f1c431b8819d2372960a5",
+      "source_sha256": "b0d266890f48900f82624ac8591b8df1e5bbdc5e00f27228c69ae2cea37fcb93",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_MechanicalArmUnbuilt_V1.glb",
       "production_sha256": "b7db9889af2753c55fd7652d7ce53cbb621f590a5b25d926e4b082f3d790562d",
       "export_format": "GLB",
@@ -643,7 +655,7 @@
       "asset_name": "TC_PLAYER_MechanicalArm_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_MechanicalArm_V1.blend",
-      "source_sha256": "f2536ef423ba4d37cde920addf20dea273b359135160e2896933fbb28f382313",
+      "source_sha256": "58be5fedcf60b0470c290cd0a8d60cabf618369a004d9d7227cd290e30b9d1c4",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_MechanicalArm_V1.glb",
       "production_sha256": "da6d48d92776252f198b7eba519a1a84ad46ef01df16101b4dad26a00b197711",
       "export_format": "GLB",
@@ -675,7 +687,7 @@
       "asset_name": "TC_PROP_Beacon_Active_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Beacon_Active_V1.blend",
-      "source_sha256": "10052e7f48bdf7544400c140a2f056911dfa0f8122ff7af5c4635a3df68c5210",
+      "source_sha256": "74447d320fbf73d30e54dd009de54fd1448ac7b262300f7b8672e49a821734ba",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Beacon_Active_V1.glb",
       "production_sha256": "f050c7e46bb26ce4ce8026a5def5ced136cab4ad62da4b5d2924ecd9318dbe5a",
       "export_format": "GLB",
@@ -709,7 +721,7 @@
       "asset_name": "TC_PROP_Beacon_Dormant_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Beacon_Dormant_V1.blend",
-      "source_sha256": "e135bef1d977d22fadedbab560b638f5931f018561e25dd3b3e214059f498e16",
+      "source_sha256": "729b9ae4b890e04ebd9f95566a3883dd58f6719f9b0233347738a74fede390d0",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Beacon_Dormant_V1.glb",
       "production_sha256": "2dfc79ade5a2bec07277442a1012cd466e6060ec62660b4612ebb9900f572a95",
       "export_format": "GLB",
@@ -740,7 +752,7 @@
       "asset_name": "TC_PROP_SavePoint_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_SavePoint_V1.blend",
-      "source_sha256": "b3a55652a18313d993020991b85df92b6bf1b9b785da8ce2f8d4a63dbf068efc",
+      "source_sha256": "f1a6b561689d5a1dc64711f45277e014c533f8470a3d29910559d683801e30ef",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_SavePoint_V1.glb",
       "production_sha256": "7a579913118250ff50ff1b50a47baa47d3d6061f85daed37e13070e6665a13a0",
       "export_format": "GLB",
@@ -771,7 +783,7 @@
       "asset_name": "TC_PROP_Workbench_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Workbench_V1.blend",
-      "source_sha256": "3b819ec72fd3fbfb391b91fedfd15e6793b528d2d354fe39b4f84206914c3179",
+      "source_sha256": "d2c8cb20a97ba2f13df32130803e1388a31472d24c8d22b3a09245052de0920b",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Workbench_V1.glb",
       "production_sha256": "c59748dab6567b794b688a2e229cc9343e7262785b50a92406fd4b680ecf88e8",
       "export_format": "GLB",
@@ -802,10 +814,572 @@
       "verdict": "TC_MVP_ASSET_PACK_V1_REVIEW_ARTIFACTS_READY"
     },
     {
+      "asset_name": "TC_ENV_ArcadeBay_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_ArcadeBay_V1.blend",
+      "source_sha256": "f1d802420eb7071b8dc9aa3295177e49d97eeee90d5a7be79589ac55fd7b2066",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_ArcadeBay_V1.glb",
+      "production_sha256": "247e93309351553a0afd1562ada472093de304e539e7334b6aaceb0b32a9ea5f",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_ArcadeRender",
+        "TC_MAT_ArcadeShadow",
+        "TC_MAT_ArcadeStone"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 2288,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_ArcadeBay_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_ArcadeBay_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_ArcadeBay_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_ARCADEBAY_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_AwningCloth_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_AwningCloth_V1.blend",
+      "source_sha256": "57cfacdb22f5edebf5b2fd58fda621172e10a2ebbaa76a262d476b2e75cebeda",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_AwningCloth_V1.glb",
+      "production_sha256": "c03a9fdee1427b241aa0eef0bb635252313611b5f4db15f20036b807359ed38a",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_mwezi_quarter_motion_kit_v1.py + tools/blender/export_animated_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_MotionAwningBracket",
+        "TC_MAT_MotionAwningCloth",
+        "TC_MAT_MotionAwningFrame"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 344,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_AwningCloth_V1/motion_frame_001.png",
+        "artifacts/asset-review/TC_ENV_AwningCloth_V1/motion_frame_030.png",
+        "artifacts/asset-review/TC_ENV_AwningCloth_V1/motion_frame_060.png",
+        "artifacts/asset-review/TC_ENV_AwningCloth_V1/motion_frame_090.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter motion kit (docs/art/briefs/mwezi-quarter-district-v1.md): skinned, looping animated dressing for the single MVP map. Armature-driven so the mesh keeps a clean origin under the asset contract; exported with tools/blender/export_animated_asset.py because the static exporter applies modifiers and would strip the skin. Visual-only and collisionless; src/World/EnvironmentMotionPlayer.cs loops the clip and phase-offsets each instance.",
+      "source_recipe": "tools/blender/create_mwezi_quarter_motion_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_AWNINGCLOTH_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_BannerCloth_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_BannerCloth_V1.blend",
+      "source_sha256": "b03b1e0c7c48eb6ebd088ec72b0d06a7d28becf39be455aaa6fbc4116602b687",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_BannerCloth_V1.glb",
+      "production_sha256": "709f101b4f86b31b8956fdf75f05a66499942fa52387f70bf5496abad87a6240",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_mwezi_quarter_motion_kit_v1.py + tools/blender/export_animated_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_MotionBannerBracket",
+        "TC_MAT_MotionBannerCloth",
+        "TC_MAT_MotionBannerTrim"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 268,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_BannerCloth_V1/motion_frame_001.png",
+        "artifacts/asset-review/TC_ENV_BannerCloth_V1/motion_frame_030.png",
+        "artifacts/asset-review/TC_ENV_BannerCloth_V1/motion_frame_060.png",
+        "artifacts/asset-review/TC_ENV_BannerCloth_V1/motion_frame_090.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter motion kit (docs/art/briefs/mwezi-quarter-district-v1.md): skinned, looping animated dressing for the single MVP map. Armature-driven so the mesh keeps a clean origin under the asset contract; exported with tools/blender/export_animated_asset.py because the static exporter applies modifiers and would strip the skin. Visual-only and collisionless; src/World/EnvironmentMotionPlayer.cs loops the clip and phase-offsets each instance.",
+      "source_recipe": "tools/blender/create_mwezi_quarter_motion_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_BANNERCLOTH_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_BeachPocket_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_BeachPocket_V1.blend",
+      "source_sha256": "e88e018fdf97d0eb4e61f427f282445bf888cb3435ec986f8084a48c3cb67bc0",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_BeachPocket_V1.glb",
+      "production_sha256": "d829e60230ec05de231f73c853e8d4da07116ae4d1d32190c62a097b15c25b5c",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_seafront_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_BeachEdgeRock",
+        "TC_MAT_BeachSand",
+        "TC_MAT_BeachWetSand"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 1188,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_BeachPocket_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_BeachPocket_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_BeachPocket_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter seafront kit, built from the data-driven spec data/art/comorian_seafront_spec.json and documented in docs/art/references/comorian-seafront-reference-v1.md. Reconstructed from written description of the Swahili-Comorian coral-rag tradition and of Moroni's two medina quarters; no photographs, maps or survey data were available to the authoring environment and none were used, so the spec marks each value text-sourced, description-sourced, assumed, or unresolved. Visual-only and collisionless; not yet integrated into any production scene.",
+      "source_recipe": "tools/blender/create_seafront_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_BEACHPOCKET_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_CarvedDoorway_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_CarvedDoorway_V1.blend",
+      "source_sha256": "689fec00d5fe4d309d81fa5020cb4e75af3283d1c4b1191b77c9f52bfc2c7ed2",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_CarvedDoorway_V1.glb",
+      "production_sha256": "0cf0deb9dbd47de06208a1985da69f3919ac477945e159c3506470d3f15dd1b2",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_DoorBrass",
+        "TC_MAT_DoorRender",
+        "TC_MAT_DoorReveal",
+        "TC_MAT_DoorSurroundStone",
+        "TC_MAT_DoorTimber"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 2100,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_CarvedDoorway_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_CarvedDoorway_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_CarvedDoorway_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_CARVEDDOORWAY_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_CivicHallSeafront_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_CivicHallSeafront_V1.blend",
+      "source_sha256": "4e188ea4b3ddbf0d222e73220f6e9730a4cf27e00c53d1f651162ddddf692c1a",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_CivicHallSeafront_V1.glb",
+      "production_sha256": "73cc8f5ada0c0499afb131f5c76cc2005d4384c3c727b5dd0a66fd5258c4cc29",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_seafront_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_HallDoor",
+        "TC_MAT_HallOpening",
+        "TC_MAT_HallRender",
+        "TC_MAT_HallStone",
+        "TC_MAT_HallVolcanicBase",
+        "TC_MAT_HallWeathered"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 4796,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_CivicHallSeafront_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_CivicHallSeafront_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_CivicHallSeafront_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter seafront kit, built from the data-driven spec data/art/comorian_seafront_spec.json and documented in docs/art/references/comorian-seafront-reference-v1.md. Reconstructed from written description of the Swahili-Comorian coral-rag tradition and of Moroni's two medina quarters; no photographs, maps or survey data were available to the authoring environment and none were used, so the spec marks each value text-sourced, description-sourced, assumed, or unresolved. Visual-only and collisionless; not yet integrated into any production scene.",
+      "source_recipe": "tools/blender/create_seafront_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_CIVICHALLSEAFRONT_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_CoralRubble_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_CoralRubble_V1.blend",
+      "source_sha256": "bebeecabb9be0983a56dab43a58631e9d1d4f43cc3851b5109626e85c7250fe4",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_CoralRubble_V1.glb",
+      "production_sha256": "8d51bc8f2159530a3b38a68761dac0c8e97742237c4415adc5ff42ceee3e6dd4",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_RubbleCore",
+        "TC_MAT_RubbleRender",
+        "TC_MAT_RubbleShadow",
+        "TC_MAT_RubbleStone",
+        "TC_MAT_RubbleTimber"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 748,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_CoralRubble_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_CoralRubble_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_CoralRubble_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_CORALRUBBLE_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_CoralWallSegment_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_CoralWallSegment_V1.blend",
+      "source_sha256": "a0d1b8132e18997b350bc8576ccddaa6165c0ff0fd1e5d3f3dc0e9d07362eee2",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_CoralWallSegment_V1.glb",
+      "production_sha256": "fa12df8d435ff620e714605a4f24ad509fb38b01a5ea677c62fb17ea441b7fd6",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_CoralRag",
+        "TC_MAT_CoralWeathered",
+        "TC_MAT_LimeRender",
+        "TC_MAT_PlasterLossCore"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 992,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_CoralWallSegment_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_CoralWallSegment_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_CoralWallSegment_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_CORALWALLSEGMENT_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_HarbourSea_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_HarbourSea_V1.blend",
+      "source_sha256": "49565c442177114f70c870cd928ddd0f7b9b68ff9be06884dfde76ee86eaa20b",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_HarbourSea_V1.glb",
+      "production_sha256": "3e1870810295ca9f7fc60acc0b2d61c8b60fd6a06a7ca90194e0edd24efafeb4",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_seafront_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_HarbourWater"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 2160,
+      "review_artifacts": [],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter seafront kit, built from the data-driven spec data/art/comorian_seafront_spec.json and documented in docs/art/references/comorian-seafront-reference-v1.md. Reconstructed from written description of the Swahili-Comorian coral-rag tradition and of Moroni's two medina quarters; no photographs, maps or survey data were available to the authoring environment and none were used, so the spec marks each value text-sourced, description-sourced, assumed, or unresolved. Visual-only and collisionless; not yet integrated into any production scene.",
+      "source_recipe": "tools/blender/create_seafront_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_HARBOURSEA_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_LaundryLine_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_LaundryLine_V1.blend",
+      "source_sha256": "a71adc1240a1d95e69073bed270fad88ad0fcf653011b1ffa426039edb1a72b7",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_LaundryLine_V1.glb",
+      "production_sha256": "f8a90837099652400184a87b0b488378d44d780438be0bd465719e29cd1d90cb",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_mwezi_quarter_motion_kit_v1.py + tools/blender/export_animated_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_MotionClothBlue",
+        "TC_MAT_MotionClothOchre",
+        "TC_MAT_MotionClothWhite",
+        "TC_MAT_MotionLaundryPole",
+        "TC_MAT_MotionLaundryRope"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 456,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_LaundryLine_V1/motion_frame_001.png",
+        "artifacts/asset-review/TC_ENV_LaundryLine_V1/motion_frame_030.png",
+        "artifacts/asset-review/TC_ENV_LaundryLine_V1/motion_frame_060.png",
+        "artifacts/asset-review/TC_ENV_LaundryLine_V1/motion_frame_090.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter motion kit (docs/art/briefs/mwezi-quarter-district-v1.md): skinned, looping animated dressing for the single MVP map. Armature-driven so the mesh keeps a clean origin under the asset contract; exported with tools/blender/export_animated_asset.py because the static exporter applies modifiers and would strip the skin. Visual-only and collisionless; src/World/EnvironmentMotionPlayer.cs loops the clip and phase-offsets each instance.",
+      "source_recipe": "tools/blender/create_mwezi_quarter_motion_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_LAUNDRYLINE_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_LavaShoreline_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_LavaShoreline_V1.blend",
+      "source_sha256": "515bf893129630b82bfba70b378777d99e165b634d8177a4ccafb889a262a140",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_LavaShoreline_V1.glb",
+      "production_sha256": "9bfaf26324afb5bb57dba28037e08f4c0fa31c881a449379175e4b983e25e9ff",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_seafront_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_LavaRock",
+        "TC_MAT_LavaTideStain"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 1144,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_LavaShoreline_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_LavaShoreline_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_LavaShoreline_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter seafront kit, built from the data-driven spec data/art/comorian_seafront_spec.json and documented in docs/art/references/comorian-seafront-reference-v1.md. Reconstructed from written description of the Swahili-Comorian coral-rag tradition and of Moroni's two medina quarters; no photographs, maps or survey data were available to the authoring environment and none were used, so the spec marks each value text-sourced, description-sourced, assumed, or unresolved. Visual-only and collisionless; not yet integrated into any production scene.",
+      "source_recipe": "tools/blender/create_seafront_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_LAVASHORELINE_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_MarketStall_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_MarketStall_V1.blend",
+      "source_sha256": "d8018679cc035491aaf452c09ac61d165206cd32cf1ce4e8d5e1f79b51a1e6be",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_MarketStall_V1.glb",
+      "production_sha256": "530d592c277793806e85041d2997ab46c8532405e09380de68511dd22a4a89ce",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_StallBasket",
+        "TC_MAT_StallCloth",
+        "TC_MAT_StallStone",
+        "TC_MAT_StallTimber"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 812,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_MarketStall_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_MarketStall_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_MarketStall_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_MARKETSTALL_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_PalmCluster_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_PalmCluster_V1.blend",
+      "source_sha256": "fd2174093faed26856804c34dbb1efcb47679aa8623d69250a9dbe66a7bdfc70",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_PalmCluster_V1.glb",
+      "production_sha256": "4c693b105eb3615a4da0e3fd14c1c16b6213f7f52616755c2b426bf1cf81f840",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_PalmFrond",
+        "TC_MAT_PalmTrunk"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 2800,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_PalmCluster_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_PalmCluster_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_PalmCluster_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_PALMCLUSTER_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_PalmSway_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_PalmSway_V1.blend",
+      "source_sha256": "49c784f4825a15aa6ae2c4cc7f6122e6bde829d0cd04e00f44e1d82ea5e201b3",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_PalmSway_V1.glb",
+      "production_sha256": "436a8fbb7582b95ce35ba95f2fc400b2626010d7be68d84f2ac0f7f833c0329a",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_mwezi_quarter_motion_kit_v1.py + tools/blender/export_animated_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_MotionPalmFrond",
+        "TC_MAT_MotionPalmTrunk"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 1400,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_PalmSway_V1/motion_frame_001.png",
+        "artifacts/asset-review/TC_ENV_PalmSway_V1/motion_frame_030.png",
+        "artifacts/asset-review/TC_ENV_PalmSway_V1/motion_frame_060.png",
+        "artifacts/asset-review/TC_ENV_PalmSway_V1/motion_frame_090.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter motion kit (docs/art/briefs/mwezi-quarter-district-v1.md): skinned, looping animated dressing for the single MVP map. Armature-driven so the mesh keeps a clean origin under the asset contract; exported with tools/blender/export_animated_asset.py because the static exporter applies modifiers and would strip the skin. Visual-only and collisionless; src/World/EnvironmentMotionPlayer.cs loops the clip and phase-offsets each instance.",
+      "source_recipe": "tools/blender/create_mwezi_quarter_motion_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_PALMSWAY_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_QuarterTower_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_QuarterTower_V1.blend",
+      "source_sha256": "d8d9af086dc58a0abf8a1078e51f58e6678456ab9cc4c6c129406025ad730d5b",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_QuarterTower_V1.glb",
+      "production_sha256": "f9402f185179e3938f37fa78666373709aa8fe0cd5b3210c65a585d1616da891",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_TowerBeaconGlass",
+        "TC_MAT_TowerLampSteel",
+        "TC_MAT_TowerOpening",
+        "TC_MAT_TowerRender",
+        "TC_MAT_TowerShadow",
+        "TC_MAT_TowerStone"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 1460,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_QuarterTower_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_QuarterTower_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_QuarterTower_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_QUARTERTOWER_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_SeaWallQuay_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_SeaWallQuay_V1.blend",
+      "source_sha256": "a79f86a6e80a3660396295696f9c9d36c687c20dc28456cb27e5edfbc380abbe",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_SeaWallQuay_V1.glb",
+      "production_sha256": "6921bc0a2fc0663585ac300fee79337eb2b5223a706b3d9600f6b1568e6e8b57",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_seafront_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_QuayBollard",
+        "TC_MAT_QuayCoping",
+        "TC_MAT_QuayStone"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 904,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_SeaWallQuay_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_SeaWallQuay_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_SeaWallQuay_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter seafront kit, built from the data-driven spec data/art/comorian_seafront_spec.json and documented in docs/art/references/comorian-seafront-reference-v1.md. Reconstructed from written description of the Swahili-Comorian coral-rag tradition and of Moroni's two medina quarters; no photographs, maps or survey data were available to the authoring environment and none were used, so the spec marks each value text-sourced, description-sourced, assumed, or unresolved. Visual-only and collisionless; not yet integrated into any production scene.",
+      "source_recipe": "tools/blender/create_seafront_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_SEAWALLQUAY_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_SeawallRun_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_SeawallRun_V1.blend",
+      "source_sha256": "011b4a30085c75731772230c54ee572080c1edf25035b3d7fe8805ebf5ea0bdb",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_SeawallRun_V1.glb",
+      "production_sha256": "685c3a32401ce05a1c38739c6efec50eb211779a85ded6e158e00fa8be74c0f3",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_SeawallBollard",
+        "TC_MAT_SeawallStone",
+        "TC_MAT_SeawallWet"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 956,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_SeawallRun_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_SeawallRun_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_SeawallRun_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_SEAWALLRUN_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_StairTerrace_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_StairTerrace_V1.blend",
+      "source_sha256": "2f8224e85ac40fb8caf75bb043480e392a17ff2434703fb3c42ab09bb54f4960",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_StairTerrace_V1.glb",
+      "production_sha256": "8903de6088b5a5dbf648e30efda7ab8be567cef99a2fc80dd2c1cf8e8d63953b",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_TerraceRender",
+        "TC_MAT_TerraceShadow",
+        "TC_MAT_TerraceStone"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 616,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_StairTerrace_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_StairTerrace_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_StairTerrace_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_STAIRTERRACE_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
+      "asset_name": "TC_ENV_StoneHouse_V1",
+      "classification": "production-candidate",
+      "source_blend": "assets/Source/Blender/Production/MweziQuarter_V1/TC_ENV_StoneHouse_V1.blend",
+      "source_sha256": "367107f85c29c01d56c5b87880ce95f0828b17ec711a2517fdbaea709445e28b",
+      "production_export": "assets/Production/Generated/MweziQuarter_V1/TC_ENV_StoneHouse_V1.glb",
+      "production_sha256": "27085470477230363b0589c73cc12f49e4d130971b61858b63fcb4746dd5027e",
+      "export_format": "GLB",
+      "created_by_tool": "tools/blender/create_badjanani_district_kit_v1.py + tools/blender/export_asset.py + tools/blender/glb_to_embedded_gltf.py",
+      "material_slots": [
+        "TC_MAT_HouseOpening",
+        "TC_MAT_HouseRender",
+        "TC_MAT_HouseShadow",
+        "TC_MAT_HouseShutter",
+        "TC_MAT_HouseStone"
+      ],
+      "validation_status": "PASS",
+      "triangle_count": 1848,
+      "review_artifacts": [
+        "artifacts/asset-review/TC_ENV_StoneHouse_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_StoneHouse_V1/player_eye_level.png",
+        "artifacts/asset-review/TC_ENV_StoneHouse_V1/side_silhouette.png"
+      ],
+      "collision_policy": "none",
+      "runtime_mesh_generation": false,
+      "license": "project-authored",
+      "notes": "Mwezi Quarter district kit (docs/art/briefs/mwezi-quarter-district-v1.md); project-authored coastal coral-stone architecture for the single MVP map's built environment. Visual-only and collisionless: gameplay collision is authored separately in scenes/Main/Main.tscn as explicit BoxShape3D volumes. Architecture references a regional building tradition; no real building, place name, or religious function is reproduced.",
+      "source_recipe": "tools/blender/create_badjanani_district_kit_v1.py",
+      "binary_delivery": "generated by Blender Asset Forge; .blend and .glb are tracked alongside the text .gltf delivery in assets/models/mwezi_quarter_v1/ (see studio/decisions/commit-generated-blender-binaries.md)",
+      "verdict": "TC_ENV_STONEHOUSE_V1_REVIEW_ARTIFACTS_READY"
+    },
+    {
       "asset_name": "TC_PolishDetails_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_PolishDetails_V1.blend",
-      "source_sha256": "4567dbdc00d66fa56f9bfb48fbea3abac67264a5975641f91b976d6dc58cd66d",
+      "source_sha256": "29a52e7fa43cdef1c69daaf86496f206a9ca9df3b1e8e546b9aa9be8ef11776f",
       "production_export": "assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb",
       "production_sha256": "3b12d0ecd111d53b61c4bc95804816fbc63ce0b318ce8776370c2ec7b8db73b7",
       "export_format": "GLB",
@@ -823,7 +1397,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_PolishDetails_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_PolishDetails_V1/front.png",
-        "artifacts/asset-review/TC_PolishDetails_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_PolishDetails_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_PolishDetails_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -839,7 +1414,7 @@
       "source_blend": null,
       "source_sha256": null,
       "production_export": "assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb",
-      "production_sha256": "ad74ae0831b7799ef8f8edd80b790811a6cbba5a4d2fb1e58fe03ab9f9571f6e",
+      "production_sha256": "e7440a6b98924e51536598ef664aca353ea06ce0e114690ccfe778b7b635cea8",
       "export_format": "GLB",
       "created_by_tool": "tools/blender/create_terrain_crash_basin_v1.py",
       "material_slots": [
@@ -857,7 +1432,7 @@
       "metadata": {
         "brief": "docs/art/brief-terrain-crash-basin.md",
         "target_poly_budget": "8000\u201312000",
-        "generated_date": "2026-07-18T18:24:34.490144",
+        "generated_date": "2026-09-24T04:58:21.596128",
         "notes": "Polygonal Salvage Sci-Fi volcanic crash site terrain. Shaped ash basin with basalt framing, fractured impact zone, route landmarks."
       }
     },
@@ -865,7 +1440,7 @@
       "asset_name": "TC_TestCrate",
       "classification": "pipeline-test",
       "source_blend": "assets/Source/Blender/_templates/TC_TestCrate.blend",
-      "source_sha256": "4efbcae4a6519fd6be23127e1902f03687a145e6d7e7dad9277a1ac52e98a26b",
+      "source_sha256": "77a3b355f7c8b9adb66ad0cbfe678896989b30ba8a2954a6f0365e21e1985bd2",
       "production_export": "assets/Production/Generated/Test/TC_TestCrate.glb",
       "production_sha256": "b866eb705d41c0cd7409ce13d53908d09ae3c62cdfcb718ccc53fe8af46d1ad9",
       "export_format": "GLB",

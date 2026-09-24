@@ -1,4 +1,4 @@
-[gd_scene load_steps=108 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=109 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -60,6 +60,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/UltimateSpaceKit/Models/Base_Large.obj" id="22_base_large"]
 [ext_resource type="ArrayMesh" path="res://assets/ThirdParty/Quaternius/AnimatedRobotPack/Models/Robot.obj" id="24_robot"]
 [ext_resource type="PackedScene" path="res://scenes/Environment/ProceduralCrashSiteTerrain.tscn" id="25_procedural_terrain"]
+[ext_resource type="PackedScene" path="res://scenes/Environment/MweziQuarterDistrict.tscn" id="140_mwezi_district"]
 [ext_resource type="Material" path="res://assets/Materials/VolcanicAsh.tres" id="26_ash"]
 [ext_resource type="Material" path="res://assets/Materials/VolcanicSoil.tres" id="27_soil"]
 [ext_resource type="Material" path="res://assets/Materials/HumanWornSteel.tres" id="28_steel"]
@@ -134,7 +135,7 @@ metallic = 0.1
 roughness = 0.7
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_Basalt"]
-albedo_color = Color(0.28, 0.28, 0.32, 1)
+albedo_color = Color(0.463, 0.427, 0.365, 1)
 metallic = 0.0
 roughness = 0.85
 
@@ -339,32 +340,76 @@ bottom_radius = 0.55
 height = 52.0
 material = ExtResource("121_spire_beam")
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
-sky_top_color = Color(0.05, 0.04, 0.16, 1)
-sky_horizon_color = Color(0.58, 0.28, 0.14, 1)
-sky_curve = 0.11
-ground_bottom_color = Color(0.05, 0.03, 0.06, 1)
-ground_horizon_color = Color(0.28, 0.14, 0.09, 1)
+sky_top_color = Color(0.094, 0.149, 0.271, 1)
+sky_horizon_color = Color(0.741, 0.455, 0.243, 1)
+sky_curve = 0.17
+sky_energy_multiplier = 1.15
+; The sky's lower hemisphere feeds sky-sourced ambient, so a saturated red
+; ground band bounces red onto every horizontal surface in the quarter. These
+; are deliberately near-neutral: the warmth belongs to the sun, not the bounce.
+ground_bottom_color = Color(0.118, 0.114, 0.125, 1)
+ground_horizon_color = Color(0.353, 0.333, 0.306, 1)
+ground_curve = 0.06
+sun_angle_max = 6.0
+sun_curve = 0.12
 [sub_resource type="Sky" id="Sky_main"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 2
 sky = SubResource("Sky_main")
+; Ambient comes from the sky itself: cool zenith blue fills the shadow side of
+; every lime-rendered wall while the warm horizon band lights what faces the
+; sun. That split is what stops the quarter reading as one flat amber mass.
 ambient_light_source = 3
-ambient_light_color = Color(0.20, 0.16, 0.34, 1)
-ambient_light_energy = 0.65
-tonemap_mode = 2
-tonemap_exposure = 0.88
+ambient_light_color = Color(0.298, 0.376, 0.51, 1)
+ambient_light_sky_contribution = 0.85
+ambient_light_energy = 2.1
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.22
+tonemap_white = 1.0
+; Contact shadows where stone meets stone and ground; without this an arcade
+; pier and the wall behind it merge into one silhouette.
 ssao_enabled = true
-ssao_radius = 1.2
-ssao_intensity = 0.55
+ssao_radius = 0.9
+ssao_intensity = 2.0
+ssao_power = 1.5
+ssao_detail = 0.6
+ssao_horizon = 0.06
+ssao_sharpness = 0.98
+ssao_light_affect = 0.15
+; Bounce: sunlit coral stone throws warm light back into the alley shadows.
+ssil_enabled = true
+ssil_radius = 4.0
+ssil_intensity = 0.85
+ssil_sharpness = 0.98
+ssil_normal_rejection = 0.4
 glow_enabled = true
-glow_intensity = 0.38
-glow_strength = 0.72
-glow_bloom = 0.08
+glow_intensity = 0.5
+glow_strength = 0.9
+glow_bloom = 0.12
+glow_hdr_threshold = 1.0
+glow_levels/3 = 1.0
+glow_levels/4 = 0.7
+glow_levels/5 = 0.4
+; Warm coastal haze, strongest toward the harbour: separates the tower and the
+; far ridge from the near alley walls.
 fog_enabled = true
-fog_light_color = Color(0.22, 0.13, 0.12, 1)
-fog_density = 0.012
-fog_aerial_perspective = 0.15
+fog_light_color = Color(0.549, 0.506, 0.463, 1)
+fog_light_energy = 1.0
+fog_sun_scatter = 0.18
+fog_density = 0.0045
+fog_aerial_perspective = 0.22
+fog_sky_affect = 0.4
+; Contrast stays neutral. A 1.08 boost on top of ACES gave the tone curve a
+; brutal toe: measured on the scene, an albedo of 0.5 rendered at 0.13 and
+; 0.235 rendered at 0.008, so every dark "tech" prop -- crates, spire, lamp
+; poles, the Scout's plates -- collapsed into a flat black void as soon as it
+; sat in shade. Exposure and ambient carry the image instead.
+adjustment_enabled = true
+adjustment_brightness = 1.0
+adjustment_contrast = 1.0
+adjustment_saturation = 1.02
 
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_stage_a_ground"]
@@ -407,13 +452,29 @@ environment = SubResource("Environment_main")
 [node name="ProceduralCrashSiteTerrain" parent="." instance=ExtResource("25_procedural_terrain")]
 visible = true
 
+[node name="MweziQuarterDistrict" parent="." instance=ExtResource("140_mwezi_district")]
+metadata/integration = "Mwezi Quarter district (docs/art/briefs/mwezi-quarter-district-v1.md): the built environment the crash site sits in. Generated by tools/level/build_mwezi_quarter_district.py. Mission anchor positions, their collision shapes, and the Scout arena are unchanged; district Structures add their own BoxShape3D collision, Dressing is collisionless."
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 0, 12, 0)
-light_color = Color(1.0, 0.72, 0.48, 1)
-light_energy = 1.22
+; Sun at 45 degrees elevation, sitting behind the player's line of advance. The player walks from spawn toward -Z, so a sun in the +Z sky
+; frontlights every facade they approach and throws shadows away from the
+; camera. Two lower angles were tried first: a western sun put the whole spawn
+; square inside a 12 m building shadow, and 32 degrees still merged the entry
+; houses' shadows into one dark field across the street. README section 15 puts
+; legibility above realism, so the sun sits high enough to keep the walked
+; ground lit and short enough shadows to read as separate objects.
+transform = Transform3D(0.873, 0, -0.495, -0.35, 0.7071, -0.6173, 0.35, 0.7071, 0.6173, 0, 12, 0)
+light_color = Color(1.0, 0.859, 0.678, 1)
+light_energy = 2.2
+light_specular = 0.4
+light_angular_distance = 1.0
 shadow_enabled = true
-shadow_bias = 0.25
-shadow_normal_bias = 3.0
+shadow_mode = 2
+shadow_bias = 0.06
+shadow_normal_bias = 1.6
+shadow_blur = 1.0
+directional_shadow_max_distance = 95.0
+directional_shadow_blend_splits = true
 [node name="Ground" type="StaticBody3D" parent="."]
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 visible = false

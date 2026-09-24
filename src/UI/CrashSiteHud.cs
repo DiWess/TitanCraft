@@ -13,6 +13,7 @@ public partial class CrashSiteHud : CanvasLayer
     private Label _armState = null!;
     private Label _startTutorial = null!;
     private Label _actionFeedback = null!;
+    private Label _onboardingPrompt = null!;
 
     public override void _Ready()
     {
@@ -23,6 +24,7 @@ public partial class CrashSiteHud : CanvasLayer
         _armState = GetNode<Label>("Panel/Margin/VBox/MechanicalArmState");
         _startTutorial = GetNode<Label>("Panel/Margin/VBox/StartTutorial");
         _actionFeedback = GetNode<Label>("ActionFeedback");
+        _onboardingPrompt = GetNode<Label>("OnboardingPrompt");
         SetHealth(100, 100);
         SetObjective("Collect resources near the crash site.");
         SetResources(0, 0, 0, false);
@@ -30,6 +32,7 @@ public partial class CrashSiteHud : CanvasLayer
         SetMechanicalArmProgress("Mechanical Arm Mk I: Metal 0/10 | Biomass 0/3 | Electronics 0/2");
         SetStartTutorialVisible(true);
         SetActionFeedback("Left click: Mk I not built yet — craft it at the workbench first.");
+        SetOnboardingPrompt(string.Empty);
     }
 
     private static readonly Color GainAccent = new(1.0f, 0.62f, 0.18f);
@@ -113,5 +116,15 @@ public partial class CrashSiteHud : CanvasLayer
         // Keep the latest craft/attack result visible so players can confirm whether their input worked.
         _actionFeedback.Visible = !string.IsNullOrWhiteSpace(message);
         _actionFeedback.Text = message;
+    }
+
+    /// <summary>
+    /// The one-line, action-driven onboarding step. Empty text hides the label
+    /// outright so a finished tutorial leaves no residue on screen.
+    /// </summary>
+    public void SetOnboardingPrompt(string prompt)
+    {
+        _onboardingPrompt.Text = prompt;
+        _onboardingPrompt.Visible = !string.IsNullOrEmpty(prompt);
     }
 }

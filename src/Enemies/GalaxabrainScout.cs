@@ -162,6 +162,12 @@ public partial class GalaxabrainScout : CharacterBody3D
         attackRange: 2f,
         attackCooldownSeconds: 0.8f);
 
+    /// <summary>
+    /// Scene group used to locate the living enemy without a hard node path --
+    /// the damage-direction indicator needs to know where a hit came from.
+    /// </summary>
+    public const string GalaxabrainScoutGroup = "galaxabrain_scouts";
+
     private GalaxabrainScoutState _previousState = GalaxabrainScoutState.Idle;
 
     private ScoutHitFlinch _hitFlinch = new();
@@ -214,6 +220,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         _aliveVisualBaseY = _aliveVisualAnimationRoot?.Position.Y ?? 0f;
         SetMissionComponentVisible(false);
         _previousState = GalaxabrainScoutState.Idle;
+        AddToGroup(GalaxabrainScoutGroup);
     }
 
     public override void _PhysicsProcess(double delta)

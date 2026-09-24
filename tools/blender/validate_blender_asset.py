@@ -51,6 +51,42 @@ budgets = {
     'TC_ENV_CrashDebris_A_V1.blend': 1400,
     'TC_LightingReference_V1.blend': 800,
     'TC_PolishDetails_V1.blend': 1700,
+    # Mwezi Quarter district kit. These are buildings, not props: they carry
+    # more silhouette detail (voussoirs, dentils, shutters, fronds) and every
+    # asset is edge-bevelled so its stonework catches light instead of reading
+    # as flat paper, which roughly triples raw primitive counts. Budgets are
+    # set from the measured count plus ~15% authoring headroom. The whole kit
+    # totals ~12.2k triangles, well inside the README section 28 target of
+    # 60 FPS on a mid-range Windows PC, where draw calls and dynamic lights --
+    # not triangle count at this scale -- are the limiting factor.
+    # Raised 460 -> 1060 when the plaster-loss patches became recessed rubble
+    # rather than flat slabs: a hole in the render costs a back slab plus four
+    # core stones per patch, three patches, all bevelled. Measured 924 plus
+    # ~15% authoring headroom.
+    'TC_ENV_CoralWallSegment_V1.blend': 1060,
+    'TC_ENV_ArcadeBay_V1.blend': 2650,
+    'TC_ENV_QuarterTower_V1.blend': 1700,
+    'TC_ENV_CarvedDoorway_V1.blend': 2450,
+    'TC_ENV_StoneHouse_V1.blend': 2150,
+    'TC_ENV_StairTerrace_V1.blend': 720,
+    'TC_ENV_SeawallRun_V1.blend': 1120,
+    'TC_ENV_MarketStall_V1.blend': 950,
+    'TC_ENV_PalmCluster_V1.blend': 3200,
+    'TC_ENV_CoralRubble_V1.blend': 860,
+    # Mwezi Quarter motion kit: skinned, animated props. Same bevel treatment
+    # as the static kit so a swaying palm matches the wall behind it.
+    'TC_ENV_PalmSway_V1.blend': 1650,
+    'TC_ENV_LaundryLine_V1.blend': 560,
+    'TC_ENV_AwningCloth_V1.blend': 420,
+    'TC_ENV_BannerCloth_V1.blend': 340,
+    # Seafront kit, budgets taken from data/art/comorian_seafront_spec.json.
+    'TC_ENV_SeaWallQuay_V1.blend': 1400,
+    'TC_ENV_CivicHallSeafront_V1.blend': 5200,
+    'TC_ENV_LavaShoreline_V1.blend': 1800,
+    # Sand is a 22x12 displaced grid, not boxes, so most of this budget is the
+    # grid itself; the rocks are the only bevelled geometry in the asset.
+    'TC_ENV_BeachPocket_V1.blend': 1400,
+    'TC_ENV_HarbourSea_V1.blend': 2400,
 }
 max_triangles = budgets.get(Path(path).name, 500)
 if triangles > max_triangles:

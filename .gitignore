@@ -99,3 +99,7 @@ artifacts/asset-review/**/*.log
 artifacts/visual-review/**/*.png
 artifacts/visual-review/**/*.log
 artifacts/visual-artifact-factory/**
+
+# Blender writes a .blend1 backup beside every saved source; the generator
+# rewrites sources on every run, so these are pure churn.
+*.blend1

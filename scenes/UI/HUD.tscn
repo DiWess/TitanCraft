@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://titancraft_hud"]
+[gd_scene load_steps=5 format=3 uid="uid://titancraft_hud"]
 
 [ext_resource type="Script" path="res://src/UI/CrashSiteHud.cs" id="1_hud"]
+[ext_resource type="Script" path="res://src/UI/CombatFeedbackOverlay.cs" id="2_combat_overlay"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.0627451, 0.0705882, 0.0823529, 0.88)
@@ -82,3 +83,28 @@ horizontal_alignment = 1
 vertical_alignment = 1
 label_settings = SubResource("LabelSettings_hud")
 theme_override_colors/font_color = Color(1, 0.72, 0.24, 1)
+
+[node name="OnboardingPrompt" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -420.0
+offset_top = 64.0
+offset_right = 420.0
+offset_bottom = 104.0
+text = ""
+visible = false
+horizontal_alignment = 1
+vertical_alignment = 1
+label_settings = SubResource("LabelSettings_hud")
+theme_override_colors/font_color = Color(0.94, 0.92, 0.86, 1)
+metadata/integration = "Action-driven onboarding step, one line at a time, driven by OnboardingTutorialState via CrashSiteHudBinder. Separate from StartTutorial, which stays the compact controls reference."
+
+[node name="CombatFeedbackOverlay" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_combat_overlay")
+metadata/integration = "Procedurally drawn crosshair, hit marker and damage-direction indicator. Joins the combat_feedback_overlay group; FirstPersonController resolves it through that group, so neither scene depends on the other's ready order."

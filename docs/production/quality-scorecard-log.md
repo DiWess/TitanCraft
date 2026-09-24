@@ -414,3 +414,97 @@ axis's quality-bar gate, which scores the overall visual presentation against a 
 asset's process gate can close while the axis-level quality gate stays open. `docs/production/known-blockers.md`
 has been updated the same day to state this distinction explicitly, so future entries should keep citing axis 6
 as blocked on overall quality, not imply that the terrain-diorama reconciliation raises this axis.
+
+### 2026-09-17 — claude/badjanani-game-mvp-blender-7xidh5 (Mwezi Quarter district, lighting pass, game-feel layer)
+
+Human-directed setting amendment: the single MVP map is now a built coastal stone quarter
+(`README.md` sections 3/14/15/34 amended by explicit human decision). Ten Blender assets, a
+generated district layout, a reworked lighting/post chain, and a camera-feel and combat-feedback
+layer. Scope unchanged: one map, one enemy, same anchors, same loop.
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Untouched. Same loop, same anchors; the smoke suite still walks all 11 milestones. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | +1.0 | Hit chain gained a directional weapon kick, a hit marker (with a distinct lethal state), a damage-direction indicator, and a wired impact cue. 20 new unit tests (`GameFeelLayerTests`), 95/95 total. +1.0 is requirement and feedback coverage only — combat *feel* stays `HUMAN_BLOCKED` per `quality_benchmark_v1.md` rule 2, and enemy AI itself is unchanged. |
+| 3 | Movement & controls | 4.0 | 9.5 | +1.0 | Added stride-locked view bob, strafe lean, landing impact scaled to fall speed, and viewmodel sway. All pure logic, all unit-tested. Score moves for the mechanics existing and being correct; whether they feel good is unverified and needs a human at a Windows build. |
+| 4 | Crafting & progression | 5.0 | 8.5 | = | Untouched. |
+| 5 | World / level design | 6.0 | 8.5 | +2.0 | The map has a built environment for the first time: 38 placements forming alleys, a workbench courtyard fronted by an arcaded hall, a harbour plaza, and a tower landmark. Eight opened player-eye-height captures (`artifacts/visual-review/mwezi-quarter-district/district_01..08`). The layout generator asserts anchor, route and arena clearance and refused four faulty layouts before writing the scene. Held below 7 because the map is still one small zone with a single path — content volume, not dressing, is the remaining gap. |
+| 6 | Visual art & presentation | 7.5 | 9.0 | +1.0 | Ten bevelled coral-stone assets with `BLENDER_ASSET_VALID` and hashed provenance; 30 opened standalone review PNGs; reworked environment (ACES tonemap, sky-sourced ambient, SSAO, SSIL, glow, aerial haze, graded) and a re-aimed key light. Before/after on the 8 `phase3a-production-integration` captures. Held at 7.5: no human aesthetic sign-off exists, the art is still untextured flat-colour geometry, and volumetric lighting was deliberately deferred for the frame budget. |
+| 7 | Audio & feedback | 3.5 | 8.5 | +0.5 | `Weapon_Impact` and a landing cue are now actually triggered — both banks existed and were silent. No new audio content; the axis stays low because the cues are still placeholders. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified on this change: `dotnet build` Debug+Release 0 warnings / 0 errors; `dotnet test` 95/95; `./tools/test.sh` exit 0; import 0 errors; integration `TITANCRAFT_INTEGRATION_TESTS_PASS`; MVP smoke 11/11; Windows export produced (SHA-256 `bb897a63154513b0ebc7f57e4db117bfee754304de02938cc07d3b4a35ff4e92`). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged, and cannot change inside the MVP: more maps and more enemy types are on the `README.md` section 6 forbidden list. This axis is structurally capped until a human amends scope. |
+| 10 | Process integrity of studio claims | 3.0 | n/a | +1.0 | Every defect found during this pass is recorded in `docs/art/reviews/mwezi-quarter-district-v1-review.md` rather than hidden: seven asset/render faults, four layout faults caught by asserts, three lighting faults caught by opening captures. The collision-budget constant was raised with its reason stated in code, not quietly. No feel or aesthetic claim is made anywhere in this change set. |
+
+**Composite (axes 1–9):** 5.1 / 10 (peer average ≈8.8 — 46.0/9 = 5.1), up from 4.5.
+
+**This is not a 10/10 and must not be quoted as one.** The request that produced this work asked for a
+10/10 MVP. That number is not reachable from here, for two structural reasons that no amount of work in
+this container can remove:
+
+1. Axis 9 needs content the MVP forbids (more maps, more enemy types). It is capped at 2.0 by scope.
+2. Axes 2 and 3 are feel axes. `quality_benchmark_v1.md` rule 2 forbids an agent in a headless
+   environment from claiming a feel result, and this environment has no display, no Windows hardware,
+   and no human at the controls. Their scores here reflect mechanics existing and being test-covered,
+   nothing more.
+
+**Next unlock, unchanged:** a human pulls the branch, plays the Windows build, and records dated feel and
+aesthetic verdicts. Until then axes 2, 3 and 6 cannot honestly move further.
+
+### 2026-09-23 — claude/badjanani-game-mvp-blender-7xidh5 (environment motion, onboarding, grade fix)
+
+Human-directed follow-up: Blender-authored micro-animation and environment movement, an onboarding
+tutorial, and a green play journey. Chasing a black box in a capture also uncovered two pre-existing
+presentation defects that a still-screenshot review cannot catch.
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Untouched. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | = | Untouched this pass. |
+| 3 | Movement & controls | 4.0 | 9.5 | = | Untouched this pass. Onboarding teaches the controls; it does not change how they feel, and feel remains `HUMAN_BLOCKED`. |
+| 4 | Crafting & progression | 5.5 | 8.5 | +0.5 | The craft step is now taught rather than inferred: onboarding walks look → move → jump → collect → craft → attack, advancing only on real gameplay, and pulls a player who ignores it forward instead of stranding them on a stale prompt. 21 new unit tests plus an integration walk of the flow. +0.5 is guidance coverage only; the recipe and economy are unchanged. |
+| 5 | World / level design | 6.5 | 8.5 | +0.5 | The quarter is no longer static: ten looping animated placements (palm sway, laundry, awnings, banners) on the walked routes, each phase- and rate-offset per instance. Verified in-engine (10/10 playing, looping, distinct phases) and evidenced by two capture frames 1.5 s apart. Held below 7 for the same reason as before — one small zone, one path. |
+| 6 | Visual art & presentation | 8.0 | 9.0 | +0.5 | Four skinned animated assets, all `BLENDER_ASSET_VALID` with hashed provenance and 16 motion review PNGs. Two real presentation defects fixed: the grade's contrast boost was crushing every dark prop to pure black (measured: albedo 0.5 → 0.133, 0.235 → 0.008, with a crate rendering exactly `(0,0,0)` under a 12-energy sun with shadows off), and the ash route — the map's main navigation aid — was shaded as a downward-facing surface with 42 of 48 normals inverted. Still held below human sign-off: the art remains untextured flat-colour geometry. |
+| 7 | Audio & feedback | 3.5 | 8.5 | = | Untouched. The new motion is silent — no wind or cloth audio exists. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified: build Debug+Release 0/0; `dotnet test` 116/116; `./tools/test.sh` exit 0; import 0 errors; integration `TITANCRAFT_INTEGRATION_TESTS_PASS`; MVP smoke 11/11; Windows export produced (SHA-256 `5d85ab1ed26d87a5b0430f33a0db064809f807e6d91b77283398c11469925b9a`). |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged and still structurally capped by `README.md` section 6. Animated dressing is not content. |
+| 10 | Process integrity of studio claims | 3.5 | n/a | +0.5 | The black-box investigation is written up with its measurements rather than the fix being quietly applied, including the two wrong hypotheses (shadow, then material) that measurement ruled out. The motion pipeline's silent-failure mode — an exporter that would have stripped every skin and produced files that look correct and never move — is guarded by an exporter that refuses such a source and by integration assertions on loop mode and phase spread. |
+
+**Composite (axes 1–9):** 5.3 / 10 (peer average ≈8.8 — 48.0/9 = 5.3), up from 5.1.
+
+**Still not a 10/10.** Both structural caps from the previous entry are unchanged: axis 9 needs content
+the MVP forbids, and axes 2/3 are feel axes that `quality_benchmark_v1.md` rule 2 bars an agent in a
+headless container from scoring. Nothing in this pass changes either.
+
+**Next unlock, unchanged:** a human plays the Windows build and records dated feel and aesthetic verdicts.
+
+---
+
+## 2026-09-24 — Description-sourced material correction, and the first human visual verdict
+
+The seafront spec's highest-value fields were labelled `needs_photo` and parked on defaults, waiting on
+an input this environment cannot receive. Written descriptions of Moroni's two medina quarters replaced
+them, and contradicted three values the kits had already shipped. Separately, a human viewed three of
+the resulting renders and recorded the first human verdict against this art pass
+(`docs/art/reviews/2026-09-24-human-render-verdict.md`).
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | Untouched. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | = | Untouched. Still `HUMAN_BLOCKED` — the human viewed static renders, not gameplay. |
+| 3 | Movement & controls | 4.0 | 9.5 | = | Untouched. `HUMAN_BLOCKED` for the same reason. |
+| 4 | Crafting & progression | 5.5 | 8.5 | = | Untouched. |
+| 5 | World / level design | 6.5 | 8.5 | = | `TC_ENV_BeachPocket_V1` is built and validated but is **not placed in any scene**, so it changes no level. Held. |
+| 6 | Visual art & presentation | 8.5 | 9.0 | +0.5 | Three shipped values were wrong against written description and are corrected: plaster loss reveals ink-black basalt (`0.090, 0.086, 0.082`) not pale coral rag; quarter timber is age-bleached (`0.435, 0.400, 0.353`) not dark hardwood; the civic hall stands on a 1.6 m dark volcanic base, restoring the composition's strongest value contrast. Plaster loss is now real geometry — a rubble core carrying a boolean-cut plaster skin — after two render-diagnosed failures. **Also the first human aesthetic sign-off on this pass** (`docs/art/reviews/2026-09-24-human-render-verdict.md`), which is what allows any movement here at all. Held below 9: only 3 of ~49 assets were shown to the human, and the art is still untextured flat-colour geometry. |
+| 7 | Audio & feedback | 3.5 | 8.5 | = | Untouched. |
+| 8 | Technical stability | 7.5 | 8.0 | = | Re-verified: build 0/0; `dotnet test` 116/116; `./tools/test.sh` exit 0; import 0 errors; `TITANCRAFT_INTEGRATION_TESTS_PASS`; MVP smoke 11/11; Windows export produced; `BLENDER_ASSET_VALID` on all 15 kit assets; manifest regenerated to 49 entries with no non-passing status. |
+| 9 | Content volume / replayability | 2.0 | 9.0 | = | Unchanged and still capped by `README.md` section 6. One new unplaced environment asset is not content. |
+| 10 | Process integrity of studio claims | 4.0 | n/a | +0.5 | The reference document now records, in a table, three values it proved **wrong** rather than merely unconfirmed — a reference that never corrects the art is not doing any work. The three-attempt failure sequence on the plaster geometry is written up rather than only the fix. `platform_height_m` and `carved_hardwood` were deleted rather than left beside their replacements, because two values for one thing is how a correction quietly comes back. The human verdict artifact states its own limits explicitly so it cannot later be cited as a playtest. |
+
+**Composite (axes 1–9):** 5.4 / 10 (48.5/9 = 5.39), up from 5.3.
+
+**Still not a 10/10,** and the caps are unchanged. Axis 9 needs content the MVP forbids. Axes 2, 3 and 7
+are feel axes that `quality_benchmark_v1.md` rule 2 bars from moving without a dated human *playtest*
+note — and the 2026-09-24 human verdict is explicitly **not** one. It is a verdict on three images.
+
+**Next unlock, unchanged:** a human runs the Windows build, walks the quarter, and files a dated note
+under `docs/production/playtests/`.

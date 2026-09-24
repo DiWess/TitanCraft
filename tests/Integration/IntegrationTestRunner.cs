@@ -34,7 +34,13 @@ public partial class IntegrationTestRunner : Node
         "res://assets/Materials/AlienVioletEmissive.tres",
         "res://assets/Materials/BiomassRed.tres",
     ];
-    private const int MaxStaticCollisionShapes = 19;
+    // Raised from 19 when the Mwezi Quarter district added the map's built
+    // environment (scenes/Environment/MweziQuarterDistrict.tscn): 23 shapes,
+    // one box per building plus four arcade piers and the terrace ramp. The
+    // budget still exists to stop collision bloat from decorative dressing --
+    // every district prop without gameplay meaning is collisionless, and the
+    // generator asserts arena and pickup clearance before the scene is written.
+    private const int MaxStaticCollisionShapes = 48;
     private static readonly string[] ForbiddenCollisionPrefixes = [
         "Moon",
         "Background",
@@ -75,6 +81,8 @@ public partial class IntegrationTestRunner : Node
             await TestRuntimeSceneContracts();
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
+            await TestEnvironmentMotion();
+            await TestOnboardingTutorialJourney();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
             GetTree().Quit(0);
         }
@@ -83,6 +91,84 @@ public partial class IntegrationTestRunner : Node
             GD.PushError(exception.ToString());
             GetTree().Quit(1);
         }
+    }
+
+    /// <summary>
+    /// The district's animated dressing must actually be moving in the live
+    /// scene. glTF clips import with looping disabled, so a regression here is
+    /// silent: the props render correctly and simply never move again after
+    /// their first five seconds.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestEnvironmentMotion()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(6);
+
+        var motion = main.GetNode<Node3D>("MweziQuarterDistrict/Motion");
+        var motionNodes = motion.GetChildren().OfType<EnvironmentMotionPlayer>().ToList();
+        Require(motionNodes.Count > 0, "District motion group has no EnvironmentMotionPlayer nodes");
+
+        var phases = new List<float>();
+        foreach (var node in motionNodes)
+        {
+            var players = node.FindChildren("*", "AnimationPlayer", true, false);
+            Require(players.Count > 0, $"{node.Name} has no imported AnimationPlayer");
+            var player = (AnimationPlayer)players[0];
+            Require(player.IsPlaying(), $"{node.Name} animation is not playing");
+            var animation = player.GetAnimation(player.CurrentAnimation);
+            Require(animation is not null, $"{node.Name} has no current animation");
+            Require(animation!.LoopMode == Animation.LoopModeEnum.Linear,
+                $"{node.Name} animation is not looping; it would freeze after one cycle");
+            Require(player.SpeedScale > 0.0f, $"{node.Name} animation speed is not positive");
+            phases.Add((float)player.CurrentAnimationPosition);
+        }
+
+        // Distinct start phases are the whole point of the per-instance seed:
+        // identical phases read as a machine rather than as wind.
+        Require(phases.Distinct().Count() > 1,
+            "All district motion props started at the same phase");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    /// <summary>
+    /// Walks the onboarding prompt through the same order a player meets it,
+    /// driving it only through real gameplay state.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestOnboardingTutorialJourney()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+
+        var hud = main.GetNode<CrashSiteHud>("HUD");
+        var binder = main.GetNode<CrashSiteHudBinder>("HudBinder");
+        var player = main.GetNode<FirstPersonController>("Player");
+        var prompt = hud.GetNode<Label>("OnboardingPrompt");
+
+        Require(binder.OnboardingStep == OnboardingStep.Look,
+            "Onboarding should start on the look step");
+        Require(prompt.Visible && prompt.Text.Length > 0,
+            "Onboarding prompt should be visible at the start of a run");
+
+        // Collecting a resource proves the movement steps and jumps ahead.
+        player.Inventory.AddResources(metal: 1, biomass: 0, electronicComponents: 0);
+        await Frames(2);
+        Require(binder.OnboardingStep == OnboardingStep.Craft,
+            "Collecting a resource should advance onboarding to the craft step");
+
+        player.Inventory.AddResources(metal: 9, biomass: 3, electronicComponents: 2);
+        player.Inventory.MarkMechanicalArmBuilt();
+        await Frames(2);
+        Require(binder.OnboardingStep == OnboardingStep.Attack,
+            "Building the arm should advance onboarding to the attack step");
+        Require(prompt.Visible && prompt.Text.Length > 0,
+            "Onboarding prompt should still guide the player toward the attack step");
+
+        main.QueueFree();
+        await Frames(2);
     }
 
     private static void TestInputMap()

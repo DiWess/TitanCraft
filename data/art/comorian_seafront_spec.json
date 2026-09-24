@@ -1,0 +1,229 @@
+{
+  "schema": "titancraft.art.seafront_reference.v1",
+  "spec_version": "2.1.0",
+  "updated": "2026-09-24",
+  "purpose": "Machine-readable reference for the Mwezi Quarter seafront. tools/blender/create_seafront_kit_v1.py reads this file and builds the assets from it; docs/art/references/comorian-seafront-reference-v1.md documents every field and its source. Change a value here and regenerate -- never hand-edit the generated assets.",
+  "provenance": {
+    "photographs_consulted": false,
+    "photograph_note": "No photographs were viewable by the authoring environment. Version 2.0.0 replaces the earlier photo-dependent placeholders with values taken from written descriptions of the two historic quarters of Moroni's medina, Badjanani and Mtsangani. Fields are labelled `description-sourced` where a written account states them, `assumed` where they are an authoring choice, and `unresolved` where no consulted description settles them.",
+    "creative_property": "README section 67 and the 2026-09-17 human decision keep the in-game place renamed and fictional. This spec captures architectural morphology, not identity: no real building, real place name or religious function is reproduced. The hall is a secular civic ruin.",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Moroni,_Comoros",
+      "https://en.wikivoyage.org/wiki/Grand_Comore",
+      "https://madainproject.com/badjanani_mosque_(moroni)",
+      "https://fr.wikipedia.org/wiki/Mosqu%C3%A9e_de_Moroni",
+      "https://www.grandemosqueedeparis.fr/post/lumiere-et-lieux-saints-de-l-islam-la-decouverte-des-mosquees-du-monde-n-45-moroni",
+      "https://www.lettres-ocean.net/blog/2017/1/31/la-mdina-sans-voile",
+      "https://maskane.com/quartiers-exclusifs-moroni-expatries"
+    ],
+    "religious_omissions": "Descriptions of the real building name features that are religious identifiers: a green dome on the minaret, Quranic verses carved into the walls, and a mihrab. These are deliberately NOT modelled. README section 67 and the 2026-09-17 decision make the in-game hall a secular civic ruin, so the kit takes only the secular morphology -- dark volcanic base, white rendered walls, arcades on slender columns, flat roof, slender corner tower -- and omits every religious marker."
+  },
+  "site": {
+    "description": "A stone quarter meeting the sea on a volcanic coast. The quarter's civic hall stands at the water's edge on a raised platform; a quay runs along the harbour front; black lava rock forms the shoreline where there is no built edge; the medina's alleys run back from the water.",
+    "confidence": "text-sourced",
+    "notes": "Wikivoyage: the mosque 'sits on the harbor adjacent to a shipyard and the medina'; the medina is 'winding alleys between ancient buildings'. Wikipedia: Moroni has 'a rocky volcanic coastline, mostly without beaches'."
+  },
+  "sea": {
+    "water_level_m": -0.35,
+    "extent_m": [
+      140.0,
+      120.0
+    ],
+    "colour_deep": [
+      0.043,
+      0.129,
+      0.184
+    ],
+    "colour_shallow": [
+      0.11,
+      0.325,
+      0.365
+    ],
+    "roughness": 0.08,
+    "metallic": 0.0,
+    "swell_amplitude_m": 0.09,
+    "swell_wavelength_m": 12.0,
+    "confidence": "assumed",
+    "notes": "Indian Ocean off a reef coast reads deep blue-green offshore and turquoise over shallow coral. Level sits below the quay coping so the wall has visible freeboard. Swell wavelength is a long ocean swell, not a wind chop: at 140 m across a 36-column grid the sample spacing is ~3.9 m, so a short wavelength aliases rather than reads."
+  },
+  "shoreline": {
+    "material_colour": [
+      0.086,
+      0.082,
+      0.078
+    ],
+    "roughness": 0.94,
+    "block_count": 26,
+    "block_size_range_m": [
+      0.5,
+      2.4
+    ],
+    "band_depth_m": 6.0,
+    "tide_stain_colour": [
+      0.16,
+      0.149,
+      0.129
+    ],
+    "confidence": "text-sourced",
+    "notes": "Wikivoyage describes the island's first impression as a 'volcanic island of harsh black rock'; Wikipedia confirms a rocky volcanic coastline mostly without beaches. Near-black basalt is the single strongest contrast against the lime-washed stone.",
+    "beach_pocket": {
+      "present": true,
+      "sand_colour": [
+        0.78,
+        0.733,
+        0.639
+      ],
+      "width_m": 18.0,
+      "confidence": "description-sourced",
+      "notes": "Mtsangani's beaches are described as among the finest in Moroni, which qualifies the island-wide 'mostly without beaches'. The shore is therefore lava rock interrupted by a sand pocket, not lava alone. Built as its own asset rather than folded into the lava tile: at 18 m it is wider than most of the 22 m lava run, so mixing them would make every shore tile part beach. The level lays lava runs and interrupts them with one pocket.",
+      "asset": "TC_ENV_BeachPocket_V1",
+      "wet_sand_colour": [
+        0.545,
+        0.509,
+        0.447
+      ],
+      "wet_fraction": 0.3
+    }
+  },
+  "quay": {
+    "real_reference_length_m": 80.0,
+    "segment_length_m": 12.0,
+    "height_above_water_m": 1.9,
+    "depth_m": 2.2,
+    "coping_overhang_m": 0.18,
+    "bollard_count_per_segment": 3,
+    "bollard_height_m": 0.7,
+    "stair_count_per_segment": 1,
+    "confidence": "text-sourced",
+    "notes": "Wikipedia gives Moroni's port an '80 metres quay with a draught of 3.5 metres'. The 80 m is the real-world reference; the asset is a 12 m tile so the level can lay any run length."
+  },
+  "civic_hall": {
+    "description": "The quarter's landmark at the water's edge: a low whitewashed coral-stone hall with an arcaded seaward front, a flat roof behind a parapet, and a square tower at one corner. Secular civic ruin in fiction.",
+    "footprint_m": [
+      16.0,
+      11.0
+    ],
+    "wall_height_m": 5.2,
+    "parapet_height_m": 0.9,
+    "arcade_bay_count": 5,
+    "arcade_span_m": 2.4,
+    "arcade_pier_width_m": 0.52,
+    "arcade_spring_height_m": 2.3,
+    "arch_point_ratio": 0.22,
+    "tower_base_m": 3.4,
+    "tower_height_m": 13.5,
+    "tower_stage_count": 3,
+    "tower_gallery": true,
+    "confidence": "description-sourced",
+    "needs_photo": [],
+    "notes": "Described as sitting above the shallow port overlooking the ocean, with 'roches volcaniques sombres a sa base' under 'murs d'un blanc immacule', 'arcs elegants', 'colonnes raffinees', a polished stone floor and local timber ceilings, and a slender tower visible across the city and added as a later campaign. The dark base under white walls is a correction: the first version stood the hall on a pale coral platform. Dimensions, bay count and tower height remain unresolved -- no consulted description gives a measurement -- and the dating is itself contested (see the reference document). Two further corrections in 2.0.0: platform_height_m was deleted so volcanic_base_height_m is the single source for the plinth (the plinth IS the dark volcanic base, not a pale platform with a base on top), and arcade_pier_width_m dropped 0.72 -> 0.52 because 0.72 m square piers on a 2.4 m span read as piers, not as the 'colonnes raffinees' the description names.",
+    "volcanic_base_height_m": 1.6,
+    "wall_finish": "immaculate white lime render above a dark volcanic rock base",
+    "column_style": "slender",
+    "floor": "polished stone",
+    "ceiling": "local timber",
+    "tower_slender": true,
+    "tower_addition_later_campaign": true,
+    "unresolved": [
+      "footprint_m",
+      "arcade_bay_count",
+      "tower_height_m",
+      "tower_stage_count"
+    ]
+  },
+  "materials": {
+    "lime_render": [
+      0.858824,
+      0.831373,
+      0.760784
+    ],
+    "coral_rag": [
+      0.560784,
+      0.509804,
+      0.423529
+    ],
+    "weathered_stone": [
+      0.352941,
+      0.317647,
+      0.262745
+    ],
+    "lava_rock": [
+      0.086,
+      0.082,
+      0.078
+    ],
+    "confidence": "description-sourced",
+    "notes": "Sources name coral stone, whitewashed walls and carved wooden doors against dark volcanic rock. Two values correct earlier assumptions. First: where the plaster has collapsed the stone beneath is described as 'noires comme de l'encre' -- ink-black basalt, not pale coral rag, so plaster_loss_core is near-black. Second: the medina's woodwork is 'd'un bois fendillé, blanchi par l'age et le climat' -- split and bleached by age and climate -- so weathered_timber is a pale grey-brown rather than the dark hardwood first used. The overall palette is explicitly 'un melange de blancheur et de noirceur'. carved_hardwood was removed in 2.0.0 rather than left beside its replacement: two timber values in one palette is exactly how a corrected colour quietly comes back.",
+    "plaster_loss_core": [
+      0.09,
+      0.086,
+      0.082
+    ],
+    "weathered_timber": [
+      0.435,
+      0.4,
+      0.352
+    ]
+  },
+  "vegetation": {
+    "palm_cluster_count": 6,
+    "palm_height_range_m": [
+      4.5,
+      7.5
+    ],
+    "confidence": "assumed",
+    "needs_photo": [
+      "palm_cluster_count"
+    ],
+    "notes": "Coconut palms are standard on this coast. Count is an authoring choice for skyline break-up, not a sourced figure."
+  },
+  "assets": [
+    {
+      "name": "TC_ENV_SeaWallQuay_V1",
+      "builder": "quay",
+      "triangle_budget": 1400,
+      "collision": "authored-in-scene"
+    },
+    {
+      "name": "TC_ENV_CivicHallSeafront_V1",
+      "builder": "civic_hall",
+      "triangle_budget": 5200,
+      "collision": "authored-in-scene"
+    },
+    {
+      "name": "TC_ENV_LavaShoreline_V1",
+      "builder": "shoreline",
+      "triangle_budget": 1800,
+      "collision": "authored-in-scene"
+    },
+    {
+      "name": "TC_ENV_HarbourSea_V1",
+      "builder": "sea",
+      "triangle_budget": 2400,
+      "collision": "none"
+    },
+    {
+      "name": "TC_ENV_BeachPocket_V1",
+      "builder": "beach_pocket",
+      "triangle_budget": 1400,
+      "collision": "authored-in-scene"
+    }
+  ],
+  "medina": {
+    "description": "Moroni's medina is formed by two historic quarters: Mtsangani to the north and Badjanani to the south, the latter holding the principal mosque and the main market.",
+    "quarter_north": "Mtsangani",
+    "quarter_south": "Badjanani",
+    "building_storeys_range": [
+      1,
+      3
+    ],
+    "building_storeys_rare_max": 4,
+    "alley_width_min_m": 0.9,
+    "alley_width_typical_m": 2.2,
+    "main_street_count": 2,
+    "roof_form": "flat",
+    "wall_mix": "basalt, crushed coral and sea sand",
+    "confidence": "description-sourced",
+    "notes": "Lettres-ocean: buildings 'ont generalement un, deux ou trois etages', rarely four; walls are 'un melange de basalte, de corail broye et de sable de mer'; passages are sometimes 'aussi minces que des failles rocheuses'; two main commercial streets link the upper and lower town; roofs are flat. Alley widths are the authoring reading of 'as narrow as rock fissures' against a walkable minimum."
+  }
+}

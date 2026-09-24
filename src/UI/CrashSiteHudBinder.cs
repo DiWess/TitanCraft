@@ -15,6 +15,8 @@ public partial class CrashSiteHudBinder : Node
     private readonly MechanicalArmRecipe _mechanicalArmRecipe = new();
     private bool _startTutorialDismissed;
     private bool _armBuiltFeedbackShown;
+    private readonly OnboardingTutorialState _onboarding = new();
+    private OnboardingStep _lastOnboardingStep = OnboardingStep.Complete;
 
     public override void _Ready()
     {
@@ -25,7 +27,12 @@ public partial class CrashSiteHudBinder : Node
         _player.Mission.Changed += UpdateMission;
         _player.InteractionPromptChanged += _hud.SetInteractionPrompt;
         _player.ActionFeedbackChanged += _hud.SetActionFeedback;
+        _player.LookTravelled += _onboarding.ReportLook;
+        _player.GroundTravelled += _onboarding.ReportGroundTravel;
+        _player.Jumped += _onboarding.ReportJump;
+        _player.AttackLanded += _onboarding.ReportAttackLanded;
         RefreshAll();
+        PublishOnboardingPrompt(force: true);
     }
 
     public override void _ExitTree()
@@ -38,6 +45,37 @@ public partial class CrashSiteHudBinder : Node
         _player.Mission.Changed -= UpdateMission;
         _player.InteractionPromptChanged -= _hud.SetInteractionPrompt;
         _player.ActionFeedbackChanged -= _hud.SetActionFeedback;
+        _player.LookTravelled -= _onboarding.ReportLook;
+        _player.GroundTravelled -= _onboarding.ReportGroundTravel;
+        _player.Jumped -= _onboarding.ReportJump;
+        _player.AttackLanded -= _onboarding.ReportAttackLanded;
+    }
+
+    /// <summary>Exposed for integration tests to drive the onboarding flow.</summary>
+    public OnboardingStep OnboardingStep => _onboarding.CurrentStep;
+
+    public override void _Process(double delta)
+    {
+        if (_onboarding.IsComplete && _lastOnboardingStep == OnboardingStep.Complete)
+        {
+            return;
+        }
+
+        _onboarding.Tick((float)delta);
+        PublishOnboardingPrompt(force: false);
+    }
+
+    private void PublishOnboardingPrompt(bool force)
+    {
+        // Only touch the HUD when the step actually changes: the prompt is a
+        // label, not an every-frame redraw.
+        if (!force && _onboarding.CurrentStep == _lastOnboardingStep)
+        {
+            return;
+        }
+
+        _lastOnboardingStep = _onboarding.CurrentStep;
+        _hud.SetOnboardingPrompt(_onboarding.CurrentPrompt);
     }
 
     private void RefreshAll()
@@ -56,6 +94,18 @@ public partial class CrashSiteHudBinder : Node
         // resources and the mission component pickup.
         _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents, inventory.HasGalaxabrainComponent);
         _hud.SetMechanicalArmProgress(_mechanicalArmRecipe.GetProgressText(inventory));
+
+        if (inventory.Metal + inventory.Biomass + inventory.ElectronicComponents > 0)
+        {
+            _onboarding.ReportResourceCollected();
+        }
+
+        if (inventory.IsMechanicalArmBuilt)
+        {
+            _onboarding.ReportMechanicalArmBuilt();
+        }
+
+        PublishOnboardingPrompt(force: false);
 
         // Replace the startup "not built yet" hint the moment the arm exists,
         // otherwise the stale hint contradicts the actual state.

@@ -1,12 +1,12 @@
 {
   "schema": "titancraft.blender_asset_forge.manifest.v1",
-  "generated_at": "2026-09-24T04:53:12.555004+00:00",
+  "generated_at": "2026-09-24T05:37:47.363122+00:00",
   "entries": [
     {
       "asset_name": "TC_ENV_AlienShard_EmbeddedCluster_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.blend",
-      "source_sha256": "5cb2d0912c1b12cd79f4ec9d98b51e4ac151eb0c4d8d932e4ca35c0ee53183ea",
+      "source_sha256": "b5a5621f0aec710521ec418482cf3dab5c35f9e4ac331e83e01c00512daeb622",
       "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_EmbeddedCluster_V1.glb",
       "production_sha256": "c241e441438eaa03f1690c05647a017bab5ee03fbef13b7e180c44904b21986e",
       "export_format": "GLB",
@@ -19,7 +19,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_EmbeddedCluster_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -30,7 +31,7 @@
       "asset_name": "TC_ENV_AlienShard_Medium_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.blend",
-      "source_sha256": "ecc6188d9e629ff7797c13b1a330c0c300fdba113272596a2e492b032e5d9692",
+      "source_sha256": "2299ab783649650f7244f9e2897fe5376f246799f01c8e1a7390fd46a60d2974",
       "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Medium_V1.glb",
       "production_sha256": "d79469ce5b6e8b4d3263934526193b995ad19c41ec9b49c89720e832b5c4ae9f",
       "export_format": "GLB",
@@ -43,7 +44,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Medium_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -54,7 +56,7 @@
       "asset_name": "TC_ENV_AlienShard_Small_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/AlienShard_V1/TC_ENV_AlienShard_Small_V1.blend",
-      "source_sha256": "99d79a43e5bf5d87e91e543f29fcb20a8cf3cd25bb9818f12e8731341525887f",
+      "source_sha256": "64a89ed04824623398dd107e59b2343840dba8130834dedc8d2a2f241ad674fd",
       "production_export": "assets/Production/Generated/AlienShard_V1/TC_ENV_AlienShard_Small_V1.glb",
       "production_sha256": "f7163a87f82aa548c8db4373651e53c5d6782794047ee93d766f1d758cb6e646",
       "export_format": "GLB",
@@ -67,7 +69,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/front.png",
-        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_AlienShard_Small_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -78,7 +81,7 @@
       "asset_name": "TC_ENV_CableOccluder_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_CableOccluder_V1.blend",
-      "source_sha256": "1a86c7d5153e389a61578614a8be0350e4bc374b5b551f9ae8cb05b5efbd8981",
+      "source_sha256": "a277af08171d743fd81150e8a7c4eb321a7432f1f5fd887e745b3731ef37007d",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_CableOccluder_V1.glb",
       "production_sha256": "5fb10ce1689529b65ca94701ce3b96bbf0da215f58bca6d07121e73a6f53d5cc",
       "export_format": "GLB",
@@ -91,6 +94,7 @@
       "triangle_count": 248,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/back.png",
+        "artifacts/asset-review/TC_ENV_CableOccluder_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/front.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CableOccluder_V1/left.png",
@@ -108,7 +112,7 @@
       "asset_name": "TC_ENV_CampAwning_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_CampAwning_V1.blend",
-      "source_sha256": "2d6f7c19a2b643e9f3cd4b681fbd0a4572472a8d0af101f181fc7718145f8ada",
+      "source_sha256": "a0fa2b0ce6ab31200cdfd713d58fa6f6d1432e7c2fde0110ab09575163b37aec",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_CampAwning_V1.glb",
       "production_sha256": "3972228dc29e7d19ab2732769a2cc4750cefb201c389e58323d21681b18afa4b",
       "export_format": "GLB",
@@ -121,6 +125,7 @@
       "triangle_count": 124,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_CampAwning_V1/back.png",
+        "artifacts/asset-review/TC_ENV_CampAwning_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/front.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_CampAwning_V1/left.png",
@@ -138,7 +143,7 @@
       "asset_name": "TC_ENV_LightPole_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_LightPole_V1.blend",
-      "source_sha256": "44f7a6105439dfbc177dc99b99d4fc8d32733da26fa1c8e92ece6c37463cac00",
+      "source_sha256": "27881e78d566dbb4e77e1d0397e3f7d2cc0f8d07a856dc9edf41b8f3fc1d7f96",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_LightPole_V1.glb",
       "production_sha256": "f04eb694c715c7f714f36048eeeed82398f3cece625de90546858adcf9f6e585",
       "export_format": "GLB",
@@ -152,6 +157,7 @@
       "triangle_count": 92,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_LightPole_V1/back.png",
+        "artifacts/asset-review/TC_ENV_LightPole_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/front.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_LightPole_V1/left.png",
@@ -169,7 +175,7 @@
       "asset_name": "TC_ENV_SupplyCrateStack_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_SupplyCrateStack_V1.blend",
-      "source_sha256": "b1cd46ade1e78cbde73bf7f43db6cd45ef30f9f945489e660228e9dd20aadd2b",
+      "source_sha256": "ce25e15029271e73024186657deba8c1f6c4e400be1e511ca3f037b30d54dcd1",
       "production_export": "assets/Production/Generated/BaseCampDressing/TC_ENV_SupplyCrateStack_V1.glb",
       "production_sha256": "efa149e34edf45677d69e65fdbe72763b19666e4011c2e28de0af4c7534f36ad",
       "export_format": "GLB",
@@ -183,6 +189,7 @@
       "triangle_count": 96,
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/back.png",
+        "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/front.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/hero_three_quarter.png",
         "artifacts/asset-review/TC_ENV_SupplyCrateStack_V1/left.png",
@@ -200,7 +207,7 @@
       "asset_name": "TC_HeavyCrashHull_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_HeavyCrashHull_V1.blend",
-      "source_sha256": "b8d1b876bb269123e3268c67cb3d26e05efed2526b542d93162ca22a556f574d",
+      "source_sha256": "278261dfe3b0a6e81d168cfb33360dbe7819fee8d6079157616bbe18fe78cb99",
       "production_export": "assets/Production/Generated/CrashWreck/TC_HeavyCrashHull_V1.glb",
       "production_sha256": "69b77c1dc737f23221da6cdf0a7a5676babc2ec69ce8a7132bdbb12e54d120f5",
       "export_format": "GLB",
@@ -234,7 +241,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_AlienArc_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_AlienArc_V1.blend",
-      "source_sha256": "d2dd7dbcfe9035c8cfb61491381c4f0b86b01fc2b33ca042a22f5563fc4dfc18",
+      "source_sha256": "9f01cd88894e825e8570af4ece9167bad74f82a280ff37a41f5cfdbb75a896c2",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_AlienArc_V1.glb",
       "production_sha256": "3ae0fbdf3591ad4b8d1a5e5e01f137b3e3cd8090f927ffc9c4ff1bca9c5f3ab4",
       "export_format": "GLB",
@@ -247,7 +254,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_AlienArc_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -261,7 +269,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_BasaltRidge_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_BasaltRidge_V1.blend",
-      "source_sha256": "fd4147b82d07c27e8723ec86d686b65ae88ecbeae23cb697fb8732c095fda5b3",
+      "source_sha256": "fd93bbdac2ada8aa132cd966631872649d569fc3364266310f6891d1b43ba386",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_BasaltRidge_V1.glb",
       "production_sha256": "d501e1e3f2e09332bf4abdf22dfba4ad42b83c2b2c8328a6c20d556dd55f90df",
       "export_format": "GLB",
@@ -274,7 +282,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_BasaltRidge_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -288,7 +297,7 @@
       "asset_name": "TC_ENV_DistantSilhouette_SmokePlume_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_SmokePlume_V1.blend",
-      "source_sha256": "e2485a1b1d5d7c093d9d579d15950ed9d14331af00c0c83d169024a2faf386d5",
+      "source_sha256": "632c4c66609afdde03dbc917197d10fdbed1bbf78d5436016cb7e5259077fc7f",
       "production_export": "assets/Production/Generated/DistantSilhouettes_V1/TC_ENV_DistantSilhouette_SmokePlume_V1.glb",
       "production_sha256": "cd362f11144fa98280ffcfac992759fc9dc833239ea716b0ccdd3ff4a1a6a75f",
       "export_format": "GLB",
@@ -301,7 +310,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/front.png",
-        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_DistantSilhouette_SmokePlume_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -315,7 +325,7 @@
       "asset_name": "TC_ENV_RockOccluder_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/TC_ENV_RockOccluder_V1.blend",
-      "source_sha256": "67590f5508f23770e1a616a38b856dee3e3c8693ff0503dee3efc471958c03ee",
+      "source_sha256": "9cbce8a72fea1eb22ff6e62a89c5cbb9280857e6436261c0a8e529231bea1de9",
       "production_export": "assets/Production/Generated/Environment/TC_ENV_RockOccluder_V1.glb",
       "production_sha256": "e8d26ad1136639ebd7c5eb5d7f203af7c379fb975c7b711aa0cdd1edacb32305",
       "export_format": "GLB",
@@ -328,7 +338,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_ENV_RockOccluder_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_ENV_RockOccluder_V1/front.png",
-        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_ENV_RockOccluder_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -339,7 +350,7 @@
       "asset_name": "TC_LightingReference_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_LightingReference_V1.blend",
-      "source_sha256": "b58369572b85c43bc5089827223777de694988ee36274d3798192d3a05e9a0b2",
+      "source_sha256": "7d1e07b560081d53476a35e13bfd48725c46cdfe0108948c4f079bbdeaa78a04",
       "production_export": "assets/Production/Generated/LightingReference/TC_LightingReference_V1.glb",
       "production_sha256": "b6ab7ffde8a7c03ac20ba1d02fbb50694c30f3220ed8c340eccd658b0b7c12ef",
       "export_format": "GLB",
@@ -357,7 +368,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_LightingReference_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_LightingReference_V1/front.png",
-        "artifacts/asset-review/TC_LightingReference_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_LightingReference_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_LightingReference_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -371,7 +383,7 @@
       "asset_name": "TC_CHAR_GalaxabrainScout_Disabled_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_Disabled_V1.blend",
-      "source_sha256": "cbe4af2847358869dbd02cd6db6c17ee8c60814a064f3b269e930e620d502452",
+      "source_sha256": "292d207aefc3e86ba471f61cd751ec440a4809d78a501e76dabbd3ff5785fa9e",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_Disabled_V1.glb",
       "production_sha256": "ea2ff0523f9e4517db1251f29c29652b7737dcb98741f6e46a8d114e5e7bb58d",
       "export_format": "GLB",
@@ -402,7 +414,7 @@
       "asset_name": "TC_CHAR_GalaxabrainScout_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_V1.blend",
-      "source_sha256": "b7c3d35ac8650054608018e1b7e1723e5a31da60a03cd7bed5083ec92682c07a",
+      "source_sha256": "92ea1cd69b69fe419960bf8454c7d3d125c391aaf6674ca2c2598cc2d93a70f8",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_CHAR_GalaxabrainScout_V1.glb",
       "production_sha256": "ef908a2210ba49cf6c8e7754b8be6c29446148ab121c851a572dcae220812a26",
       "export_format": "GLB",
@@ -433,7 +445,7 @@
       "asset_name": "TC_ENV_CrashDebris_A_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_ENV_CrashDebris_A_V1.blend",
-      "source_sha256": "6a4b759d0facf3bde67f7c1b34f8713d56bfc023c73214c942d27a553250a276",
+      "source_sha256": "4dcbb433613be3fc9dc410f1273d0da42440c06640335f01e9cdbcb750a02adb",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_ENV_CrashDebris_A_V1.glb",
       "production_sha256": "766d1a2ee9bb7d772e87be967aeded53fd79d09983eac31bad46908a1534c974",
       "export_format": "GLB",
@@ -464,7 +476,7 @@
       "asset_name": "TC_PICKUP_Biomass_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Biomass_V1.blend",
-      "source_sha256": "4106053cec6cef75eacfc4010991dd28c8d8ae435fbc6931ff66caa14a1cbe31",
+      "source_sha256": "c28e815eb8550f557a3add0ac51a8a44d736000d25ce0abe4255c6af30ebb2ee",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Biomass_V1.glb",
       "production_sha256": "bf10c5f75dedf5e0c136793400d6a95e9f1be3a5fbb92ab60184014b7da5fde3",
       "export_format": "GLB",
@@ -493,7 +505,7 @@
       "asset_name": "TC_PICKUP_Component_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Component_V1.blend",
-      "source_sha256": "db6ceb03c8190f772a50f27bfbf8bdc71c8183c8c3ed257da069e1285e4d52e5",
+      "source_sha256": "789e351765415e4765c7a5034b25e50c95a32577bc98c5a49c62a81d89d90bf9",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Component_V1.glb",
       "production_sha256": "0fc4f6d3dee62c3bc2efb87597a45745db7b0e0af61d253afdc3daefa7e140b3",
       "export_format": "GLB",
@@ -522,7 +534,7 @@
       "asset_name": "TC_PICKUP_Electronics_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Electronics_V1.blend",
-      "source_sha256": "25050dcaa2b6dbc3ef6b490b2742ba39ce5733bb25020a381dbfd03f27e757d5",
+      "source_sha256": "dcc1cbd1dc9721bbce54ab018267861e239e7cff1b88bb15eacdecf9d283b979",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Electronics_V1.glb",
       "production_sha256": "d7519950f230c0d0a349fa342e6ba9950227ae6b94e8d24b840ef8194f234386",
       "export_format": "GLB",
@@ -553,7 +565,7 @@
       "asset_name": "TC_PICKUP_Metal_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PICKUP_Metal_V1.blend",
-      "source_sha256": "8a372622799085a9fe53a9d335fd8e48ac46759330a99a2217cef9450af3a5b5",
+      "source_sha256": "45b43ab24901dbf399c6ac234049b1c85d139fedda120cb50dae892320948747",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PICKUP_Metal_V1.glb",
       "production_sha256": "da587a5167feb267fb8f964ff91c36135f6dcd8f0b0f793bb50ac657cfd2900c",
       "export_format": "GLB",
@@ -583,7 +595,7 @@
       "asset_name": "TC_PLAYER_BareArm_V1",
       "classification": "generated",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_BareArm_V1.blend",
-      "source_sha256": "73b0238540bcccff7da73fdd242f7f9c63e552aafff21d15ecc366e8393d7ebc",
+      "source_sha256": "8625cb0def0c4acd45c9efba9ccb97efe18b5504c1d8df774f052b6c438b059b",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_BareArm_V1.glb",
       "production_sha256": "f1b913a53431e9b4d969f46254fbae30c767ade0422ed4d8d292a0766ccfd3f3",
       "export_format": "GLB",
@@ -611,7 +623,7 @@
       "asset_name": "TC_PLAYER_MechanicalArmUnbuilt_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_MechanicalArmUnbuilt_V1.blend",
-      "source_sha256": "bf430e31ba4fce1c90f9024747b89cff978655931df968f2107affb0f9dbd741",
+      "source_sha256": "b0d266890f48900f82624ac8591b8df1e5bbdc5e00f27228c69ae2cea37fcb93",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_MechanicalArmUnbuilt_V1.glb",
       "production_sha256": "b7db9889af2753c55fd7652d7ce53cbb621f590a5b25d926e4b082f3d790562d",
       "export_format": "GLB",
@@ -643,7 +655,7 @@
       "asset_name": "TC_PLAYER_MechanicalArm_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PLAYER_MechanicalArm_V1.blend",
-      "source_sha256": "c8add20ea564989e2858a5d63ce3f01b1563d12e74b612f7a2656c839ebb3d3d",
+      "source_sha256": "58be5fedcf60b0470c290cd0a8d60cabf618369a004d9d7227cd290e30b9d1c4",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PLAYER_MechanicalArm_V1.glb",
       "production_sha256": "da6d48d92776252f198b7eba519a1a84ad46ef01df16101b4dad26a00b197711",
       "export_format": "GLB",
@@ -675,7 +687,7 @@
       "asset_name": "TC_PROP_Beacon_Active_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Beacon_Active_V1.blend",
-      "source_sha256": "af190d55adfc471b7f34a16828a7243f22e2e271f6d7765d9cefb242ba7e2fc5",
+      "source_sha256": "74447d320fbf73d30e54dd009de54fd1448ac7b262300f7b8672e49a821734ba",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Beacon_Active_V1.glb",
       "production_sha256": "f050c7e46bb26ce4ce8026a5def5ced136cab4ad62da4b5d2924ecd9318dbe5a",
       "export_format": "GLB",
@@ -709,7 +721,7 @@
       "asset_name": "TC_PROP_Beacon_Dormant_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Beacon_Dormant_V1.blend",
-      "source_sha256": "28c9d11427203aeb743b98252cf90c53d1ee161d2cf47327af2161840df77037",
+      "source_sha256": "729b9ae4b890e04ebd9f95566a3883dd58f6719f9b0233347738a74fede390d0",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Beacon_Dormant_V1.glb",
       "production_sha256": "2dfc79ade5a2bec07277442a1012cd466e6060ec62660b4612ebb9900f572a95",
       "export_format": "GLB",
@@ -740,7 +752,7 @@
       "asset_name": "TC_PROP_SavePoint_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_SavePoint_V1.blend",
-      "source_sha256": "e6c24ad9dcd9f3dc36d9ecdc5f2c4977551e39b14719607acda29078a60d8c77",
+      "source_sha256": "f1a6b561689d5a1dc64711f45277e014c533f8470a3d29910559d683801e30ef",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_SavePoint_V1.glb",
       "production_sha256": "7a579913118250ff50ff1b50a47baa47d3d6061f85daed37e13070e6665a13a0",
       "export_format": "GLB",
@@ -771,7 +783,7 @@
       "asset_name": "TC_PROP_Workbench_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/MVP_Pack_V1/TC_PROP_Workbench_V1.blend",
-      "source_sha256": "8971d131cf4c3c54f427c6db0278de89a0ee13c3e602bdc1c2b9cec837d26c2c",
+      "source_sha256": "d2c8cb20a97ba2f13df32130803e1388a31472d24c8d22b3a09245052de0920b",
       "production_export": "assets/Production/Generated/MVP_Pack_V1/TC_PROP_Workbench_V1.glb",
       "production_sha256": "c59748dab6567b794b688a2e229cc9343e7262785b50a92406fd4b680ecf88e8",
       "export_format": "GLB",
@@ -1367,7 +1379,7 @@
       "asset_name": "TC_PolishDetails_V1",
       "classification": "production-candidate",
       "source_blend": "assets/Source/Blender/Production/TC_PolishDetails_V1.blend",
-      "source_sha256": "b2a10cc8cf89ad5dfbe7a44c3fb677b60ff17559a4994d95b97ae04519da1461",
+      "source_sha256": "29a52e7fa43cdef1c69daaf86496f206a9ca9df3b1e8e546b9aa9be8ef11776f",
       "production_export": "assets/Production/Generated/PolishDetails/TC_PolishDetails_V1.glb",
       "production_sha256": "3b12d0ecd111d53b61c4bc95804816fbc63ce0b318ce8776370c2ec7b8db73b7",
       "export_format": "GLB",
@@ -1385,7 +1397,8 @@
       "review_artifacts": [
         "artifacts/asset-review/TC_PolishDetails_V1/back_three_quarter.png",
         "artifacts/asset-review/TC_PolishDetails_V1/front.png",
-        "artifacts/asset-review/TC_PolishDetails_V1/hero_three_quarter.png"
+        "artifacts/asset-review/TC_PolishDetails_V1/hero_three_quarter.png",
+        "artifacts/asset-review/TC_PolishDetails_V1/scale_reference.png"
       ],
       "collision_policy": "none",
       "runtime_mesh_generation": false,
@@ -1401,7 +1414,7 @@
       "source_blend": null,
       "source_sha256": null,
       "production_export": "assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb",
-      "production_sha256": "a75c8546ddaf1b6e5a53b7227039af97971539885acc73d07730300ec2c2b0e0",
+      "production_sha256": "e7440a6b98924e51536598ef664aca353ea06ce0e114690ccfe778b7b635cea8",
       "export_format": "GLB",
       "created_by_tool": "tools/blender/create_terrain_crash_basin_v1.py",
       "material_slots": [
@@ -1419,7 +1432,7 @@
       "metadata": {
         "brief": "docs/art/brief-terrain-crash-basin.md",
         "target_poly_budget": "8000\u201312000",
-        "generated_date": "2026-09-23T23:32:22.666694",
+        "generated_date": "2026-09-24T04:58:21.596128",
         "notes": "Polygonal Salvage Sci-Fi volcanic crash site terrain. Shaped ash basin with basalt framing, fractured impact zone, route landmarks."
       }
     },
@@ -1427,7 +1440,7 @@
       "asset_name": "TC_TestCrate",
       "classification": "pipeline-test",
       "source_blend": "assets/Source/Blender/_templates/TC_TestCrate.blend",
-      "source_sha256": "b4ee6d328036febcf756a7f1d80ace442502bded58a8bae17de39679945a4ad9",
+      "source_sha256": "77a3b355f7c8b9adb66ad0cbfe678896989b30ba8a2954a6f0365e21e1985bd2",
       "production_export": "assets/Production/Generated/Test/TC_TestCrate.glb",
       "production_sha256": "b866eb705d41c0cd7409ce13d53908d09ae3c62cdfcb718ccc53fe8af46d1ad9",
       "export_format": "GLB",

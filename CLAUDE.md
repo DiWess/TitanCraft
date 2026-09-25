@@ -13,7 +13,7 @@
 
 TitanCraft is a solo, offline-first, Windows-first FPS built with Godot 4 .NET and C#. The playable scope is MVP **Crash Site**.
 
-Forbidden features: multiplayer, grappling hook, wall running, procedural world, voxels, large mech, complete rocket, multiple maps, multiple enemy types, cloud services, remote telemetry.
+Forbidden features: multiplayer, grappling hook, wall running, procedural world, voxels, large mech, complete rocket, multiple maps, more than three Galaxabrain variants, cloud services, remote telemetry. Post-MVP direction (README §6 amendment, 2026-09-25): one scene, one player, one experience.
 
 ## 3. Primary Role: Code Reviewer & Architecture Validator
 

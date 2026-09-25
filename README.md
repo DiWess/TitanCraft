@@ -166,6 +166,18 @@ Le MVP doit contenir uniquement :
 > [!WARNING]
 > Les fonctionnalités ci-dessous sont explicitement interdites dans le MVP. Une fonctionnalité hors périmètre ne peut être ajoutée qu’après validation humaine et mise à jour de ce README.
 
+> **Amendement post-MVP — 2026-09-25 (décision humaine explicite)**
+>
+> Le MVP Crash Site est terminé au sens des sections 30 et 32 (`docs/production/mvp-acceptance-audit-2026-09-24.md`, `docs/production/playtests/2026-09-25-journey.md`). Le responsable produit a fixé la direction post-MVP : **une scène, un joueur, une expérience**, portée au meilleur niveau. Il a validé le 2026-09-25 les recommandations D1 à D7 de `docs/production/top-tier-single-scene-plan.md` (« Ok open a PR and start end to end »). Chaque décision reste révocable individuellement.
+>
+> **Levé, avec limite :**
+> - **plusieurs types d’ennemis** — au plus **trois variantes de la famille Galaxabrain** (par exemple Scout, Gardien, drone d’essaim), dans la scène unique (D3) ;
+> - **un affrontement final** à la balise (défense ou boss) ; les cinématiques complexes restent interdites (D4).
+>
+> **Précisé :** les modules du bras mécanique (Mk I → Mk II → Mk III) sont **un seul outil qui évolue**, conformément à la décision verrouillée « bras mécanique évoluant vers un exosquelette » ; ils ne relèvent pas de l’interdiction « plusieurs armes » (D2).
+>
+> **Reste interdit (D1, D5) :** tout le reste de la liste ci-dessous, en particulier le multijoueur, plusieurs cartes, plusieurs biomes, la génération procédurale, les voxels, le grand mécha, la fusée complète, **le grappin**, **la course murale**, les services cloud et la télémétrie.
+
 - le multijoueur ;
 - les serveurs ;
 - les comptes utilisateurs ;
@@ -1181,6 +1193,9 @@ Une tâche est terminée lorsque :
 | Multijoueur | Hors périmètre |
 | Temps disponible | 5 heures par week-end |
 | Budget MVP | Environ 80 heures |
+| Direction post-MVP | Une scène, un joueur, une expérience (amendement 2026-09-25, section 6) |
+| Ennemis post-MVP | Famille Galaxabrain, au plus trois variantes (amendement 2026-09-25) |
+| Progression post-MVP | Modules du bras mécanique Mk I → Mk III, un seul outil qui évolue (amendement 2026-09-25) |
 
 ## 35. Décisions ouvertes
 

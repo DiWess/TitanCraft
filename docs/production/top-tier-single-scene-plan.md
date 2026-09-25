@@ -1,8 +1,9 @@
 # Top-Tier Single-Scene Plan — "One scene, one player, one experience"
 
-**Status:** PROPOSAL — not active. Gated on (1) the MVP being done
-(`docs/production/mvp-acceptance-audit-2026-09-24.md`: two fixes and a `PASS` playtest verdict)
-and (2) a product-owner amendment of README §6 and §34 (section 2 below).
+**Status:** ACTIVE since 2026-09-25. Gate 0 met (`docs/production/playtests/2026-09-25-journey.md`,
+`PASS`); decisions D1–D7 approved by the product owner and recorded in README §6 (amendment of
+2026-09-25), `studio/decisions/quality_benchmark_v3_single_scene_axis9.md` (D6) and
+`studio/agents/audio_director.md` (D7). Workstream A is next.
 **Date:** 2026-09-25
 **Owner:** Producer (orchestration), Game Director (experience), Creative Director (vision)
 **Relationship to `phase-7-planning.md`:** keeps its audio, balance and polish workstreams and
@@ -156,4 +157,9 @@ runner; the CI Windows runner has no GPU and its figure is a headless proxy.
 
 ## 7. Verdict
 
-`INTENTIONAL_GATE` — a proposal awaiting Gate 0 and decisions D1–D7.
+`PASS` — active. Gate 0 is met and D1–D7 are recorded.
+
+**Added to workstream A on 2026-09-25:** 28 of the game's 35 audio files are digital silence
+(playtest finding 7). "Start the three ambient loops" becomes "replace the silent library with
+project-authored audio, starting with ambience" — starting silent loops would change nothing the
+player hears.

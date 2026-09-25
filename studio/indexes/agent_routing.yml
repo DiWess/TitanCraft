@@ -11,6 +11,10 @@ routes:
   visual_scene_composition:
     primary: art_director
     secondary: [visual_reviewer, technical_director, qa_lead]
+  # Ambience, cues, spatial audio and the mix (post-MVP decision D7)
+  audio_feedback:
+    primary: audio_director
+    secondary: [gameplay_engineer, qa_lead]
   gameplay_bug:
     primary: gameplay_engineer
     secondary: [qa_lead, technical_director]

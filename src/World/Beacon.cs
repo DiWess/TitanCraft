@@ -20,6 +20,12 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
 
     public bool IsActivated { get; private set; }
 
+    public string InteractionPrompt => "Press E to activate the rescue beacon";
+
+    // Once lit there is nothing left to do; the prompt used to linger through
+    // the whole victory hold.
+    public bool IsInteractionAvailable => !IsActivated;
+
     private MeshInstance3D? _closedVisual;
     private MeshInstance3D? _activeVisual;
     private GpuParticles3D? _activationPillar;
@@ -116,6 +122,13 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
 
     private void AddExtractionTrauma()
     {
+        // Defensive: the end-screen navigator no longer removes the scene
+        // mid-activation, but a beacon outside the tree has no shaker to reach.
+        if (!IsInsideTree())
+        {
+            return;
+        }
+
         foreach (var node in GetTree().GetNodesInGroup(CameraShaker.CameraShakerGroup))
         {
             if (node is CameraShaker cameraShaker)

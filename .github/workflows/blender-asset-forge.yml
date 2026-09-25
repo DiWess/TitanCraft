@@ -56,6 +56,28 @@ jobs:
       - name: Create Phase 1 terrain (Crash Basin)
         run: blender --background --python tools/blender/create_terrain_crash_basin_v1.py
 
+      # The commit gate below assumes GLB exports are byte-deterministic. This
+      # terrain export was not: it iterated a set() of material names, and
+      # Python salts string hashes per process, so primitive order -- and the
+      # GLB bytes -- changed on every build with no source change. Every
+      # push-triggered run then "found" a change and pushed a churn commit onto
+      # the PR branch; GitHub holds workflows triggered by that bot push at
+      # action_required, so the PR sat with no checks and no error. Rebuilding
+      # under a different hash seed turns any regression of that into a loud
+      # failure here instead of a silent stall.
+      - name: Check terrain GLB is independent of Python hash seed
+        run: |
+          set -euo pipefail
+          glb=assets/Production/Generated/Terrain/TC_TERRAIN_CrashBasin_V1.glb
+          first="$(sha256sum "$glb" | cut -d' ' -f1)"
+          PYTHONHASHSEED=4242 blender --background --python tools/blender/create_terrain_crash_basin_v1.py
+          second="$(sha256sum "$glb" | cut -d' ' -f1)"
+          if [ "$first" != "$second" ]; then
+            echo "::error file=tools/blender/create_terrain_crash_basin_v1.py::Terrain GLB changed between two builds of the same source ($first vs $second). Output depends on Python's per-process hash seed -- look for iteration over a set() or dict of strings. Non-deterministic GLBs defeat this workflow's commit gate and push churn commits onto PR branches."
+            exit 1
+          fi
+          echo "Terrain GLB deterministic across hash seeds: $first"
+
       - name: Create Phase 2 hull (Crash Hull Mk1)
         run: blender --background --python tools/blender/create_crash_hull_mk1.py || true
 

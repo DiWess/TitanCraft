@@ -102,7 +102,19 @@ public sealed class OnboardingTutorialState
     public void ReportResourceCollected()
     {
         // Collecting proves both looking and walking, so a player who ignores
-        // the first prompts and simply plays is never left behind them.
+        // the first prompts and simply plays is never left behind them. It does
+        // NOT prove they can craft: jumping straight to Craft here told players
+        // holding 1 of 3 resources to go and build
+        // (docs/production/playtests/2026-09-24-journey.md, finding 2).
+        if (CurrentStep < OnboardingStep.Collect)
+        {
+            SetStep(OnboardingStep.Collect);
+        }
+    }
+
+    /// <summary>The inventory now satisfies the Mechanical Arm recipe.</summary>
+    public void ReportCraftingResourcesReady()
+    {
         if (CurrentStep <= OnboardingStep.Collect)
         {
             SetStep(OnboardingStep.Craft);

@@ -62,7 +62,7 @@ public sealed class CrashSiteMissionState
         CrashSiteMissionStep.ActivateBeacon => "Activate the beacon beam to call for extraction.",
         CrashSiteMissionStep.DefeatGalaxabrain => "Defeat the red-core Galaxabrain Scout.",
         CrashSiteMissionStep.RecoverGalaxabrainComponent => "Recover the Galaxabrain component from the crash arena.",
-        CrashSiteMissionStep.Victory => "Mission complete: beacon activated.",
+        CrashSiteMissionStep.Victory => "Beacon activated — rescue signal online.",
         _ => "Unknown Objective"
     };
 

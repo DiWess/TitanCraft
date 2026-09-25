@@ -17,6 +17,16 @@ public enum MvpResourceKind
 public interface ICrashSiteInteractable
 {
     bool Interact(MvpInventory inventory, CrashSiteMissionState mission);
+
+    /// <summary>
+    /// The player-facing "Press E to ..." line. Each interactable says what it is;
+    /// the old prompt printed the scene node name, so players read
+    /// "GalaxabrainComponentPickup" and "SavePoint".
+    /// </summary>
+    string InteractionPrompt => "Press E to interact";
+
+    /// <summary>False once there is nothing left to do here, which hides the prompt.</summary>
+    bool IsInteractionAvailable => true;
 }
 
 public partial class ResourcePickup : Area3D, ICrashSiteInteractable
@@ -28,6 +38,10 @@ public partial class ResourcePickup : Area3D, ICrashSiteInteractable
     [Export] public NodePath CollectionAudioPath { get; set; } = "CollectionAudio";
 
     private bool _isCollected;
+
+    public string InteractionPrompt => $"Press E to take the {ResourceKind}";
+
+    public bool IsInteractionAvailable => !_isCollected;
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
     {

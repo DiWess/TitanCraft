@@ -1,4 +1,4 @@
-[gd_scene load_steps=109 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=110 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -83,6 +83,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/wind_ambience_loop_01.wav" id="80_wind_ambient"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/volcanic_rumble_loop_01.wav" id="81_rumble_ambient"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/machinery_hum_loop_01.wav" id="82_machinery_hum"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/ambient/sea_surf_loop_01.wav" id="116_sea_surf"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/metal_walk_01.wav" id="83_footsteps_metal"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/rock_walk_01.wav" id="84_footsteps_rock"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/footsteps/ash_walk_01.wav" id="85_footsteps_ash"]
@@ -569,74 +570,96 @@ transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 26.0, 0.8, 27.5)
 [node name="PolishDetailsModel" parent="BeaconRoute_PolishDetails" instance=ExtResource("112_v1_polish_details")]
 
 [node name="AudioLayer_Ambient" type="Node" parent="."]
-metadata/category = "Ambient environment loops (wind, rumble, machinery)"
-metadata/positioning = "3D positional audio at origin"
-[node name="AmbientLoop_Wind" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
+metadata/category = "Ambient environment loops (wind, sea, rumble, machinery)"
+metadata/positioning = "Wind and rumble are a non-positional bed; sea and machinery are placed at their sources"
+[node name="AmbientLoop_Wind" type="AudioStreamPlayer" parent="AudioLayer_Ambient"]
 stream = ExtResource("80_wind_ambient")
-volume_db = -12.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with wind_ambience_loop_01.wav)"
-metadata/notes = "Continuous loop at 0.3 volume baseline, 120s duration, stereo"
-[node name="AmbientLoop_Rumble" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
-stream = ExtResource("81_rumble_ambient")
 volume_db = -14.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with mechanical_rumble_01.wav)"
-metadata/notes = "Distant volcanic rumble, subtle, very low profile (0.2 volume)"
-[node name="AmbientLoop_Machinery" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
-stream = ExtResource("82_machinery_hum")
+autoplay = true
+metadata/source = "Project-authored: tools/audio/synthesize_ambience.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Quarter-wide gusting wind bed, 24 s seamless loop (loop declared in the WAV smpl chunk)"
+[node name="AmbientLoop_Rumble" type="AudioStreamPlayer" parent="AudioLayer_Ambient"]
+stream = ExtResource("81_rumble_ambient")
 volume_db = -16.0
-metadata/source = "Freesound.org / CC0 / machinery_hum_loop_01.wav"
-metadata/notes = "Residual ship machinery hum, extremely subtle (0.15 volume)"
+autoplay = true
+metadata/source = "Project-authored: tools/audio/synthesize_ambience.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Distant volcanic rumble under the wind, 24 s seamless loop"
+[node name="AmbientLoop_Machinery" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 1, -13.4)
+stream = ExtResource("82_machinery_hum")
+volume_db = -14.0
+unit_size = 6.0
+autoplay = true
+metadata/source = "Project-authored: tools/audio/synthesize_ambience.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Residual hum of the crashed ship, placed at the buried hull; fades with distance"
+[node name="AmbientLoop_Sea" type="AudioStreamPlayer3D" parent="AudioLayer_Ambient"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0.5, -24)
+stream = ExtResource("116_sea_surf")
+volume_db = 0.0
+unit_size = 7.0
+autoplay = true
+metadata/source = "Project-authored: tools/audio/synthesize_ambience.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Swell breaking on the harbour seawall, seaward of the beacon plaza; loudest at the harbour"
 [node name="AudioLayer_Player" type="Node" parent="."]
 metadata/category = "Player movement, weapon, mechanical arm"
 metadata/positioning = "3D positional audio from player origin"
 [node name="Footsteps_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("83_footsteps_metal")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 / footsteps_metal_walk_01.wav"
-metadata/notes = "Single metal footstep, triggered on grounded movement intervals (0.4s walk, 0.3s sprint)"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Heel strike on plate with a short ring; one of three surfaces the controller rotates through each step"
 [node name="Footsteps_Rock" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("84_footsteps_rock")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_rock_crunch_01.wav)"
-metadata/notes = "Rock/basalt footstep, terrain-specific trigger"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Heel-toe on basalt with loose grit"
 [node name="Footsteps_Ash" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("85_footsteps_ash")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_ash_shuffle_01.wav)"
-metadata/notes = "Volcanic ash shuffle footstep, soft terrain variant"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Soft compressed-ash shuffle"
 [node name="Weapon_Swing" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("86_weapon_swing")
 volume_db = -6.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_swing_01.wav)"
-metadata/notes = "Mechanical arm swing/whoosh, triggered on left-click attack input (0.4s duration)"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Servo swing on every unblocked attack, hit or miss"
 [node name="Weapon_Impact" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("87_weapon_impact")
 volume_db = -5.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_impact_hit_01.wav)"
-metadata/notes = "Weapon hit confirmation, only plays on raycast success; high priority feedback"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Layered under ArmHitAudio (README 16 cue) on a confirmed hit: thud, crunch, short ring"
 [node name="Weapon_Ready" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("88_weapon_ready")
 volume_db = -10.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_ready_tone_01.wav)"
-metadata/notes = "Mechanical ready tone when attack cooldown completes; brief chime (0.2s)"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Latch click and short tone when the attack cooldown ends"
 [node name="AudioLayer_Enemy" type="Node" parent="."]
 metadata/category = "Scout enemy state and behavior audio"
 metadata/positioning = "3D positional audio from scout position"
 [node name="Scout_Alert" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("89_enemy_alert")
-volume_db = -7.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_alert_01.wav)"
-metadata/notes = "Scout detection alert, triggered when player enters 12m detection range"
+volume_db = -2.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Two rising warbled chirps when the Scout detects the player"
 [node name="Scout_Attack" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("90_enemy_attack")
-volume_db = -6.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_attack_strike_01.wav)"
-metadata/notes = "Scout melee attack strike, triggered when entering 2m attack range"
+volume_db = -9.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Falling screech into a hard strike as the Scout attacks"
 [node name="Scout_Hurt" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("91_enemy_hurt")
-volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_hurt_01.wav)"
-metadata/notes = "Scout damage feedback, played when HP reduced; variable intensity"
+volume_db = -10.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Short rough squeal, pitch falling, when the Scout takes damage"
 [node name="Scout_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("92_enemy_death")
 volume_db = -4.0

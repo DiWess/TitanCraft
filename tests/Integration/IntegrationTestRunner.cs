@@ -72,6 +72,7 @@ public partial class IntegrationTestRunner : Node
             await TestHudStartTutorial();
             await TestHudBinding();
             await TestEndScreenNavigation();
+            await TestVictoryTransitionWithSceneChangesEnabled();
             TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
             await TestFullMissionPlaythrough();
@@ -82,7 +83,11 @@ public partial class IntegrationTestRunner : Node
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             await TestEnvironmentMotion();
+            await TestAmbienceLoopsPlay();
+            TestCloseCuesKeepTheirVolume();
             await TestOnboardingTutorialJourney();
+            await TestHudPromptsDoNotOverlapThePanel();
+            await DrainAudioPlaybacks();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
             GetTree().Quit(0);
         }
@@ -134,6 +139,91 @@ public partial class IntegrationTestRunner : Node
     }
 
     /// <summary>
+    /// The 2026-09-24 playtest found the ambient loops wired and never started;
+    /// they were also silent files. This asserts the in-game half: every loop
+    /// plays from scene load, loops rather than stopping after one pass, and
+    /// the placed sources sit where the sound belongs. The files themselves are
+    /// checked for silence by tools/test_audio_sources.py.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestAmbienceLoopsPlay()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(6);
+
+        foreach (var name in new[] { "AmbientLoop_Wind", "AmbientLoop_Rumble" })
+        {
+            var bed = main.GetNodeOrNull<AudioStreamPlayer>($"AudioLayer_Ambient/{name}");
+            Require(bed is not null, $"{name} is missing or no longer a non-positional bed");
+            RequireLoopingAmbience(name, bed!.Stream, bed.Playing);
+        }
+
+        var sea = main.GetNodeOrNull<AudioStreamPlayer3D>("AudioLayer_Ambient/AmbientLoop_Sea");
+        var hum = main.GetNodeOrNull<AudioStreamPlayer3D>("AudioLayer_Ambient/AmbientLoop_Machinery");
+        Require(sea is not null && hum is not null, "Placed ambient sources are missing");
+        RequireLoopingAmbience("AmbientLoop_Sea", sea!.Stream, sea.Playing);
+        RequireLoopingAmbience("AmbientLoop_Machinery", hum!.Stream, hum.Playing);
+
+        // The sea belongs to the harbour and the hum to the wreck: each must
+        // be nearer its own landmark than the other's.
+        var beacon = main.GetNode<Node3D>("Placeholder_Beacon").GlobalPosition;
+        var hull = main.GetNode<Node3D>("ProductionVisualRoot/CrashWreck/MainHull_BuriedIndustrial").GlobalPosition;
+        Require(HorizontalDistance(sea.GlobalPosition, beacon) < HorizontalDistance(sea.GlobalPosition, hull),
+            "Sea ambience is placed nearer the wreck than the harbour");
+        Require(HorizontalDistance(hum.GlobalPosition, hull) < 3.0f,
+            "Machinery hum is not placed at the crashed hull");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    /// <summary>
+    /// An AudioStreamPlayer3D clamps volume_db plus distance gain at max_db.
+    /// With the default 10 m unit size, a footstep 1 m from the camera gains
+    /// +20 dB and every step hit the clamp, so volume_db did nothing -- found
+    /// when the silent footstep files were replaced. Each close-range cue must
+    /// stay under the clamp at the distance it is normally heard from.
+    /// </summary>
+    private static void TestCloseCuesKeepTheirVolume()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        var cues = new (string Path, float HeardAtMetres)[]
+        {
+            ("AudioLayer_Player/Footsteps_Metal", 1.0f),
+            ("AudioLayer_Player/Footsteps_Rock", 1.0f),
+            ("AudioLayer_Player/Footsteps_Ash", 1.0f),
+            ("AudioLayer_Enemy/Scout_Attack", 2.0f),
+            ("AudioLayer_Enemy/Scout_Hurt", 2.0f),
+            ("AudioLayer_Player/Weapon_Swing", 1.0f),
+            ("AudioLayer_Player/Weapon_Impact", 1.0f),
+            ("AudioLayer_Player/Weapon_Ready", 1.0f),
+        };
+        foreach (var (path, distance) in cues)
+        {
+            var cue = main.GetNodeOrNull<AudioStreamPlayer3D>(path);
+            Require(cue is not null, $"{path} is missing");
+            Require(cue!.AttenuationModel == AudioStreamPlayer3D.AttenuationModelEnum.InverseDistance,
+                $"{path} changed attenuation model; update this check's formula");
+            var level = cue.VolumeDb + 20.0f * Mathf.Log(cue.UnitSize / distance) / Mathf.Log(10.0f);
+            Require(level < cue.MaxDb,
+                $"{path} reaches max_db at {distance} m ({level:0.0} dB), so its volume_db has no effect");
+        }
+
+        main.Free();
+    }
+
+    private static void RequireLoopingAmbience(string name, AudioStream? stream, bool playing)
+    {
+        Require(stream is AudioStreamWav, $"{name} has no WAV stream");
+        Require(((AudioStreamWav)stream!).LoopMode == AudioStreamWav.LoopModeEnum.Forward,
+            $"{name} does not loop; it would fall silent after one pass");
+        Require(playing, $"{name} is not playing after the scene loads");
+        // Release the managed wrapper's reference now; left to the GC it
+        // outlives the engine and is reported as a leaked resource at exit.
+        stream.Dispose();
+    }
+
+    /// <summary>
     /// Walks the onboarding prompt through the same order a player meets it,
     /// driving it only through real gameplay state.
     /// </summary>
@@ -153,13 +243,18 @@ public partial class IntegrationTestRunner : Node
         Require(prompt.Visible && prompt.Text.Length > 0,
             "Onboarding prompt should be visible at the start of a run");
 
-        // Collecting a resource proves the movement steps and jumps ahead.
+        // Collecting a resource proves the movement steps and jumps ahead -- to
+        // Collect, not Craft: one resource is not a recipe.
         player.Inventory.AddResources(metal: 1, biomass: 0, electronicComponents: 0);
         await Frames(2);
-        Require(binder.OnboardingStep == OnboardingStep.Craft,
-            "Collecting a resource should advance onboarding to the craft step");
+        Require(binder.OnboardingStep == OnboardingStep.Collect,
+            "One resource should advance onboarding to the collect step, not craft");
 
         player.Inventory.AddResources(metal: 9, biomass: 3, electronicComponents: 2);
+        await Frames(2);
+        Require(binder.OnboardingStep == OnboardingStep.Craft,
+            "A complete recipe should advance onboarding to the craft step");
+
         player.Inventory.MarkMechanicalArmBuilt();
         await Frames(2);
         Require(binder.OnboardingStep == OnboardingStep.Attack,
@@ -443,6 +538,94 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
     }
 
+
+    // Every other scenario in this runner sets EnableSceneChanges = false, which
+    // is exactly why the beacon's crash at the climax survived: the scene change
+    // it depended on never ran here. This one keeps scene changes ON and only
+    // lengthens the victory hold so the change is still pending while we assert.
+    // Before the navigator deferred its change, beacon.Interact threw a
+    // NullReferenceException from Beacon.AddExtractionTrauma (GetTree() == null),
+    // which would fail this test at the Interact call.
+    private async System.Threading.Tasks.Task TestVictoryTransitionWithSceneChangesEnabled()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+        var navigator = main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        navigator.EnableSceneChanges = true;
+        navigator.VictoryHoldSeconds = 600f;
+
+        player.Mission.TryCompleteResourceCollection();
+        player.Mission.TryCompleteMechanicalArmConstruction();
+        player.Mission.TryCompleteGalaxabrainDefeat(true);
+        player.Mission.TryCompleteComponentRecovery();
+        player.Inventory.MarkGalaxabrainComponentCollected();
+
+        Require(beacon.Interact(player.Inventory, player.Mission), "Beacon did not activate on the real scene-change path");
+        Require(player.Mission.IsVictory, "Beacon activation did not produce victory with scene changes enabled");
+        Require(beacon.IsInsideTree(), "Victory removed the beacon from the tree before its activation finished");
+        Require(beacon.IsActivated, "Beacon activation did not complete with scene changes enabled");
+        Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested");
+        Require(navigator.IsSceneChangePending, "Victory scene change should be scheduled, not performed inside the mission event");
+        Require(!((ICrashSiteInteractable)beacon).IsInteractionAvailable, "An activated beacon should stop offering its interaction prompt");
+
+        // The world must stay on screen through the hold so the activation is seen.
+        await Frames(6);
+        Require(main.IsInsideTree(), "Victory hold did not keep the world on screen");
+        Require(navigator.IsSceneChangePending, "Victory scene change fired before its hold elapsed");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    // The walked playtest (2026-09-24, finding 3) showed the onboarding prompt
+    // drawn across the HUD panel's edge in every early frame at the project's
+    // 1280x720 design size -- invisible at 1920 wide, which is how it survived.
+    // Stretch mode is "viewport", so layout at 1280x720 is layout everywhere.
+    private async System.Threading.Tasks.Task TestHudPromptsDoNotOverlapThePanel()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(4);
+        var hud = main.GetNode<CrashSiteHud>("HUD");
+        var panel = hud.GetNode<Control>("Panel");
+        var onboarding = hud.GetNode<Label>("OnboardingPrompt");
+        var feedback = hud.GetNode<Label>("ActionFeedback");
+
+        // The longest onboarding line, so the widest the prompt ever gets.
+        var longest = new OnboardingTutorialState();
+        longest.ReportResourceCollected();
+        onboarding.Text = longest.CurrentPrompt;
+        onboarding.Visible = true;
+        await Frames(2);
+
+        var panelRect = panel.GetGlobalRect();
+        var promptRect = onboarding.GetGlobalRect();
+        Require(!promptRect.Intersects(panelRect),
+            $"Onboarding prompt {promptRect} overlaps the HUD panel {panelRect}");
+        Require(!promptRect.Intersects(feedback.GetGlobalRect()),
+            $"Onboarding prompt {promptRect} overlaps the action feedback line {feedback.GetGlobalRect()}");
+
+        // Every interactable speaks to the player, not in scene-node names.
+        var interactables = 0;
+        foreach (var node in main.FindChildren("*", "", true, false))
+        {
+            if (node is not ICrashSiteInteractable interactable || node is Workbench)
+                continue;
+            interactables++;
+            var line = interactable.InteractionPrompt;
+            Require(line.StartsWith("Press E to ") && line != "Press E to interact",
+                $"{node.Name} has no player-facing interaction prompt: '{line}'");
+            Require(!line.Contains(node.Name.ToString().Replace("Placeholder_", string.Empty)),
+                $"{node.Name} shows its scene-node name to the player: '{line}'");
+        }
+        Require(interactables >= 5, $"Expected the MVP's interactables in the scene, found {interactables}");
+
+        main.QueueFree();
+        await Frames(2);
+    }
 
     private async System.Threading.Tasks.Task TestEndScreenNavigation()
     {
@@ -1232,6 +1415,19 @@ public partial class IntegrationTestRunner : Node
         Require(delta.Dot(expectedDirection) > 0.1f, $"{action} did not move in expected direction");
         Require(Mathf.Abs(delta.Y) < 0.25f, $"{action} caused abnormal vertical movement");
         return HorizontalDistance(start, player.GlobalPosition);
+    }
+
+    /// <summary>
+    /// The ambient loops autoplay in every Main instance. A freed player's
+    /// playback is dropped by the audio mix thread, which runs on wall-clock
+    /// time, not per physics frame; quitting before it has run reports the
+    /// streams as leaked at exit. Wait a little real time before quitting.
+    /// </summary>
+    private async System.Threading.Tasks.Task DrainAudioPlaybacks()
+    {
+        var until = Time.GetTicksMsec() + 250;
+        while (Time.GetTicksMsec() < until)
+            await Frames(1);
     }
 
     private async System.Threading.Tasks.Task Frames(int count)

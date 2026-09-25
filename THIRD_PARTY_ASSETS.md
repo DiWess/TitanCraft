@@ -92,6 +92,49 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
   - `assets/audio/temp/beacon_activate.wav`
   - `assets/audio/temp/victory_sting.wav`
 
+## Mwezi Quarter ambience loops — project-authored
+
+- Date: 2026-09-25
+- Creator: Claude Code (Audio Director lane) for TitanCraft
+- License: Project-owned; no third-party source material, samples or recordings used
+- Generation method: deterministic Python synthesis (shaped noise and sine partials, fixed seeds)
+  in `tools/audio/synthesize_ambience.py`; re-running it reproduces the committed files, and
+  `tools/test_audio_sources.py` checks that on every test run
+- Replaces: the silent placeholders previously credited to Freesound in
+  `docs/audio/audio-provenance.md` Category 1 (see the correction there)
+- Committed files (32 kHz mono 16-bit, 24 s loops, loop declared in the WAV `smpl` chunk):
+
+| File | SHA-256 |
+|---|---|
+| `assets/audio/sources/ambient/wind_ambience_loop_01.wav` | `edeff387c874360ef0002d40d62f4039780c06234c27758c0fefdf177bcb9034` |
+| `assets/audio/sources/ambient/sea_surf_loop_01.wav` | `c706f7ee8aeb71cd9e6c3b9e23044c1be0d9ee7a947111091562517b5c1badee` |
+| `assets/audio/sources/ambient/volcanic_rumble_loop_01.wav` | `0f71d5ec782c691ba0703b043ba0097aa8f2dcbf289e0d7c83a556005791599c` |
+| `assets/audio/sources/ambient/machinery_hum_loop_01.wav` | `262988f2978b2d94e3878ff64fe2c799d07e5adbcec0a059ea898b1f2f3112fe` |
+
+## Mwezi Quarter footstep, Scout and weapon cues — project-authored
+
+- Date: 2026-09-25
+- Creator: Claude Code (Audio Director lane) for TitanCraft
+- License: Project-owned; no third-party source material, samples or recordings used
+- Generation method: deterministic Python synthesis (resonant partials, filtered noise, pitch
+  sweeps, fixed seeds) in `tools/audio/synthesize_cues.py`; `tools/test_audio_sources.py`
+  checks on every test run that the committed files match it
+- Replaces: silent placeholders previously credited to Freesound in
+  `docs/audio/audio-provenance.md` Categories 2, 3 and 4
+- Committed files (32 kHz mono 16-bit one-shots):
+
+| File | SHA-256 |
+|---|---|
+| `assets/audio/sources/footsteps/metal_walk_01.wav` | `f67cb8186a5b4f9bb5f7ca17cb51e1c27c47c289670e552d37710a0229fe8051` |
+| `assets/audio/sources/footsteps/rock_walk_01.wav` | `8b29eee87e450d229d498aed6d190f7fac50fb9401fa316f3e8256ec05d1a015` |
+| `assets/audio/sources/footsteps/ash_walk_01.wav` | `61b854a4efe02a34e577ad4c650f992dd06cad0ef5defa7229438dedf843f4e2` |
+| `assets/audio/sources/enemy/alert_01.wav` | `92c2e7c3976307c955d947d21c0c4e513230bf44eb337ce7f72e6f2583958dc8` |
+| `assets/audio/sources/enemy/attack_01.wav` | `26b08ab118e4cf62d52f71e1e0900628e591c529efd0168f1c232b64cbcdcf2e` |
+| `assets/audio/sources/enemy/hurt_01.wav` | `527b30a9d3125778c214000ff7e2cb8b4f1735f3f8ef5e54e806c8b3f94cd1e0` |
+| `assets/audio/sources/weapon/swing_01.wav` | `47af73c5684024b37d55bcc8d7fc78be5fa95412fee3cc322faab5b7849e118c` |
+| `assets/audio/sources/weapon/impact_01.wav` | `b72b0a9f271f1f8d2d3ab3218da64cbe1c43d99a0b5cb1dc0fc89471168ca0eb` |
+| `assets/audio/sources/weapon/ready_tone_01.wav` | `9dfafbd8a8d7d59a0f85dc97826553be4b28210e80cf88fdd8018fa85e87e2ea` |
+
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 
 Placeholder provenance records for the final Crash Site art pass assets expected under `assets/models/` and `assets/textures/`. These files are not committed in this pass; before distribution, replace each TBD with the exact creator, source URL, license file, filename, and checksum. Intended scope: Terrain PBR texture set, Sci-Fi Workbench GLB, Beacon GLB, and Crashed Ship GLB.

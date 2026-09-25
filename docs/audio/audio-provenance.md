@@ -1,4 +1,31 @@
 # Phase 7.3.2: Audio Provenance Documentation
+
+> [!CAUTION]
+> **Correction, 2026-09-25 — this record does not describe the files in the repository.**
+> Every file under `assets/audio/sources/` listed below is **digital silence**: 28 of 28 have a
+> peak sample value of 0 across their full length (measured with Python's `wave` module; see
+> `docs/production/playtests/2026-09-25-journey.md`, finding 7). A silent file cannot be the
+> Freesound recording credited to it, so the IDs, URLs, creators and licences below are
+> **unverified and must not be relied on**. `tools/audio_download.py` needs a Freesound API key
+> and there is no evidence it was ever run; the files were committed in `6257e8c` (2026-09-04)
+> alongside this document. Treat them as silent placeholders. Replacement audio must carry a
+> source record that matches the file it describes.
+
+> [!NOTE]
+> **Update, 2026-09-25 — Category 1 (ambient) is replaced.** The three ambient loops, plus a new
+> `sea_surf_loop_01.wav`, are now project-authored by `tools/audio/synthesize_ambience.py`; their
+> source record and hashes are in `THIRD_PARTY_ASSETS.md` ("Mwezi Quarter ambience loops"), and
+> the in-game evidence in `docs/audio/ambience-pass-2026-09-25.md`. The Category 1 entries below
+> describe files that no longer exist in this form. For the live count of files still silent,
+> run `python3 tools/test_audio_sources.py` (25 of 29 when this note was written).
+>
+> **Update, 2026-09-25 — footsteps and three Scout cues replaced.** `footsteps/metal_walk_01`,
+> `rock_walk_01`, `ash_walk_01` and `enemy/alert_01`, `attack_01`, `hurt_01` are now
+> project-authored by `tools/audio/synthesize_cues.py` (record in `THIRD_PARTY_ASSETS.md`,
+> evidence in `docs/audio/cue-pass-2026-09-25.md`). Their entries below no longer describe the
+> files. The weapon cues (`weapon/swing_01`, `impact_01`, `ready_tone_01`) followed the same day.
+> 16 of 29 remain silent.
+
 ## Sourced Audio Files with Full Attribution
 
 **Date:** 2026-07-07  
@@ -25,6 +52,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 1: AMBIENT ENVIRONMENT AUDIO
+
+> Superseded 2026-09-25 — see the note at the top of this document.
 
 ### 1.1 Wind Ambience (Loopable)
 
@@ -84,6 +113,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 2: FOOTSTEPS AUDIO
+
+> Superseded 2026-09-25 for the files named in the note at the top of this document.
 
 ### 2.1 Metal Footsteps - Walk (Single Step)
 
@@ -201,6 +232,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 
 ## Category 3: MECHANICAL ARM WEAPON AUDIO
 
+> Superseded 2026-09-25 — see the note at the top of this document.
+
 ### 3.1 Metallic Swing Sound
 
 **File Name:** weapon_swing_01.wav  
@@ -278,6 +311,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 4: SCOUT ENEMY AUDIO
+
+> Superseded 2026-09-25 for the files named in the note at the top of this document.
 
 ### 4.1 Alert/Detection Screech
 

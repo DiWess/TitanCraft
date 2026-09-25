@@ -11,6 +11,10 @@
 
 TitanCraft is a solo, offline-first, Windows-first FPS built with Godot 4 .NET and C#. The current playable scope is the MVP **Crash Site**.
 
+Post-MVP direction (README §6 amendment, 2026-09-25): **one scene, one player, one experience**. Lifted
+with limits: up to three Galaxabrain variants, and a climax encounter at the beacon. Mechanical Arm
+modules Mk I–III are one evolving tool, not multiple weapons. Everything else below stays forbidden.
+
 Forbidden MVP work includes:
 
 - multiplayer;
@@ -21,7 +25,7 @@ Forbidden MVP work includes:
 - large mech;
 - complete rocket;
 - multiple maps;
-- multiple enemy types;
+- more than three Galaxabrain variants, or any enemy outside the Galaxabrain family;
 - cloud services;
 - remote telemetry.
 

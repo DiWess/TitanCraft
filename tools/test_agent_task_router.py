@@ -162,6 +162,13 @@ def test_hud_objective_search_terms_route_to_gameplay_qa():
         assert packet["primary_agent"] != "asset_librarian", phrase
         assert "MEM-ASSET-PROVENANCE-001" not in packet["required_memory_packs_cards"], phrase
 
+def test_audio_tasks_route_to_audio_director():
+    for phrase in ["Start the ambient loops in the harbour", "Audio cue coverage for the Scout", "Rebalance the sound mix"]:
+        packet = route(phrase)
+        assert packet["detected_task_category"] == "audio_feedback", phrase
+        assert packet["primary_agent"] == "audio_director", phrase
+        assert "audio_direction" in packet["required_skills"], phrase
+
 def main() -> int:
     test_gameplay_qa_keywords_outrank_agent_studio_governance()
     test_crash_site_hud_objective_routes_to_gameplay_qa_not_assets()
@@ -169,6 +176,7 @@ def main() -> int:
     test_agent_studio_worldclass_scene_objects_routes_to_visual_gates()
     test_agent_studio_workclass_typo_scene_objects_routes_to_visual_gates()
     test_hud_objective_search_terms_route_to_gameplay_qa()
+    test_audio_tasks_route_to_audio_director()
     files = sorted(p for p in REHEARSALS.glob("*.md") if p.is_file())
     if not files:
         raise AssertionError("No rehearsals found")

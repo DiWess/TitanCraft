@@ -78,7 +78,7 @@ offset_left = -360.0
 offset_top = -96.0
 offset_right = 360.0
 offset_bottom = -56.0
-text = "Left click: Mk I not built yet — craft it at the workbench first."
+text = "Build the Mk I at the workbench to power your arm."
 horizontal_alignment = 1
 vertical_alignment = 1
 label_settings = SubResource("LabelSettings_hud")
@@ -86,13 +86,13 @@ theme_override_colors/font_color = Color(1, 0.72, 0.24, 1)
 
 [node name="OnboardingPrompt" type="Label" parent="."]
 anchor_left = 0.5
-anchor_top = 0.0
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.0
+anchor_bottom = 1.0
 offset_left = -420.0
-offset_top = 64.0
+offset_top = -150.0
 offset_right = 420.0
-offset_bottom = 104.0
+offset_bottom = -110.0
 text = ""
 visible = false
 horizontal_alignment = 1

@@ -412,8 +412,13 @@ class TerrainGenerator:
         for face in mesh_data.polygons:
             face.use_smooth = True
 
-        # Create materials
-        for material_name in set(face[1] for face in self.faces):
+        # Create materials. sorted(), not bare set(): Python salts string hashes
+        # per process, so a set of material names iterates in a different order
+        # on every run. Slot order drives glTF primitive order, so the exported
+        # GLB changed bytes on every build with no source change -- which is the
+        # one GLB that kept tripping the Asset Forge's "GLBs are deterministic"
+        # commit gate and pushing churn commits back onto PR branches.
+        for material_name in sorted(set(face[1] for face in self.faces)):
             self._create_material(material_name)
 
         # Assign materials to faces

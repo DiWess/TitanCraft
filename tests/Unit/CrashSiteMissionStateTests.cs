@@ -35,7 +35,10 @@ public sealed class CrashSiteMissionStateTests
         AssertThat(mission.TryCompleteBeaconActivation()).IsTrue();
 
         AssertThat(mission.CurrentStep).IsEqual(CrashSiteMissionStep.Victory);
-        AssertThat(mission.CurrentObjectiveText).Contains("Mission complete");
+        AssertThat(mission.CurrentObjectiveText).Contains("Beacon activated");
+        // The phase title already reads "Mission Complete"; the breadcrumb used to
+        // repeat it ("Mission Complete: Mission complete: beacon activated.").
+        AssertThat(mission.HudBreadcrumb.ToLowerInvariant().Split("mission complete").Length - 1).IsEqual(1);
     }
 
     [TestCase]

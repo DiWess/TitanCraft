@@ -15,6 +15,8 @@ CATEGORY_RULES = [
     ("asset_import", "asset", ["asset", "provenance", "licence", "license", "source url", "obj", "hash", "audition"]),
     ("build_failure", "build", ["windows export", "export", "build failure", "ci", "artifact", "release failure"]),
     ("godot_scene_change", "architecture", ["godot scene", "scene edit", "collision", ".tscn", "node", "import"]),
+    # Ahead of gameplay_bug so an audio task is not swallowed by "player" or "enemy".
+    ("audio_feedback", "gameplay", ["audio", "sound", "ambience", "ambient", "music", "sfx", "audio cue", "mix"]),
     ("gameplay_bug", "gameplay", [
         "agent studio gameplay", "gameplay workflow", "gameplay governance", "gameplay", "resource pickup", "pickup", "inventory", "mission", "player", "enemy", "bug",
         "mvp loop", "smoke test", "integration test", "crash site gameplay", "a-to-z crash site", "a to z crash site", "playthrough",
@@ -154,6 +156,7 @@ def matching_memories(description: str, route_key: str) -> list[str]:
     route_defaults = {
         "visual_scene_composition": ["MEM-VISFAIL-001", "MEM-VISFAIL-002", "MEM-VISFAIL-004", "MEM-VISFAIL-005"],
         "gameplay_bug": ["MEM-PRODUCT-001", "MEM-GAMEPLAY-MVP-SCOPE-001"],
+        "audio_feedback": ["MEM-QUALITY-BENCHMARK-002", "MEM-PRODUCT-001"],
         "asset_import": ["MEM-ASSET-006", "MEM-ASSET-007", "MEM-ASSET-PROVENANCE-001"],
         "build_failure": ["MEM-CI-RELEASE-LESSONS-004", "MEM-CI-013"],
         "godot_scene_change": ["MEM-GODOT-011", "MEM-GODOT-SCENE-SAFETY-001"],

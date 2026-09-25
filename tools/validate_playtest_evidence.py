@@ -126,7 +126,12 @@ def main() -> int:
         targets = [Path(sys.argv[2])]
         draft = True
     else:
-        targets = sorted(PLAYTEST_DIR.glob("*.md")) if PLAYTEST_DIR.exists() else []
+        # TEMPLATE-*.md files are blank forms for humans to copy, not verdicts.
+        # Validating them as verdicts made this fail on main before any verdict
+        # had ever been committed, so every first real verdict would go red.
+        targets = sorted(
+            p for p in PLAYTEST_DIR.glob("*.md") if not p.name.startswith("TEMPLATE-")
+        ) if PLAYTEST_DIR.exists() else []
         draft = False
         if not targets:
             print("Playtest evidence validation passed: no committed verdict documents yet "

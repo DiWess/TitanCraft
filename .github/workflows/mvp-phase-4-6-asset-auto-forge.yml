@@ -84,13 +84,21 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet assets/Production/Generated/MVP_Pack_V1/ assets/Production/Generated/asset_manifest.json artifacts/asset-review/ 2>/dev/null; then
+          # Gate on GLB exports only -- the same rule blender-asset-forge.yml
+          # adopted after hitting this exact loop. Cycles review renders carry
+          # sampling noise, and the manifest records .blend hashes (never
+          # byte-identical across saves) plus a timestamp, so keying on either
+          # guaranteed a "change" every run. On the 6-hour cron that committed
+          # to main four times a day forever -- the same PNGs flipping between
+          # two byte sizes -- and each commit rewrote asset_manifest.json,
+          # which is why open PRs kept hitting manifest merge conflicts.
+          if git diff --quiet -- 'assets/Production/Generated/MVP_Pack_V1/*.glb' && [ -z "$(git status --porcelain -- 'assets/Production/Generated/MVP_Pack_V1/*.glb')" ]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected in generated assets"
+            echo "No GLB export changed; renders, .blend saves and manifest drift are not committed"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in generated assets"
-            git diff --name-only assets/Production/Generated/MVP_Pack_V1/ assets/Production/Generated/asset_manifest.json || true
+            echo "GLB export changed:"
+            git status --short -- 'assets/Production/Generated/MVP_Pack_V1/*.glb'
           fi
 
       - name: Configure Git
@@ -104,6 +112,10 @@ jobs:
         run: |
           echo "=== Staging generated assets ==="
           git add assets/Production/Generated/MVP_Pack_V1/*.glb
+          # The manifest records each .blend's hash, so the .blend files must
+          # ship in the same commit. Staging the manifest without them left
+          # main's manifest describing source files that were never committed.
+          git add assets/Source/Blender/Production/MVP_Pack_V1/*.blend
           git add assets/Production/Generated/asset_manifest.json
           git add artifacts/asset-review/
           git status --short

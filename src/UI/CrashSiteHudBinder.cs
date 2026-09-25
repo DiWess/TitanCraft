@@ -100,6 +100,11 @@ public partial class CrashSiteHudBinder : Node
             _onboarding.ReportResourceCollected();
         }
 
+        if (_mechanicalArmRecipe.CanCraft(inventory))
+        {
+            _onboarding.ReportCraftingResourcesReady();
+        }
+
         if (inventory.IsMechanicalArmBuilt)
         {
             _onboarding.ReportMechanicalArmBuilt();

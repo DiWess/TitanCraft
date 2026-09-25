@@ -31,7 +31,7 @@ public partial class CrashSiteHud : CanvasLayer
         SetInteractionPrompt(string.Empty);
         SetMechanicalArmProgress("Mechanical Arm Mk I: Metal 0/10 | Biomass 0/3 | Electronics 0/2");
         SetStartTutorialVisible(true);
-        SetActionFeedback("Left click: Mk I not built yet — craft it at the workbench first.");
+        SetActionFeedback("Build the Mk I at the workbench to power your arm.");
         SetOnboardingPrompt(string.Empty);
     }
 

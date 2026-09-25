@@ -40,3 +40,15 @@ human checklist. For required ship validation, use `windows_playtest_journey` in
 
 - Agent journey doc path when making release claims
 - Human quotes only when feel language is used
+
+## example_good_output
+
+Agent journey status: `windows_playtest_journey` `PASS` on workflow run 1234567. Human note:
+`docs/production/playtests/2026-09-24-windows-human-playtest.md`. Findings: quoted the note's
+dated line "strafe lean makes me queasy after a minute" (2026-09-24) as feel evidence, P1, Fast
+Lane; the note also reports the Scout falling through the seawall and becoming unkillable, P0,
+which reopens enemy work despite the agent PASS. Verdict: `FAIL_REPO_OWNED` until the P0 is fixed.
+
+## example_bad_output
+
+Human signed off the renders on 2026-09-24, so movement and combat feel great; `PASS`.

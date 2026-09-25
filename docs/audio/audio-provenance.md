@@ -1,4 +1,16 @@
 # Phase 7.3.2: Audio Provenance Documentation
+
+> [!CAUTION]
+> **Correction, 2026-09-25 — this record does not describe the files in the repository.**
+> Every file under `assets/audio/sources/` listed below is **digital silence**: 28 of 28 have a
+> peak sample value of 0 across their full length (measured with Python's `wave` module; see
+> `docs/production/playtests/2026-09-25-journey.md`, finding 7). A silent file cannot be the
+> Freesound recording credited to it, so the IDs, URLs, creators and licences below are
+> **unverified and must not be relied on**. `tools/audio_download.py` needs a Freesound API key
+> and there is no evidence it was ever run; the files were committed in `6257e8c` (2026-09-04)
+> alongside this document. Treat them as silent placeholders. Replacement audio must carry a
+> source record that matches the file it describes.
+
 ## Sourced Audio Files with Full Attribution
 
 **Date:** 2026-07-07  

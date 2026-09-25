@@ -508,3 +508,36 @@ note — and the 2026-09-24 human verdict is explicitly **not** one. It is a ver
 
 **Next unlock, unchanged:** a human runs the Windows build, walks the quarter, and files a dated note
 under `docs/production/playtests/`.
+
+---
+
+## 2026-09-25 — Gate 0 met; the audio record corrected
+
+The MVP closes (README §30 27/27, §32 met: `docs/production/playtests/2026-09-25-journey.md`,
+verdict `PASS`). Preparing the first post-MVP audio task then found that **28 of the game's 35
+audio files are digital silence** — every file under `assets/audio/sources/` has a peak sample
+of 0 — and that the provenance document credits them to Freesound recordings that cannot be what
+they are. This entry takes back every score that rested on them.
+
+| # | Axis | Score | Target | Δ | Evidence / reason |
+|---|---|---:|---:|---|---|
+| 1 | Core gameplay loop | 6.0 | 9.0 | = | The climax now plays and onboarding teaches the loop in order; that restores the intended loop rather than extending it. |
+| 2 | Combat & enemy AI | 4.5 | 9.0 | = | Unchanged. |
+| 3 | Movement & controls | 4.0 | 9.5 | = | Jump measured for the first time (1.07 m, lands) — confirms rather than improves. |
+| 4 | Crafting & progression | 5.5 | 8.5 | = | Unchanged. |
+| 5 | World / level design | 6.5 | 8.5 | = | The reported route snag was a harness fault and is withdrawn; no level change. |
+| 6 | Visual art & presentation | 8.0 | 9.0 | −0.5 | 8.5 was scored on asset renders. In-game evidence (walked playthrough frames, 2026-09-24/25): the climax frame is fixed, but the HUD overlap, the flat victory screen and clipped lime render remain, and the aesthetic verdict is `NOT_GO`. |
+| 7 | Audio & feedback | 2.0 | 8.5 | −1.5 | **Correction.** Four increases since July — footsteps and weapon-ready, four more cues, the UI cues, and `Weapon_Impact` plus landing (the last mine, in PR #134) — each credited "wiring previously-silent, already-produced audio". Every file behind them is silent (`python3` `wave` scan: 28/28 under `assets/audio/sources/` peak 0). The triggers are real and are kept; the audio the player hears is the seven placeholder tones in `assets/audio/temp/`, which is the July 2.0 baseline. |
+| 8 | Technical stability | 7.5 | 8.0 | = | The climax exception is gone and the real scene-change path is now tested; both CI loops are fixed. Held until this PR's own CI confirms the workflow changes. |
+| 9 | Content density / replayability | 2.0 | 9.0 | = | Re-anchored by `studio/decisions/quality_benchmark_v3_single_scene_axis9.md` (single-level density, not breadth); the score is unchanged by the re-anchoring: ~48 s optimal, one encounter, nothing optional. |
+| 10 | Process integrity of studio claims | 4.5 | n/a | +0.5 | Fabricated provenance found and marked (`docs/audio/audio-provenance.md` correction), four unearned axis-7 increments reversed including this agent's own, and the walked harness caught two defects and one withdrawn false finding that the teleporting suite could not. |
+
+**Composite (axes 1–9):** 5.1 / 10 (46.0/9), down from 5.4. The drop is the point: 1.5 of it was
+never real.
+
+**Lesson recorded for the studio:** a scene node with a stream assigned is not audio. Axis 7
+claims now need the check in `studio/skills/audio_direction.md` — a trigger *and* evidence the
+sound is audible.
+
+**Next:** workstream A of `docs/production/top-tier-single-scene-plan.md`, starting with the HUD
+overlap (lifts the aesthetic `NOT_GO`) and project-authored replacements for the silent audio.

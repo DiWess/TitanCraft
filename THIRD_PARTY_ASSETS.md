@@ -92,6 +92,25 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
   - `assets/audio/temp/beacon_activate.wav`
   - `assets/audio/temp/victory_sting.wav`
 
+## Mwezi Quarter ambience loops — project-authored
+
+- Date: 2026-09-25
+- Creator: Claude Code (Audio Director lane) for TitanCraft
+- License: Project-owned; no third-party source material, samples or recordings used
+- Generation method: deterministic Python synthesis (shaped noise and sine partials, fixed seeds)
+  in `tools/audio/synthesize_ambience.py`; re-running it reproduces the committed files, and
+  `tools/test_audio_sources.py` checks that on every test run
+- Replaces: the silent placeholders previously credited to Freesound in
+  `docs/audio/audio-provenance.md` Category 1 (see the correction there)
+- Committed files (32 kHz mono 16-bit, 24 s loops, loop declared in the WAV `smpl` chunk):
+
+| File | SHA-256 |
+|---|---|
+| `assets/audio/sources/ambient/wind_ambience_loop_01.wav` | `edeff387c874360ef0002d40d62f4039780c06234c27758c0fefdf177bcb9034` |
+| `assets/audio/sources/ambient/sea_surf_loop_01.wav` | `c706f7ee8aeb71cd9e6c3b9e23044c1be0d9ee7a947111091562517b5c1badee` |
+| `assets/audio/sources/ambient/volcanic_rumble_loop_01.wav` | `0f71d5ec782c691ba0703b043ba0097aa8f2dcbf289e0d7c83a556005791599c` |
+| `assets/audio/sources/ambient/machinery_hum_loop_01.wav` | `262988f2978b2d94e3878ff64fe2c799d07e5adbcec0a059ea898b1f2f3112fe` |
+
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 
 Placeholder provenance records for the final Crash Site art pass assets expected under `assets/models/` and `assets/textures/`. These files are not committed in this pass; before distribution, replace each TBD with the exact creator, source URL, license file, filename, and checksum. Intended scope: Terrain PBR texture set, Sci-Fi Workbench GLB, Beacon GLB, and Crashed Ship GLB.

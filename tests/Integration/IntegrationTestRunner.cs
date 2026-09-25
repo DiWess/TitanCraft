@@ -83,8 +83,10 @@ public partial class IntegrationTestRunner : Node
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             await TestEnvironmentMotion();
+            await TestAmbienceLoopsPlay();
             await TestOnboardingTutorialJourney();
             await TestHudPromptsDoNotOverlapThePanel();
+            await DrainAudioPlaybacks();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
             GetTree().Quit(0);
         }
@@ -133,6 +135,56 @@ public partial class IntegrationTestRunner : Node
 
         main.QueueFree();
         await Frames(2);
+    }
+
+    /// <summary>
+    /// The 2026-09-24 playtest found the ambient loops wired and never started;
+    /// they were also silent files. This asserts the in-game half: every loop
+    /// plays from scene load, loops rather than stopping after one pass, and
+    /// the placed sources sit where the sound belongs. The files themselves are
+    /// checked for silence by tools/test_audio_sources.py.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestAmbienceLoopsPlay()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(6);
+
+        foreach (var name in new[] { "AmbientLoop_Wind", "AmbientLoop_Rumble" })
+        {
+            var bed = main.GetNodeOrNull<AudioStreamPlayer>($"AudioLayer_Ambient/{name}");
+            Require(bed is not null, $"{name} is missing or no longer a non-positional bed");
+            RequireLoopingAmbience(name, bed!.Stream, bed.Playing);
+        }
+
+        var sea = main.GetNodeOrNull<AudioStreamPlayer3D>("AudioLayer_Ambient/AmbientLoop_Sea");
+        var hum = main.GetNodeOrNull<AudioStreamPlayer3D>("AudioLayer_Ambient/AmbientLoop_Machinery");
+        Require(sea is not null && hum is not null, "Placed ambient sources are missing");
+        RequireLoopingAmbience("AmbientLoop_Sea", sea!.Stream, sea.Playing);
+        RequireLoopingAmbience("AmbientLoop_Machinery", hum!.Stream, hum.Playing);
+
+        // The sea belongs to the harbour and the hum to the wreck: each must
+        // be nearer its own landmark than the other's.
+        var beacon = main.GetNode<Node3D>("Placeholder_Beacon").GlobalPosition;
+        var hull = main.GetNode<Node3D>("ProductionVisualRoot/CrashWreck/MainHull_BuriedIndustrial").GlobalPosition;
+        Require(HorizontalDistance(sea.GlobalPosition, beacon) < HorizontalDistance(sea.GlobalPosition, hull),
+            "Sea ambience is placed nearer the wreck than the harbour");
+        Require(HorizontalDistance(hum.GlobalPosition, hull) < 3.0f,
+            "Machinery hum is not placed at the crashed hull");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    private static void RequireLoopingAmbience(string name, AudioStream? stream, bool playing)
+    {
+        Require(stream is AudioStreamWav, $"{name} has no WAV stream");
+        Require(((AudioStreamWav)stream!).LoopMode == AudioStreamWav.LoopModeEnum.Forward,
+            $"{name} does not loop; it would fall silent after one pass");
+        Require(playing, $"{name} is not playing after the scene loads");
+        // Release the managed wrapper's reference now; left to the GC it
+        // outlives the engine and is reported as a leaked resource at exit.
+        stream.Dispose();
     }
 
     /// <summary>
@@ -1327,6 +1379,19 @@ public partial class IntegrationTestRunner : Node
         Require(delta.Dot(expectedDirection) > 0.1f, $"{action} did not move in expected direction");
         Require(Mathf.Abs(delta.Y) < 0.25f, $"{action} caused abnormal vertical movement");
         return HorizontalDistance(start, player.GlobalPosition);
+    }
+
+    /// <summary>
+    /// The ambient loops autoplay in every Main instance. A freed player's
+    /// playback is dropped by the audio mix thread, which runs on wall-clock
+    /// time, not per physics frame; quitting before it has run reports the
+    /// streams as leaked at exit. Wait a little real time before quitting.
+    /// </summary>
+    private async System.Threading.Tasks.Task DrainAudioPlaybacks()
+    {
+        var until = Time.GetTicksMsec() + 250;
+        while (Time.GetTicksMsec() < until)
+            await Frames(1);
     }
 
     private async System.Threading.Tasks.Task Frames(int count)

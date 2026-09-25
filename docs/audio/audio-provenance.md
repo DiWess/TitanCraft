@@ -11,6 +11,14 @@
 > alongside this document. Treat them as silent placeholders. Replacement audio must carry a
 > source record that matches the file it describes.
 
+> [!NOTE]
+> **Update, 2026-09-25 — Category 1 (ambient) is replaced.** The three ambient loops, plus a new
+> `sea_surf_loop_01.wav`, are now project-authored by `tools/audio/synthesize_ambience.py`; their
+> source record and hashes are in `THIRD_PARTY_ASSETS.md` ("Mwezi Quarter ambience loops"), and
+> the in-game evidence in `docs/audio/ambience-pass-2026-09-25.md`. The Category 1 entries below
+> describe files that no longer exist in this form. For the live count of files still silent,
+> run `python3 tools/test_audio_sources.py` (25 of 29 when this note was written).
+
 ## Sourced Audio Files with Full Attribution
 
 **Date:** 2026-07-07  
@@ -37,6 +45,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 1: AMBIENT ENVIRONMENT AUDIO
+
+> Superseded 2026-09-25 — see the note at the top of this document.
 
 ### 1.1 Wind Ambience (Loopable)
 

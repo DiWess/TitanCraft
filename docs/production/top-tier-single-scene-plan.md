@@ -163,3 +163,13 @@ runner; the CI Windows runner has no GPU and its figure is a headless proxy.
 (playtest finding 7). "Start the three ambient loops" becomes "replace the silent library with
 project-authored audio, starting with ambience" — starting silent loops would change nothing the
 player hears.
+
+## 8. Progress
+
+| Date | Workstream item | Evidence | Verdict |
+|---|---|---|---|
+| 2026-09-25 | A — HUD: overlap removed, player-facing prompts, startup hint reworded (panel not yet shrunk) | `docs/production/playtests/2026-09-25-journey.md`, addendum | `PASS` |
+| 2026-09-25 | A — ambience authored, looped, started and layered by place; audible at every walked leg | `docs/audio/ambience-pass-2026-09-25.md` | `PASS` |
+
+Still open in A: the remaining 25 silent files (cue audio), the in-world ending shot, lime-render
+clipping, eye-level route readability, a smaller HUD panel, and human playtest note #1.

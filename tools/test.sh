@@ -9,6 +9,7 @@ TEMPLATE_URL="https://github.com/godotengine/godot-builds/releases/download/4.7-
 rm -rf "$RESULTS"
 mkdir -p "$RESULTS" builds/Windows
 python3 tools/prepare_audio_assets.py
+python3 tools/test_audio_sources.py
 REAL_GODOT_BIN="${GODOT_BIN:-$(command -v godot || true)}"
 
 if [[ -z "$REAL_GODOT_BIN" || ! -x "$REAL_GODOT_BIN" ]]; then

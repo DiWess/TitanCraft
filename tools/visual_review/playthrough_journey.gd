@@ -109,6 +109,16 @@ var _damage_events := 0
 var _last_health := -1
 var _defeat_mode := false
 var _defeat_report := {}
+# Ambience probe: each ambient loop is routed to its own bus (harness-only; the
+# game's own bus layout is untouched) so its level can be read per leg.
+const AMBIENCE_LAYER := "AudioLayer_Ambient"
+const AMBIENCE_FLOOR_DB := -80.0
+const AMBIENCE_AUDIBLE_DB := -60.0
+var _ambience_buses: Array[String] = []
+var _ambience_sum := {}
+var _ambience_samples := 0
+const AMBIENCE_ARRIVAL_TICKS := 60
+var _ambience_recent := {}
 
 func _initialize() -> void:
 	root.size = Vector2i(WIDTH, HEIGHT)
@@ -144,6 +154,8 @@ func _run() -> void:
 	if _player == null:
 		_abort("Player not found", 3)
 		return
+
+	_route_ambience()
 
 	# Let the scene settle and the intro title card play out exactly as a player
 	# sees it; it is a timed fade, not a blocking screen.
@@ -199,6 +211,9 @@ func _play_leg(leg_name: String, target_path: String, action: String) -> bool:
 		ok = await _interact(target, action, leg)
 	leg["objective_after"] = _hud("Panel/Margin/VBox/Objective")
 	leg["health_after"] = _hud("Panel/Margin/VBox/Health")
+	leg["ambience_db"] = _take_ambience_levels()
+	if not _ambience_buses.is_empty() and leg["ambience_db"]["leg"].values().max() < AMBIENCE_AUDIBLE_DB:
+		_findings.append("%s: no ambient loop audible (loudest %.1f dB)" % [leg_name, leg["ambience_db"]["leg"].values().max()])
 	_legs_report.append(leg)
 	print("PLAYTHROUGH_LEG %s" % JSON.stringify(leg))
 	await _capture("leg_%02d_%s" % [_legs_report.size(), leg_name])
@@ -528,6 +543,7 @@ func _finish() -> void:
 		"legs_walked": _legs_report.filter(func(l): return l.get("result") == "walked").size(),
 		"legs_total": _legs_report.size(),
 		"damage_events": _damage_events,
+		"ambience_buses": _ambience_buses,
 		"jump": _jump,
 		"onboarding_prompts_seen": _onboarding_log,
 		"findings": _findings,
@@ -557,6 +573,56 @@ func _defeat_reached() -> bool:
 func _is_over() -> bool:
 	return current_scene != _scene or not is_instance_valid(_player)
 
+# --- ambience probe ---------------------------------------------------------
+
+func _route_ambience() -> void:
+	var layer := _scene.get_node_or_null(AMBIENCE_LAYER)
+	if layer == null:
+		_findings.append("%s missing: no ambience to measure" % AMBIENCE_LAYER)
+		return
+	for child in layer.get_children():
+		if not (child is AudioStreamPlayer or child is AudioStreamPlayer3D):
+			continue
+		var bus_name := "Probe_%s" % child.name
+		AudioServer.add_bus()
+		var index := AudioServer.bus_count - 1
+		AudioServer.set_bus_name(index, bus_name)
+		AudioServer.set_bus_send(index, "Master")
+		child.bus = bus_name
+		_ambience_buses.append(bus_name)
+		_ambience_sum[bus_name] = 0.0
+		_ambience_recent[bus_name] = []
+
+func _sample_ambience() -> void:
+	# Mean of the per-frame peak, in dB clamped at the floor: a steady reading
+	# of what the loop contributes while the leg is walked, not one spike.
+	for bus_name in _ambience_buses:
+		var index := AudioServer.get_bus_index(bus_name)
+		var peak := maxf(AudioServer.get_bus_peak_volume_left_db(index, 0), AudioServer.get_bus_peak_volume_right_db(index, 0))
+		_ambience_sum[bus_name] += maxf(peak, AMBIENCE_FLOOR_DB)
+		var recent: Array = _ambience_recent[bus_name]
+		recent.append(maxf(peak, AMBIENCE_FLOOR_DB))
+		if recent.size() > AMBIENCE_ARRIVAL_TICKS:
+			recent.pop_front()
+	_ambience_samples += 1
+
+func _take_ambience_levels() -> Dictionary:
+	# "leg": mean over the whole walk; "arrival": the last second, standing at
+	# the objective -- the reading that shows whether placement layers by place.
+	var leg := {}
+	var arrival := {}
+	for bus_name in _ambience_buses:
+		var key := bus_name.trim_prefix("Probe_AmbientLoop_")
+		leg[key] = snappedf(_ambience_sum[bus_name] / maxf(_ambience_samples, 1), 0.1)
+		var recent: Array = _ambience_recent[bus_name]
+		var total := 0.0
+		for value in recent:
+			total += value
+		arrival[key] = snappedf(total / maxf(recent.size(), 1), 0.1)
+		_ambience_sum[bus_name] = 0.0
+	_ambience_samples = 0
+	return {"leg": leg, "arrival": arrival}
+
 # --- helpers ----------------------------------------------------------------
 
 func _ticks(count: int) -> void:
@@ -568,6 +634,7 @@ func _ticks(count: int) -> void:
 func _observe() -> void:
 	if _is_over():
 		return
+	_sample_ambience()
 	var prompt := _hud("OnboardingPrompt")
 	if prompt != _last_onboarding:
 		_last_onboarding = prompt

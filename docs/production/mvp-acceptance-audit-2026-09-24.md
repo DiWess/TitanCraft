@@ -6,7 +6,7 @@
 the player a wrong instruction. Two small, repository-owned fixes stand between the current
 build and done.
 
-**Verdict:** `FAIL_REPO_OWNED`
+**Verdict:** `FAIL_REPO_OWNED` — superseded 2026-09-25, see the addendum at the end: **`PASS`**.
 
 Evidence sources:
 - Windows runner: workflow run 36070332245 on `main` (`bbfd14c`), exe SHA-256
@@ -84,3 +84,18 @@ feature is broken." Two defects fail it, both reproduced on every valid run:
 - An optimal route finishes the whole MVP in about 50 seconds of game time, against the README
   §5 session target of 10–30 minutes. That is not an acceptance failure (§30 #26 is a ceiling),
   but it is the single most important fact for what comes after the MVP.
+
+## Addendum, 2026-09-25 — Gate 0 met
+
+Both §32 defects are fixed and verified (`docs/production/playtests/2026-09-25-journey.md`,
+verdict `PASS`): the beacon climax plays with no exception, and onboarding shows Collect until the
+recipe is complete. Each fix carries a test on the real path. §30 stays at 27 of 27 (#19 is no
+longer defective). The walked journey completes 10 of 10 legs with no findings, and respawn is
+re-verified on the fixed build.
+
+**The MVP is done in the sense of README §30 and §32.** Verdict: `PASS`. The product owner's
+post-MVP amendment is recorded in README §6 (2026-09-25).
+
+One new finding does not reopen the MVP but must not be lost: 28 of 35 audio files are digital
+silence, and their recorded provenance cannot be true (playtest finding 7; scorecard log,
+2026-09-25). README §16's seven required cues are among the seven files that do make sound.

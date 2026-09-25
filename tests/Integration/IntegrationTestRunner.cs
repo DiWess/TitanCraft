@@ -72,6 +72,7 @@ public partial class IntegrationTestRunner : Node
             await TestHudStartTutorial();
             await TestHudBinding();
             await TestEndScreenNavigation();
+            await TestVictoryTransitionWithSceneChangesEnabled();
             TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
             await TestFullMissionPlaythrough();
@@ -443,6 +444,46 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
     }
 
+
+    // Every other scenario in this runner sets EnableSceneChanges = false, which
+    // is exactly why the beacon's crash at the climax survived: the scene change
+    // it depended on never ran here. This one keeps scene changes ON and only
+    // lengthens the victory hold so the change is still pending while we assert.
+    // Before the navigator deferred its change, beacon.Interact threw a
+    // NullReferenceException from Beacon.AddExtractionTrauma (GetTree() == null),
+    // which would fail this test at the Interact call.
+    private async System.Threading.Tasks.Task TestVictoryTransitionWithSceneChangesEnabled()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var player = main.GetNode<FirstPersonController>("Player");
+        var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
+        var navigator = main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
+        navigator.EnableSceneChanges = true;
+        navigator.VictoryHoldSeconds = 600f;
+
+        player.Mission.TryCompleteResourceCollection();
+        player.Mission.TryCompleteMechanicalArmConstruction();
+        player.Mission.TryCompleteGalaxabrainDefeat(true);
+        player.Mission.TryCompleteComponentRecovery();
+        player.Inventory.MarkGalaxabrainComponentCollected();
+
+        Require(beacon.Interact(player.Inventory, player.Mission), "Beacon did not activate on the real scene-change path");
+        Require(player.Mission.IsVictory, "Beacon activation did not produce victory with scene changes enabled");
+        Require(beacon.IsInsideTree(), "Victory removed the beacon from the tree before its activation finished");
+        Require(beacon.IsActivated, "Beacon activation did not complete with scene changes enabled");
+        Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested");
+        Require(navigator.IsSceneChangePending, "Victory scene change should be scheduled, not performed inside the mission event");
+
+        // The world must stay on screen through the hold so the activation is seen.
+        await Frames(6);
+        Require(main.IsInsideTree(), "Victory hold did not keep the world on screen");
+        Require(navigator.IsSceneChangePending, "Victory scene change fired before its hold elapsed");
+
+        main.QueueFree();
+        await Frames(2);
+    }
 
     private async System.Threading.Tasks.Task TestEndScreenNavigation()
     {

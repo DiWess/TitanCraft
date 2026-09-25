@@ -116,6 +116,13 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
 
     private void AddExtractionTrauma()
     {
+        // Defensive: the end-screen navigator no longer removes the scene
+        // mid-activation, but a beacon outside the tree has no shaker to reach.
+        if (!IsInsideTree())
+        {
+            return;
+        }
+
         foreach (var node in GetTree().GetNodesInGroup(CameraShaker.CameraShakerGroup))
         {
             if (node is CameraShaker cameraShaker)

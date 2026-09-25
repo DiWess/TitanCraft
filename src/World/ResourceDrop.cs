@@ -48,6 +48,10 @@ public partial class ResourceDrop : Area3D, ICrashSiteInteractable, ILookHighlig
     private Material? _baseMaterial;
     private bool _isCollected;
 
+    public string InteractionPrompt => $"Press E to take the {Type}";
+
+    public bool IsInteractionAvailable => !_isCollected;
+
     private const float IdleSpinRadiansPerSecond = 0.9f;
     private const float IdleBobAmplitude = 0.045f;
     private const float IdleBobRadiansPerSecond = 2.2f;

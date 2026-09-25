@@ -20,6 +20,12 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
 
     public bool IsActivated { get; private set; }
 
+    public string InteractionPrompt => "Press E to activate the rescue beacon";
+
+    // Once lit there is nothing left to do; the prompt used to linger through
+    // the whole victory hold.
+    public bool IsInteractionAvailable => !IsActivated;
+
     private MeshInstance3D? _closedVisual;
     private MeshInstance3D? _activeVisual;
     private GpuParticles3D? _activationPillar;

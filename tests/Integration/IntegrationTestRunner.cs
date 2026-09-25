@@ -84,6 +84,7 @@ public partial class IntegrationTestRunner : Node
             await TestJumpAndCamera();
             await TestEnvironmentMotion();
             await TestOnboardingTutorialJourney();
+            await TestHudPromptsDoNotOverlapThePanel();
             GD.Print("TITANCRAFT_INTEGRATION_TESTS_PASS");
             GetTree().Quit(0);
         }
@@ -480,11 +481,59 @@ public partial class IntegrationTestRunner : Node
         Require(beacon.IsActivated, "Beacon activation did not complete with scene changes enabled");
         Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested");
         Require(navigator.IsSceneChangePending, "Victory scene change should be scheduled, not performed inside the mission event");
+        Require(!((ICrashSiteInteractable)beacon).IsInteractionAvailable, "An activated beacon should stop offering its interaction prompt");
 
         // The world must stay on screen through the hold so the activation is seen.
         await Frames(6);
         Require(main.IsInsideTree(), "Victory hold did not keep the world on screen");
         Require(navigator.IsSceneChangePending, "Victory scene change fired before its hold elapsed");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    // The walked playtest (2026-09-24, finding 3) showed the onboarding prompt
+    // drawn across the HUD panel's edge in every early frame at the project's
+    // 1280x720 design size -- invisible at 1920 wide, which is how it survived.
+    // Stretch mode is "viewport", so layout at 1280x720 is layout everywhere.
+    private async System.Threading.Tasks.Task TestHudPromptsDoNotOverlapThePanel()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(4);
+        var hud = main.GetNode<CrashSiteHud>("HUD");
+        var panel = hud.GetNode<Control>("Panel");
+        var onboarding = hud.GetNode<Label>("OnboardingPrompt");
+        var feedback = hud.GetNode<Label>("ActionFeedback");
+
+        // The longest onboarding line, so the widest the prompt ever gets.
+        var longest = new OnboardingTutorialState();
+        longest.ReportResourceCollected();
+        onboarding.Text = longest.CurrentPrompt;
+        onboarding.Visible = true;
+        await Frames(2);
+
+        var panelRect = panel.GetGlobalRect();
+        var promptRect = onboarding.GetGlobalRect();
+        Require(!promptRect.Intersects(panelRect),
+            $"Onboarding prompt {promptRect} overlaps the HUD panel {panelRect}");
+        Require(!promptRect.Intersects(feedback.GetGlobalRect()),
+            $"Onboarding prompt {promptRect} overlaps the action feedback line {feedback.GetGlobalRect()}");
+
+        // Every interactable speaks to the player, not in scene-node names.
+        var interactables = 0;
+        foreach (var node in main.FindChildren("*", "", true, false))
+        {
+            if (node is not ICrashSiteInteractable interactable || node is Workbench)
+                continue;
+            interactables++;
+            var line = interactable.InteractionPrompt;
+            Require(line.StartsWith("Press E to ") && line != "Press E to interact",
+                $"{node.Name} has no player-facing interaction prompt: '{line}'");
+            Require(!line.Contains(node.Name.ToString().Replace("Placeholder_", string.Empty)),
+                $"{node.Name} shows its scene-node name to the player: '{line}'");
+        }
+        Require(interactables >= 5, $"Expected the MVP's interactables in the scene, found {interactables}");
 
         main.QueueFree();
         await Frames(2);

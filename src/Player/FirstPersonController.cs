@@ -438,8 +438,13 @@ public partial class FirstPersonController : CharacterBody3D
             return false;
         }
 
+        if (!interactable.IsInteractionAvailable)
+        {
+            return false;
+        }
+
         highlightTarget = FindLookHighlightTarget(colliderVariant.AsGodotObject());
-        prompt = node is Workbench ? BuildWorkbenchPrompt() : $"Press E to interact with {node.Name.ToString().Replace("Placeholder_", string.Empty)}";
+        prompt = node is Workbench ? BuildWorkbenchPrompt() : interactable.InteractionPrompt;
         return true;
     }
 

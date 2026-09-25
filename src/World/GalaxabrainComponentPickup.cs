@@ -9,6 +9,10 @@ public partial class GalaxabrainComponentPickup : Area3D, ICrashSiteInteractable
 {
     private bool _isCollected;
 
+    public string InteractionPrompt => "Press E to recover the Galaxabrain component";
+
+    public bool IsInteractionAvailable => !_isCollected;
+
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
     {
         ArgumentNullException.ThrowIfNull(inventory);

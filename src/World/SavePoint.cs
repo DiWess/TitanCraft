@@ -7,6 +7,8 @@ namespace TitanCraft.World;
 
 public partial class SavePoint : Area3D, ICrashSiteInteractable
 {
+    public string InteractionPrompt => "Press E to save your progress";
+
     public event Action? SaveRequested;
 
     [Export] public string CheckpointId { get; set; } = "crash_site_save_point";

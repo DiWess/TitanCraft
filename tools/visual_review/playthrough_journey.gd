@@ -65,12 +65,22 @@ const LEGS := [
 	["save_point_to_beacon", "Placeholder_Beacon", "activate"],
 ]
 
+# The save point is walled on its north side (C7_Wall_1) and boxed in to the
+# north-east, and is reached from the east along the route the level generator
+# certified (component -> save point; (-4, -13) lies on it). The defeat legs
+# join that route rather than inventing a diagonal: this mode tests respawn,
+# not path-finding. Electronics are collected BEFORE saving (must survive the
+# reload) and Biomass AFTER (must be lost).
 const DEFEAT_LEGS := [
-	["spawn_to_biomass", "ResourceDrop_BiomassPickup", "collect"],
-	["biomass_to_save_point", "Placeholder_SavePoint", "save"],
-	["save_point_to_biomass", "@-8,-4", ""],
-	["biomass_to_spawn", "@0,0", ""],
 	["spawn_to_electronics", "ResourceDrop_ElectronicsPickup", "collect"],
+	["electronics_to_route", "@-4,-13", ""],
+	["route_to_save_point", "Placeholder_SavePoint", "save"],
+	["save_point_to_route", "@-4,-13", ""],
+	["route_to_electronics", "@0,-10", ""],
+	["electronics_to_spawn", "@0,0", ""],
+	["spawn_to_biomass", "ResourceDrop_BiomassPickup", "collect"],
+	["biomass_to_spawn", "@0,0", ""],
+	["spawn_to_electronics_again", "@0,-10", ""],
 	["electronics_to_workbench", "@12,-12", ""],
 	["workbench_to_scout", "Placeholder_GalaxabrainScout", "die"],
 ]
@@ -276,15 +286,42 @@ func _walk_to(leg_name: String, goal: Callable, stop_radius: float) -> Dictionar
 	return leg
 
 func _unstuck(attempt: int) -> void:
-	# What a player does against an unseen lip or corner: hop and sidestep.
-	var side := "move_right" if attempt % 2 == 1 else "move_left"
-	Input.action_press("jump")
-	Input.action_press(side)
+	# What a player does when something is in the way: look left and right,
+	# take the open side, walk past it, then carry on. The first version only
+	# hopped and strafed, then steered straight back into the same obstacle --
+	# which is how a plainly visible 1.5 m cover crate
+	# (Environment/CoverElements/CrashSiteCargoCrate3) got reported as a route
+	# snag it never was.
+	var left := _free_distance(deg_to_rad(55.0))
+	var right := _free_distance(deg_to_rad(-55.0))
+	var turn := deg_to_rad(55.0) if left >= right else deg_to_rad(-55.0)
+	# Alternate on repeat attempts in case the first choice was a dead end.
+	if attempt % 2 == 0:
+		turn = -turn
+	var target_yaw := _player.rotation.y + turn
+	for i in 30:
+		var remaining := wrapf(target_yaw - _player.rotation.y, -PI, PI)
+		if absf(remaining) < 0.03:
+			break
+		_turn(remaining, 0.0)
+		await _ticks(1)
 	Input.action_press("move_forward")
+	Input.action_press("jump")
 	await _ticks(3)
 	Input.action_release("jump")
-	await _ticks(35)
-	Input.action_release(side)
+	await _ticks(50)
+	Input.action_release("move_forward")
+
+func _free_distance(yaw_offset: float) -> float:
+	# How far the player could walk in a direction before hitting something, at
+	# waist height, ignoring the player's own body.
+	var from := _player.global_position + Vector3(0.0, 0.6, 0.0)
+	var yaw := _player.rotation.y + yaw_offset
+	var dir := Vector3(-sin(yaw), 0.0, -cos(yaw))
+	var query := PhysicsRayQueryParameters3D.create(from, from + dir * 4.0)
+	query.exclude = [_player.get_rid()]
+	var hit := _player.get_world_3d().direct_space_state.intersect_ray(query)
+	return 4.0 if hit.is_empty() else from.distance_to(hit["position"])
 
 # --- interaction and combat ---------------------------------------------------
 
@@ -369,6 +406,13 @@ func _die_and_reload(scout: Node3D, leg: Dictionary) -> bool:
 		if is_instance_valid(scout):
 			await _aim_at(scout, 4)
 		await _ticks(6)
+	# The end-screen change is deferred to the next idle frame, and between the
+	# old scene leaving and the new one arriving current_scene is null. Wait for
+	# the new scene rather than sampling that gap.
+	for i in 300:
+		if current_scene != null and current_scene != _scene:
+			break
+		await process_frame
 	var death := {
 		"seconds_to_die": snappedf(float(_tick - start_tick) / Engine.physics_ticks_per_second, 0.01),
 		"defeat_screen": _defeat_reached(),
@@ -457,8 +501,13 @@ func _jump_once() -> void:
 # --- end of run -------------------------------------------------------------
 
 func _finish() -> void:
-	# Victory swaps the scene; give it time to arrive, then film it.
-	for i in 120:
+	# Victory now holds the world on screen before the end screen
+	# (CrashSiteEndScreenNavigator.VictoryHoldSeconds), so film the climax
+	# while it plays, then wait for the end screen to arrive.
+	if not _defeat_mode and not _is_over():
+		await _ticks(60)
+		await _capture("beacon_climax")
+	for i in 900:
 		if _victory_reached():
 			break
 		await _ticks(1)

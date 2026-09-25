@@ -194,6 +194,9 @@ public partial class IntegrationTestRunner : Node
             ("AudioLayer_Player/Footsteps_Ash", 1.0f),
             ("AudioLayer_Enemy/Scout_Attack", 2.0f),
             ("AudioLayer_Enemy/Scout_Hurt", 2.0f),
+            ("AudioLayer_Player/Weapon_Swing", 1.0f),
+            ("AudioLayer_Player/Weapon_Impact", 1.0f),
+            ("AudioLayer_Player/Weapon_Ready", 1.0f),
         };
         foreach (var (path, distance) in cues)
         {

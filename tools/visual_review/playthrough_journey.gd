@@ -133,6 +133,9 @@ const CUE_NODES := [
 	"AudioLayer_Enemy/Scout_Alert",
 	"AudioLayer_Enemy/Scout_Attack",
 	"AudioLayer_Enemy/Scout_Hurt",
+	"AudioLayer_Player/Weapon_Swing",
+	"AudioLayer_Player/Weapon_Impact",
+	"AudioLayer_Player/Weapon_Ready",
 ]
 var _cues := {}
 var _cue_state := {}

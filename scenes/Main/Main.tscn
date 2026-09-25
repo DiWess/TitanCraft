@@ -624,18 +624,21 @@ metadata/notes = "Soft compressed-ash shuffle"
 [node name="Weapon_Swing" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("86_weapon_swing")
 volume_db = -6.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_swing_01.wav)"
-metadata/notes = "Mechanical arm swing/whoosh, triggered on left-click attack input (0.4s duration)"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Servo swing on every unblocked attack, hit or miss"
 [node name="Weapon_Impact" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("87_weapon_impact")
 volume_db = -5.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_impact_hit_01.wav)"
-metadata/notes = "Weapon hit confirmation, only plays on raycast success; high priority feedback"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Layered under ArmHitAudio (README 16 cue) on a confirmed hit: thud, crunch, short ring"
 [node name="Weapon_Ready" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("88_weapon_ready")
 volume_db = -10.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with weapon_ready_tone_01.wav)"
-metadata/notes = "Mechanical ready tone when attack cooldown completes; brief chime (0.2s)"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Latch click and short tone when the attack cooldown ends"
 [node name="AudioLayer_Enemy" type="Node" parent="."]
 metadata/category = "Scout enemy state and behavior audio"
 metadata/positioning = "3D positional audio from scout position"

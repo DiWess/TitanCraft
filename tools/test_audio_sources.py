@@ -41,9 +41,6 @@ KNOWN_SILENT = {
     "ui/hover_01.wav",
     "ui/menu_toggle_01.wav",
     "ui/select_01.wav",
-    "weapon/impact_01.wav",
-    "weapon/ready_tone_01.wav",
-    "weapon/swing_01.wav",
 }
 
 # Project-authored audio: the committed files must be what these produce.

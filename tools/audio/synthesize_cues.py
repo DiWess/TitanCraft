@@ -17,6 +17,9 @@ Cues, by the node that plays them in ``scenes/Main/Main.tscn``:
   enemy/alert_01.wav           Scout_Alert      two rising warbled chirps
   enemy/attack_01.wav          Scout_Attack     falling screech into a strike
   enemy/hurt_01.wav            Scout_Hurt       short rough squeal, pitch falling
+  weapon/swing_01.wav          Weapon_Swing     servo swing: rising-falling air, faint whine
+  weapon/impact_01.wav         Weapon_Impact    low thud, crunch and short metal ring
+  weapon/ready_tone_01.wav     Weapon_Ready     latch click then a short high tone
 
 Usage: python3 tools/audio/synthesize_cues.py [--check]
 """
@@ -165,6 +168,56 @@ def render_hurt() -> list[float]:
     return out
 
 
+def render_swing() -> list[float]:
+    """Servo-driven arm swing: a band of air that rises then falls, plus a faint whine."""
+    rng = random.Random(7101)
+    low = lower = 0.0
+    out = []
+    length = 0.3
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        arc = math.sin(math.pi * t / length)
+        white = rng.uniform(-1.0, 1.0)
+        cutoff = 400.0 + 2_600.0 * arc
+        low += one_pole(cutoff) * (white - low)
+        lower += one_pole(cutoff * 0.3) * (low - lower)
+        whine = 0.12 * math.sin(sweep_phase(t, 320.0, 640.0, length))
+        out.append(((low - lower) * 1.8 + whine) * arc ** 1.5)
+    return out
+
+
+def render_impact() -> list[float]:
+    """Arm meets carapace: a dense low thud, a crunch and a short metal ring."""
+    rng = random.Random(7203)
+    low = 0.0
+    modes = [(410.0, 0.3, 0.09), (1130.0, 0.2, 0.06), (2870.0, 0.1, 0.04)]
+    out = []
+    for i in range(samples(0.35)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(1_800.0) * (white - low)
+        crunch = low * envelope(t, 0.0008, 0.08) * 2.2
+        body = math.sin(TAU * 68.0 * t) * envelope(t, 0.002, 0.22)
+        ring = sum(level * math.sin(TAU * f * t) * envelope(t, 0.001, decay) for f, level, decay in modes)
+        out.append(crunch + body * 0.9 + ring)
+    return out
+
+
+def render_ready() -> list[float]:
+    """Cooldown over: a latch click then a short high confirmation tone."""
+    rng = random.Random(7307)
+    out = []
+    for i in range(samples(0.2)):
+        t = i / SAMPLE_RATE
+        click = rng.uniform(-1.0, 1.0) * envelope(t, 0.0003, 0.012)
+        tone_t = t - 0.03
+        tone = 0.0
+        if tone_t >= 0.0:
+            tone = (math.sin(TAU * 1_760.0 * tone_t) + 0.3 * math.sin(TAU * 2_640.0 * tone_t)) * envelope(tone_t, 0.004, 0.15)
+        out.append(click * 0.8 + tone * 0.5)
+    return out
+
+
 # name -> (renderer, peak): the peak sets each cue's level relative to the
 # others; the scene's volume_db still sets the mix.
 CUES = {
@@ -174,6 +227,9 @@ CUES = {
     "enemy/alert_01.wav": (render_alert, 0.7),
     "enemy/attack_01.wav": (render_attack, 0.8),
     "enemy/hurt_01.wav": (render_hurt, 0.7),
+    "weapon/swing_01.wav": (render_swing, 0.6),
+    "weapon/impact_01.wav": (render_impact, 0.8),
+    "weapon/ready_tone_01.wav": (render_ready, 0.5),
 }
 
 

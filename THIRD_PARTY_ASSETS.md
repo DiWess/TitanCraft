@@ -111,7 +111,7 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
 | `assets/audio/sources/ambient/volcanic_rumble_loop_01.wav` | `0f71d5ec782c691ba0703b043ba0097aa8f2dcbf289e0d7c83a556005791599c` |
 | `assets/audio/sources/ambient/machinery_hum_loop_01.wav` | `262988f2978b2d94e3878ff64fe2c799d07e5adbcec0a059ea898b1f2f3112fe` |
 
-## Mwezi Quarter footstep and Scout cues — project-authored
+## Mwezi Quarter footstep, Scout and weapon cues — project-authored
 
 - Date: 2026-09-25
 - Creator: Claude Code (Audio Director lane) for TitanCraft
@@ -120,7 +120,7 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
   sweeps, fixed seeds) in `tools/audio/synthesize_cues.py`; `tools/test_audio_sources.py`
   checks on every test run that the committed files match it
 - Replaces: silent placeholders previously credited to Freesound in
-  `docs/audio/audio-provenance.md` Categories 2 and 4
+  `docs/audio/audio-provenance.md` Categories 2, 3 and 4
 - Committed files (32 kHz mono 16-bit one-shots):
 
 | File | SHA-256 |
@@ -131,6 +131,9 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
 | `assets/audio/sources/enemy/alert_01.wav` | `92c2e7c3976307c955d947d21c0c4e513230bf44eb337ce7f72e6f2583958dc8` |
 | `assets/audio/sources/enemy/attack_01.wav` | `26b08ab118e4cf62d52f71e1e0900628e591c529efd0168f1c232b64cbcdcf2e` |
 | `assets/audio/sources/enemy/hurt_01.wav` | `527b30a9d3125778c214000ff7e2cb8b4f1735f3f8ef5e54e806c8b3f94cd1e0` |
+| `assets/audio/sources/weapon/swing_01.wav` | `47af73c5684024b37d55bcc8d7fc78be5fa95412fee3cc322faab5b7849e118c` |
+| `assets/audio/sources/weapon/impact_01.wav` | `b72b0a9f271f1f8d2d3ab3218da64cbe1c43d99a0b5cb1dc0fc89471168ca0eb` |
+| `assets/audio/sources/weapon/ready_tone_01.wav` | `9dfafbd8a8d7d59a0f85dc97826553be4b28210e80cf88fdd8018fa85e87e2ea` |
 
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 

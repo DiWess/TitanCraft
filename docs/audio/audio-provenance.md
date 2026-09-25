@@ -23,7 +23,8 @@
 > `rock_walk_01`, `ash_walk_01` and `enemy/alert_01`, `attack_01`, `hurt_01` are now
 > project-authored by `tools/audio/synthesize_cues.py` (record in `THIRD_PARTY_ASSETS.md`,
 > evidence in `docs/audio/cue-pass-2026-09-25.md`). Their entries below no longer describe the
-> files. 19 of 29 remain silent.
+> files. The weapon cues (`weapon/swing_01`, `impact_01`, `ready_tone_01`) followed the same day.
+> 16 of 29 remain silent.
 
 ## Sourced Audio Files with Full Attribution
 
@@ -230,6 +231,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 3: MECHANICAL ARM WEAPON AUDIO
+
+> Superseded 2026-09-25 — see the note at the top of this document.
 
 ### 3.1 Metallic Swing Sound
 

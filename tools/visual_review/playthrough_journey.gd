@@ -33,6 +33,14 @@ extends SceneTree
 #
 # Run:
 #   xvfb-run -a godot --path . --script tools/visual_review/playthrough_journey.gd
+#   xvfb-run -a godot --path . --script tools/visual_review/playthrough_journey.gd -- --defeat
+#
+# --defeat plays README section 30's "the player respawns after death" on the
+# real path: save at the save point, collect something AFTER saving, die to the
+# Scout, click "Reload Last Save", and check what came back. The integration
+# suite cannot cover this -- it disables the end-screen scene change in every
+# scenario -- and the death transition uses the same immediate scene change
+# that broke the beacon.
 
 const OUTPUT_DIR := "res://artifacts/visual-review/playthrough"
 const WIDTH := 1280
@@ -57,6 +65,16 @@ const LEGS := [
 	["save_point_to_beacon", "Placeholder_Beacon", "activate"],
 ]
 
+const DEFEAT_LEGS := [
+	["spawn_to_biomass", "ResourceDrop_BiomassPickup", "collect"],
+	["biomass_to_save_point", "Placeholder_SavePoint", "save"],
+	["save_point_to_biomass", "@-8,-4", ""],
+	["biomass_to_spawn", "@0,0", ""],
+	["spawn_to_electronics", "ResourceDrop_ElectronicsPickup", "collect"],
+	["electronics_to_workbench", "@12,-12", ""],
+	["workbench_to_scout", "Placeholder_GalaxabrainScout", "die"],
+]
+
 const INTERACT_STOP_M := 1.8       # inside the 3 m interaction ray
 const WAYPOINT_STOP_M := 0.9
 const STRIKE_RANGE_M := 2.4        # Mk I reach is 3.0 m
@@ -79,6 +97,8 @@ var _legs_report: Array = []
 var _findings: Array = []
 var _damage_events := 0
 var _last_health := -1
+var _defeat_mode := false
+var _defeat_report := {}
 
 func _initialize() -> void:
 	root.size = Vector2i(WIDTH, HEIGHT)
@@ -129,7 +149,8 @@ func _run() -> void:
 	await _look_around()
 	await _jump_once()
 
-	for leg in LEGS:
+	_defeat_mode = "--defeat" in OS.get_cmdline_user_args()
+	for leg in (DEFEAT_LEGS if _defeat_mode else LEGS):
 		var ok: bool = await _play_leg(leg[0], leg[1], leg[2])
 		if _is_over():
 			break
@@ -140,22 +161,30 @@ func _run() -> void:
 
 func _play_leg(leg_name: String, target_path: String, action: String) -> bool:
 	var target: Node3D = null
-	if target_path != "@spawn":
+	var fixed := Vector3.INF
+	if target_path.begins_with("@") and target_path != "@spawn":
+		var xz := target_path.substr(1).split(",")
+		fixed = Vector3(float(xz[0]), _spawn.y, float(xz[1]))
+	elif target_path != "@spawn":
 		target = _scene.get_node_or_null(target_path) as Node3D
 		if target == null:
 			_findings.append("%s: target node '%s' missing" % [leg_name, target_path])
 			return false
 
 	var stop := WAYPOINT_STOP_M if action == "" else INTERACT_STOP_M
-	if action == "fight":
+	if action == "fight" or action == "die":
 		stop = STRIKE_RANGE_M
 	var goal := func() -> Vector3:
+		if fixed != Vector3.INF:
+			return fixed
 		return _spawn if target == null else target.global_position
 
 	var leg: Dictionary = await _walk_to(leg_name, goal, stop)
 	var ok := true
 	if action == "fight":
 		ok = await _fight(target, leg)
+	elif action == "die":
+		ok = await _die_and_reload(target, leg)
 	elif action != "":
 		ok = await _interact(target, action, leg)
 	leg["objective_after"] = _hud("Panel/Margin/VBox/Objective")
@@ -329,6 +358,77 @@ func _fight(scout: Node3D, leg: Dictionary) -> bool:
 	await _capture("fight_after")
 	return won
 
+# --- defeat and respawn -------------------------------------------------------
+
+func _die_and_reload(scout: Node3D, leg: Dictionary) -> bool:
+	# Unarmed, so the only way through is the Scout's own AI doing its job.
+	Input.action_release("move_forward")
+	var saved := _read_save()
+	var start_tick := _tick
+	while not _is_over() and _tick - start_tick < 60 * 60:
+		if is_instance_valid(scout):
+			await _aim_at(scout, 4)
+		await _ticks(6)
+	var death := {
+		"seconds_to_die": snappedf(float(_tick - start_tick) / Engine.physics_ticks_per_second, 0.01),
+		"defeat_screen": _defeat_reached(),
+		"saved_state": saved,
+	}
+	_defeat_report = death
+	leg["defeat"] = death
+	if not _defeat_reached():
+		_findings.append("death did not reach the defeat screen")
+		return false
+	await _ticks(90)   # let the reveal animation finish, as a player would wait
+	await _capture("defeat_screen")
+
+	# "Reload Last Save" with a real mouse click at the button's centre.
+	var button := current_scene.get_node_or_null("Menu/ReloadButton") as Button
+	if button == null:
+		_findings.append("defeat screen has no Reload button")
+		return false
+	var at := button.get_global_rect().get_center()
+	death["reload_button_at"] = "(%.0f, %.0f)" % [at.x, at.y]
+	for pressed in [true, false]:
+		var click := InputEventMouseButton.new()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = pressed
+		click.position = at
+		click.global_position = at
+		Input.parse_input_event(click)
+		Input.flush_buffered_events()
+		await process_frame
+	for i in 240:
+		if current_scene != null and str(current_scene.scene_file_path).ends_with("Main.tscn"):
+			break
+		await process_frame
+	if current_scene == null or not str(current_scene.scene_file_path).ends_with("Main.tscn"):
+		_findings.append("Reload Last Save did not return to the game scene")
+		return false
+
+	# Adopt the reloaded scene and let the checkpoint restore run.
+	_scene = current_scene
+	_player = _scene.get_node_or_null("Player") as CharacterBody3D
+	await _ticks(30)
+	var save_point := _scene.get_node_or_null("Placeholder_SavePoint") as Node3D
+	var respawn := {
+		"player": _fmt(_player.global_position),
+		"distance_to_save_point_m": snappedf(_flat(save_point.global_position - _player.global_position).length(), 0.01) if save_point != null else -1.0,
+		"health": _hud("Panel/Margin/VBox/Health"),
+		"resources": _hud("Panel/Margin/VBox/Resources"),
+		"objective": _hud("Panel/Margin/VBox/Objective"),
+	}
+	death["after_reload"] = respawn
+	await _capture("after_reload")
+	return true
+
+func _read_save() -> Dictionary:
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	return parsed if parsed is Dictionary else {}
+
 # --- controls onboarding ------------------------------------------------------
 
 func _look_around() -> void:
@@ -339,11 +439,20 @@ func _look_around() -> void:
 		_inject_mouse(Vector2(6.0, 0.0))
 		await _ticks(1)
 
+var _jump := {}
+
 func _jump_once() -> void:
+	# README section 30 lists "the player can jump", and nothing had measured it:
+	# the suite only checks the action is mapped and the parameters are valid.
+	var floor_y := _player.global_position.y
+	var peak := floor_y
 	Input.action_press("jump")
 	await _ticks(3)
 	Input.action_release("jump")
-	await _ticks(50)
+	for i in 60:
+		await _ticks(1)
+		peak = maxf(peak, _player.global_position.y)
+	_jump = {"rise_m": snappedf(peak - floor_y, 0.01), "landed": _player.is_on_floor()}
 
 # --- end of run -------------------------------------------------------------
 
@@ -363,12 +472,14 @@ func _finish() -> void:
 		mean += v
 	mean = mean / maxf(n, 1)
 	var report := {
-		"result": "victory" if _victory_reached() else ("defeat" if _defeat_reached() else "incomplete"),
+		"result": ("respawned" if _defeat_report.get("after_reload") else "defeat_not_recovered") if _defeat_mode else ("victory" if _victory_reached() else ("defeat" if _defeat_reached() else "incomplete")),
+		"defeat": _defeat_report,
 		"end_scene": "" if current_scene == null else str(current_scene.scene_file_path),
 		"game_seconds": snappedf(float(_tick) / Engine.physics_ticks_per_second, 0.01),
 		"legs_walked": _legs_report.filter(func(l): return l.get("result") == "walked").size(),
 		"legs_total": _legs_report.size(),
 		"damage_events": _damage_events,
+		"jump": _jump,
 		"onboarding_prompts_seen": _onboarding_log,
 		"findings": _findings,
 		"captures": _capture_index,
@@ -386,7 +497,7 @@ func _finish() -> void:
 		file.store_string(JSON.stringify(report, "  "))
 	print("PLAYTHROUGH_REPORT %s" % JSON.stringify(report))
 	_restore_save()
-	quit(0 if report["result"] == "victory" and _findings.is_empty() else 1)
+	quit(0 if report["result"] in ["victory", "respawned"] and _findings.is_empty() else 1)
 
 func _victory_reached() -> bool:
 	return current_scene != null and str(current_scene.scene_file_path).contains("VictoryScreen")

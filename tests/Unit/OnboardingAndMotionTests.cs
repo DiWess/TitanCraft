@@ -109,6 +109,29 @@ public sealed class OnboardingAndMotionTests
         var state = new OnboardingTutorialState();
         state.ReportResourceCollected();
 
+        AssertThat(state.CurrentStep).IsEqual(OnboardingStep.Collect);
+    }
+
+    [TestCase]
+    public void OneResourceDoesNotSendThePlayerToCraft()
+    {
+        // Regression: the first pickup used to jump straight to "build the arm"
+        // while the player held 1 of 3 resources.
+        var state = new OnboardingTutorialState();
+        state.ReportResourceCollected();
+        state.ReportResourceCollected();
+
+        AssertThat(state.CurrentStep).IsEqual(OnboardingStep.Collect);
+        AssertThat(state.CurrentPrompt).Contains("Metal");
+    }
+
+    [TestCase]
+    public void AFullRecipeAdvancesToCraft()
+    {
+        var state = new OnboardingTutorialState();
+        state.ReportResourceCollected();
+        state.ReportCraftingResourcesReady();
+
         AssertThat(state.CurrentStep).IsEqual(OnboardingStep.Craft);
     }
 

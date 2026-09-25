@@ -154,13 +154,18 @@ public partial class IntegrationTestRunner : Node
         Require(prompt.Visible && prompt.Text.Length > 0,
             "Onboarding prompt should be visible at the start of a run");
 
-        // Collecting a resource proves the movement steps and jumps ahead.
+        // Collecting a resource proves the movement steps and jumps ahead -- to
+        // Collect, not Craft: one resource is not a recipe.
         player.Inventory.AddResources(metal: 1, biomass: 0, electronicComponents: 0);
         await Frames(2);
-        Require(binder.OnboardingStep == OnboardingStep.Craft,
-            "Collecting a resource should advance onboarding to the craft step");
+        Require(binder.OnboardingStep == OnboardingStep.Collect,
+            "One resource should advance onboarding to the collect step, not craft");
 
         player.Inventory.AddResources(metal: 9, biomass: 3, electronicComponents: 2);
+        await Frames(2);
+        Require(binder.OnboardingStep == OnboardingStep.Craft,
+            "A complete recipe should advance onboarding to the craft step");
+
         player.Inventory.MarkMechanicalArmBuilt();
         await Frames(2);
         Require(binder.OnboardingStep == OnboardingStep.Attack,

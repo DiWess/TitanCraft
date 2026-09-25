@@ -170,6 +170,7 @@ player hears.
 |---|---|---|---|
 | 2026-09-25 | A — HUD: overlap removed, player-facing prompts, startup hint reworded (panel not yet shrunk) | `docs/production/playtests/2026-09-25-journey.md`, addendum | `PASS` |
 | 2026-09-25 | A — ambience authored, looped, started and layered by place; audible at every walked leg | `docs/audio/ambience-pass-2026-09-25.md` | `PASS` |
+| 2026-09-25 | A — footsteps and Scout alert/attack/hurt authored; close-range cues no longer clamped at `max_db` | `docs/audio/cue-pass-2026-09-25.md` | `PASS` |
 
-Still open in A: the remaining 25 silent files (cue audio), the in-world ending shot, lime-render
+Still open in A: the remaining 19 silent files (weapon, pickups, UI, save, state), the in-world ending shot, lime-render
 clipping, eye-level route readability, a smaller HUD panel, and human playtest note #1.

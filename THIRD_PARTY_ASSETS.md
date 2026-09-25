@@ -111,6 +111,27 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
 | `assets/audio/sources/ambient/volcanic_rumble_loop_01.wav` | `0f71d5ec782c691ba0703b043ba0097aa8f2dcbf289e0d7c83a556005791599c` |
 | `assets/audio/sources/ambient/machinery_hum_loop_01.wav` | `262988f2978b2d94e3878ff64fe2c799d07e5adbcec0a059ea898b1f2f3112fe` |
 
+## Mwezi Quarter footstep and Scout cues — project-authored
+
+- Date: 2026-09-25
+- Creator: Claude Code (Audio Director lane) for TitanCraft
+- License: Project-owned; no third-party source material, samples or recordings used
+- Generation method: deterministic Python synthesis (resonant partials, filtered noise, pitch
+  sweeps, fixed seeds) in `tools/audio/synthesize_cues.py`; `tools/test_audio_sources.py`
+  checks on every test run that the committed files match it
+- Replaces: silent placeholders previously credited to Freesound in
+  `docs/audio/audio-provenance.md` Categories 2 and 4
+- Committed files (32 kHz mono 16-bit one-shots):
+
+| File | SHA-256 |
+|---|---|
+| `assets/audio/sources/footsteps/metal_walk_01.wav` | `f67cb8186a5b4f9bb5f7ca17cb51e1c27c47c289670e552d37710a0229fe8051` |
+| `assets/audio/sources/footsteps/rock_walk_01.wav` | `8b29eee87e450d229d498aed6d190f7fac50fb9401fa316f3e8256ec05d1a015` |
+| `assets/audio/sources/footsteps/ash_walk_01.wav` | `61b854a4efe02a34e577ad4c650f992dd06cad0ef5defa7229438dedf843f4e2` |
+| `assets/audio/sources/enemy/alert_01.wav` | `92c2e7c3976307c955d947d21c0c4e513230bf44eb337ce7f72e6f2583958dc8` |
+| `assets/audio/sources/enemy/attack_01.wav` | `26b08ab118e4cf62d52f71e1e0900628e591c529efd0168f1c232b64cbcdcf2e` |
+| `assets/audio/sources/enemy/hurt_01.wav` | `527b30a9d3125778c214000ff7e2cb8b4f1735f3f8ef5e54e806c8b3f94cd1e0` |
+
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 
 Placeholder provenance records for the final Crash Site art pass assets expected under `assets/models/` and `assets/textures/`. These files are not committed in this pass; before distribution, replace each TBD with the exact creator, source URL, license file, filename, and checksum. Intended scope: Terrain PBR texture set, Sci-Fi Workbench GLB, Beacon GLB, and Crashed Ship GLB.

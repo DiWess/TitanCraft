@@ -84,6 +84,7 @@ public partial class IntegrationTestRunner : Node
             await TestJumpAndCamera();
             await TestEnvironmentMotion();
             await TestAmbienceLoopsPlay();
+            TestCloseCuesKeepTheirVolume();
             await TestOnboardingTutorialJourney();
             await TestHudPromptsDoNotOverlapThePanel();
             await DrainAudioPlaybacks();
@@ -174,6 +175,38 @@ public partial class IntegrationTestRunner : Node
 
         main.QueueFree();
         await Frames(2);
+    }
+
+    /// <summary>
+    /// An AudioStreamPlayer3D clamps volume_db plus distance gain at max_db.
+    /// With the default 10 m unit size, a footstep 1 m from the camera gains
+    /// +20 dB and every step hit the clamp, so volume_db did nothing -- found
+    /// when the silent footstep files were replaced. Each close-range cue must
+    /// stay under the clamp at the distance it is normally heard from.
+    /// </summary>
+    private static void TestCloseCuesKeepTheirVolume()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        var cues = new (string Path, float HeardAtMetres)[]
+        {
+            ("AudioLayer_Player/Footsteps_Metal", 1.0f),
+            ("AudioLayer_Player/Footsteps_Rock", 1.0f),
+            ("AudioLayer_Player/Footsteps_Ash", 1.0f),
+            ("AudioLayer_Enemy/Scout_Attack", 2.0f),
+            ("AudioLayer_Enemy/Scout_Hurt", 2.0f),
+        };
+        foreach (var (path, distance) in cues)
+        {
+            var cue = main.GetNodeOrNull<AudioStreamPlayer3D>(path);
+            Require(cue is not null, $"{path} is missing");
+            Require(cue!.AttenuationModel == AudioStreamPlayer3D.AttenuationModelEnum.InverseDistance,
+                $"{path} changed attenuation model; update this check's formula");
+            var level = cue.VolumeDb + 20.0f * Mathf.Log(cue.UnitSize / distance) / Mathf.Log(10.0f);
+            Require(level < cue.MaxDb,
+                $"{path} reaches max_db at {distance} m ({level:0.0} dB), so its volume_db has no effect");
+        }
+
+        main.Free();
     }
 
     private static void RequireLoopingAmbience(string name, AudioStream? stream, bool playing)

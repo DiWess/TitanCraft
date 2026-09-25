@@ -8,7 +8,7 @@ recordings. This test is a ratchet on that finding:
 * a silent file that is not on KNOWN_SILENT fails -- no new placeholders;
 * a file on KNOWN_SILENT that now makes sound fails -- remove it from the
   list, so the list only ever shrinks;
-* the project-authored ambience must match its generator byte for byte, so
+* project-authored audio must match its generator (within two LSBs), so
   the committed files are exactly what the source record describes.
 
 Usage: python3 tools/test_audio_sources.py
@@ -25,13 +25,7 @@ SOURCES = Path("assets/audio/sources")
 
 # Silent placeholders still awaiting replacement (workstream A, audio).
 KNOWN_SILENT = {
-    "enemy/alert_01.wav",
-    "enemy/attack_01.wav",
     "enemy/death_01.wav",
-    "enemy/hurt_01.wav",
-    "footsteps/ash_walk_01.wav",
-    "footsteps/metal_walk_01.wav",
-    "footsteps/rock_walk_01.wav",
     "pickup/generic_01.wav",
     "pickup/glass_01.wav",
     "pickup/metal_01.wav",
@@ -51,6 +45,9 @@ KNOWN_SILENT = {
     "weapon/ready_tone_01.wav",
     "weapon/swing_01.wav",
 }
+
+# Project-authored audio: the committed files must be what these produce.
+GENERATORS = ("tools/audio/synthesize_ambience.py", "tools/audio/synthesize_cues.py")
 
 # -60 dBFS: anything quieter at its loudest sample is not a usable cue.
 SILENCE_PEAK = 32
@@ -79,12 +76,11 @@ def main() -> int:
     for name in sorted(KNOWN_SILENT - seen):
         failures.append(f"{name} is listed as silent but does not exist: remove it from KNOWN_SILENT")
 
-    generator = subprocess.run(
-        [sys.executable, "tools/audio/synthesize_ambience.py", "--check"],
-        capture_output=True, text=True, check=False)
-    if generator.returncode != 0:
-        failures.append("ambience does not match tools/audio/synthesize_ambience.py: "
-                        + generator.stderr.strip())
+    for script in GENERATORS:
+        generator = subprocess.run([sys.executable, script, "--check"],
+                                   capture_output=True, text=True, check=False)
+        if generator.returncode != 0:
+            failures.append(f"files do not match {script}: " + generator.stderr.strip())
 
     for failure in failures:
         print(f"FAIL {failure}", file=sys.stderr)

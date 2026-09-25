@@ -119,6 +119,23 @@ var _ambience_sum := {}
 var _ambience_samples := 0
 const AMBIENCE_ARRIVAL_TICKS := 60
 var _ambience_recent := {}
+# Cue probe: one-shot cues routed to their own buses, each with a capture
+# effect so every mixed sample is inspected. Polling the bus peak once per frame
+# is not enough: the container renders at a few frames per wall-clock second and
+# the peak only reflects the latest mix buffer, so a 0.3 s cue is mostly missed.
+# An onset is a 10 ms block above the audible level after a block below it.
+const CUE_BLOCK := 441
+const CUE_CAPTURE_SECONDS := 10.0
+const CUE_NODES := [
+	"AudioLayer_Player/Footsteps_Metal",
+	"AudioLayer_Player/Footsteps_Rock",
+	"AudioLayer_Player/Footsteps_Ash",
+	"AudioLayer_Enemy/Scout_Alert",
+	"AudioLayer_Enemy/Scout_Attack",
+	"AudioLayer_Enemy/Scout_Hurt",
+]
+var _cues := {}
+var _cue_state := {}
 
 func _initialize() -> void:
 	root.size = Vector2i(WIDTH, HEIGHT)
@@ -156,6 +173,7 @@ func _run() -> void:
 		return
 
 	_route_ambience()
+	_route_cues()
 
 	# Let the scene settle and the intro title card play out exactly as a player
 	# sees it; it is a timed fade, not a blocking screen.
@@ -544,6 +562,7 @@ func _finish() -> void:
 		"legs_total": _legs_report.size(),
 		"damage_events": _damage_events,
 		"ambience_buses": _ambience_buses,
+		"cues_heard": _cues,
 		"jump": _jump,
 		"onboarding_prompts_seen": _onboarding_log,
 		"findings": _findings,
@@ -557,6 +576,12 @@ func _finish() -> void:
 		},
 		"legs": _legs_report,
 	}
+	var steps := 0
+	for node_path in CUE_NODES:
+		if node_path.contains("Footsteps") and _cues.has(node_path.get_file()):
+			steps += _cues[node_path.get_file()]["onsets"]
+	if steps == 0:
+		_findings.append("no footstep was heard while walking")
 	var file := FileAccess.open("%s/playthrough_report.json" % OUTPUT_DIR, FileAccess.WRITE)
 	if file != null:
 		file.store_string(JSON.stringify(report, "  "))
@@ -623,6 +648,49 @@ func _take_ambience_levels() -> Dictionary:
 	_ambience_samples = 0
 	return {"leg": leg, "arrival": arrival}
 
+func _route_cues() -> void:
+	for node_path in CUE_NODES:
+		var player := _scene.get_node_or_null(node_path)
+		if player == null:
+			_findings.append("cue node %s missing" % node_path)
+			continue
+		var bus_name := "Probe_%s" % player.name
+		AudioServer.add_bus()
+		var index := AudioServer.bus_count - 1
+		AudioServer.set_bus_name(index, bus_name)
+		AudioServer.set_bus_send(index, "Master")
+		var capture := AudioEffectCapture.new()
+		capture.buffer_length = CUE_CAPTURE_SECONDS
+		AudioServer.add_bus_effect(index, capture)
+		player.bus = bus_name
+		_cues[str(player.name)] = {"onsets": 0, "max_db": AMBIENCE_FLOOR_DB}
+		_cue_state[str(player.name)] = {"capture": capture, "above": false}
+
+func _sample_cues() -> void:
+	var threshold := db_to_linear(AMBIENCE_AUDIBLE_DB)
+	for cue_name in _cues:
+		var state: Dictionary = _cue_state[cue_name]
+		var capture: AudioEffectCapture = state["capture"]
+		var available := capture.get_frames_available()
+		if available <= 0:
+			continue
+		var buffer := capture.get_buffer(available)
+		var cue: Dictionary = _cues[cue_name]
+		var loudest := 0.0
+		var start := 0
+		while start < buffer.size():
+			var block_peak := 0.0
+			for i in range(start, mini(start + CUE_BLOCK, buffer.size())):
+				block_peak = maxf(block_peak, maxf(absf(buffer[i].x), absf(buffer[i].y)))
+			var above := block_peak > threshold
+			if above and not state["above"]:
+				cue["onsets"] += 1
+			state["above"] = above
+			loudest = maxf(loudest, block_peak)
+			start += CUE_BLOCK
+		if loudest > 0.0:
+			cue["max_db"] = snappedf(maxf(cue["max_db"], linear_to_db(loudest)), 0.1)
+
 # --- helpers ----------------------------------------------------------------
 
 func _ticks(count: int) -> void:
@@ -635,6 +703,7 @@ func _observe() -> void:
 	if _is_over():
 		return
 	_sample_ambience()
+	_sample_cues()
 	var prompt := _hud("OnboardingPrompt")
 	if prompt != _last_onboarding:
 		_last_onboarding = prompt

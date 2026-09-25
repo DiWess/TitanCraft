@@ -18,6 +18,12 @@
 > the in-game evidence in `docs/audio/ambience-pass-2026-09-25.md`. The Category 1 entries below
 > describe files that no longer exist in this form. For the live count of files still silent,
 > run `python3 tools/test_audio_sources.py` (25 of 29 when this note was written).
+>
+> **Update, 2026-09-25 — footsteps and three Scout cues replaced.** `footsteps/metal_walk_01`,
+> `rock_walk_01`, `ash_walk_01` and `enemy/alert_01`, `attack_01`, `hurt_01` are now
+> project-authored by `tools/audio/synthesize_cues.py` (record in `THIRD_PARTY_ASSETS.md`,
+> evidence in `docs/audio/cue-pass-2026-09-25.md`). Their entries below no longer describe the
+> files. 19 of 29 remain silent.
 
 ## Sourced Audio Files with Full Attribution
 
@@ -106,6 +112,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 2: FOOTSTEPS AUDIO
+
+> Superseded 2026-09-25 for the files named in the note at the top of this document.
 
 ### 2.1 Metal Footsteps - Walk (Single Step)
 
@@ -300,6 +308,8 @@ This document provides complete provenance for all sourced audio files. Each ent
 ---
 
 ## Category 4: SCOUT ENEMY AUDIO
+
+> Superseded 2026-09-25 for the files named in the note at the top of this document.
 
 ### 4.1 Alert/Detection Screech
 

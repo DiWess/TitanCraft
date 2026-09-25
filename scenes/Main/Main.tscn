@@ -606,18 +606,21 @@ metadata/positioning = "3D positional audio from player origin"
 [node name="Footsteps_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("83_footsteps_metal")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 / footsteps_metal_walk_01.wav"
-metadata/notes = "Single metal footstep, triggered on grounded movement intervals (0.4s walk, 0.3s sprint)"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Heel strike on plate with a short ring; one of three surfaces the controller rotates through each step"
 [node name="Footsteps_Rock" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("84_footsteps_rock")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_rock_crunch_01.wav)"
-metadata/notes = "Rock/basalt footstep, terrain-specific trigger"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Heel-toe on basalt with loose grit"
 [node name="Footsteps_Ash" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("85_footsteps_ash")
 volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with footsteps_ash_shuffle_01.wav)"
-metadata/notes = "Volcanic ash shuffle footstep, soft terrain variant"
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Soft compressed-ash shuffle"
 [node name="Weapon_Swing" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
 stream = ExtResource("86_weapon_swing")
 volume_db = -6.0
@@ -638,19 +641,22 @@ metadata/category = "Scout enemy state and behavior audio"
 metadata/positioning = "3D positional audio from scout position"
 [node name="Scout_Alert" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("89_enemy_alert")
-volume_db = -7.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_alert_01.wav)"
-metadata/notes = "Scout detection alert, triggered when player enters 12m detection range"
+volume_db = -2.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Two rising warbled chirps when the Scout detects the player"
 [node name="Scout_Attack" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("90_enemy_attack")
-volume_db = -6.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_attack_strike_01.wav)"
-metadata/notes = "Scout melee attack strike, triggered when entering 2m attack range"
+volume_db = -9.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Falling screech into a hard strike as the Scout attacks"
 [node name="Scout_Hurt" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("91_enemy_hurt")
-volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_hurt_01.wav)"
-metadata/notes = "Scout damage feedback, played when HP reduced; variable intensity"
+volume_db = -10.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Short rough squeal, pitch falling, when the Scout takes damage"
 [node name="Scout_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("92_enemy_death")
 volume_db = -4.0

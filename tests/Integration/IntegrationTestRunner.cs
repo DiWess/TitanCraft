@@ -677,10 +677,15 @@ public partial class IntegrationTestRunner : Node
         screen.QueueFree();
         await Frames(2);
 
+        LocalSaveGameStore.DeleteSave();
         var plain = LoadScene<Control>("res://scenes/UI/VictoryScreen.tscn");
         AddChild(plain);
         await Frames(2);
         Require(!plain.GetNode<TextureRect>("Snapshot").Visible, "The victory screen showed a frame when no ending was captured");
+        // A player can win without ever using the save point; the victory
+        // screen must still congratulate them, not talk about checkpoints.
+        Require(!plain.GetNode<Label>("Menu/Summary").Text.Contains("checkpoint"),
+            "The victory screen told a winning player that no checkpoint save was found");
         plain.QueueFree();
         await Frames(2);
     }

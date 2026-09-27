@@ -20,7 +20,11 @@ public partial class EndScreen : Control
     {
         ShowEndingSnapshot();
 
-        if (LocalSaveGameStore.SaveExists(SavePath))
+        // Only a screen that offers "Reload Last Save" (defeat) has anything to
+        // say about a missing checkpoint. The victory screen has no reload, and
+        // telling a player who just won to "start a new run" was wrong.
+        var offersReload = GetNodeOrNull<Button>("Menu/ReloadButton") is not null;
+        if (!offersReload || LocalSaveGameStore.SaveExists(SavePath))
         {
             PlayReveal();
             return;

@@ -33,11 +33,12 @@ public sealed class MechanicalArmRecipe
 
         if (inventory.IsMechanicalArmBuilt)
         {
-            return "Mechanical Arm Mk I: ONLINE | Left click to attack";
+            return "Mk I ONLINE · Left click to attack";
         }
 
-        return $"Mechanical Arm Mk I: Metal {ClampToCost(inventory.Metal, MetalCost)}/{MetalCost} | "
-            + $"Biomass {ClampToCost(inventory.Biomass, BiomassCost)}/{BiomassCost} | "
+        // Short enough to sit on one line of the HUD panel at 1280x720.
+        return $"Mk I: Metal {ClampToCost(inventory.Metal, MetalCost)}/{MetalCost} · "
+            + $"Biomass {ClampToCost(inventory.Biomass, BiomassCost)}/{BiomassCost} · "
             + $"Electronics {ClampToCost(inventory.ElectronicComponents, ElectronicComponentsCost)}/{ElectronicComponentsCost}";
     }
 

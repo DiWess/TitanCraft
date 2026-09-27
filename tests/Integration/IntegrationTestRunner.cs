@@ -69,7 +69,7 @@ public partial class IntegrationTestRunner : Node
             await TestGalaxabrainScoutDeathPickup();
             await TestUiScenes();
             await TestMainMenuContinueState();
-            await TestHudStartTutorial();
+            await TestPauseMenuListsControls();
             await TestHudBinding();
             await TestEndScreenNavigation();
             await TestVictoryTransitionWithSceneChangesEnabled();
@@ -84,6 +84,7 @@ public partial class IntegrationTestRunner : Node
             await TestPhysicsAndMovement();
             await TestJumpAndCamera();
             await TestEnvironmentMotion();
+            await TestObjectivesHaveThresholdLights();
             await TestAmbienceLoopsPlay();
             TestCloseCuesKeepTheirVolume();
             await TestPauseMenuAudioPlaysWhilePaused();
@@ -136,6 +137,27 @@ public partial class IntegrationTestRunner : Node
         Require(phases.Distinct().Count() > 1,
             "All district motion props started at the same phase");
 
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    /// <summary>
+    /// The route is read from the street, not only the HUD: every objective
+    /// arrival sits in a warm pool of light (workstream A, route readability).
+    /// </summary>
+    private async System.Threading.Tasks.Task TestObjectivesHaveThresholdLights()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+        var lights = main.GetNode<Node3D>("MweziQuarterDistrict/RouteReading").GetChildren().OfType<OmniLight3D>().ToList();
+        foreach (var objective in new[] { "ResourceDrop_MetalPickup", "ResourceDrop_BiomassPickup", "ResourceDrop_ElectronicsPickup",
+                     "Placeholder_Workbench", "Placeholder_GalaxabrainScout", "Placeholder_SavePoint", "Placeholder_Beacon" })
+        {
+            var at = main.GetNode<Node3D>(objective).GlobalPosition;
+            Require(lights.Any(light => HorizontalDistance(light.GlobalPosition, at) < 1.0f && light.OmniRange >= 4.0f),
+                $"{objective} has no threshold light over its arrival");
+        }
         main.QueueFree();
         await Frames(2);
     }
@@ -528,21 +550,26 @@ public partial class IntegrationTestRunner : Node
 
 
 
-    private async System.Threading.Tasks.Task TestHudStartTutorial()
+    /// <summary>
+    /// The controls reference lives in the pause menu; the HUD teaches controls
+    /// one step at a time through the onboarding prompt, and its panel no
+    /// longer carries a permanent controls line (workstream A, HUD pass).
+    /// </summary>
+    private async System.Threading.Tasks.Task TestPauseMenuListsControls()
     {
+        var pause = LoadScene<CanvasLayer>("res://scenes/UI/PauseMenu.tscn");
+        AddChild(pause);
+        await Frames(2);
+        var controls = pause.GetNode<Label>("Panel/Menu/Controls").Text;
+        foreach (var expected in new[] { "WASD", "ZQSD", "Mouse", "Space", "E —", "workbench", "Left click", "Mk I", "Esc" })
+            Require(controls.Contains(expected), $"Pause menu controls reference is missing '{expected}'");
+        pause.QueueFree();
+        await Frames(2);
+
         var hud = LoadScene<CrashSiteHud>("res://scenes/UI/HUD.tscn");
         AddChild(hud);
         await Frames(2);
-        var startTutorial = hud.GetNode<Label>("Panel/Margin/VBox/StartTutorial");
-        Require(startTutorial.Visible, "HUD start tutorial should start visible");
-        Require(startTutorial.Text.Contains("ZQSD/WASD"), "HUD start tutorial missing movement controls");
-        Require(startTutorial.Text.Contains("Mouse"), "HUD start tutorial missing mouse look control");
-        Require(startTutorial.Text.Contains("Space"), "HUD start tutorial missing jump control");
-        Require(startTutorial.Text.Contains("E"), "HUD start tutorial missing interact control");
-        Require(startTutorial.Text.Contains("craft at workbench"), "HUD start tutorial missing craft guidance");
-        Require(startTutorial.Text.Contains("Left click"), "HUD start tutorial missing attack control");
-        Require(startTutorial.Text.Contains("Mk I"), "HUD start tutorial missing built-arm attack gating");
-        Require(startTutorial.Text.Contains("Esc"), "HUD start tutorial missing pause control");
+        Require(hud.GetNodeOrNull("Panel/Margin/VBox/StartTutorial") is null, "The HUD panel still carries a permanent controls line");
         hud.QueueFree();
         await Frames(2);
     }
@@ -571,7 +598,6 @@ public partial class IntegrationTestRunner : Node
         Require(hud.GetNode<Label>("Panel/Margin/VBox/MechanicalArmState").Text.Contains("Left click"), "HUD arm state did not explain attack input after crafting");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text.Contains("Mechanical Arm Mk I"), "HUD objective did not update from mission state");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/InteractionPrompt").Visible == false, "HUD interaction prompt should start hidden without a target");
-        Require(hud.GetNode<Label>("Panel/Margin/VBox/StartTutorial").Visible == false, "HUD start tutorial should hide after mission progression");
         main.QueueFree();
         await Frames(2);
     }
@@ -672,6 +698,12 @@ public partial class IntegrationTestRunner : Node
         var panel = hud.GetNode<Control>("Panel");
         var onboarding = hud.GetNode<Label>("OnboardingPrompt");
         var feedback = hud.GetNode<Label>("ActionFeedback");
+
+        // Panel budget: 488x178 before the HUD pass, 400x150 after. A line that
+        // does not wrap widens a PanelContainer silently, which is how the arm
+        // progress line once held it at 517 px.
+        Require(panel.Size.X <= 400.5f && panel.Size.Y <= 160f,
+            $"HUD panel grew past its 400x160 budget: {panel.Size}");
 
         // The longest onboarding line, so the widest the prompt ever gets.
         var longest = new OnboardingTutorialState();
@@ -968,7 +1000,7 @@ public partial class IntegrationTestRunner : Node
         player.GetNode<Node3D>("Head").LookAt(component.GlobalPosition, Vector3.Up);
         Require(player.TryInteract(), "Interaction raycast could not reach the revealed component pickup");
         Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
-        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Galaxabrain Component: Recovered"), "HUD resource dashboard did not count the recovered Galaxabrain component");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Component: Recovered"), "HUD resource dashboard did not count the recovered Galaxabrain component");
         Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
         Require(!player.Mission.IsVictory, "Component recovery skipped required beacon activation");
         Require(lastActionFeedback == FirstPersonController.GalaxabrainComponentRecoveryFeedback, "Component recovery did not emit beacon activation action feedback");

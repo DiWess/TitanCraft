@@ -362,9 +362,13 @@ ambient_light_color = Color(0.298, 0.376, 0.51, 1)
 ambient_light_sky_contribution = 0.85
 ambient_light_energy = 2.1
 reflected_light_source = 2
+; White point 4.0 gives the lime render headroom: at 1.0 ACES mapped every
+; value above 1.0 to pure white, and sunlit walls lost their plaster detail
+; (0.99% of eye-level pixels clipped). Exposure rises to hold mean brightness
+; (98.0 -> 99.8 luma); clipping falls to 0.18% (docs/production/workstream-a-visual-2026-09-27.md).
 tonemap_mode = 3
-tonemap_exposure = 1.22
-tonemap_white = 1.0
+tonemap_exposure = 1.45
+tonemap_white = 4.0
 ; Contact shadows where stone meets stone and ground; without this an arcade
 ; pier and the wall behind it merge into one silhouette.
 ssao_enabled = true

@@ -173,6 +173,7 @@ player hears.
 | 2026-09-25 | A — footsteps and Scout alert/attack/hurt authored; close-range cues no longer clamped at `max_db` | `docs/audio/cue-pass-2026-09-25.md` | `PASS` |
 | 2026-09-25 | A — weapon swing, impact and ready tone authored and unclamped | `docs/audio/cue-pass-2026-09-25.md`, weapon addendum | `PASS` |
 | 2026-09-27 | A — no silent audio remains: UI, state, save, per-type pickups, Scout death and mission-complete swell authored or wired; pause-menu audio no longer paused with the tree | `docs/audio/audio-completion-2026-09-27.md` | `PASS` |
+| 2026-09-27 | A — in-world ending shot and victory screen over its last frame; HUD panel −31 % (controls reference moved to the pause menu); lime clipping 0.76 % → 0.18 %; lit thresholds over every objective | `docs/production/workstream-a-visual-2026-09-27.md` | `PASS` |
 
-Still open in A: the in-world ending shot, lime-render
-clipping, eye-level route readability, a smaller HUD panel, and human playtest note #1.
+Still open in A: human playtest note #1 — the exit's remaining condition. Ground wear along
+the routes moved to workstream D (see the 2026-09-27 record).

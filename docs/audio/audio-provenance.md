@@ -25,6 +25,12 @@
 > evidence in `docs/audio/cue-pass-2026-09-25.md`). Their entries below no longer describe the
 > files. The weapon cues (`weapon/swing_01`, `impact_01`, `ready_tone_01`) followed the same day.
 > 16 of 29 remain silent.
+>
+> **Update, 2026-09-27 — no silent files remain.** The remaining UI, state, save, pickup and
+> Scout-death files are project-authored (record in `THIRD_PARTY_ASSETS.md`); `state/victory_01`
+> and `save/save_progress_01` had no use and were deleted. Every entry in this document now
+> describes a file that no longer exists in the form described. Evidence:
+> `docs/audio/audio-completion-2026-09-27.md`.
 
 ## Sourced Audio Files with Full Attribution
 

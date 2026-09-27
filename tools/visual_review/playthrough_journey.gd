@@ -136,6 +136,14 @@ const CUE_NODES := [
 	"AudioLayer_Player/Weapon_Swing",
 	"AudioLayer_Player/Weapon_Impact",
 	"AudioLayer_Player/Weapon_Ready",
+	"AudioLayer_Enemy/Scout_Death",
+	"AudioLayer_State/State_Objective",
+	"AudioLayer_State/State_Mission_Complete",
+	"AudioLayer_UI/UI_Craft_Complete",
+	"AudioLayer_Save/Save_Complete",
+	"ResourceDrop_MetalPickup/AudioPlayers/SpatialPickupPlayer",
+	"ResourceDrop_BiomassPickup/AudioPlayers/SpatialPickupPlayer",
+	"ResourceDrop_ElectronicsPickup/AudioPlayers/SpatialPickupPlayer",
 ]
 var _cues := {}
 var _cue_state := {}
@@ -459,7 +467,16 @@ func _die_and_reload(scout: Node3D, leg: Dictionary) -> bool:
 	if not _defeat_reached():
 		_findings.append("death did not reach the defeat screen")
 		return false
-	await _ticks(90)   # let the reveal animation finish, as a player would wait
+	# The defeat screen autoplays its own sound; route it so it is measured
+	# too, and keep sampling while the reveal plays (_observe stops once the
+	# game scene has left).
+	var defeat_audio := current_scene.get_node_or_null("DefeatAudio")
+	if defeat_audio != null:
+		_route_cue(defeat_audio, "DefeatAudio")
+	for i in 90:   # let the reveal animation finish, as a player would wait
+		await physics_frame
+		_tick += 1
+		_sample_cues()
 	await _capture("defeat_screen")
 
 	# "Reload Last Save" with a real mouse click at the button's centre.
@@ -657,17 +674,25 @@ func _route_cues() -> void:
 		if player == null:
 			_findings.append("cue node %s missing" % node_path)
 			continue
-		var bus_name := "Probe_%s" % player.name
-		AudioServer.add_bus()
-		var index := AudioServer.bus_count - 1
-		AudioServer.set_bus_name(index, bus_name)
-		AudioServer.set_bus_send(index, "Master")
-		var capture := AudioEffectCapture.new()
-		capture.buffer_length = CUE_CAPTURE_SECONDS
-		AudioServer.add_bus_effect(index, capture)
-		player.bus = bus_name
-		_cues[str(player.name)] = {"onsets": 0, "max_db": AMBIENCE_FLOOR_DB}
-		_cue_state[str(player.name)] = {"capture": capture, "above": false}
+		_route_cue(player, _cue_key(node_path))
+
+# Pickup players share a node name, so they are keyed by their pickup.
+func _cue_key(node_path: String) -> String:
+	var leaf := node_path.get_file()
+	return node_path.get_slice("/", 0) if leaf == "SpatialPickupPlayer" else leaf
+
+func _route_cue(player: Node, key: String) -> void:
+	var bus_name := "Probe_%s" % key
+	AudioServer.add_bus()
+	var index := AudioServer.bus_count - 1
+	AudioServer.set_bus_name(index, bus_name)
+	AudioServer.set_bus_send(index, "Master")
+	var capture := AudioEffectCapture.new()
+	capture.buffer_length = CUE_CAPTURE_SECONDS
+	AudioServer.add_bus_effect(index, capture)
+	player.bus = bus_name
+	_cues[key] = {"onsets": 0, "max_db": AMBIENCE_FLOOR_DB}
+	_cue_state[key] = {"capture": capture, "above": false}
 
 func _sample_cues() -> void:
 	var threshold := db_to_linear(AMBIENCE_AUDIBLE_DB)

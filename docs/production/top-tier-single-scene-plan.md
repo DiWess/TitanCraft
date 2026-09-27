@@ -172,6 +172,7 @@ player hears.
 | 2026-09-25 | A — ambience authored, looped, started and layered by place; audible at every walked leg | `docs/audio/ambience-pass-2026-09-25.md` | `PASS` |
 | 2026-09-25 | A — footsteps and Scout alert/attack/hurt authored; close-range cues no longer clamped at `max_db` | `docs/audio/cue-pass-2026-09-25.md` | `PASS` |
 | 2026-09-25 | A — weapon swing, impact and ready tone authored and unclamped | `docs/audio/cue-pass-2026-09-25.md`, weapon addendum | `PASS` |
+| 2026-09-27 | A — no silent audio remains: UI, state, save, per-type pickups, Scout death and mission-complete swell authored or wired; pause-menu audio no longer paused with the tree | `docs/audio/audio-completion-2026-09-27.md` | `PASS` |
 
-Still open in A: the remaining 16 silent files (pickups, UI, save, state, Scout death), the in-world ending shot, lime-render
+Still open in A: the in-world ending shot, lime-render
 clipping, eye-level route readability, a smaller HUD panel, and human playtest note #1.

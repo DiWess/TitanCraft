@@ -85,6 +85,7 @@ public partial class IntegrationTestRunner : Node
             await TestEnvironmentMotion();
             await TestAmbienceLoopsPlay();
             TestCloseCuesKeepTheirVolume();
+            await TestPauseMenuAudioPlaysWhilePaused();
             await TestOnboardingTutorialJourney();
             await TestHudPromptsDoNotOverlapThePanel();
             await DrainAudioPlaybacks();
@@ -197,6 +198,10 @@ public partial class IntegrationTestRunner : Node
             ("AudioLayer_Player/Weapon_Swing", 1.0f),
             ("AudioLayer_Player/Weapon_Impact", 1.0f),
             ("AudioLayer_Player/Weapon_Ready", 1.0f),
+            ("AudioLayer_Enemy/Scout_Death", 2.0f),
+            ("ResourceDrop_MetalPickup/AudioPlayers/SpatialPickupPlayer", 1.8f),
+            ("ResourceDrop_BiomassPickup/AudioPlayers/SpatialPickupPlayer", 1.8f),
+            ("ResourceDrop_ElectronicsPickup/AudioPlayers/SpatialPickupPlayer", 1.8f),
         };
         foreach (var (path, distance) in cues)
         {
@@ -210,6 +215,38 @@ public partial class IntegrationTestRunner : Node
         }
 
         main.Free();
+    }
+
+    /// <summary>
+    /// PauseMenu pauses the tree and then plays its toggle, select and hover
+    /// cues. A pausable AudioStreamPlayer is paused along with the tree, so
+    /// those cues could never be heard -- hidden while their files were silent.
+    /// Every player the pause menu uses must keep processing while paused.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestPauseMenuAudioPlaysWhilePaused()
+    {
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(2);
+
+        var cues = new[] { "AudioLayer_UI/UI_Menu_Toggle", "AudioLayer_UI/UI_Select", "AudioLayer_UI/UI_Hover" };
+        GetTree().Paused = true;
+        try
+        {
+            foreach (var path in cues)
+            {
+                var cue = main.GetNodeOrNull<AudioStreamPlayer>(path);
+                Require(cue is not null, $"{path} is missing");
+                Require(cue!.CanProcess(), $"{path} is paused with the tree, so the pause menu cannot be heard");
+            }
+        }
+        finally
+        {
+            GetTree().Paused = false;
+        }
+
+        main.QueueFree();
+        await Frames(2);
     }
 
     private static void RequireLoopingAmbience(string name, AudioStream? stream, bool playing)

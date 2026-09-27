@@ -73,6 +73,7 @@ public partial class IntegrationTestRunner : Node
             await TestHudBinding();
             await TestEndScreenNavigation();
             await TestVictoryTransitionWithSceneChangesEnabled();
+            await TestVictoryScreenShowsTheEndingFrame();
             TestLocalSaveGameStoreLoadStates();
             await TestSaveLoadFlow();
             await TestFullMissionPlaythrough();
@@ -613,7 +614,48 @@ public partial class IntegrationTestRunner : Node
         Require(main.IsInsideTree(), "Victory hold did not keep the world on screen");
         Require(navigator.IsSceneChangePending, "Victory scene change fired before its hold elapsed");
 
+        // The hold is the in-world ending: the view cuts to the ending camera
+        // on the lit beacon, the HUD steps aside for the letterbox and caption,
+        // and the player no longer takes input.
+        var ending = main.GetNode<VictoryEndingShot>("VictoryEndingShot");
+        Require(ending.IsPlaying, "Victory did not start the in-world ending shot");
+        Require(ending.GetNode<Camera3D>("EndingCamera").Current, "The ending camera is not the current view during the victory hold");
+        Require(!main.GetNode<CanvasLayer>("HUD").Visible, "The HUD stayed up over the ending shot");
+        Require(ending.GetNode<CanvasLayer>("Overlay").Visible, "The ending letterbox and caption did not appear");
+        Require(player.ProcessMode == ProcessModeEnum.Disabled, "The player still takes input during the ending shot");
+        Require(ending.GetNode<Camera3D>("EndingCamera").IsPositionInFrustum(beacon.GlobalPosition + Vector3.Up * 1.5f),
+            "The beacon is not in frame in the ending shot");
+
         main.QueueFree();
+        await Frames(2);
+    }
+
+    /// <summary>
+    /// The victory screen is its own scene, so the ending's last frame is
+    /// handed across; the screen shows it behind a lighter backdrop and
+    /// consumes it, so a later visit does not show a stale frame.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestVictoryScreenShowsTheEndingFrame()
+    {
+        var image = Image.CreateEmpty(8, 8, false, Image.Format.Rgba8);
+        image.Fill(new Color(0.9f, 0.6f, 0.3f));
+        EndingSnapshot.Set(ImageTexture.CreateFromImage(image));
+
+        var screen = LoadScene<Control>("res://scenes/UI/VictoryScreen.tscn");
+        AddChild(screen);
+        await Frames(2);
+        var snapshot = screen.GetNode<TextureRect>("Snapshot");
+        Require(snapshot.Visible && snapshot.Texture is not null, "The victory screen did not show the ending's last frame");
+        Require(screen.GetNode<ColorRect>("Backdrop").Color.A < 0.88f, "The backdrop still hides the ending frame at full darkness");
+        Require(EndingSnapshot.Take() is null, "The victory screen did not consume the ending frame");
+        screen.QueueFree();
+        await Frames(2);
+
+        var plain = LoadScene<Control>("res://scenes/UI/VictoryScreen.tscn");
+        AddChild(plain);
+        await Frames(2);
+        Require(!plain.GetNode<TextureRect>("Snapshot").Visible, "The victory screen showed a frame when no ending was captured");
+        plain.QueueFree();
         await Frames(2);
     }
 

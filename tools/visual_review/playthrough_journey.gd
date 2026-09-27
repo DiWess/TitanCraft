@@ -565,6 +565,11 @@ func _finish() -> void:
 			break
 		await _ticks(1)
 	await _ticks(30)
+	# Let the end screen's reveal finish before filming it: the menu fades in
+	# over ~1 s of process time, and this renderer runs well below real time.
+	# Not game time -- the run is over -- so these frames are not counted.
+	for i in 120:
+		await process_frame
 	await _capture("99_end_screen")
 	var sorted := _frame_usec.duplicate()
 	sorted.sort()

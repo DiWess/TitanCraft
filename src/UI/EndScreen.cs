@@ -11,9 +11,15 @@ public partial class EndScreen : Control
     [Export] public NodePath BackdropPath { get; set; } = "Backdrop";
     [Export] public NodePath MenuPath { get; set; } = "Menu";
     [Export] public float RevealSeconds { get; set; } = 0.7f;
+    [Export] public NodePath SnapshotPath { get; set; } = "Snapshot";
+
+    /// <summary>Backdrop opacity over the ending's last frame: dim enough to read the menu.</summary>
+    [Export] public float SnapshotBackdropAlpha { get; set; } = 0.55f;
 
     public override void _Ready()
     {
+        ShowEndingSnapshot();
+
         if (LocalSaveGameStore.SaveExists(SavePath))
         {
             PlayReveal();
@@ -68,6 +74,23 @@ public partial class EndScreen : Control
             Tween menuTweenTarget = backdropQueued ? tween.Parallel() : tween;
             menuTweenTarget.TweenProperty(menu, "modulate:a", 1.0, RevealSeconds).SetDelay(RevealSeconds * 0.5f);
         }
+    }
+
+    /// <summary>
+    /// The victory screen sits over the last frame of the in-world ending, so
+    /// the game ends on the lit beacon rather than on a flat panel.
+    /// </summary>
+    private void ShowEndingSnapshot()
+    {
+        var snapshot = GetNodeOrNull<TextureRect>(SnapshotPath);
+        if (snapshot is null)
+            return;
+
+        var texture = EndingSnapshot.Take();
+        snapshot.Texture = texture;
+        snapshot.Visible = texture is not null;
+        if (texture is not null && GetNodeOrNull<ColorRect>(BackdropPath) is { } backdrop)
+            backdrop.Color = new Color(backdrop.Color, SnapshotBackdropAlpha);
     }
 
     public void ReturnToMainMenu() => GetTree().ChangeSceneToFile(MainMenuScenePath);

@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/UI/IntroTitleCard.tscn" id="90_intro_title_card"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteHudBinder.cs" id="10_hud_binder"]
 [ext_resource type="Script" path="res://src/UI/CrashSiteEndScreenNavigator.cs" id="11_end_nav"]
+[ext_resource type="Script" path="res://src/UI/VictoryEndingShot.cs" id="117_ending_shot"]
 [ext_resource type="Script" path="res://src/SaveSystem/CrashSiteSaveCoordinator.cs" id="12_save"]
 [ext_resource type="Material" path="res://assets/Materials/HumanIvory.tres" id="13_ivory"]
 [ext_resource type="Material" path="res://assets/Materials/HumanGraphite.tres" id="14_graphite"]
@@ -30,7 +31,6 @@
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_SupplyCrateStack_V1.gltf" id="131_crate_stack"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_LightPole_V1.gltf" id="132_light_pole"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_CableOccluder_V1.gltf" id="133_cable_occluder"]
-[ext_resource type="AudioStream" path="res://assets/audio/temp/pickup_chime.wav" id="40_pickup_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/craft_confirm.wav" id="41_craft_audio"]
 [ext_resource type="AudioStream" path="res://assets/audio/temp/beacon_activate.wav" id="42_beacon_audio"]
 [ext_resource type="Material" path="res://assets/Materials/BiomassRed.tres" id="20_biomass"]
@@ -101,13 +101,9 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/metal_01.wav" id="97_pickup_metal"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/glass_01.wav" id="98_pickup_glass"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/organic_01.wav" id="99_pickup_organic"]
-[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/generic_01.wav" id="100_pickup_generic"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/state/objective_complete_01.wav" id="101_state_objective"]
-[ext_resource type="AudioStream" path="res://assets/audio/sources/state/victory_01.wav" id="102_state_victory"]
-[ext_resource type="AudioStream" path="res://assets/audio/sources/state/defeat_01.wav" id="103_state_defeat"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/state/mission_complete_01.wav" id="104_state_mission"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_complete_01.wav" id="105_save_complete"]
-[ext_resource type="AudioStream" path="res://assets/audio/sources/save/save_progress_01.wav" id="106_save_progress"]
 [ext_resource type="AudioStream" path="res://assets/audio/sources/save/load_complete_01.wav" id="107_load_complete"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_RockOccluder_V1.gltf" id="108_v1_rock_occluder"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Small_V1.gltf" id="109_v1_shard_small"]
@@ -366,9 +362,13 @@ ambient_light_color = Color(0.298, 0.376, 0.51, 1)
 ambient_light_sky_contribution = 0.85
 ambient_light_energy = 2.1
 reflected_light_source = 2
+; White point 4.0 gives the lime render headroom: at 1.0 ACES mapped every
+; value above 1.0 to pure white, and sunlit walls lost their plaster detail
+; (0.99% of eye-level pixels clipped). Exposure rises to hold mean brightness
+; (98.0 -> 99.8 luma); clipping falls to 0.18% (docs/production/workstream-a-visual-2026-09-27.md).
 tonemap_mode = 3
-tonemap_exposure = 1.22
-tonemap_white = 1.0
+tonemap_exposure = 1.45
+tonemap_white = 4.0
 ; Contact shadows where stone meets stone and ground; without this an arcade
 ; pier and the wall behind it merge into one silhouette.
 ssao_enabled = true
@@ -662,101 +662,61 @@ metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/
 metadata/notes = "Short rough squeal, pitch falling, when the Scout takes damage"
 [node name="Scout_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
 stream = ExtResource("92_enemy_death")
-volume_db = -4.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_death_01.wav)"
-metadata/notes = "Scout defeat fanfare, triggered when HP reaches 0; high priority audio"
-[node name="Scout_Idle" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
-stream = ExtResource("40_pickup_audio")
-volume_db = -15.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with enemy_idle_ambient_01.wav)"
-metadata/notes = "Scout breathing/ambient idle loop, very subtle background presence"
+volume_db = -6.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "The Scout's last cry, layered over its README 16 death tone (GalaxabrainScout DeathAudio)"
 [node name="AudioLayer_UI" type="Node" parent="."]
+process_mode = 3
 metadata/category = "UI menu and confirmation audio"
 metadata/positioning = "2D non-positional audio (screen-relative)"
+metadata/notes = "Always processes: the pause menu plays these while the tree is paused"
 [node name="UI_Select" type="AudioStreamPlayer" parent="AudioLayer_UI"]
 stream = ExtResource("93_ui_select")
 volume_db = -10.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_select_01.wav)"
-metadata/notes = "Menu confirmation click, triggered on UI selection (high UI priority)"
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Pause menu button press"
 [node name="UI_Hover" type="AudioStreamPlayer" parent="AudioLayer_UI"]
 stream = ExtResource("94_ui_hover")
-volume_db = -12.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_hover_01.wav)"
-metadata/notes = "Menu hover/focus audio, subtle over-confirmation feedback"
+volume_db = -14.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Pause menu button hover"
 [node name="UI_Craft_Complete" type="AudioStreamPlayer" parent="AudioLayer_UI"]
 stream = ExtResource("95_ui_craft")
-volume_db = -7.0
-metadata/source = "Existing: craft_confirm.wav (temporary placeholder)"
-metadata/notes = "Crafting completion confirmation, triggered after crafting countdown"
+volume_db = -9.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Assembly layer under the workbench's README 16 craft tone when the arm is built"
 [node name="UI_Menu_Toggle" type="AudioStreamPlayer" parent="AudioLayer_UI"]
 stream = ExtResource("96_ui_menu")
-volume_db = -9.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with ui_menu_toggle_01.wav)"
-metadata/notes = "Pause/resume menu toggle, briefing audio on state change"
-[node name="AudioLayer_Pickup" type="Node" parent="."]
-metadata/category = "Resource pickup and collection audio"
-metadata/positioning = "3D positional audio at pickup location"
-[node name="Pickup_Metal" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("97_pickup_metal")
-volume_db = -6.0
-metadata/source = "Existing: pickup_chime.wav (temporary placeholder, will differentiate)"
-metadata/notes = "Metal resource collection cue, bright metallic chime, 0.3s"
-[node name="Pickup_Glass" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("98_pickup_glass")
-volume_db = -6.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_glass_01.wav)"
-metadata/notes = "Electronics resource collection, distinct glass/crystal tones"
-[node name="Pickup_Organic" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("99_pickup_organic")
-volume_db = -7.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_organic_01.wav)"
-metadata/notes = "Biomass resource collection, soft organic tones"
-[node name="Pickup_Generic" type="AudioStreamPlayer3D" parent="AudioLayer_Pickup"]
-stream = ExtResource("100_pickup_generic")
-volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with pickup_generic_01.wav)"
-metadata/notes = "Generic fallback pickup cue, used if specific type unavailable"
+volume_db = -10.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Pause menu opened or closed"
 [node name="AudioLayer_State" type="Node" parent="."]
-metadata/category = "Game state transition audio (objectives, victory, defeat)"
+metadata/category = "Game state transition audio (objectives, mission complete)"
 metadata/positioning = "2D non-positional audio (screen-relative, high priority)"
 [node name="State_Objective" type="AudioStreamPlayer" parent="AudioLayer_State"]
 stream = ExtResource("101_state_objective")
-volume_db = -8.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_objective_complete_01.wav)"
-metadata/notes = "Objective completion chime, triggered when mission phase completes (60 FPS)"
-[node name="State_Victory" type="AudioStreamPlayer" parent="AudioLayer_State"]
-stream = ExtResource("102_state_victory")
-volume_db = -6.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_victory_fanfare_01.wav)"
-metadata/notes = "Victory fanfare, high-priority audio on game victory condition, 3.2s"
-[node name="State_Defeat" type="AudioStreamPlayer" parent="AudioLayer_State"]
-stream = ExtResource("103_state_defeat")
-volume_db = -5.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_defeat_horn_01.wav)"
-metadata/notes = "Defeat fanfare/horn, triggered on player death condition"
+volume_db = -10.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Objective completed"
 [node name="State_Mission_Complete" type="AudioStreamPlayer" parent="AudioLayer_State"]
 stream = ExtResource("104_state_mission")
-volume_db = -7.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with state_mission_complete_01.wav)"
-metadata/notes = "Full mission completion audio, plays after beacon activation succeeds"
+volume_db = -8.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Swell under the beacon during the victory hold, before the victory screen"
 [node name="AudioLayer_Save" type="Node" parent="."]
-metadata/category = "Save/Load state audio (optional)"
+metadata/category = "Save/Load state audio"
 metadata/positioning = "2D non-positional audio"
 [node name="Save_Complete" type="AudioStreamPlayer" parent="AudioLayer_Save"]
 stream = ExtResource("105_save_complete")
 volume_db = -10.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with save_complete_01.wav)"
-metadata/notes = "Save completion confirmation, optional audio on save trigger"
-[node name="Save_Progress" type="AudioStreamPlayer" parent="AudioLayer_Save"]
-stream = ExtResource("106_save_progress")
-volume_db = -11.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with save_progress_01.wav)"
-metadata/notes = "In-progress save indication, optional brief tone during save operation"
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Checkpoint written at the save point"
 [node name="Load_Complete" type="AudioStreamPlayer" parent="AudioLayer_Save"]
 stream = ExtResource("107_load_complete")
 volume_db = -10.0
-metadata/source = "Freesound.org / CC0 (placeholder: will be replaced with load_complete_01.wav)"
-metadata/notes = "Load completion confirmation, optional audio on game restore"
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Checkpoint restored"
 [node name="VolcanicRock_1" type="StaticBody3D" parent="."]
 transform = Transform3D(1.2,0.15,0,0,1,0,-0.08,0,1,-20,1.0,-18)
 metadata/integration = "Foreground rock occluder (docs/art/crash-site-object-asset-inventory.md); replaces a plain scaled BoxMesh placeholder. Visual-only mesh swap; Collision_BlockingRock is untouched."
@@ -847,7 +807,7 @@ mesh = SubResource("BoxMesh_metal")
 material_override = SubResource("MAT_MetalPickup_Bright")
 
 [node name="SpatialPickupPlayer" parent="ResourceDrop_MetalPickup/AudioPlayers" index="0"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("97_pickup_metal")
 volume_db = -8.0
 
 [node name="ResourceDrop_BiomassPickup" parent="." instance=ExtResource("43_resource_drop")]
@@ -864,7 +824,7 @@ mesh = SubResource("SphereMesh_biomass")
 material_override = SubResource("MAT_BiomassPickup_Bright")
 
 [node name="SpatialPickupPlayer" parent="ResourceDrop_BiomassPickup/AudioPlayers" index="0"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("99_pickup_organic")
 volume_db = -8.0
 
 [node name="ResourceDrop_ElectronicsPickup" parent="." instance=ExtResource("43_resource_drop")]
@@ -881,7 +841,7 @@ mesh = SubResource("CylinderMesh_electronics")
 material_override = SubResource("MAT_ElectronicsPickup_Bright")
 
 [node name="SpatialPickupPlayer" parent="ResourceDrop_ElectronicsPickup/AudioPlayers" index="0"]
-stream = ExtResource("40_pickup_audio")
+stream = ExtResource("98_pickup_glass")
 volume_db = -8.0
 [node name="Placeholder_Workbench" parent="." instance=ExtResource("44_workbench_scene")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,12,0.85,-12)
@@ -1354,3 +1314,44 @@ transform = Transform3D(-0.766,0,0.643,0,1,0,-0.643,0,-0.766,-6.5,0,3.5)
 transform = Transform3D(-0.359,0,-0.77,0,0.85,0,0.77,0,-0.359,5.5,0,4.5)
 [node name="RouteEdge_Debris_R" parent="ForegroundPolish" instance=ExtResource("72_v1_debris")]
 transform = Transform3D(0.573,0,0.402,0,0.7,0,-0.402,0,0.573,11.5,0,-3.5)
+
+[node name="VictoryEndingShot" type="Node3D" parent="."]
+script = ExtResource("117_ending_shot")
+metadata/notes = "In-world ending: framing chosen from rendered candidates (artifacts/visual-review/ending, D2)"
+
+[node name="EndingCamera" type="Camera3D" parent="VictoryEndingShot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3.5, -17)
+fov = 62.0
+
+[node name="Overlay" type="CanvasLayer" parent="VictoryEndingShot"]
+layer = 5
+visible = false
+
+[node name="TopBar" type="ColorRect" parent="VictoryEndingShot/Overlay"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 72.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="BottomBar" type="ColorRect" parent="VictoryEndingShot/Overlay"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -72.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Caption" type="Label" parent="VictoryEndingShot/Overlay"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -62.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(0.93, 0.95, 0.97, 1)
+theme_override_font_sizes/font_size = 26
+text = "Rescue signal online — the Mwezi Quarter answers"
+horizontal_alignment = 1
+vertical_alignment = 1

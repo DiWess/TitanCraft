@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://resource_drop_scene"]
+[gd_scene load_steps=17 format=3 uid="uid://resource_drop_scene"]
 
 [ext_resource type="Script" path="res://src/World/ResourceDrop.cs" id="1_script"]
 [ext_resource type="Material" path="res://assets/Materials/ResourceDrop/ResourceItemHighlight.tres" id="2_highlight"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Metal_V1.gltf" id="4_v1_metal"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Electronics_V1.gltf" id="5_v1_energy"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PICKUP_Biomass_V1.gltf" id="6_mvp_biomass"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/pickup/generic_01.wav" id="7_pickup_generic"]
 
 [sub_resource type="StandardMaterial3D" id="MAT_ItemDefault"]
 albedo_color = Color(0.56, 0.57, 0.55, 1)
@@ -118,5 +119,7 @@ shape = SubResource("SHAPE_StaticScrap")
 [node name="AudioPlayers" type="Node3D" parent="."]
 
 [node name="SpatialPickupPlayer" type="AudioStreamPlayer3D" parent="AudioPlayers"]
+stream = ExtResource("7_pickup_generic")
+volume_db = -8.0
 unit_size = 3.0
 max_distance = 18.0

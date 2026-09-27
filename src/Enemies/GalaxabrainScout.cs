@@ -378,6 +378,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         DisableBodyCollision();
         SetMissionComponentVisible(true);
         AudioCue.Play(this, DeathAudioPath);
+        AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Death", GlobalPosition);
         ShowDisabledVisual();
 
         // Gameplay death is the only event allowed to complete the defeat objective;

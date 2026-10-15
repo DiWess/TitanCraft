@@ -23,25 +23,9 @@ from pathlib import Path
 
 SOURCES = Path("assets/audio/sources")
 
-# Silent placeholders still awaiting replacement (workstream A, audio).
-KNOWN_SILENT = {
-    "enemy/death_01.wav",
-    "pickup/generic_01.wav",
-    "pickup/glass_01.wav",
-    "pickup/metal_01.wav",
-    "pickup/organic_01.wav",
-    "save/load_complete_01.wav",
-    "save/save_complete_01.wav",
-    "save/save_progress_01.wav",
-    "state/defeat_01.wav",
-    "state/mission_complete_01.wav",
-    "state/objective_complete_01.wav",
-    "state/victory_01.wav",
-    "ui/craft_complete_01.wav",
-    "ui/hover_01.wav",
-    "ui/menu_toggle_01.wav",
-    "ui/select_01.wav",
-}
+# Silent placeholders still awaiting replacement. Empty since 2026-09-27: every
+# committed source now makes sound, so any silent file is a regression.
+KNOWN_SILENT: set[str] = set()
 
 # Project-authored audio: the committed files must be what these produce.
 GENERATORS = ("tools/audio/synthesize_ambience.py", "tools/audio/synthesize_cues.py")

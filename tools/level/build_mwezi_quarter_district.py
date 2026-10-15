@@ -362,6 +362,45 @@ def _pitch_basis(pitch_degrees: float) -> tuple[float, ...]:
     return (1.0, 0.0, 0.0, 0.0, cos_a, sin_a, 0.0, -sin_a, cos_a)
 
 
+# ---------------------------------------------------------------------------
+# Route reading. The 2026-09-24 playtest found the street carried no route at
+# eye level: the player navigated by HUD text. A warm pool of light over every
+# objective lights each arrival, so the next place to go is the lit one.
+# Visual only: no collision, no shadows.
+#
+# Worn-ground strips were tried and removed (2026-09-27): the ground near the
+# routes is several overlapping visual layers (procedural terrain, Stage A
+# fractured ground up to 0.64 m, ash patches), so no flat strip height sits on
+# the visible surface, and a Decal -- the right tool -- cannot be rendered by
+# the Compatibility renderer the review captures use. Ground wear belongs with
+# the textured-materials pass (workstream D).
+# ---------------------------------------------------------------------------
+THRESHOLD_LIGHT_HEIGHT_M = 2.8
+THRESHOLD_LIGHT_RANGE_M = 5.5
+THRESHOLD_LIGHT_ENERGY = 1.4
+THRESHOLD_LIGHT_COLOUR = (1.0, 0.74, 0.46)
+# The component drops where the Scout dies; one light serves both.
+THRESHOLD_TARGETS = [name for name in TARGETS
+                     if name not in ("Player", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup")]
+
+
+def _route_reading() -> list[str]:
+    """Nodes for the threshold lights over each objective."""
+    nodes = ['[node name="RouteReading" type="Node3D" parent="."]',
+             'metadata/purpose = "Threshold lights: the route read from the street, not the HUD (workstream A)"']
+    lr, lg, lb = THRESHOLD_LIGHT_COLOUR
+    for name in THRESHOLD_TARGETS:
+        x, z = TARGETS[name]
+        label = name.replace("Placeholder_", "").replace("ResourceDrop_", "")
+        nodes.append(f'[node name="ThresholdLight_{label}" type="OmniLight3D" parent="RouteReading"]')
+        nodes.append(f"transform = {_transform(_yaw_basis(0.0, 1.0), (x, THRESHOLD_LIGHT_HEIGHT_M, z))}")
+        nodes.append(f"light_color = Color({lr}, {lg}, {lb}, 1)")
+        nodes.append(f"light_energy = {THRESHOLD_LIGHT_ENERGY}")
+        nodes.append(f"omni_range = {THRESHOLD_LIGHT_RANGE_M}")
+        nodes.append(f'metadata/target = "{name}"')
+    return nodes
+
+
 def _fmt(value: float) -> str:
     return f"{value:.4f}".rstrip("0").rstrip(".") or "0"
 
@@ -443,6 +482,7 @@ def build() -> str:
             )
 
     _assert_clearances(collision_boxes)
+    reading_nodes = _route_reading()
 
     header = (
         f'[gd_scene load_steps={len(resources) + len(shapes) + 1} format=3 '
@@ -460,7 +500,8 @@ def build() -> str:
         '[node name="Dressing" type="Node3D" parent="."]',
         '[node name="Motion" type="Node3D" parent="."]',
     ]
-    return "\n".join([header, "", *resources, "", *shape_blocks, "", *root, *nodes]) + "\n"
+    return "\n".join([header, "", *resources, "", *shape_blocks, "", *root, *nodes,
+                      *reading_nodes]) + "\n"
 
 
 def _assert_clearances(collision_boxes: list["Footprint"]) -> None:

@@ -20,6 +20,20 @@ Cues, by the node that plays them in ``scenes/Main/Main.tscn``:
   weapon/swing_01.wav          Weapon_Swing     servo swing: rising-falling air, faint whine
   weapon/impact_01.wav         Weapon_Impact    low thud, crunch and short metal ring
   weapon/ready_tone_01.wav     Weapon_Ready     latch click then a short high tone
+  ui/select_01.wav             UI_Select        two quick rising blips
+  ui/hover_01.wav              UI_Hover         a very short soft tick
+  ui/menu_toggle_01.wav        UI_Menu_Toggle   a breath of air and a falling two-note
+  ui/craft_complete_01.wav     UI_Craft_Complete ratchet clicks, servo, latch
+  state/objective_complete_01  State_Objective  two-note bell chime, a rising fifth
+  state/defeat_01.wav          DefeatScreen     low descending drone over dark noise
+  state/mission_complete_01    State_Mission_Complete  warm major swell under the beacon
+  save/save_complete_01.wav    Save_Complete    three rising blips
+  save/load_complete_01.wav    Load_Complete    three blips, falling then settling
+  enemy/death_01.wav           Scout_Death      falling screech breaking into a rattle
+  pickup/metal_01.wav          Metal pickup     bright scrap clank
+  pickup/organic_01.wav        Biomass pickup   soft wet squelch
+  pickup/glass_01.wav          Electronics pickup  crystalline ping and blip
+  pickup/generic_01.wav        default pickup   short thunk and tick
 
 Usage: python3 tools/audio/synthesize_cues.py [--check]
 """
@@ -218,6 +232,181 @@ def render_ready() -> list[float]:
     return out
 
 
+def bell(t: float, modes: list[tuple[float, float, float]]) -> float:
+    """Sum of decaying sine partials: (frequency, level, decay seconds)."""
+    return sum(level * math.sin(TAU * f * t) * envelope(t, 0.002, decay) for f, level, decay in modes)
+
+
+def blips(t: float, notes: list[tuple[float, float]], length: float) -> float:
+    """Short sine blips: (start seconds, frequency) each lasting `length`."""
+    total = 0.0
+    for start, f in notes:
+        local = t - start
+        if 0.0 <= local < length:
+            total += math.sin(TAU * f * local) * math.sin(math.pi * local / length)
+    return total
+
+
+def render_ui_select() -> list[float]:
+    return [blips(i / SAMPLE_RATE, [(0.0, 880.0), (0.05, 1320.0)], 0.06) for i in range(samples(0.12))]
+
+
+def render_ui_hover() -> list[float]:
+    return [math.sin(TAU * 1_050.0 * (i / SAMPLE_RATE)) * envelope(i / SAMPLE_RATE, 0.002, 0.03)
+            for i in range(samples(0.05))]
+
+
+def render_ui_menu_toggle() -> list[float]:
+    rng = random.Random(8101)
+    low = 0.0
+    out = []
+    for i in range(samples(0.26)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(1_200.0) * (white - low)
+        air = low * math.sin(math.pi * t / 0.26) * 0.8
+        out.append(air + blips(t, [(0.02, 440.0), (0.11, 330.0)], 0.12) * 0.6)
+    return out
+
+
+def render_craft_complete() -> list[float]:
+    """Assembly: three ratchet clicks, then a servo settling into a latch."""
+    rng = random.Random(8203)
+    out = []
+    for i in range(samples(0.55)):
+        t = i / SAMPLE_RATE
+        clicks = sum(rng.uniform(-1.0, 1.0) * envelope(t - c, 0.0004, 0.02)
+                     for c in (0.0, 0.07, 0.14) if t >= c)
+        servo = 0.0
+        if 0.2 <= t < 0.45:
+            local = t - 0.2
+            servo = 0.3 * math.sin(sweep_phase(local, 260.0, 520.0, 0.25)) * math.sin(math.pi * local / 0.25)
+        latch = bell(t - 0.45, [(620.0, 0.5, 0.08), (1_540.0, 0.3, 0.05)]) if t >= 0.45 else 0.0
+        out.append(clicks * 0.7 + servo + latch)
+    return out
+
+
+def render_objective() -> list[float]:
+    """Two-note bell chime, a rising fifth: an objective is done."""
+    out = []
+    for i in range(samples(0.8)):
+        t = i / SAMPLE_RATE
+        first = bell(t, [(660.0, 0.6, 0.5), (1_320.0, 0.2, 0.3), (1_985.0, 0.1, 0.2)])
+        second = bell(t - 0.14, [(990.0, 0.6, 0.6), (1_980.0, 0.2, 0.35)]) if t >= 0.14 else 0.0
+        out.append(first + second)
+    return out
+
+
+def render_save_complete() -> list[float]:
+    return [blips(i / SAMPLE_RATE, [(0.0, 740.0), (0.07, 988.0), (0.14, 1_480.0)], 0.08)
+            for i in range(samples(0.26))]
+
+
+def render_load_complete() -> list[float]:
+    return [blips(i / SAMPLE_RATE, [(0.0, 1_480.0), (0.07, 988.0), (0.14, 1_245.0)], 0.08)
+            for i in range(samples(0.26))]
+
+
+def render_defeat() -> list[float]:
+    """A low descending drone with a dark noise bed."""
+    rng = random.Random(8307)
+    low = 0.0
+    length = 2.0
+    out = []
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        phase = sweep_phase(t, 220.0, 98.0, length)
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(300.0) * (white - low)
+        tone = math.sin(phase) + 0.4 * math.sin(2.0 * phase) + 0.2 * math.sin(3.0 * phase)
+        shape = min(1.0, t / 0.08) * math.exp(-1.6 * t / length)
+        out.append((tone * 0.7 + low * 1.5) * shape)
+    return out
+
+
+def render_mission_complete() -> list[float]:
+    """A warm major swell that rises under the beacon and settles."""
+    chord = [220.0, 277.18, 329.63, 440.0, 554.37]
+    length = 3.0
+    out = []
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        swell = min(1.0, t / 1.2) * (1.0 if t < 1.8 else math.exp(-3.0 * (t - 1.8)))
+        shimmer = 1.0 + 0.08 * math.sin(TAU * 5.0 * t)
+        tone = sum(math.sin(TAU * f * t + k) / (k + 1) for k, f in enumerate(chord))
+        out.append(tone * swell * shimmer)
+    return out
+
+
+def render_scout_death() -> list[float]:
+    """The Scout's last cry: a long falling screech breaking into a wet rattle."""
+    rng = random.Random(8401)
+    noise = 0.0
+    length = 0.9
+    out = []
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        phase = sweep_phase(t, 1_500.0, 150.0, length)
+        roughness = 0.5 + 0.5 * math.sin(TAU * (30.0 + 40.0 * t) * t)
+        white = rng.uniform(-1.0, 1.0)
+        noise += one_pole(900.0) * (white - noise)
+        rattle = noise * (0.5 + 0.5 * math.sin(TAU * 18.0 * t)) * min(1.0, t / 0.4)
+        cry = (math.sin(phase) + 0.4 * math.sin(2.0 * phase)) * roughness * math.exp(-2.0 * t)
+        out.append((cry + rattle * 1.2) * envelope(t, 0.01, length))
+    return out
+
+
+def render_pickup_metal() -> list[float]:
+    """Scrap lifted: a bright clank."""
+    rng = random.Random(8501)
+    out = []
+    for i in range(samples(0.3)):
+        t = i / SAMPLE_RATE
+        hit = rng.uniform(-1.0, 1.0) * envelope(t, 0.0005, 0.02)
+        out.append(hit * 0.6 + bell(t, [(812.0, 0.5, 0.18), (2_133.0, 0.35, 0.12), (3_307.0, 0.2, 0.08)]))
+    return out
+
+
+def render_pickup_organic() -> list[float]:
+    """Biomass pulled free: a soft wet squelch."""
+    rng = random.Random(8603)
+    low = 0.0
+    length = 0.3
+    out = []
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        cutoff = 1_400.0 - 1_100.0 * t / length
+        low += one_pole(cutoff) * (white - low)
+        body = math.sin(sweep_phase(t, 180.0, 90.0, length)) * 0.4
+        out.append((low * 1.6 + body) * envelope(t, 0.01, 0.25))
+    return out
+
+
+def render_pickup_glass() -> list[float]:
+    """Electronics picked up: a crystalline ping with a digital blip."""
+    out = []
+    for i in range(samples(0.4)):
+        t = i / SAMPLE_RATE
+        ping = bell(t, [(2_390.0, 0.5, 0.3), (3_587.0, 0.3, 0.2), (5_210.0, 0.1, 0.1)])
+        out.append(ping + blips(t, [(0.05, 1_760.0)], 0.04) * 0.4)
+    return out
+
+
+def render_pickup_generic() -> list[float]:
+    """Any other item: a short thunk and a tick."""
+    rng = random.Random(8707)
+    low = 0.0
+    out = []
+    for i in range(samples(0.2)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(700.0) * (white - low)
+        thunk = (low * 1.8 + math.sin(TAU * 140.0 * t) * 0.6) * envelope(t, 0.002, 0.12)
+        out.append(thunk + blips(t, [(0.06, 1_320.0)], 0.03) * 0.3)
+    return out
+
+
 # name -> (renderer, peak): the peak sets each cue's level relative to the
 # others; the scene's volume_db still sets the mix.
 CUES = {
@@ -230,6 +419,20 @@ CUES = {
     "weapon/swing_01.wav": (render_swing, 0.6),
     "weapon/impact_01.wav": (render_impact, 0.8),
     "weapon/ready_tone_01.wav": (render_ready, 0.5),
+    "ui/select_01.wav": (render_ui_select, 0.5),
+    "ui/hover_01.wav": (render_ui_hover, 0.3),
+    "ui/menu_toggle_01.wav": (render_ui_menu_toggle, 0.5),
+    "ui/craft_complete_01.wav": (render_craft_complete, 0.6),
+    "state/objective_complete_01.wav": (render_objective, 0.6),
+    "state/defeat_01.wav": (render_defeat, 0.7),
+    "state/mission_complete_01.wav": (render_mission_complete, 0.6),
+    "save/save_complete_01.wav": (render_save_complete, 0.5),
+    "save/load_complete_01.wav": (render_load_complete, 0.5),
+    "enemy/death_01.wav": (render_scout_death, 0.8),
+    "pickup/metal_01.wav": (render_pickup_metal, 0.6),
+    "pickup/organic_01.wav": (render_pickup_organic, 0.6),
+    "pickup/glass_01.wav": (render_pickup_glass, 0.6),
+    "pickup/generic_01.wav": (render_pickup_generic, 0.6),
 }
 
 

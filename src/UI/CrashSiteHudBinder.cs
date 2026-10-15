@@ -13,7 +13,6 @@ public partial class CrashSiteHudBinder : Node
     private FirstPersonController _player = null!;
     private CrashSiteHud _hud = null!;
     private readonly MechanicalArmRecipe _mechanicalArmRecipe = new();
-    private bool _startTutorialDismissed;
     private bool _armBuiltFeedbackShown;
     private readonly OnboardingTutorialState _onboarding = new();
     private OnboardingStep _lastOnboardingStep = OnboardingStep.Complete;
@@ -124,11 +123,5 @@ public partial class CrashSiteHudBinder : Node
     private void UpdateMission(CrashSiteMissionState mission)
     {
         _hud.SetObjective(mission.HudBreadcrumb);
-
-        if (_startTutorialDismissed || mission.CurrentStep == CrashSiteMissionStep.CollectResources)
-            return;
-
-        _startTutorialDismissed = true;
-        _hud.SetStartTutorialVisible(false);
     }
 }

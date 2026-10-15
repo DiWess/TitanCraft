@@ -135,6 +135,35 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
 | `assets/audio/sources/weapon/impact_01.wav` | `b72b0a9f271f1f8d2d3ab3218da64cbe1c43d99a0b5cb1dc0fc89471168ca0eb` |
 | `assets/audio/sources/weapon/ready_tone_01.wav` | `9dfafbd8a8d7d59a0f85dc97826553be4b28210e80cf88fdd8018fa85e87e2ea` |
 
+## Mwezi Quarter UI, state, save, pickup and Scout-death cues — project-authored
+
+- Date: 2026-09-27
+- Creator: Claude Code (Audio Director lane) for TitanCraft
+- License: Project-owned; no third-party source material, samples or recordings used
+- Generation method: `tools/audio/synthesize_cues.py`, as for the footstep, Scout and weapon cues
+  above; `tools/test_audio_sources.py` checks the committed files match it
+- Replaces: the last silent placeholders credited to Freesound in
+  `docs/audio/audio-provenance.md`. Two placeholders with no use were deleted instead:
+  `state/victory_01.wav` and `save/save_progress_01.wav`
+- Committed files (32 kHz mono 16-bit one-shots):
+
+| File | SHA-256 |
+|---|---|
+| `assets/audio/sources/ui/select_01.wav` | `02a019c51a71c268a32903577a026d202bc006b190544775391148a9c875b7de` |
+| `assets/audio/sources/ui/hover_01.wav` | `51565a8e6c417878e46ff61dd4bb634c70777c6b0d66a974068d3119e9ef14d2` |
+| `assets/audio/sources/ui/menu_toggle_01.wav` | `22fe0d5ea360b2a14fa6661b5adb8602953de92ee6626f4c048db85d4b45c3d9` |
+| `assets/audio/sources/ui/craft_complete_01.wav` | `fa17452998f0a4d322e0d823b9ecf5db8f0de32a15d43dbfcf83da43e0bb0c4d` |
+| `assets/audio/sources/state/objective_complete_01.wav` | `b42bd21dd0fb7594abfed2f60d450c34883fef91e4d6d8f7e7d821783a361ab9` |
+| `assets/audio/sources/state/defeat_01.wav` | `e8d83b8e40a5bbe12f3b5079cee1dfa9f8acc225985ad497ea3fa45535308e1d` |
+| `assets/audio/sources/state/mission_complete_01.wav` | `caf0c5c72f9f7b87a2f07fa5ec8e8b855848f81c6c2902b166cdd4beb7578dc3` |
+| `assets/audio/sources/save/save_complete_01.wav` | `177ca93bf15553e653fd685a543b6ca5e9466adcf904744d095adfb4da03aa20` |
+| `assets/audio/sources/save/load_complete_01.wav` | `9feebebb51260a119de56ab9a26d845471dfbfd07409f832da5ba92744d06aae` |
+| `assets/audio/sources/enemy/death_01.wav` | `523ffd98c2b179ef6e8b04283fb645d78855a25917729239904d92c5cdbd7580` |
+| `assets/audio/sources/pickup/metal_01.wav` | `10210795f8a8ff435fb66e5517d9322c399ae2b2db5e97bc02ce53ca4f80a312` |
+| `assets/audio/sources/pickup/organic_01.wav` | `2072d6ceca5b6f2e0bb7408f6bc0f587d1a689fe1c762aaced347015c4bbbf6c` |
+| `assets/audio/sources/pickup/glass_01.wav` | `34b2be675686d4dad1af2c20dcde3f7282d255c489033eabfeb7227e1bc8f6a9` |
+| `assets/audio/sources/pickup/generic_01.wav` | `d975bfa9db144950d611063c7c9db40e3e122580b4e22a88927e41b7c9672d39` |
+
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 
 Placeholder provenance records for the final Crash Site art pass assets expected under `assets/models/` and `assets/textures/`. These files are not committed in this pass; before distribution, replace each TBD with the exact creator, source URL, license file, filename, and checksum. Intended scope: Terrain PBR texture set, Sci-Fi Workbench GLB, Beacon GLB, and Crashed Ship GLB.

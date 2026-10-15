@@ -309,3 +309,47 @@ transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 20.2, 0.0986, -22.6)
 metadata/placement = "terrain_height=0.219 sink=0.12 zone=CombatRidge route_distance=4.08"
 script = ExtResource("900_motion_player")
 [node name="Model" parent="Motion/Quarter_BannerCloth_2" instance=ExtResource("14_bannercloth")]
+[node name="RouteReading" type="Node3D" parent="."]
+metadata/purpose = "Threshold lights: the route read from the street, not the HUD (workstream A)"
+[node name="ThresholdLight_MetalPickup" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 8, 2.8, -4)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "ResourceDrop_MetalPickup"
+[node name="ThresholdLight_BiomassPickup" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -8, 2.8, -4)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "ResourceDrop_BiomassPickup"
+[node name="ThresholdLight_ElectronicsPickup" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 0, 2.8, -10)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "ResourceDrop_ElectronicsPickup"
+[node name="ThresholdLight_Workbench" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 12, 2.8, -12)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "Placeholder_Workbench"
+[node name="ThresholdLight_GalaxabrainScout" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 20, 2.8, -16)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "Placeholder_GalaxabrainScout"
+[node name="ThresholdLight_SavePoint" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, -12, 2.8, -12)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "Placeholder_SavePoint"
+[node name="ThresholdLight_Beacon" type="OmniLight3D" parent="RouteReading"]
+transform = Transform3D(1, 0, -0, 0, 1, 0, 0, 0, 1, 28, 2.8, -20)
+light_color = Color(1.0, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+metadata/target = "Placeholder_Beacon"

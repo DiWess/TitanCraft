@@ -1,4 +1,5 @@
 using Godot;
+using TitanCraft.Core;
 using TitanCraft.Missions;
 using TitanCraft.Player;
 
@@ -15,7 +16,9 @@ public partial class CrashSiteEndScreenNavigator : Node
     /// How long the world stays on screen after victory before the end screen,
     /// so the beacon's beam, camera shake and activation sound are actually seen.
     /// </summary>
-    [Export] public float VictoryHoldSeconds { get; set; } = 3.0f;
+    [Export] public float VictoryHoldSeconds { get; set; } = 5.0f;
+    [Export] public NodePath EndingShotPath { get; set; } = "../VictoryEndingShot";
+    [Export] public string MissionCompleteAudioPath { get; set; } = "AudioLayer_State/State_Mission_Complete";
 
     public string LastRequestedScenePath { get; private set; } = string.Empty;
 
@@ -62,6 +65,14 @@ public partial class CrashSiteEndScreenNavigator : Node
         LastRequestedScenePath = scenePath;
         GetTree().Paused = false;
 
+        // The swell plays under the lit beacon during the victory hold, so the
+        // climax resolves in the world before the victory screen arrives.
+        if (scenePath == VictoryScenePath)
+        {
+            AudioCue.Play(this, MissionCompleteAudioPath);
+            GetNodeOrNull<VictoryEndingShot>(EndingShotPath)?.Play();
+        }
+
         if (!EnableSceneChanges)
             return;
 
@@ -87,6 +98,8 @@ public partial class CrashSiteEndScreenNavigator : Node
 
         IsSceneChangePending = false;
         Input.MouseMode = Input.MouseModeEnum.Visible;
+        if (scenePath == VictoryScenePath)
+            EndingSnapshot.Capture(GetViewport());
         GetTree().ChangeSceneToFile(scenePath);
     }
 }

@@ -15,7 +15,7 @@ config/version="1.0.0"
 config/description="TitanCraft: Crash Site - a short single-player first-person game."
 run/main_scene="res://scenes/UI/MainMenu.tscn"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
-config/icon=""
+config/icon="res://icon.png"
 
 [display]
 

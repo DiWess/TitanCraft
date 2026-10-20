@@ -1,0 +1,113 @@
+name: TitanCraft Release
+
+# Builds the Windows game and attaches it to a DRAFT GitHub Release. Nothing
+# becomes public until a person reviews the draft and presses Publish.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to build (for example v1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    name: Build and draft the Windows release
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_VERSION: 8.0.x
+      GODOT_VERSION: 4.7-stable
+      GODOT_TEMPLATE_VERSION: 4.7.stable.mono
+      GODOT_RELEASE_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_linux_x86_64.zip
+      GODOT_TEMPLATES_URL: https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_mono_export_templates.tpz
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Set up Godot .NET with export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y curl libasound2t64 libgbm1 libgl1-mesa-dri libglx-mesa0 libpulse0 libvulkan1 libwayland-cursor0 libxcursor1 libxi6 libxinerama1 libxkbcommon0 unzip zip
+          curl -L "$GODOT_RELEASE_URL" -o /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          GODOT_EXE="/tmp/godot/Godot_v${GODOT_VERSION}_mono_linux_x86_64/Godot_v${GODOT_VERSION}_mono_linux.x86_64"
+          chmod +x "$GODOT_EXE"
+          sudo ln -sf "$GODOT_EXE" /usr/local/bin/godot
+          godot --headless --version | grep '4.7.stable.mono.official.5b4e0cb0f'
+          curl -L "$GODOT_TEMPLATES_URL" -o /tmp/templates.tpz
+          unzip -q /tmp/templates.tpz -d /tmp/templates_extract
+          mkdir -p "$HOME/.local/share/godot/export_templates/${GODOT_TEMPLATE_VERSION}"
+          cp -R /tmp/templates_extract/templates/. "$HOME/.local/share/godot/export_templates/${GODOT_TEMPLATE_VERSION}/"
+
+      - name: Check the tag matches the project version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(grep -oP '^config/version="\K[^"]+' project.godot)
+          test "v${version}" = "$TAG" || { echo "Tag $TAG does not match project version $version" >&2; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Build and test
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet restore
+          dotnet build
+          python3 tools/prepare_audio_assets.py
+          python3 tools/test_audio_sources.py
+          godot --headless --path . --import
+          godot --headless --path . tests/Integration/IntegrationTestRunner.tscn 2>&1 | tee integration.log
+          grep -q TITANCRAFT_INTEGRATION_TESTS_PASS integration.log
+          python3 tools/testing/verify_mvp_smoke_log.py integration.log
+
+      - name: Export Windows build
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p builds/Windows
+          godot --headless --path . --export-release "Windows Desktop" builds/Windows/TitanCraft.exe 2>&1 | tee export.log
+          test -f builds/Windows/TitanCraft.exe
+          # The recipes are read at run time from the packed project; an
+          # export without them cannot craft (see MechanicalArmRecipe).
+          grep -a -q "mechanical_arm_mk3.json" builds/Windows/TitanCraft.exe
+
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+          name="TitanCraft-${VERSION}-windows-x64"
+          mkdir -p "dist/$name"
+          cp -R builds/Windows/. "dist/$name/"
+          rm -f "dist/$name"/*.log
+          cp docs/release/PLAYER_README.txt "dist/$name/README.txt"
+          cp THIRD_PARTY_ASSETS.md "dist/$name/CREDITS.md"
+          cp docs/release/GODOT_LICENSE.txt "dist/$name/GODOT_LICENSE.txt"
+          (cd dist && zip -qr "$name.zip" "$name")
+          (cd dist && sha256sum "$name.zip" > "$name.zip.sha256")
+          cat "dist/$name.zip.sha256"
+
+      - name: Create draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          name="TitanCraft-${VERSION}-windows-x64"
+          gh release create "$TAG" --draft --title "TitanCraft: Crash Site ${VERSION}" \
+            --notes-file docs/release/RELEASE_NOTES.md \
+            "dist/$name.zip" "dist/$name.zip.sha256"

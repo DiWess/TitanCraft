@@ -65,12 +65,33 @@ enemies are active at once in every encounter, including the holdout (README §2
 
 ### Walked playthrough
 
-WALKED_PLAYTHROUGH_RESULT
+`tools/visual_review/playthrough_journey.gd`, real input through the whole gated route, after
+the holdout rebalance (commit `a5e0813`):
+
+| Measure | Result |
+|---|---|
+| Result | `victory` (victory screen reached) |
+| Legs walked | 45 / 45, 0 stuck events, every interaction on attempt 1 |
+| Game time, start to victory | 201 s (bot-optimal; no exploration, no notes read) |
+| Scout | won in 3.3 s, 9 swings, health 100 → 60 |
+| Drone nest | won in 33.3 s, 61 pulls, 21 swings, health 100 → 84 |
+| Warden | won in 13.5 s, 3 charged strikes, 13 swings, health 100 → 56 |
+| Beacon holdout | won in 79.2 s from full health |
+| Damage events | 15; no defeat |
+| Render proxy | software renderer under xvfb, mean 212 ms/frame — not a hardware claim |
+
+The previous run (before the rebalance) died in the holdout at 32.5 s. The rebalance made the
+Scouts that answer the beacon lighter (75 HP, 7 damage, 1.3 s cooldown), holdout drones hit
+for 6, and the beacon's field repairs 1.5 HP/s while the plaza is held.
+
+The `Weapon_Deflect` cue never sounded in this run: the bot only swings at the Warden while it
+is staggered, which is the optimal play. Deflection itself is covered by the unit tests in
+`tests/Unit/GalaxabrainVariantTests.cs`.
 
 ## What this does not establish
 
 - **Plan exits on length are not met.** Workstream B asks for bot-optimal completion of at least
-  8 minutes and C for at least 15. The walked bot finishes well under that (see above). A
+  8 minutes and C for at least 15. The walked bot finishes in 201 s (about 3.4 minutes). A
   human's first run will be longer than the bot's, but that has not been measured.
 - **No human playtest notes** #1–#3 exist. Nothing here claims feel; axes 2 and 3 stay where
   they were scored.

@@ -164,6 +164,36 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
 | `assets/audio/sources/pickup/glass_01.wav` | `34b2be675686d4dad1af2c20dcde3f7282d255c489033eabfeb7227e1bc8f6a9` |
 | `assets/audio/sources/pickup/generic_01.wav` | `d975bfa9db144950d611063c7c9db40e3e122580b4e22a88927e41b7c9672d39` |
 
+## Post-MVP arm, enemy, world and state cues — project-authored
+
+- Date: 2026-10-20
+- Creator: Claude Code (Audio Director lane) for TitanCraft
+- License: Project-owned; no third-party source material, samples or recordings used
+- Generation method: `tools/audio/synthesize_cues.py`, as above; `tools/test_audio_sources.py`
+  checks the committed files match it
+- Committed files (32 kHz mono 16-bit one-shots):
+
+| File | SHA-256 |
+|---|---|
+| `assets/audio/sources/weapon/arm_pull_01.wav` | `ae46d1081d7047304aab35fa3c9eb1db2191a779280aa0e576e5bc1e9ea8f993` |
+| `assets/audio/sources/weapon/charge_ready_01.wav` | `bc292b8e11a55179dcdead414f93696c1d8d664b96847e2272b5e59d3b0ab964` |
+| `assets/audio/sources/weapon/deflect_01.wav` | `462df5a32e6cf509d6742ac0630d3242e0b5aad42ffb8be95a6ce36238b81688` |
+| `assets/audio/sources/weapon/charged_impact_01.wav` | `6ac47f3cc3aa2adec3ba721a292fe0f9589e553f6d44ede32ac3f1c90858f515` |
+| `assets/audio/sources/enemy/drone_alert_01.wav` | `b45aa431e400806e6d1a1a960c4ab1ed6965a3be4fde90f979e13217548b9e85` |
+| `assets/audio/sources/enemy/drone_death_01.wav` | `75c4166b8eb811b1c4cff486cf574027b1ccc579eb7cbaa0743ec70adcee4cad` |
+| `assets/audio/sources/enemy/drone_hit_01.wav` | `443758be6a2b46b9ff8ebf55d64d0d0414656b0313dc56349a495ddb5213f2df` |
+| `assets/audio/sources/enemy/drone_telegraph_01.wav` | `bd439a8798a4de842bb24c33c796acec17d2af1c9f345d035e044eb0f973cfab` |
+| `assets/audio/sources/enemy/warden_alert_01.wav` | `fee7b294178737ad1688ebb0b42d08f19783eb74c5d3279ac220344645b2d7e6` |
+| `assets/audio/sources/enemy/warden_death_01.wav` | `e2a03a333a3cebfa9a93a505ce40477a546b1c16d5b4fc63c134e7493c16c465` |
+| `assets/audio/sources/enemy/warden_guard_break_01.wav` | `5946d278db762ed0b1cca246e6d39bbdb50b920618fb98eee24088bcef6fe85b` |
+| `assets/audio/sources/enemy/warden_hurt_01.wav` | `5944e6aab61474e5c8285f4b042ba599bb817977a3401d2fe21acaa3d8bc4e47` |
+| `assets/audio/sources/enemy/warden_slam_01.wav` | `0f4303f230680cb83444796c190580885848ef4a3c24214b7f4c6b2ad5abe4f6` |
+| `assets/audio/sources/enemy/warden_windup_01.wav` | `6d75f58b10268d8110d6dbff81018b008c956b7ab878f6cc10b0e52d1f87050c` |
+| `assets/audio/sources/world/gate_break_01.wav` | `6e73ee6b8780806c24d2eded7bf0c5df34cf64469bf56e47b18ce4915e03ce47` |
+| `assets/audio/sources/world/wreck_drag_01.wav` | `207983a8491b8da466d7b561e192c17dd3c764c5b2a35f61cdc29b2e2225b572` |
+| `assets/audio/sources/state/holdout_wave_01.wav` | `b2321499a5275d572e6d8327647c5de7f8156a3c290da22ae4b3e7a20cd2305f` |
+| `assets/audio/sources/state/discovery_01.wav` | `59d9e71b4b2948dff723fdd4069153660bf25e4b75c1aa3d91806e1176c57e86` |
+
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 
 **Withdrawn 2026-10-20:** none of these files was ever committed, and none ships. The workbench,

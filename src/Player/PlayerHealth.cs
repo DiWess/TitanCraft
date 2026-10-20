@@ -41,6 +41,18 @@ public sealed class PlayerHealth
         Changed?.Invoke(this);
     }
 
+    /// <summary>Partial repair (the beacon's field); never revives and never exceeds the maximum.</summary>
+    public void Heal(int amount)
+    {
+        if (amount <= 0 || IsDead || CurrentHealth == MaxHealth)
+        {
+            return;
+        }
+
+        CurrentHealth = Math.Min(MaxHealth, CurrentHealth + amount);
+        Changed?.Invoke(this);
+    }
+
     /// <summary>Suit repaired to full (checkpoints).</summary>
     public void RestoreToFull()
     {

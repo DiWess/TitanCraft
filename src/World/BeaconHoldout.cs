@@ -27,6 +27,16 @@ public partial class BeaconHoldout : Node3D
 
     [Export] public float ChargeSeconds { get; set; } = BeaconHoldoutLogic.DefaultChargeSeconds;
 
+    /// <summary>Suit repair per second from the beacon's field while the plaza is held.</summary>
+    [Export] public float FieldRepairPerSecond { get; set; } = 1.5f;
+
+    [Export] public int HoldoutScoutHealth { get; set; } = 75;
+    [Export] public int HoldoutScoutDamage { get; set; } = 7;
+    [Export] public float HoldoutScoutAttackCooldown { get; set; } = 1.3f;
+    [Export] public int HoldoutDroneDamage { get; set; } = 6;
+
+    private float _repairCarry;
+
     private BeaconHoldoutLogic? _logic;
     private readonly List<Node3D> _spawned = new();
     private int _droneSpawnIndex;
@@ -84,8 +94,22 @@ public partial class BeaconHoldout : Node3D
 
         _spawned.RemoveAll(node => !IsInstanceValid(node));
         var active = _spawned.Count(IsAlive);
-        foreach (var kind in _logic.Tick((float)delta, holding, active))
+        var arrivals = _logic.Tick((float)delta, holding, active);
+        if (arrivals.Count > 0)
+            AudioCue.Play(this, "AudioLayer_State/Holdout_Wave");
+        foreach (var kind in arrivals)
             Spawn(kind);
+
+        if (holding && !_player.Health.IsDead)
+        {
+            _repairCarry += FieldRepairPerSecond * (float)delta;
+            var whole = (int)_repairCarry;
+            if (whole > 0)
+            {
+                _repairCarry -= whole;
+                _player.Health.Heal(whole);
+            }
+        }
 
         _player.Mission.SetBeaconCharge(_logic.ChargeFraction);
         (beacon as Beacon)?.SetCharge(_logic.ChargeFraction);
@@ -129,10 +153,17 @@ public partial class BeaconHoldout : Node3D
                 drone.StartActive = true;
                 drone.OrbitPhase = index * 2.1f;
                 drone.FirstDiveDelaySeconds = 2.2f + index % 3 * 0.9f;
+                drone.ContactDamage = HoldoutDroneDamage;
                 break;
             case GalaxabrainScout scout:
+                // The Scouts that answer the beacon are younger and lighter
+                // than the one that held the plaza: the holdout is about
+                // juggling several threats, not trading blows with each.
                 scout.IsMissionScout = false;
                 scout.DetectionRange = 40f;
+                scout.Health = HoldoutScoutHealth;
+                scout.Damage = HoldoutScoutDamage;
+                scout.AttackCooldownSeconds = HoldoutScoutAttackCooldown;
                 break;
         }
 

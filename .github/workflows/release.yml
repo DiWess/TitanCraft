@@ -86,6 +86,27 @@ jobs:
           # export without them cannot craft (see MechanicalArmRecipe).
           grep -a -q "mechanical_arm_mk3.json" builds/Windows/TitanCraft.exe
 
+      - name: Self-test an exported build away from the source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          # A Linux export of the same project, run from an empty folder, must
+          # load its recipes from the packed data and open the game scene.
+          cp export_presets.cfg /tmp/presets.bak
+          python3 - <<'PY'
+          s = open("export_presets.cfg").read()
+          p0 = s[:s.index("[preset.0.options]")]
+          linux = (p0.replace("[preset.0]", "[preset.1]").replace('name="Windows Desktop"', 'name="LinuxSelfTest"')
+                   .replace('platform="Windows Desktop"', 'platform="Linux"')
+                   .replace('export_path="builds/Windows/TitanCraft.exe"', 'export_path=""'))
+          open("export_presets.cfg", "w").write(s + "\n" + linux + '\n[preset.1.options]\nbinary_format/embed_pck=true\nbinary_format/architecture="x86_64"\n')
+          PY
+          mkdir -p /tmp/selftest
+          godot --headless --path . --export-release "LinuxSelfTest" /tmp/selftest/TitanCraft.x86_64
+          cp /tmp/presets.bak export_presets.cfg
+          (cd /tmp/selftest && ./TitanCraft.x86_64 --headless -- --titancraft-selftest 2>&1 | tee selftest.log)
+          grep -q TITANCRAFT_SELFTEST_PASS /tmp/selftest/selftest.log
+
       - name: Package
         shell: bash
         run: |

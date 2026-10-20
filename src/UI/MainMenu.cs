@@ -22,6 +22,12 @@ public partial class MainMenu : Control
         var settingsButton = GetNode<Button>("Menu/SettingsButton");
         settingsButton.Disabled = false;
         settingsButton.Pressed += OpenSettings;
+        if (ReleaseSelfTest.Requested())
+        {
+            ReleaseSelfTest.Run(this, GameScenePath);
+            return;
+        }
+
         if (GetNodeOrNull<Label>("VersionLabel") is { } version)
             version.Text = $"{ProjectSettings.GetSetting("application/config/name")} {ProjectSettings.GetSetting("application/config/version")}";
     }

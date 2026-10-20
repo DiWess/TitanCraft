@@ -6,8 +6,8 @@ people left behind. The Galaxabrains - biomechanical things that strip every
 machine for the parts that think - hold it now. The harbour beacon answered
 your distress call once. Light it again.
 
-A short single-player first-person game (about 20-40 minutes). Offline, no
-account, no internet connection, no data collected.
+A short single-player first-person game. Offline, no account, no internet
+connection, no data collected.
 
 
 HOW TO PLAY
@@ -29,8 +29,8 @@ Right click or F ... pull (Mk II magnet clamp)
 Hold left click .... charge, release for a heavy strike (Mk III breaker coil)
 Esc ................ pause, settings, save
 
-The objective is always at the top left. Workbenches and save points repair
-your suit; crafting and the power core are automatic checkpoints. If you fall,
+The objective is always at the top left. The save point, every craft at the
+workbench and the power core repair your suit and save your run. If you fall,
 "Reload Last Save" takes you back to your last checkpoint.
 
 

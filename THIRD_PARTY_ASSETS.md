@@ -166,6 +166,11 @@ Human decision accepted official Quaternius Google Drive folder/file provenance 
 
 ## Phase 1 Art Pass user-supplied CC0 placeholders — 2026-07-03
 
+**Withdrawn 2026-10-20:** none of these files was ever committed, and none ships. The workbench,
+beacon and wreck are built from the CC0 packs above and project-authored Blender kits; terrain
+materials are procedural. Kept below as history only. The player-facing credits that ship in
+the release zip are `docs/release/CREDITS.md`.
+
 Placeholder provenance records for the final Crash Site art pass assets expected under `assets/models/` and `assets/textures/`. These files are not committed in this pass; before distribution, replace each TBD with the exact creator, source URL, license file, filename, and checksum. Intended scope: Terrain PBR texture set, Sci-Fi Workbench GLB, Beacon GLB, and Crashed Ship GLB.
 
 | Asset role | Expected local path | License | Source / creator | Status |

@@ -175,5 +175,10 @@ player hears.
 | 2026-09-27 | A — no silent audio remains: UI, state, save, per-type pickups, Scout death and mission-complete swell authored or wired; pause-menu audio no longer paused with the tree | `docs/audio/audio-completion-2026-09-27.md` | `PASS` |
 | 2026-09-27 | A — in-world ending shot and victory screen over its last frame; HUD panel −31 % (controls reference moved to the pause menu); lime clipping 0.76 % → 0.18 %; lit thresholds over every objective | `docs/production/workstream-a-visual-2026-09-27.md` | `PASS` |
 
+| 2026-10-20 | B — Mk II magnet clamp and Mk III breaker coil; yard and tower court gated and sealed | `docs/production/workstreams-b-e-2026-10-20.md` | `PASS` (length exit not met) |
+| 2026-10-20 | C — drone nest, Warden, beacon holdout; 14-step mission chain, save v2 | `docs/production/workstreams-b-e-2026-10-20.md` | `PASS` (length exit not met) |
+| 2026-10-20 | D — six story notes, harbour sea, textured materials, route wear | `docs/production/workstreams-b-e-2026-10-20.md` | `PASS` |
+| 2026-10-20 | E — settings and rebinding, release packaging, exported-build self-test | `docs/production/workstreams-b-e-2026-10-20.md` | `HUMAN_BLOCKED` (real-hardware performance, playtests) |
+
 Still open in A: human playtest note #1 — the exit's remaining condition. Ground wear along
 the routes moved to workstream D (see the 2026-09-27 record).

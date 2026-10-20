@@ -116,7 +116,7 @@ jobs:
           cp -R builds/Windows/. "dist/$name/"
           rm -f "dist/$name"/*.log
           cp docs/release/PLAYER_README.txt "dist/$name/README.txt"
-          cp THIRD_PARTY_ASSETS.md "dist/$name/CREDITS.md"
+          cp docs/release/CREDITS.md "dist/$name/CREDITS.md"
           cp docs/release/GODOT_LICENSE.txt "dist/$name/GODOT_LICENSE.txt"
           (cd dist && zip -qr "$name.zip" "$name")
           (cd dist && sha256sum "$name.zip" > "$name.zip.sha256")

@@ -459,7 +459,7 @@ public partial class ProceduralCrashSiteTerrain : Node3D
 
     /// <summary>Where the shore starts to fall away, east of the sea walls (x ~ 34-36).</summary>
     public const float SeaShoreX = 36.5f;
-    public const float SeaShoreWidth = 3.5f;
+    public const float SeaShoreWidth = 8.0f;
     public const float SeaFloorHeight = -1.2f;
 
     public static float SeaWeight(float x)

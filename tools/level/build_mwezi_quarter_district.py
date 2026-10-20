@@ -179,7 +179,7 @@ def terrain_height(x: float, z: float) -> float:
 # East of the harbour wall the ground falls away under the sea (workstream D).
 # Mirrors ProceduralCrashSiteTerrain.SeaWeight.
 SEA_SHORE_X = 36.5
-SEA_SHORE_WIDTH = 3.5
+SEA_SHORE_WIDTH = 8.0
 SEA_FLOOR_HEIGHT = -1.2
 
 

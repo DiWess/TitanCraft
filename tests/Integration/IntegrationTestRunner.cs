@@ -1210,7 +1210,7 @@ public partial class IntegrationTestRunner : Node
         LogMvpSmokeMilestone(12, "Mechanical Arm Mk II crafted");
 
         var barricade = main.GetNode<PullableBarricade>("NetYard/WreckBarricade");
-        player.GlobalPosition = barricade.GlobalPosition + new Vector3(0.6f, 0.0f, 6.0f);
+        player.GlobalPosition = barricade.GlobalPosition + new Vector3(1.4f, 0.0f, 6.0f);
         await Frames(2);
         player.GetNode<Node3D>("Head").LookAt(barricade.PullAnchor, Vector3.Up);
         Require(player.TryPull(), "The Mk II clamp could not pull the wreck through the real aim path");

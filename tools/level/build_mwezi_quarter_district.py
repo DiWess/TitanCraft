@@ -171,7 +171,40 @@ def terrain_height(x: float, z: float) -> float:
         height = base + faceted * spread
     transition = max(0.0, min(1.0, (distance - CORRIDOR_WIDTH * 0.5) / 9.0))
     blended = CORRIDOR_HEIGHT + (height - CORRIDOR_HEIGHT) * transition
-    return max(CORRIDOR_HEIGHT, min(blended, MAX_OUTSIDE_HEIGHT))
+    natural = max(CORRIDOR_HEIGHT, min(blended, MAX_OUTSIDE_HEIGHT))
+    paved = natural + (CORRIDOR_HEIGHT - natural) * paved_weight(x, z)
+    return paved + (SEA_FLOOR_HEIGHT - paved) * sea_weight(x)
+
+
+# East of the harbour wall the ground falls away under the sea (workstream D).
+# Mirrors ProceduralCrashSiteTerrain.SeaWeight.
+SEA_SHORE_X = 36.5
+SEA_SHORE_WIDTH = 3.5
+SEA_FLOOR_HEIGHT = -1.2
+
+
+def sea_weight(x: float) -> float:
+    t = max(0.0, min(1.0, (x - SEA_SHORE_X) / SEA_SHORE_WIDTH))
+    return t * t * (3.0 - 2.0 * t)
+
+
+# Courts the player walks in that the natural terrain would bury (workstream
+# B): the visual terrain has no collision, so ground the player stands on must
+# also look like ground there. Mirrors ProceduralCrashSiteTerrain.PavedCourts.
+PAVED_COURTS = [
+    (-21.5, -12.1, -29.5, -17.8),   # the Net-makers' Yard and its gate front
+    (4.8, 20.4, -29.5, -20.5),      # the tower court and its gate front
+]
+PAVED_BLEND_M = 1.5
+
+
+def paved_weight(x: float, z: float) -> float:
+    weight = 0.0
+    for min_x, max_x, min_z, max_z in PAVED_COURTS:
+        dx = max(min_x - x, x - max_x, 0.0)
+        dz = max(min_z - z, z - max_z, 0.0)
+        weight = max(weight, max(0.0, min(1.0, 1.0 - math.hypot(dx, dz) / PAVED_BLEND_M)))
+    return weight
 
 
 # ---------------------------------------------------------------------------
@@ -218,7 +251,9 @@ LAYOUT = [
     ("MarketStall", -9.6, -14.2, 18.0, 1.0, None),
     ("MarketStall", -14.0, -10.6, -58.0, 1.0, None),
     ("PalmCluster", -15.4, -16.2, -20.0, 1.0, None),
-    ("CoralWallSegment", -11.4, -17.6, 68.0, 1.0, WALL_COLLISION),
+    # Straightened (was 68 degrees) so the gap beside the house is an alley a
+    # player walks up to the Net-makers' Yard gate, not a 0.9 m slot.
+    ("CoralWallSegment", -11.2, -17.5, 90.0, 1.0, WALL_COLLISION),
 
     # --- East alley to the metal source ------------------------------------
     ("CoralWallSegment", 12.4, -3.0, 0.0, 1.0, WALL_COLLISION),
@@ -267,7 +302,74 @@ LAYOUT = [
     ("AwningCloth", 12.2, -6.1, 90.0, 1.0, None),
     ("BannerCloth", -12.5, -3.2, 0.0, 1.0, None),
     ("BannerCloth", 20.2, -22.6, 0.0, 1.0, None),
+
+    # --- Workstream B: the Net-makers' Yard (Mk II gate) --------------------
+    # Walled on south and east; the quarter's boundary closes north and west.
+    # Its one way in is a 2.65 m gap at the south-east corner, jammed with hull
+    # wreckage (scenes/World/WreckBarricade.tscn) the magnet clamp pulls clear.
+    ("CoralWallSegment", -18.45, -20.4, 0.0, 1.0, WALL_COLLISION),
+    ("CoralWallSegment", -12.4, -23.5, 90.0, 1.0, WALL_COLLISION),
+    ("CoralWallSegment", -12.4, -27.3, 90.0, 1.0, WALL_COLLISION),
+    ("YardCornerPier", -11.8, -20.6, 0.0, 1.0, [((0.9, 3.4, 0.9), (0.0, 1.7, 0.0), 0.0)]),
+    # The net-makers' things, left where they were working: stall, drying
+    # nets, a palm. Collisionless so the drones and the player move freely.
+    ("MarketStall", -19.4, -27.6, 12.0, 1.0, None),
+    ("LaundryLine", -17.2, -23.9, 4.0, 1.0, None),
+    ("CoralRubble", -20.2, -21.6, 30.0, 0.9, None),
+    ("PalmCluster", -13.6, -28.4, -15.0, 1.0, None),
+
+    # --- Workstream B: the tower court (Mk III gate) ------------------------
+    # Between the civic hall and the tower, sealed by the Galaxabrains: the
+    # gap at x 11.0-13.6 is bricked with a cracked infill the charged strike
+    # breaks (scenes/World/CrackedGate.tscn). The south walls sit at z -22.9 so
+    # the Scout's arena keeps its 6.5 m clearance.
+    ("CoralWallSegment", 7.9, -22.9, 0.0, 1.0, WALL_COLLISION),
+    ("CoralWallSegment", 16.7, -22.9, 0.0, 1.0, WALL_COLLISION),
+    ("CoralWallSegment", 4.9, -27.4, 90.0, 1.0, WALL_COLLISION),
+    ("CoralWallSegment", 20.3, -26.6, 90.0, 1.0, WALL_COLLISION),
+    ("CoralRubble", 6.4, -28.6, 15.0, 1.0, None),
+    ("CoralRubble", 19.0, -28.8, -40.0, 0.8, None),
+    ("BannerCloth", 7.9, -23.3, 180.0, 1.0, None),
 ]
+
+# The quarter's edge. The visual terrain rises into hills 8.5 m inside its
+# bounds but carries no collision, so without this a player walked straight
+# into the hillside meshes. Invisible boxes (x, z, size_x, size_z), 4 m tall,
+# whose inner faces sit where the hills begin.
+BOUNDARY = [
+    ("Boundary_West", -22.0, -10.0, 1.0, 40.0),
+    # East: stops at the shore where the ground falls under the sea.
+    ("Boundary_East", 36.5, -10.0, 1.0, 40.0),
+    ("Boundary_North", 8.0, -30.0, 61.0, 1.0),
+    ("Boundary_South", 8.0, 10.0, 61.0, 1.0),
+]
+BOUNDARY_HEIGHT_M = 4.0
+
+# Gameplay anchors inside the courts (authored in scenes/Main/Main.tscn), kept
+# clear of the district's collision like the original mission anchors.
+COURT_ANCHORS = {
+    "yard centre": ((-17.0, -24.5), 2.0),
+    "yard gate": ((-14.0, -20.4), 0.0),
+    "tower gate": ((12.3, -22.9), 0.0),
+    "warden spawn": ((12.6, -26.3), 2.6),
+    "power core": ((7.6, -27.6), 1.0),
+}
+
+# Walked lines into the courts: they must stay as clear as the mission routes.
+# The gates themselves are Main.tscn bodies, not district collision.
+COURT_ROUTES = [
+    ((-12.0, -12.0), (-12.6, -15.5)),
+    ((-12.6, -15.5), (-12.6, -18.6)),
+    ((-12.6, -18.6), (-14.0, -19.4)),
+    ((-14.0, -19.4), (-14.0, -22.5)),
+    ((-14.0, -22.5), (-17.0, -24.5)),
+    ((12.0, -12.0), (12.3, -21.4)),
+    ((12.3, -21.4), (12.3, -24.5)),
+    ((12.3, -24.5), (12.6, -26.3)),
+]
+
+# Placements that are collision only (no model of their own).
+COLLISION_ONLY_ASSETS = {"YardCornerPier"}
 
 ASSET_FILES = {
     "CoralWallSegment": "TC_ENV_CoralWallSegment_V1",
@@ -401,6 +503,75 @@ def _route_reading() -> list[str]:
     return nodes
 
 
+# ---------------------------------------------------------------------------
+# Workstream D: the courts are paved, and the routes the player walks most
+# carry worn ground. Paving is the post-MVP kit's 4 m slab tile, scaled to fit
+# each court; wear is Decal projection (Forward+, the shipped renderer), which
+# lands on whatever ground layer is on top -- the reason flat strips failed
+# (see the route-reading note above).
+# ---------------------------------------------------------------------------
+PAVING_MODEL = "res://assets/models/post_mvp_kit_v1/TC_ENV_CourtPaving_V1.gltf"
+# (centre x, centre z, scale x, scale z) per tile; the model tile is 4 m.
+PAVING_TILES = (
+    [(x, z, 0.75, 0.75) for x in (-20.0, -17.0, -14.0) for z in (-28.0, -25.0, -22.0)]
+    + [(x, z, 0.75, 0.8) for x in (6.7, 9.7, 12.7, 15.7, 18.7) for z in (-28.0, -24.8)]
+)
+WEAR_WIDTH_M = 2.4
+WEAR_PROJECTION_M = 1.0
+WEAR_SEGMENTS = ROUTES + [
+    # Act 2 and 3 routes a player walks again and again.
+    ("Placeholder_Workbench", "Placeholder_SavePoint"),
+]
+
+
+def _paving_and_wear() -> tuple[list[str], list[str], list[str]]:
+    """Ext-resources, sub-resources and nodes for the court paving and route wear."""
+    resources = [f'[ext_resource type="PackedScene" path="{PAVING_MODEL}" id="800_court_paving"]']
+    subs = [
+        '[sub_resource type="FastNoiseLite" id="Noise_RouteWear"]',
+        "noise_type = 3",
+        "frequency = 0.045",
+        "fractal_octaves = 4",
+        "seed = 4207",
+        '[sub_resource type="Gradient" id="Gradient_RouteWear"]',
+        "offsets = PackedFloat32Array(0, 0.45, 1)",
+        "colors = PackedColorArray(0.25, 0.21, 0.17, 0, 0.3, 0.25, 0.2, 0.35, 0.36, 0.3, 0.24, 0.7)",
+        '[sub_resource type="NoiseTexture2D" id="Tex_RouteWear"]',
+        "width = 256",
+        "height = 512",
+        "seamless = true",
+        'color_ramp = SubResource("Gradient_RouteWear")',
+        'noise = SubResource("Noise_RouteWear")',
+    ]
+    nodes = ['[node name="CourtPaving" type="Node3D" parent="."]',
+             'metadata/purpose = "Workstream D: worn coral-stone paving in the yard and the tower court."']
+    for index, (x, z, sx, sz) in enumerate(PAVING_TILES):
+        nodes.append(f'[node name="Paving_{index:02d}" parent="CourtPaving" instance=ExtResource("800_court_paving")]')
+        nodes.append(f"transform = Transform3D({_fmt(sx)}, 0, 0, 0, 1, 0, 0, 0, {_fmt(sz)}, {_fmt(x)}, 0.0, {_fmt(z)})")
+    nodes.append('[node name="RouteWear" type="Node3D" parent="."]')
+    nodes.append('metadata/purpose = "Workstream D: worn ground along the walked routes, projected as decals onto whatever ground layer is on top."')
+    for index, (a, b) in enumerate(WEAR_SEGMENTS):
+        ax, az = TARGETS[a]
+        bx, bz = TARGETS[b]
+        length = math.dist((ax, az), (bx, bz))
+        if length < 1.0:
+            continue
+        yaw = math.degrees(math.atan2(bx - ax, bz - az))
+        basis = _yaw_basis(yaw, 1.0)
+        nodes.append(f'[node name="Wear_{index:02d}" type="Decal" parent="RouteWear"]')
+        nodes.append(f"transform = {_transform(basis, ((ax + bx) / 2.0, 0.1, (az + bz) / 2.0))}")
+        nodes.append(f"size = Vector3({_fmt(WEAR_WIDTH_M)}, {_fmt(WEAR_PROJECTION_M)}, {_fmt(length + 1.5)})")
+        nodes.append('texture_albedo = SubResource("Tex_RouteWear")')
+        nodes.append("albedo_mix = 0.85")
+        nodes.append("upper_fade = 0.2")
+        nodes.append("lower_fade = 0.2")
+        nodes.append("distance_fade_enabled = true")
+        nodes.append("distance_fade_begin = 45.0")
+        nodes.append("distance_fade_length = 10.0")
+        nodes.append(f'metadata/route = "{a} -> {b}"')
+    return resources, subs, nodes
+
+
 def _fmt(value: float) -> str:
     return f"{value:.4f}".rstrip("0").rstrip(".") or "0"
 
@@ -430,6 +601,7 @@ def build() -> str:
 
     for asset, x, z, yaw, scale, collision in LAYOUT:
         counters[asset] = counters.get(asset, 0) + 1
+        collision_only = asset in COLLISION_ONLY_ASSETS
         name = f"Quarter_{asset}_{counters[asset]}"
         ground = terrain_height(x, z)
         y = ground - BASE_SINK
@@ -445,10 +617,11 @@ def build() -> str:
         )
         if animated:
             nodes.append(f'script = ExtResource("{MOTION_SCRIPT_ID}")')
-        nodes.append(
-            f'[node name="Model" parent="{group}/{name}" '
-            f'instance=ExtResource("{resource_ids[asset]}")]'
-        )
+        if not collision_only:
+            nodes.append(
+                f'[node name="Model" parent="{group}/{name}" '
+                f'instance=ExtResource("{resource_ids[asset]}")]'
+            )
         if not collision:
             continue
         for shape_index, entry in enumerate(collision):
@@ -481,11 +654,28 @@ def build() -> str:
                           passage_width * scale)
             )
 
+    boundary_nodes = []
+    for label, bx, bz, size_x, size_z in BOUNDARY:
+        size = (size_x, BOUNDARY_HEIGHT_M, size_z)
+        if size not in shapes:
+            shape_id = f"BoxShape3D_quarter_{len(shapes)}"
+            shapes[size] = shape_id
+            shape_blocks.append(f'[sub_resource type="BoxShape3D" id="{shape_id}"]')
+            shape_blocks.append(f"size = Vector3({_fmt(size[0])}, {_fmt(size[1])}, {_fmt(size[2])})")
+        boundary_nodes.append(f'[node name="{label}" type="StaticBody3D" parent="Boundary"]')
+        boundary_nodes.append(f"transform = {_transform(_yaw_basis(0.0, 1.0), (bx, BOUNDARY_HEIGHT_M / 2.0, bz))}")
+        boundary_nodes.append(f'[node name="Collision_Boundary" type="CollisionShape3D" parent="Boundary/{label}"]')
+        boundary_nodes.append(f'shape = SubResource("{shapes[size]}")')
+        collision_boxes.append(Footprint(bx, bz, 0.0, size_x / 2.0, size_z / 2.0, label))
+
     _assert_clearances(collision_boxes)
     reading_nodes = _route_reading()
+    paving_resources, paving_subs, paving_nodes = _paving_and_wear()
 
+    resources.extend(paving_resources)
+    shape_blocks.extend(paving_subs)
     header = (
-        f'[gd_scene load_steps={len(resources) + len(shapes) + 1} format=3 '
+        f'[gd_scene load_steps={len(resources) + len(shapes) + 4} format=3 '
         f'uid="uid://mwezi_quarter_district"]'
     )
     root = [
@@ -499,9 +689,11 @@ def build() -> str:
         '[node name="Structures" type="Node3D" parent="."]',
         '[node name="Dressing" type="Node3D" parent="."]',
         '[node name="Motion" type="Node3D" parent="."]',
+        '[node name="Boundary" type="Node3D" parent="."]',
+        'metadata/purpose = "Invisible quarter edge where the visual hills begin (the terrain has no collision)."',
     ]
     return "\n".join([header, "", *resources, "", *shape_blocks, "", *root, *nodes,
-                      *reading_nodes]) + "\n"
+                      *boundary_nodes, *reading_nodes, *paving_nodes]) + "\n"
 
 
 def _assert_clearances(collision_boxes: list["Footprint"]) -> None:
@@ -558,6 +750,19 @@ def _assert_clearances(collision_boxes: list["Footprint"]) -> None:
                     f"route {a} -> {b}: {box.name} collision surface is {gap:.2f} m "
                     f"from the walked line (needs > {ROUTE_CLEARANCE_M})"
                 )
+    for label, (point, clearance) in COURT_ANCHORS.items():
+        for box in collision_boxes:
+            gap = box.distance_to_point(point)
+            if gap <= clearance:
+                failures.append(f"{label}: {box.name} collision surface is {gap:.2f} m away (needs > {clearance})")
+    for a, b in COURT_ROUTES:
+        for box in collision_boxes:
+            if box.passage_width:
+                continue
+            gap = box.distance_to_segment(a, b)
+            if gap <= ROUTE_CLEARANCE_M:
+                failures.append(f"court route {a} -> {b}: {box.name} collision surface is {gap:.2f} m "
+                                f"from the walked line (needs > {ROUTE_CLEARANCE_M})")
     if failures:
         raise SystemExit("LAYOUT_CLEARANCE_FAILED\n  " + "\n  ".join(sorted(set(failures))))
     print(f"LAYOUT_CLEARANCE_OK collision_shapes={len(collision_boxes)}")

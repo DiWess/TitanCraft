@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Godot;
+using TitanCraft.Combat;
 using TitanCraft.Enemies;
 using TitanCraft.Player;
 using TitanCraft.Missions;
@@ -40,7 +41,12 @@ public partial class IntegrationTestRunner : Node
     // budget still exists to stop collision bloat from decorative dressing --
     // every district prop without gameplay meaning is collisionless, and the
     // generator asserts arena and pickup clearance before the scene is written.
-    private const int MaxStaticCollisionShapes = 48;
+    //
+    // Raised from 48 for workstreams B and C: the Net-makers' Yard and tower
+    // court walls (8 boxes and a corner pier), the quarter's invisible edge
+    // (4 boxes, because the visual hills carry no collision), the two gates,
+    // and seven more pickups' scrap bodies.
+    private const int MaxStaticCollisionShapes = 68;
     private static readonly string[] ForbiddenCollisionPrefixes = [
         "Moon",
         "Background",
@@ -65,11 +71,13 @@ public partial class IntegrationTestRunner : Node
             TestVisualMaterialsLoad();
             await TestMainScene();
             await TestCollisionPolicy();
+            await TestGatesSealTheirCourts();
             await TestPlayerScene();
             await TestGalaxabrainScoutDeathPickup();
             await TestUiScenes();
             await TestMainMenuContinueState();
             await TestPauseMenuListsControls();
+            await TestSettingsApply();
             await TestHudBinding();
             await TestEndScreenNavigation();
             await TestVictoryTransitionWithSceneChangesEnabled();
@@ -438,6 +446,105 @@ public partial class IntegrationTestRunner : Node
         return shape is BoxShape3D or CapsuleShape3D or CylinderShape3D or SphereShape3D;
     }
 
+    /// <summary>
+    /// The courts are only worth gating if the gates actually seal them. This
+    /// walks the quarter with the player's own capsule against the real
+    /// physics world (flood fill from spawn, 0.5 m cells): with the wreck and
+    /// the cracked infill in place the yard and the tower court must be
+    /// unreachable, and every mission anchor reachable; with both gates open
+    /// the courts must be reachable too. Enemies are left out of the fill:
+    /// they move, walls do not.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestGatesSealTheirCourts()
+    {
+        LocalSaveGameStore.DeleteSave();
+        var main = LoadScene<Node3D>(MainScenePath);
+        AddChild(main);
+        await Frames(3);
+        var player = main.GetNode<CharacterBody3D>("Player");
+        var exclude = new Godot.Collections.Array<Rid> { player.GetRid() };
+        foreach (var body in main.FindChildren("*", "CharacterBody3D", true, false))
+            exclude.Add(((CharacterBody3D)body).GetRid());
+
+        var anchors = new Dictionary<string, Vector2>
+        {
+            ["metal pickup"] = new(8, -4), ["biomass pickup"] = new(-8, -4), ["electronics pickup"] = new(0, -10),
+            ["workbench"] = new(12, -10.6f), ["scout arena"] = new(20, -16), ["save point"] = new(-12, -10.8f),
+            ["beacon"] = new(28, -18), ["harbour salvage"] = new(24.4f, -9.4f), ["arcade salvage"] = new(2.9f, -15.4f),
+            ["stall salvage"] = new(-9.6f, -14.8f), ["yard gate front"] = new(-14.0f, -18.8f), ["tower gate front"] = new(12.3f, -21.2f),
+        };
+        var sealedPoints = new Dictionary<string, Vector2>
+        {
+            ["yard"] = new(-17.0f, -24.5f), ["yard radio"] = new(-19.0f, -27.0f),
+            ["tower court"] = new(9.5f, -26.0f), ["power core"] = new(7.6f, -26.2f),
+        };
+
+        var reached = FloodReachable(main, exclude);
+        foreach (var (name, point) in anchors)
+            Require(Reached(reached, point), $"{name} at {point} cannot be walked to from spawn");
+        foreach (var (name, point) in sealedPoints)
+            Require(!Reached(reached, point), $"{name} at {point} is reachable while its gate is closed");
+
+        main.GetNode<PullableBarricade>("NetYard/WreckBarricade").RestoreFromMission(CrashSiteMissionStep.ClearDroneNest);
+        main.GetNode<BreakableWall>("TowerCourt/CrackedGate").RestoreFromMission(CrashSiteMissionStep.DefeatWarden);
+        await Frames(3);
+        reached = FloodReachable(main, exclude);
+        foreach (var (name, point) in sealedPoints)
+            Require(Reached(reached, point), $"{name} at {point} is still sealed with its gate open");
+
+        main.QueueFree();
+        await Frames(2);
+    }
+
+    private const float ReachCell = 0.5f;
+
+    private static HashSet<(int, int)> FloodReachable(Node3D main, Godot.Collections.Array<Rid> exclude)
+    {
+        var space = main.GetWorld3D().DirectSpaceState;
+        var capsule = new CapsuleShape3D { Radius = 0.36f, Height = 1.5f };
+        var query = new PhysicsShapeQueryParameters3D
+        {
+            Shape = capsule,
+            CollisionMask = 1,
+            CollideWithAreas = false,
+            CollideWithBodies = true,
+            Exclude = exclude,
+        };
+        bool Free((int X, int Z) cell)
+        {
+            query.Transform = new Transform3D(Basis.Identity, new Vector3(cell.X * ReachCell, 1.0f, cell.Z * ReachCell));
+            return space.IntersectShape(query, 1).Count == 0;
+        }
+
+        var start = (0, 0);
+        var reached = new HashSet<(int, int)> { start };
+        var frontier = new Queue<(int, int)>();
+        frontier.Enqueue(start);
+        while (frontier.Count > 0)
+        {
+            var (x, z) = frontier.Dequeue();
+            foreach (var next in new[] { (x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1) })
+            {
+                if (Math.Abs(next.Item1) > 100 || Math.Abs(next.Item2) > 100 || reached.Contains(next) || !Free(next))
+                    continue;
+                reached.Add(next);
+                frontier.Enqueue(next);
+            }
+        }
+        return reached;
+    }
+
+    private static bool Reached(HashSet<(int, int)> reached, Vector2 point)
+    {
+        var cx = (int)MathF.Round(point.X / ReachCell);
+        var cz = (int)MathF.Round(point.Y / ReachCell);
+        for (var dx = -1; dx <= 1; dx++)
+            for (var dz = -1; dz <= 1; dz++)
+                if (reached.Contains((cx + dx, cz + dz)))
+                    return true;
+        return false;
+    }
+
     private static void TestVisualMaterialsLoad()
     {
         foreach (var path in RequiredMaterials)
@@ -574,6 +681,64 @@ public partial class IntegrationTestRunner : Node
         await Frames(2);
     }
 
+    /// <summary>
+    /// The settings screen's effects, end to end: a rebound key replaces the
+    /// action's events in the live input map and round-trips through the saved
+    /// string form; field of view, sensitivity and invert reach the player;
+    /// resetting restores the project's own bindings; both menus open the screen.
+    /// </summary>
+    private async System.Threading.Tasks.Task TestSettingsApply()
+    {
+        var original = Core.GameSettings.Current.Copy();
+        try
+        {
+            var key = Core.GameSettings.ToEvent("key:70");
+            Require(key is InputEventKey && Core.GameSettings.FromEvent(key!) == "key:70", "A key binding did not round-trip");
+            Require(Core.GameSettings.FromEvent(Core.GameSettings.ToEvent("mouse:2")!) == "mouse:2", "A mouse binding did not round-trip");
+
+            var custom = new Core.GameSettingsData { FieldOfView = 90f, MouseSensitivityScale = 2f, InvertY = true };
+            custom.Bindings["jump"] = "key:70";
+            Core.GameSettings.Set(custom);
+            var jumpEvents = InputMap.ActionGetEvents("jump");
+            Require(jumpEvents.Count == 1 && jumpEvents[0] is InputEventKey { PhysicalKeycode: Key.F }, "Rebinding jump did not replace its events");
+
+            var main = LoadScene<Node3D>(MainScenePath);
+            AddChild(main);
+            await Frames(2);
+            var player = main.GetNode<FirstPersonController>("Player");
+            Require(Mathf.IsEqualApprox(player.BaseFov, 90f), $"The field of view setting did not reach the player ({player.BaseFov})");
+            Core.GameSettings.Set(new Core.GameSettingsData());
+            Require(Mathf.IsEqualApprox(player.BaseFov, Core.GameSettingsData.DefaultFieldOfView), "Changing settings in play did not update the player");
+            Require(InputMap.ActionGetEvents("jump").Count >= 1 && InputMap.ActionGetEvents("jump")[0] is InputEventKey { Keycode: Key.Space }, "Resetting did not restore the default jump key");
+
+            var pause = main.GetNode<PauseMenu>("PauseMenu");
+            pause.OpenSettings();
+            await Frames(2);
+            var panel = pause.GetNodeOrNull<SettingsPanel>("SettingsPanel");
+            Require(panel is not null && panel.Visible, "The pause menu did not open the settings screen");
+            Require(panel!.FindChildren("*", "Button", true, false).Count >= Core.GameSettings.RemappableActions.Count + 2, "The settings screen lists no key bindings");
+            panel.Close();
+            await Frames(1);
+            Require(pause.GetNode<Control>("Panel").Visible, "Closing settings did not return to the pause menu");
+            main.QueueFree();
+            await Frames(2);
+
+            var menu = LoadScene<Control>("res://scenes/UI/MainMenu.tscn");
+            AddChild(menu);
+            await Frames(2);
+            Require(!menu.GetNode<Button>("Menu/SettingsButton").Disabled, "The main menu's Settings button is still disabled");
+            ((MainMenu)menu).OpenSettings();
+            await Frames(2);
+            Require(menu.GetNodeOrNull<SettingsPanel>("SettingsPanel") is { Visible: true }, "The main menu did not open the settings screen");
+            menu.QueueFree();
+            await Frames(2);
+        }
+        finally
+        {
+            Core.GameSettings.Set(original);
+        }
+    }
+
     private async System.Threading.Tasks.Task TestHudBinding()
     {
         var main = LoadScene<Node3D>(MainScenePath);
@@ -621,14 +786,15 @@ public partial class IntegrationTestRunner : Node
         navigator.EnableSceneChanges = true;
         navigator.VictoryHoldSeconds = 600f;
 
-        player.Mission.TryCompleteResourceCollection();
-        player.Mission.TryCompleteMechanicalArmConstruction();
-        player.Mission.TryCompleteGalaxabrainDefeat(true);
-        player.Mission.TryCompleteComponentRecovery();
-        player.Inventory.MarkGalaxabrainComponentCollected();
+        player.Mission.Restore(CrashSiteMissionStep.ActivateBeacon);
+        player.Inventory.MarkPowerCoreCollected();
+        main.GetNode<BeaconHoldout>("BeaconHoldout").ChargeSeconds = 0.3f;
+        player.GlobalPosition = beacon.GlobalPosition + new Vector3(2.0f, 0.0f, 0.0f);
 
         Require(beacon.Interact(player.Inventory, player.Mission), "Beacon did not activate on the real scene-change path");
-        Require(player.Mission.IsVictory, "Beacon activation did not produce victory with scene changes enabled");
+        for (var frame = 0; frame < 300 && !player.Mission.IsVictory; frame++)
+            await Frames(1);
+        Require(player.Mission.IsVictory, "The holdout did not produce victory with scene changes enabled");
         Require(beacon.IsInsideTree(), "Victory removed the beacon from the tree before its activation finished");
         Require(beacon.IsActivated, "Beacon activation did not complete with scene changes enabled");
         Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested");
@@ -710,6 +876,18 @@ public partial class IntegrationTestRunner : Node
         Require(panel.Size.X <= 400.5f && panel.Size.Y <= 160f,
             $"HUD panel grew past its 400x160 budget: {panel.Size}");
 
+        // Every objective in the run, at its widest (the arm line asking for
+        // the next module's salvage), must keep the panel inside its budget.
+        var budgetPlayer = main.GetNode<FirstPersonController>("Player");
+        foreach (var step in Enum.GetValues<CrashSiteMissionStep>())
+        {
+            budgetPlayer.Mission.Restore(step);
+            await Frames(2);
+            Require(panel.Size.X <= 400.5f && panel.Size.Y <= 160f,
+                $"HUD panel grew past its 400x160 budget at {step}: {panel.Size} ('{hud.GetNode<Label>("Panel/Margin/VBox/Objective").Text}')");
+        }
+        budgetPlayer.Mission.Restore(CrashSiteMissionStep.CollectResources);
+
         // The longest onboarding line, so the widest the prompt ever gets.
         var longest = new OnboardingTutorialState();
         longest.ReportResourceCollected();
@@ -751,11 +929,9 @@ public partial class IntegrationTestRunner : Node
         var victoryPlayer = victoryMain.GetNode<FirstPersonController>("Player");
         var victoryNavigator = victoryMain.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator");
         victoryNavigator.EnableSceneChanges = false;
-        victoryPlayer.Mission.TryCompleteResourceCollection();
-        victoryPlayer.Mission.TryCompleteMechanicalArmConstruction();
-        victoryPlayer.Mission.TryCompleteGalaxabrainDefeat(true);
-        victoryPlayer.Mission.TryCompleteComponentRecovery();
+        victoryPlayer.Mission.Restore(CrashSiteMissionStep.ActivateBeacon);
         victoryPlayer.Mission.TryCompleteBeaconActivation();
+        victoryPlayer.Mission.TryCompleteBeaconDefence();
         await Frames(2);
         Require(victoryNavigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after mission victory");
         victoryMain.QueueFree();
@@ -789,7 +965,8 @@ public partial class IntegrationTestRunner : Node
         main.GetNode<CrashSiteEndScreenNavigator>("EndScreenNavigator").EnableSceneChanges = false;
         var beacon = main.GetNode<Beacon>("Placeholder_Beacon");
         player.Mission.Restore(CrashSiteMissionStep.ActivateBeacon);
-        player.Inventory.MarkGalaxabrainComponentCollected();
+        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated without the power core");
+        player.Inventory.MarkPowerCoreCollected();
         Require(beacon.Interact(player.Inventory, player.Mission), "Beacon activation failed at valid mission state");
         Require(!beacon.GetNode<Node3D>("ClosedVisual").Visible, "Closed beacon visual stayed visible after activation");
         Require(beacon.GetNode<Node3D>("ActiveVisual").Visible, "Active beacon visual did not appear after activation");
@@ -858,7 +1035,8 @@ public partial class IntegrationTestRunner : Node
         var loadedPlayer = loadedMain.GetNode<FirstPersonController>("Player");
         var loadedCoordinator = loadedMain.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
         Require(loadedCoordinator.LastLoadSucceeded, "Continue load did not restore an existing checkpoint save");
-        Require(loadedPlayer.Health.CurrentHealth == 60, "Loaded health mismatch");
+        // The save point repairs the suit before it saves (a rest point, not only a bookmark).
+        Require(loadedPlayer.Health.CurrentHealth == PlayerHealth.DefaultMaxHealth, "The save point did not repair the suit before saving");
         Require(loadedPlayer.Inventory.Metal == 6 && loadedPlayer.Inventory.ElectronicComponents == 2, "Loaded inventory mismatch");
         Require(loadedPlayer.Mission.CurrentStep == Missions.CrashSiteMissionStep.BuildMechanicalArm, "Loaded mission step mismatch");
         Require(HorizontalDistance(loadedPlayer.GlobalPosition, new Vector3(3.0f, 2.0f, -7.0f)) < 0.1f, "Loaded player position mismatch");
@@ -1006,14 +1184,105 @@ public partial class IntegrationTestRunner : Node
         Require(player.TryInteract(), "Interaction raycast could not reach the revealed component pickup");
         Require(player.Inventory.HasGalaxabrainComponent, "Component recovery did not update inventory");
         Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Component: Recovered"), "HUD resource dashboard did not count the recovered Galaxabrain component");
-        Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Component recovery did not advance to beacon activation");
-        Require(!player.Mission.IsVictory, "Component recovery skipped required beacon activation");
-        Require(lastActionFeedback == FirstPersonController.GalaxabrainComponentRecoveryFeedback, "Component recovery did not emit beacon activation action feedback");
-        Require(lastActionFeedback.Contains("component recovered") && lastActionFeedback.Contains("activate the beacon beam"), "Component recovery action feedback did not explain the next beacon step");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.UpgradeArmMk2, "Component recovery did not advance to the Mk II upgrade");
+        Require(!player.Mission.IsVictory, "Component recovery skipped the rest of the mission");
+        Require(lastActionFeedback == FirstPersonController.GalaxabrainComponentRecoveryFeedback, "Component recovery did not emit its action feedback");
+        Require(lastActionFeedback.Contains("component recovered") && lastActionFeedback.Contains("workbench"), "Component recovery action feedback did not explain the Mk II step");
         Require(!component.Visible && !component.Monitoring, "Component pickup stayed interactable after recovery");
-        RequireHudObjective(hud, CrashSiteMissionStep.ActivateBeacon, "after component recovered");
+        RequireHudObjective(hud, CrashSiteMissionStep.UpgradeArmMk2, "after component recovered");
         LogMvpSmokeMilestone(6, "component retrieved");
         Require(!component.Interact(player.Inventory, player.Mission), "Component was recoverable twice");
+        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated without its power core");
+
+        // --- Act 2: the Mk II magnet clamp and the Net-makers' Yard ---------
+        foreach (var dropPath in new[] { "ActTwoSalvage/ResourceDrop_HarbourMetal", "ActTwoSalvage/ResourceDrop_ArcadeMetal", "ActTwoSalvage/ResourceDrop_StallElectronics" })
+            Require(main.GetNode<ResourceDrop>(dropPath).Interact(player.Inventory, player.Mission), $"{dropPath} could not be collected");
+        var saveCoordinator = main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator");
+        player.GlobalPosition = workbench.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(workbench.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Workbench did not fit Mk II with the component and salvage in hand");
+        Require(player.Inventory.HasMagnetClamp && !player.Inventory.HasGalaxabrainComponent, "Mk II did not fit the Scout's component into the arm");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.OpenNetYard, "Mk II did not advance to opening the yard");
+        Require(lastActionFeedback == FirstPersonController.Mk2CraftSuccessFeedback, "Mk II craft did not explain the pull");
+        Require(player.GetNode<Node3D>("Head/Camera3D/MechanicalArmVisual/ClampModule").Visible, "The Mk II clamp is not visible on the arm");
+        Require(saveCoordinator.LastSaveSucceeded, "Fitting Mk II did not write its checkpoint");
+        LogMvpSmokeMilestone(12, "Mechanical Arm Mk II crafted");
+
+        var barricade = main.GetNode<PullableBarricade>("NetYard/WreckBarricade");
+        player.GlobalPosition = barricade.GlobalPosition + new Vector3(0.6f, 0.0f, 6.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(barricade.PullAnchor, Vector3.Up);
+        Require(player.TryPull(), "The Mk II clamp could not pull the wreck through the real aim path");
+        Require(barricade.IsOpen, "The pulled wreck did not open the yard");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.ClearDroneNest, "Opening the yard did not advance to the drone nest");
+        LogMvpSmokeMilestone(13, "Net-makers' Yard opened");
+
+        var nest = main.GetNode<DroneNestEncounter>("NetYard/DroneNest");
+        Require(nest.Drones.Count == 3, $"Expected three nest drones, found {nest.Drones.Count}");
+        Require(nest.Drones.All(drone => drone.Brain.State != SwarmDroneState.Dormant), "Opening the yard did not wake the drones");
+        var firstDrone = nest.Drones[0];
+        // Inside the yard, past the clamp's cooldown from the wreck.
+        player.GlobalPosition = new Vector3(-16.0f, 0.2f, -21.4f);
+        await Frames(70);
+        player.GetNode<Node3D>("Head").LookAt(firstDrone.GlobalPosition, Vector3.Up);
+        Require(player.TryPull(), "The clamp could not pull a drone out of the air");
+        Require(firstDrone.Brain.State == SwarmDroneState.Stunned, "A pulled drone was not grounded");
+        await Frames(24);
+        Require(firstDrone.GlobalPosition.Y < 1.2f, $"A pulled drone did not come down to the arm's reach (y {firstDrone.GlobalPosition.Y:0.00})");
+        foreach (var drone in nest.Drones)
+            drone.ReceiveStrike(new ArmStrike(drone.Brain.MaxHealth, false, player.GlobalPosition));
+        await Frames(3);
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.UpgradeArmMk3, "Clearing the nest did not advance to Mk III");
+        LogMvpSmokeMilestone(14, "drone nest cleared");
+
+        foreach (var dropPath in new[] { "NetYard/ResourceDrop_YardMetalStall", "NetYard/ResourceDrop_YardMetalPalm", "NetYard/ResourceDrop_YardBroodBiomass", "NetYard/ResourceDrop_YardRadioElectronics" })
+            Require(main.GetNode<ResourceDrop>(dropPath).Interact(player.Inventory, player.Mission), $"{dropPath} could not be collected");
+        player.GlobalPosition = workbench.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(workbench.GlobalPosition, Vector3.Up);
+        Require(player.TryInteract(), "Workbench did not fit Mk III from the yard's salvage");
+        Require(player.Inventory.HasBreakerCoil, "Mk III was not fitted");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.BreachTowerGate, "Mk III did not advance to the tower gate");
+        Require(player.GetNode<Node3D>("Head/Camera3D/MechanicalArmVisual/CoilModule").Visible, "The Mk III coil is not visible on the arm");
+        LogMvpSmokeMilestone(15, "Mechanical Arm Mk III crafted");
+
+        // --- Act 3: the tower court, the Warden and the power core ----------
+        var gate = main.GetNode<BreakableWall>("TowerCourt/CrackedGate");
+        player.GlobalPosition = gate.GlobalPosition + new Vector3(0.0f, 0.0f, 2.2f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(gate.GlobalPosition + Vector3.Up * 1.4f, Vector3.Up);
+        player.TryAttack();
+        Require(!gate.IsBroken, "An ordinary strike broke the cracked gate");
+        Require(lastActionFeedback == gate.DeflectFeedback, "A deflected strike on the gate did not say what would work");
+        await Frames(60);
+        Require(player.ChargeAndReleaseForTest(1.0f), "The charged strike did not land on the gate through the real strike path");
+        Require(gate.IsBroken, "A charged strike did not break the cracked gate");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefeatWarden, "Breaking the gate did not advance to the Warden");
+        LogMvpSmokeMilestone(16, "tower gate broken");
+
+        var warden = main.GetNode<GalaxabrainWarden>("TowerCourt/Warden");
+        await Frames(2);
+        Require(warden.Brain.State != WardenState.Dormant, "Breaking the gate did not wake the Warden");
+        Require(warden.ReceiveStrike(new ArmStrike(25, false, player.GlobalPosition)) == StrikeOutcome.Deflected, "The Warden's guard did not turn an ordinary strike");
+        var wardenOutcome = StrikeOutcome.Ignored;
+        for (var blow = 0; blow < 20 && wardenOutcome != StrikeOutcome.Killed; blow++)
+            wardenOutcome = warden.ReceiveStrike(new ArmStrike(blow % 5 == 0 ? 70 : 25, blow % 5 == 0, player.GlobalPosition));
+        Require(warden.Brain.IsDead, "The Warden survived its guard being broken twice");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.RecoverPowerCore, "The Warden's death did not advance to the power core");
+        Require(lastActionFeedback == FirstPersonController.WardenDefeatFeedback, "The Warden's death did not point at the power core");
+        LogMvpSmokeMilestone(17, "Warden defeated");
+
+        var core = main.GetNode<PowerCorePickup>("TowerCourt/PowerCorePickup");
+        player.GlobalPosition = core.GlobalPosition + new Vector3(1.5f, -0.2f, 0.0f);
+        await Frames(2);
+        player.GetNode<Node3D>("Head").LookAt(core.GlobalPosition + Vector3.Up * 0.5f, Vector3.Up);
+        Require(player.TryInteract(), "The power core could not be taken through the interaction ray");
+        Require(player.Inventory.HasPowerCore, "Taking the core did not put it in the inventory");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "The power core did not advance to the beacon");
+        Require(hud.GetNode<Label>("Panel/Margin/VBox/Resources").Text.Contains("Power core"), "The HUD did not show the carried power core");
+        RequireHudObjective(hud, CrashSiteMissionStep.ActivateBeacon, "after power core recovered");
+        LogMvpSmokeMilestone(18, "power core recovered");
 
         player.GlobalPosition = savePoint.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
         await Frames(2);
@@ -1021,35 +1290,53 @@ public partial class IntegrationTestRunner : Node
         Require(player.TryInteract(), "Player interaction raycast could not use the save point before beacon activation");
         await Frames(2);
         Require(savePoint.HasSavedCheckpoint, "Save point did not record checkpoint usage");
-        Require(main.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastSaveSucceeded, "Save point did not write the continuation save");
+        Require(saveCoordinator.LastSaveSucceeded, "Save point did not write the continuation save");
         Require(lastActionFeedback == FirstPersonController.SavePointSuccessFeedback, "Save point did not emit player-facing checkpoint feedback");
-        Require(lastActionFeedback.Contains("Checkpoint saved") && lastActionFeedback.Contains("continue to the beacon"), "Save point feedback did not confirm the save and next objective");
+        Require(lastActionFeedback.Contains("Checkpoint saved") && lastActionFeedback.Contains("suit repaired"), "Save point feedback did not confirm the save and the repair");
         Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.SavePointSuccessFeedback, "HUD did not show the checkpoint save feedback text");
         RequireHudObjective(hud, CrashSiteMissionStep.ActivateBeacon, "after save point use");
         LogMvpSmokeMilestone(7, "save point used");
 
-        // Activate through the player raycast so the same action-feedback signal
-        // that drives the HUD confirms the final rescue beacon interaction.
+        // Activate through the player raycast: the core goes in and the holdout starts.
+        var holdout = main.GetNode<BeaconHoldout>("BeaconHoldout");
+        holdout.ChargeSeconds = 2.0f;
         player.GlobalPosition = beacon.GlobalPosition + new Vector3(1.5f, 0.0f, 0.0f);
         await Frames(2);
         player.GetNode<Node3D>("Head").LookAt(beacon.GlobalPosition, Vector3.Up);
-        Require(player.TryInteract(), "Player interaction raycast could not activate the beacon with recovered component");
+        Require(player.TryInteract(), "Player interaction raycast could not install the power core in the beacon");
         Require(beacon.IsActivated, "Beacon activation did not update the beacon state");
-        Require(player.Mission.IsVictory, "Beacon activation did not produce victory");
-        Require(lastActionFeedback == FirstPersonController.BeaconActivationFeedback, "Beacon activation did not emit rescue signal action feedback");
-        Require(lastActionFeedback.Contains("Beacon activated") && lastActionFeedback.Contains("rescue signal online"), "Beacon activation feedback did not confirm the rescue signal");
-        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.BeaconActivationFeedback, "HUD did not show beacon activation feedback text");
-        RequireHudObjective(hud, CrashSiteMissionStep.Victory, "after beacon activation/victory");
+        Require(player.Mission.CurrentStep == CrashSiteMissionStep.DefendBeacon, "Beacon activation did not start the holdout");
+        Require(!player.Mission.IsVictory, "Beacon activation skipped the holdout");
+        Require(lastActionFeedback == FirstPersonController.BeaconChargingFeedback, "Beacon activation did not tell the player to hold the plaza");
         LogMvpSmokeMilestone(8, "beacon activated");
+        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
+
+        for (var frame = 0; frame < 900 && !player.Mission.IsVictory; frame++)
+            await Frames(1);
+        Require(holdout.Spawned.Count > 0, "The holdout never sent an enemy");
+        Require(holdout.Spawned.Count <= holdout.Logic!.TotalEnemies, "The holdout spawned more enemies than its waves hold");
+        Require(player.Mission.IsVictory, "Holding the plaza until the beacon charged did not produce victory");
+        RequireHudObjective(hud, CrashSiteMissionStep.Victory, "after beacon holdout/victory");
+        Require(hud.GetNode<Label>("ActionFeedback").Text == FirstPersonController.BeaconActivationFeedback, "Victory did not confirm the rescue signal");
+        await Frames(2);
+        foreach (var enemy in holdout.Spawned)
+        {
+            var alive = enemy switch
+            {
+                SwarmDrone drone => !drone.Brain.IsDead,
+                GalaxabrainScout holdoutScout => !holdoutScout.Brain.IsDead,
+                _ => false,
+            };
+            Require(!alive, $"{enemy.Name} survived the beacon firing");
+        }
+        LogMvpSmokeMilestone(19, "beacon holdout survived");
         var skyBeam = beacon.GetNode<SpotLight3D>("LandmarkVfx/SkyBeam");
         var beamEnergyBefore = skyBeam.LightEnergy;
         await Frames(6);
         var beamEnergyMid = skyBeam.LightEnergy;
         await Frames(6);
         Require(!Mathf.IsEqualApprox(beamEnergyMid, beamEnergyBefore) || !Mathf.IsEqualApprox(skyBeam.LightEnergy, beamEnergyBefore), "Activated beacon sky beam is not pulsing");
-        Require(!beacon.Interact(player.Inventory, player.Mission), "Beacon activated twice");
-        await Frames(2);
-        Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after beacon activation");
+        Require(navigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after the holdout");
         LogMvpSmokeMilestone(9, "victory reached");
 
         main.QueueFree();
@@ -1081,7 +1368,13 @@ public partial class IntegrationTestRunner : Node
         var continuationHud = continuation.GetNode<CrashSiteHud>("HUD");
         Require(continuation.GetNode<CrashSiteSaveCoordinator>("SaveCoordinator").LastLoadSucceeded, "Save continuation did not load the checkpoint");
         Require(continuationPlayer.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Save continuation did not restore beacon objective");
-        Require(continuationPlayer.Inventory.IsMechanicalArmBuilt && continuationPlayer.Inventory.HasGalaxabrainComponent, "Save continuation did not restore MVP inventory state");
+        Require(continuationPlayer.Inventory.HasBreakerCoil && continuationPlayer.Inventory.HasPowerCore, "Save continuation did not restore the Mk III arm and the power core");
+        await Frames(2);
+        Require(continuation.GetNode<PullableBarricade>("NetYard/WreckBarricade").IsOpen, "Save continuation closed the yard again");
+        Require(continuation.GetNode<BreakableWall>("TowerCourt/CrackedGate").IsBroken, "Save continuation rebuilt the tower gate");
+        Require(continuation.GetNode<GalaxabrainWarden>("TowerCourt/Warden").Brain.IsDead, "Save continuation revived the Warden");
+        Require(continuation.GetNode<DroneNestEncounter>("NetYard/DroneNest").Drones.All(drone => drone.Brain.IsDead), "Save continuation revived the nest drones");
+        Require(continuation.GetNodeOrNull("ActTwoSalvage/ResourceDrop_HarbourMetal") is null || continuation.GetNode<ResourceDrop>("ActTwoSalvage/ResourceDrop_HarbourMetal").IsQueuedForDeletion(), "Save continuation handed collected salvage out again");
         RequireHudObjective(continuationHud, CrashSiteMissionStep.ActivateBeacon, "after save continuation");
         LogMvpSmokeMilestone(11, "save continuation verified");
         continuation.QueueFree();
@@ -1153,11 +1446,9 @@ public partial class IntegrationTestRunner : Node
         Require(!finalComponent.Interact(finalPlayer.Inventory, finalPlayer.Mission), "Recovered component could be collected twice across reloads");
         Require(finalPlayer.Inventory.HasGalaxabrainComponent, "Recovered component was lost across reload");
         Require(!finalBeacon.IsActivated, "Beacon restored as active before activation");
-        Require(finalPlayer.Mission.CurrentStep == CrashSiteMissionStep.ActivateBeacon, "Mission step after recovery was not restored");
-        Require(finalBeacon.Interact(finalPlayer.Inventory, finalPlayer.Mission), "Beacon activation failed after reload");
-        Require(finalPlayer.Mission.IsVictory, "Victory was not reached after reloads");
-        await Frames(2);
-        Require(finalNavigator.LastRequestedScenePath == "res://scenes/UI/VictoryScreen.tscn", "Victory screen was not requested after reloaded beacon activation");
+        Require(finalPlayer.Mission.CurrentStep == CrashSiteMissionStep.UpgradeArmMk2, "Mission step after recovery was not restored");
+        Require(!finalBeacon.Interact(finalPlayer.Inventory, finalPlayer.Mission), "The beacon took the Scout's component as its power core");
+        Require(finalNavigator.LastRequestedScenePath == string.Empty, "A reload past the Scout requested an end screen");
         finalRun.QueueFree();
         await Frames(2);
         LocalSaveGameStore.DeleteSave();

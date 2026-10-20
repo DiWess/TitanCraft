@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Combat;
 using TitanCraft.Core;
 using TitanCraft.Player;
 using TitanCraft.World;
@@ -154,7 +155,7 @@ public sealed class ScoutHitFlinch
     }
 }
 
-public partial class GalaxabrainScout : CharacterBody3D
+public partial class GalaxabrainScout : CharacterBody3D, IArmTarget
 {
     private GalaxabrainScoutBrain _brain = new(
         GalaxabrainScoutBrain.DefaultHealth,
@@ -200,7 +201,31 @@ public partial class GalaxabrainScout : CharacterBody3D
 
     [Export] public float HitFlinchScalePunch { get; set; } = ScoutHitFlinch.DefaultScalePunch;
 
+    /// <summary>
+    /// The Act 1 Scout whose death drives the mission. Scouts that answer the
+    /// beacon in the holdout are not: their deaths complete nothing.
+    /// </summary>
+    [Export] public bool IsMissionScout { get; set; } = true;
+
+    /// <summary>Scene group of every living-or-dead Galaxabrain body, all variants.</summary>
+    public const string EnemyGroup = "galaxabrain_enemies";
+
+    public bool IsStrikeable => !_brain.IsDead;
+
+    public string DeflectFeedback => string.Empty;
+
+    public StrikeOutcome ReceiveStrike(ArmStrike strike)
+    {
+        if (_brain.IsDead)
+            return StrikeOutcome.Ignored;
+
+        ApplyDamage(strike.Damage);
+        return _brain.IsDead ? StrikeOutcome.Killed : StrikeOutcome.Hit;
+    }
+
     public GalaxabrainScoutBrain Brain => _brain;
+
+    public bool IsDefeated => _brain.IsDead;
 
     public GalaxabrainScoutState State => _brain.State;
 
@@ -221,6 +246,7 @@ public partial class GalaxabrainScout : CharacterBody3D
         SetMissionComponentVisible(false);
         _previousState = GalaxabrainScoutState.Idle;
         AddToGroup(GalaxabrainScoutGroup);
+        AddToGroup(EnemyGroup);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -332,7 +358,7 @@ public partial class GalaxabrainScout : CharacterBody3D
             AudioCue.Play3D(this, "AudioLayer_Enemy/Scout_Alert", GlobalPosition);
 
             // Show combat tutorial hint on first detection (Phase 7.4 Priority 1)
-            if (CombatTutorialPath != null && !CombatTutorialPath.IsEmpty)
+            if (IsMissionScout && CombatTutorialPath != null && !CombatTutorialPath.IsEmpty)
             {
                 if (GetNodeOrNull<Player.CombatTutorialHint>(CombatTutorialPath) is { } tutorial)
                 {
@@ -362,7 +388,7 @@ public partial class GalaxabrainScout : CharacterBody3D
     {
         if (player is FirstPersonController controller)
         {
-            controller.Health.ApplyDamage(Damage);
+            controller.TakeHit(Damage, GlobalPosition);
         }
     }
 
@@ -383,7 +409,7 @@ public partial class GalaxabrainScout : CharacterBody3D
 
         // Gameplay death is the only event allowed to complete the defeat objective;
         // the component pickup afterwards completes only component recovery.
-        if (GetConfiguredPlayer() is FirstPersonController controller)
+        if (IsMissionScout && GetConfiguredPlayer() is FirstPersonController controller)
         {
             controller.Mission.TryCompleteGalaxabrainDefeat(true);
             controller.ShowGalaxabrainScoutDefeatFeedback();

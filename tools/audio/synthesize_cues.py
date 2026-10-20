@@ -34,6 +34,16 @@ Cues, by the node that plays them in ``scenes/Main/Main.tscn``:
   pickup/organic_01.wav        Biomass pickup   soft wet squelch
   pickup/glass_01.wav          Electronics pickup  crystalline ping and blip
   pickup/generic_01.wav        default pickup   short thunk and tick
+  weapon/arm_pull_01.wav       Arm_Pull         Mk II clamp: hum, magnetic whoosh, bite
+  weapon/charge_ready_01.wav   Arm_ChargeReady  Mk III coil full: rising buzz locking to a tone
+  weapon/deflect_01.wav        Weapon_Deflect   a blow turned aside: bright clang
+  weapon/charged_impact_01.wav Weapon_ChargedImpact  deep boom, crack, low tail
+  enemy/drone_*_01.wav         Drone_*          swarm drone alert, dive telegraph, hit, death
+  enemy/warden_*_01.wav        Warden_*         Warden alert, slam wind-up, slam, hurt, guard break, death
+  world/wreck_drag_01.wav      WreckBarricade   hull plate scraped clear, heavy fall
+  world/gate_break_01.wav      CrackedGate      stone crack, boom, rubble
+  state/holdout_wave_01.wav    Holdout_Wave     a wave answers the beacon: distant low horn
+  state/discovery_01.wav       State_Discovery  a note read: soft low bell
 
 Usage: python3 tools/audio/synthesize_cues.py [--check]
 """
@@ -407,6 +417,315 @@ def render_pickup_generic() -> list[float]:
     return out
 
 
+# --- Workstream B and C: arm modules, the drone, the Warden, the gates -------
+
+
+def render_arm_pull() -> list[float]:
+    """Mk II clamp: an electric hum that snaps on, a rising magnetic whoosh, a clank as it bites."""
+    rng = random.Random(8101)
+    low = lower = 0.0
+    out = []
+    length = 0.55
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        hum = (math.sin(TAU * 110.0 * t) + 0.5 * math.sin(TAU * 220.0 * t) + 0.3 * math.sin(TAU * 330.0 * t))
+        hum *= envelope(t, 0.01, 0.45) * (0.75 + 0.25 * math.sin(TAU * 31.0 * t))
+        cutoff = 300.0 + 3_000.0 * min(1.0, t / 0.22)
+        low += one_pole(cutoff) * (white - low)
+        lower += one_pole(cutoff * 0.25) * (low - lower)
+        whoosh = (low - lower) * 1.6 * math.sin(math.pi * min(1.0, t / 0.3)) * envelope(t, 0.02, 0.4)
+        bite_t = t - 0.24
+        bite = 0.0
+        if bite_t >= 0.0:
+            bite = bell(bite_t, [(620.0, 0.4, 0.12), (1480.0, 0.25, 0.08), (3100.0, 0.12, 0.05)])
+        out.append(hum * 0.35 + whoosh + bite)
+    return out
+
+
+def render_charge_ready() -> list[float]:
+    """Mk III coil full: a buzz rising in pitch that locks onto a bright held tone."""
+    out = []
+    length = 0.45
+    rise = 0.18
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        if t < rise:
+            phase = sweep_phase(t, 180.0, 720.0, rise)
+        else:
+            phase = sweep_phase(rise, 180.0, 720.0, rise) + TAU * 720.0 * (t - rise)
+        buzz = math.sin(phase) + 0.45 * math.sin(2.0 * phase) + 0.25 * math.sin(3.0 * phase)
+        lock = 0.0
+        if t >= rise:
+            lock = math.sin(TAU * 1_440.0 * (t - rise)) * envelope(t - rise, 0.004, 0.25)
+        out.append(buzz * 0.4 * envelope(t, 0.02, 0.5) + lock * 0.5)
+    return out
+
+
+def render_deflect() -> list[float]:
+    """A blow turned aside: a hard bright clang, no body, ringing off."""
+    rng = random.Random(8203)
+    out = []
+    modes = [(870.0, 0.5, 0.35), (1960.0, 0.35, 0.25), (3170.0, 0.25, 0.18), (4630.0, 0.15, 0.1)]
+    for i in range(samples(0.5)):
+        t = i / SAMPLE_RATE
+        click = rng.uniform(-1.0, 1.0) * envelope(t, 0.0002, 0.01)
+        out.append(click * 0.9 + bell(t, modes))
+    return out
+
+
+def render_charged_impact() -> list[float]:
+    """The charged strike landing: a deep boom, a crack, a long low tail."""
+    rng = random.Random(8307)
+    low = 0.0
+    out = []
+    for i in range(samples(0.9)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(2_200.0) * (white - low)
+        crack = low * envelope(t, 0.0005, 0.07) * 2.6
+        boom = math.sin(sweep_phase(t, 70.0, 38.0, 0.9)) * envelope(t, 0.003, 0.75)
+        ring = bell(t, [(310.0, 0.25, 0.3), (980.0, 0.15, 0.15)])
+        out.append(crack + boom * 1.2 + ring)
+    return out
+
+
+def render_drone_alert() -> list[float]:
+    """Swarm drone wakes: a high insect buzz with a quick rising chirp."""
+    out = []
+    for i in range(samples(0.4)):
+        t = i / SAMPLE_RATE
+        buzz = math.sin(TAU * 240.0 * t + 2.0 * math.sin(TAU * 61.0 * t))
+        chirp = math.sin(sweep_phase(t, 900.0, 2_200.0, 0.4))
+        out.append((buzz * 0.6 + chirp * 0.5) * envelope(t, 0.01, 0.38))
+    return out
+
+
+def render_drone_telegraph() -> list[float]:
+    """About to dive: a whine rising over 0.6 s, warbling faster as it climbs."""
+    out = []
+    length = 0.65
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        rate = 18.0 + 40.0 * t / length
+        phase = sweep_phase(t, 500.0, 1_900.0, length) + 0.6 * math.sin(TAU * rate * t)
+        tone = math.sin(phase) + 0.35 * math.sin(2.0 * phase)
+        shape = min(1.0, t / 0.05) * (0.5 + 0.5 * t / length)
+        out.append(tone * shape)
+    return out
+
+
+def render_drone_hit() -> list[float]:
+    """A drone takes a blow: a small crunch and an angry buzz cut short."""
+    rng = random.Random(8501)
+    low = 0.0
+    out = []
+    for i in range(samples(0.3)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(3_500.0) * (white - low)
+        buzz = math.sin(TAU * 320.0 * t + 3.0 * math.sin(TAU * 73.0 * t))
+        out.append(low * envelope(t, 0.0005, 0.05) * 1.8 + buzz * 0.45 * envelope(t, 0.005, 0.22))
+    return out
+
+
+def render_drone_death() -> list[float]:
+    """A drone falls: its buzz sputters and drops, then a light crash."""
+    rng = random.Random(8603)
+    low = 0.0
+    out = []
+    length = 0.9
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        if t < 0.6:
+            gate = 1.0 if math.sin(TAU * (14.0 + 30.0 * t) * t) > -0.2 else 0.15
+            phase = sweep_phase(t, 340.0, 90.0, 0.6)
+            out.append(math.sin(phase + 2.0 * math.sin(TAU * 57.0 * t)) * gate * 0.7 * (1.0 - t / 0.6 * 0.4))
+        else:
+            local = t - 0.6
+            low += one_pole(2_000.0) * (white - low)
+            out.append(low * envelope(local, 0.001, 0.15) * 2.0 + bell(local, [(1250.0, 0.2, 0.1)]))
+    return out
+
+
+def render_warden_alert() -> list[float]:
+    """The Warden wakes: a low bellow with a rough throat."""
+    rng = random.Random(8701)
+    noise = 0.0
+    out = []
+    length = 1.1
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        noise += one_pole(500.0) * (white - noise)
+        phase = sweep_phase(t, 85.0, 62.0, length)
+        tone = math.sin(phase) + 0.6 * math.sin(2.0 * phase) + 0.35 * math.sin(3.0 * phase) + 0.2 * math.sin(5.0 * phase)
+        rough = 0.7 + 0.3 * math.sin(TAU * 19.0 * t)
+        shape = min(1.0, t / 0.15) * math.exp(-1.5 * t)
+        out.append((tone * rough + noise * 1.4) * shape)
+    return out
+
+
+def render_warden_windup() -> list[float]:
+    """Arms raised: a strained groan rising for the slam's whole wind-up."""
+    rng = random.Random(8803)
+    noise = 0.0
+    out = []
+    length = 0.95
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        noise += one_pole(900.0) * (white - noise)
+        phase = sweep_phase(t, 70.0, 140.0, length)
+        tone = math.sin(phase) + 0.5 * math.sin(2.0 * phase) + 0.25 * math.sin(3.0 * phase)
+        shape = min(1.0, t / 0.1) * (0.4 + 0.6 * t / length)
+        out.append((tone * 0.8 + noise * 0.8) * shape)
+    return out
+
+
+def render_warden_slam() -> list[float]:
+    """The slam lands: a ground-shaking low impact and debris."""
+    rng = random.Random(8907)
+    low = lowest = 0.0
+    out = []
+    for i in range(samples(1.0)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        low += one_pole(900.0) * (white - low)
+        lowest += one_pole(160.0) * (white - lowest)
+        boom = math.sin(sweep_phase(t, 58.0, 32.0, 1.0)) * envelope(t, 0.004, 0.85)
+        debris = low * envelope(t, 0.001, 0.25) * 1.8
+        rumble = lowest * envelope(t, 0.01, 0.9) * 3.0
+        out.append(boom * 1.2 + debris + rumble)
+    return out
+
+
+def render_warden_hurt() -> list[float]:
+    """A blow lands on the open Warden: a short low grunt and a wet crack."""
+    rng = random.Random(9001)
+    noise = 0.0
+    out = []
+    for i in range(samples(0.45)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        noise += one_pole(1_400.0) * (white - noise)
+        phase = sweep_phase(t, 120.0, 75.0, 0.45)
+        tone = math.sin(phase) + 0.5 * math.sin(2.0 * phase)
+        out.append(tone * envelope(t, 0.01, 0.35) * 0.8 + noise * envelope(t, 0.0008, 0.06) * 1.8)
+    return out
+
+
+def render_warden_guard_break() -> list[float]:
+    """The guard gives: a carapace crack, shards, and a falling groan."""
+    rng = random.Random(9103)
+    high = 0.0
+    out = []
+    for i in range(samples(0.9)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        high += one_pole(6_000.0) * (white - high)
+        crack = high * envelope(t, 0.0003, 0.05) * 2.4
+        shards = bell(t, [(2_350.0, 0.2, 0.2), (3_720.0, 0.15, 0.15), (5_110.0, 0.1, 0.1)])
+        groan_t = t - 0.08
+        groan = 0.0
+        if groan_t >= 0.0:
+            phase = sweep_phase(groan_t, 140.0, 60.0, 0.8)
+            groan = (math.sin(phase) + 0.5 * math.sin(2.0 * phase)) * envelope(groan_t, 0.03, 0.7)
+        out.append(crack + shards + groan * 0.8)
+    return out
+
+
+def render_warden_death() -> list[float]:
+    """The Warden falls: a long collapsing groan into a heavy crash."""
+    rng = random.Random(9207)
+    low = 0.0
+    out = []
+    for i in range(samples(1.8)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        if t < 1.1:
+            phase = sweep_phase(t, 110.0, 38.0, 1.1)
+            rough = 0.6 + 0.4 * math.sin(TAU * (11.0 + 9.0 * t) * t)
+            out.append((math.sin(phase) + 0.6 * math.sin(2.0 * phase) + 0.3 * math.sin(3.0 * phase)) * rough * 0.7
+                       * min(1.0, t / 0.1))
+        else:
+            local = t - 1.1
+            low += one_pole(700.0) * (white - low)
+            boom = math.sin(sweep_phase(local, 50.0, 30.0, 0.7)) * envelope(local, 0.004, 0.6)
+            out.append(boom * 1.2 + low * envelope(local, 0.002, 0.45) * 2.2)
+    return out
+
+
+def render_wreck_drag() -> list[float]:
+    """Hull plate dragged by the clamp: a grinding metal scrape that ends in a heavy fall."""
+    rng = random.Random(9301)
+    band = low = 0.0
+    out = []
+    for i in range(samples(1.1)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        if t < 0.65:
+            band += one_pole(1_800.0) * (white - band)
+            low += one_pole(500.0) * (band - low)
+            grind = (band - low) * (0.6 + 0.4 * math.sin(TAU * 13.0 * t)) * 2.0
+            squeal = 0.15 * math.sin(sweep_phase(t, 700.0, 520.0, 0.65)) * (0.5 + 0.5 * math.sin(TAU * 7.0 * t))
+            out.append((grind + squeal) * min(1.0, t / 0.04))
+        else:
+            local = t - 0.65
+            low += one_pole(900.0) * (white - low)
+            ring = bell(local, [(240.0, 0.4, 0.4), (610.0, 0.3, 0.25), (1430.0, 0.15, 0.15)])
+            out.append(low * envelope(local, 0.001, 0.2) * 2.2 + ring)
+    return out
+
+
+def render_gate_break() -> list[float]:
+    """The cracked gate gives way: a stone crack, a boom, and rubble pouring out."""
+    rng = random.Random(9403)
+    high = low = 0.0
+    out = []
+    for i in range(samples(1.6)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        high += one_pole(5_000.0) * (white - high)
+        low += one_pole(400.0) * (white - low)
+        crack = high * envelope(t, 0.0004, 0.06) * 2.2
+        boom = math.sin(sweep_phase(t, 62.0, 34.0, 1.6)) * envelope(t, 0.005, 1.1)
+        # Rubble: sparse grains thinning out as the pile settles.
+        density = 0.03 * math.exp(-2.2 * t)
+        grain = rng.uniform(-1.0, 1.0) if rng.random() < density else 0.0
+        out.append(crack + boom * 1.1 + low * envelope(t, 0.01, 0.8) * 2.0 + grain * 0.6)
+    return out
+
+
+def render_holdout_wave() -> list[float]:
+    """A wave answers the beacon: a distant low horn swelling, unsettled."""
+    out = []
+    length = 1.6
+    for i in range(samples(length)):
+        t = i / SAMPLE_RATE
+        detune = 0.8 * math.sin(TAU * 0.9 * t)
+        tone = (math.sin(TAU * (98.0 + detune) * t) + 0.6 * math.sin(TAU * (147.0 - detune) * t)
+                + 0.3 * math.sin(TAU * 196.0 * t))
+        shape = math.sin(math.pi * t / length) ** 1.5
+        out.append(tone * shape * 0.8)
+    return out
+
+
+def render_discovery() -> list[float]:
+    """A note read: a soft low bell and a breath of air, quieter than an objective."""
+    rng = random.Random(9501)
+    band = 0.0
+    out = []
+    for i in range(samples(1.2)):
+        t = i / SAMPLE_RATE
+        white = rng.uniform(-1.0, 1.0)
+        band += one_pole(900.0) * (white - band)
+        chime = bell(t, [(392.0, 0.5, 0.9), (587.3, 0.3, 0.7), (1174.7, 0.08, 0.4)])
+        out.append(chime + band * 0.2 * envelope(t, 0.15, 0.6))
+    return out
+
+
 # name -> (renderer, peak): the peak sets each cue's level relative to the
 # others; the scene's volume_db still sets the mix.
 CUES = {
@@ -433,6 +752,24 @@ CUES = {
     "pickup/organic_01.wav": (render_pickup_organic, 0.6),
     "pickup/glass_01.wav": (render_pickup_glass, 0.6),
     "pickup/generic_01.wav": (render_pickup_generic, 0.6),
+    "weapon/arm_pull_01.wav": (render_arm_pull, 0.7),
+    "weapon/charge_ready_01.wav": (render_charge_ready, 0.5),
+    "weapon/deflect_01.wav": (render_deflect, 0.7),
+    "weapon/charged_impact_01.wav": (render_charged_impact, 0.9),
+    "enemy/drone_alert_01.wav": (render_drone_alert, 0.6),
+    "enemy/drone_telegraph_01.wav": (render_drone_telegraph, 0.6),
+    "enemy/drone_hit_01.wav": (render_drone_hit, 0.6),
+    "enemy/drone_death_01.wav": (render_drone_death, 0.7),
+    "enemy/warden_alert_01.wav": (render_warden_alert, 0.85),
+    "enemy/warden_windup_01.wav": (render_warden_windup, 0.7),
+    "enemy/warden_slam_01.wav": (render_warden_slam, 0.9),
+    "enemy/warden_hurt_01.wav": (render_warden_hurt, 0.75),
+    "enemy/warden_guard_break_01.wav": (render_warden_guard_break, 0.85),
+    "enemy/warden_death_01.wav": (render_warden_death, 0.85),
+    "world/wreck_drag_01.wav": (render_wreck_drag, 0.8),
+    "world/gate_break_01.wav": (render_gate_break, 0.9),
+    "state/holdout_wave_01.wav": (render_holdout_wave, 0.6),
+    "state/discovery_01.wav": (render_discovery, 0.5),
 }
 
 

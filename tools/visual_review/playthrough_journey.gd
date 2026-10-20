@@ -61,8 +61,47 @@ const LEGS := [
 	["electronics_to_workbench", "Placeholder_Workbench", "craft"],
 	["workbench_to_scout", "Placeholder_GalaxabrainScout", "fight"],
 	["scout_to_component", "Placeholder_GalaxabrainScout/GalaxabrainComponentPickup", "recover"],
-	["component_to_save_point", "Placeholder_SavePoint", "save"],
-	["save_point_to_beacon", "Placeholder_Beacon", "activate"],
+	# Act 2: salvage for the Mk II fitting, then the Net-makers' Yard. The
+	# waypoints follow the gaps a player uses: the arcade's middle arch, the
+	# street south of the stair terrace, the alley beside the west house.
+	["component_to_harbour_salvage", "ActTwoSalvage/ResourceDrop_HarbourMetal", "collect"],
+	["harbour_to_arcade_east", "@17,-14", ""],
+	["arcade_east_to_arch", "@7,-17", ""],
+	["arch_to_arcade_salvage", "ActTwoSalvage/ResourceDrop_ArcadeMetal", "collect"],
+	["arcade_to_terrace_street", "@-6,-14.6", ""],
+	["street_to_stall_salvage", "ActTwoSalvage/ResourceDrop_StallElectronics", "collect"],
+	["stall_to_terrace_street", "@-6,-14.6", ""],
+	["street_to_arcade", "@0,-16", ""],
+	["arcade_to_arch", "@7,-17", ""],
+	["arch_to_workbench_mk2", "Placeholder_Workbench", "craft"],
+	["workbench_to_arch", "@7,-17", ""],
+	["arch_to_arcade_west", "@0,-16", ""],
+	["arcade_to_save_square", "@-9,-13", ""],
+	["save_square_to_alley", "@-12.6,-13", ""],
+	["alley_to_yard_gate", "@-12.6,-18.2", ""],
+	["pull_the_wreck", "NetYard/WreckBarricade", "pull"],
+	["into_the_yard", "@-14,-22", ""],
+	["clear_the_nest", "NetYard/DroneNest", "drones"],
+	["yard_brood", "NetYard/ResourceDrop_YardBroodBiomass", "collect"],
+	["yard_stall", "NetYard/ResourceDrop_YardMetalStall", "collect"],
+	["yard_radio", "NetYard/ResourceDrop_YardRadioElectronics", "collect"],
+	["yard_palm", "NetYard/ResourceDrop_YardMetalPalm", "collect"],
+	["yard_to_gate", "@-14,-21.6", ""],
+	["gate_to_alley", "@-12.6,-18.2", ""],
+	["alley_to_save_square", "@-12.6,-13", ""],
+	["save_square_to_street", "@-9,-13", ""],
+	["street_to_arcade_mk3", "@0,-16", ""],
+	["arcade_to_arch_mk3", "@7,-17", ""],
+	["arch_to_workbench_mk3", "Placeholder_Workbench", "craft"],
+	# Act 3: the tower court and the holdout.
+	["workbench_to_tower_gate", "@12.3,-20.6", ""],
+	["break_the_gate", "TowerCourt/CrackedGate", "charge"],
+	["fight_the_warden", "TowerCourt/Warden", "warden"],
+	["take_the_power_core", "TowerCourt/PowerCorePickup", "recover"],
+	["core_to_gate", "@12.3,-23.6", ""],
+	["gate_to_plaza", "@14,-19.5", ""],
+	["plaza_to_beacon", "Placeholder_Beacon", "activate"],
+	["hold_the_plaza", "Placeholder_Beacon", "defend"],
 ]
 
 # The save point is walled on its north side (C7_Wall_1) and boxed in to the
@@ -93,6 +132,8 @@ const STUCK_MIN_PROGRESS_M := 0.25
 const MAX_STUCK_EVENTS := 4
 const LEG_TIMEOUT_S := 60.0
 const MAX_SWINGS := 60
+const CHARGE_HOLD_TICKS := 52      # Mk III charge is 0.75 s
+const ENCOUNTER_TIMEOUT_S := 150.0
 
 var _scene: Node = null
 var _player: CharacterBody3D = null
@@ -144,6 +185,22 @@ const CUE_NODES := [
 	"ResourceDrop_MetalPickup/AudioPlayers/SpatialPickupPlayer",
 	"ResourceDrop_BiomassPickup/AudioPlayers/SpatialPickupPlayer",
 	"ResourceDrop_ElectronicsPickup/AudioPlayers/SpatialPickupPlayer",
+	"AudioLayer_Player/Arm_Pull",
+	"AudioLayer_Player/Arm_ChargeReady",
+	"AudioLayer_Player/Weapon_Deflect",
+	"AudioLayer_Player/Weapon_ChargedImpact",
+	"AudioLayer_Enemy/Drone_Alert",
+	"AudioLayer_Enemy/Drone_Telegraph",
+	"AudioLayer_Enemy/Drone_Hit",
+	"AudioLayer_Enemy/Drone_Death",
+	"AudioLayer_Enemy/Warden_Alert",
+	"AudioLayer_Enemy/Warden_Windup",
+	"AudioLayer_Enemy/Warden_Slam",
+	"AudioLayer_Enemy/Warden_GuardBreak",
+	"AudioLayer_Enemy/Warden_Death",
+	"AudioLayer_State/Holdout_Wave",
+	"NetYard/WreckBarricade/PullAudio",
+	"TowerCourt/CrackedGate/BreakAudio",
 ]
 var _cues := {}
 var _cue_state := {}
@@ -225,6 +282,10 @@ func _play_leg(leg_name: String, target_path: String, action: String) -> bool:
 	var stop := WAYPOINT_STOP_M if action == "" else INTERACT_STOP_M
 	if action == "fight" or action == "die":
 		stop = STRIKE_RANGE_M
+	elif action in ["pull", "drones", "warden", "defend"]:
+		stop = 99.0   # these act from where the player already stands
+	elif action == "charge":
+		stop = 2.4
 	var goal := func() -> Vector3:
 		if fixed != Vector3.INF:
 			return fixed
@@ -234,6 +295,16 @@ func _play_leg(leg_name: String, target_path: String, action: String) -> bool:
 	var ok := true
 	if action == "fight":
 		ok = await _fight(target, leg)
+	elif action == "pull":
+		ok = await _pull(target, leg)
+	elif action == "drones":
+		ok = await _clear_drones(target, leg)
+	elif action == "charge":
+		ok = await _charge_strike(target, leg)
+	elif action == "warden":
+		ok = await _fight_warden(target, leg)
+	elif action == "defend":
+		ok = await _defend(target, leg)
 	elif action == "die":
 		ok = await _die_and_reload(target, leg)
 	elif action != "":
@@ -438,6 +509,250 @@ func _fight(scout: Node3D, leg: Dictionary) -> bool:
 	}
 	await _capture("fight_after")
 	return won
+
+# --- arm modules and the new encounters -----------------------------------------
+
+func _cooldown_ticks(ticks: int) -> void:
+	Input.action_release("move_forward")
+	await _ticks(ticks)
+
+func _pull(target: Node3D, leg: Dictionary) -> bool:
+	var objective_before := _hud("Panel/Margin/VBox/Objective")
+	for attempt in 4:
+		await _aim_at_point(target.get("PullAnchor"), 40)
+		await _send_action("pull")
+		await _ticks(30)
+		if _hud("Panel/Margin/VBox/Objective") != objective_before:
+			leg["pull"] = "ok_on_attempt_%d" % (attempt + 1)
+			return true
+		leg["pull_miss_%d" % (attempt + 1)] = _probe_interaction_ray()
+		await _cooldown_ticks(40)
+	leg["pull"] = "failed"
+	return false
+
+func _clear_drones(nest: Node3D, leg: Dictionary) -> bool:
+	# What a player does against drones that hang out of reach: pull one down
+	# with the clamp, close in, strike it while it is grounded; or strike one
+	# that dives into reach. All on real input.
+	var start_tick := _tick
+	var pulls := 0
+	var swings := 0
+	var objective_before := _hud("Panel/Margin/VBox/Objective")
+	while _tick - start_tick < int(ENCOUNTER_TIMEOUT_S * 60):
+		if _is_over() or _hud("Panel/Margin/VBox/Objective") != objective_before:
+			break
+		var drone := _nearest_living(nest.get_children(), true)
+		if drone == null:
+			await _ticks(5)
+			continue
+		var r := await _engage_drone(drone)
+		pulls += r[0]
+		swings += r[1]
+	Input.action_release("move_forward")
+	var won := _hud("Panel/Margin/VBox/Objective") != objective_before
+	leg["drones"] = {"pulls": pulls, "swings": swings, "won": won,
+		"seconds": snappedf(float(_tick - start_tick) / 60.0, 0.01), "health_end": _health_value()}
+	return won
+
+# Returns [pulls, swings] spent on one drone this round.
+func _engage_drone(drone: Node3D) -> Array:
+	var pulls := 0
+	var swings := 0
+	var state := int(drone.get("StateCode"))
+	# SwarmDroneState: 0 Dormant, 1 Orbit, 2 Telegraph, 3 Dive, 4 Recover, 5 Stunned, 6 Dead
+	if state == 5:
+		var dist := _flat(drone.global_position - _player.global_position).length()
+		if dist > 2.0:
+			_steer_towards(drone.global_position)
+			Input.action_press("move_forward")
+			await _ticks(1)
+			return [0, 0]
+		Input.action_release("move_forward")
+		await _aim_at_point(drone.global_position, 8)
+		await _send_action("attack")
+		await _ticks(10)
+		return [0, 1]
+	Input.action_release("move_forward")
+	await _aim_at_point(drone.global_position, 12)
+	if _player.global_position.distance_to(drone.global_position) < 2.6 and state == 3:
+		await _send_action("attack")
+		await _ticks(10)
+		return [0, 1]
+	await _send_action("pull")
+	pulls += 1
+	await _ticks(20)
+	return [pulls, swings]
+
+func _charge_strike(target: Node3D, leg: Dictionary) -> bool:
+	var objective_before := _hud("Panel/Margin/VBox/Objective")
+	for attempt in 4:
+		await _aim_at_point(target.global_position + Vector3(0.0, 1.4, 0.0), 30)
+		await _hold_and_release_attack(CHARGE_HOLD_TICKS)
+		await _ticks(30)
+		if _hud("Panel/Margin/VBox/Objective") != objective_before:
+			leg["charge"] = "ok_on_attempt_%d" % (attempt + 1)
+			return true
+		Input.action_press("move_forward")
+		await _ticks(5)
+		Input.action_release("move_forward")
+		await _ticks(50)
+	leg["charge"] = "failed"
+	return false
+
+func _hold_and_release_attack(ticks: int) -> void:
+	var press := InputEventAction.new()
+	press.action = "attack"
+	press.pressed = true
+	Input.parse_input_event(press)
+	Input.flush_buffered_events()
+	await _ticks(ticks)
+	var release := InputEventAction.new()
+	release.action = "attack"
+	release.pressed = false
+	Input.parse_input_event(release)
+	Input.flush_buffered_events()
+	await _ticks(2)
+
+func _fight_warden(warden: Node3D, leg: Dictionary) -> bool:
+	# The Warden's rule, played straight: ordinary blows are wasted on its
+	# guard, so close in, charge, release into it, then strike while it is
+	# staggered; back off when it winds up a slam and the coil is not ready.
+	var start_tick := _tick
+	var charges := 0
+	var swings := 0
+	var retreats := 0
+	var objective_before := _hud("Panel/Margin/VBox/Objective")
+	var health_start := _health_value()
+	while _tick - start_tick < int(ENCOUNTER_TIMEOUT_S * 60):
+		if _is_over() or _hud("Panel/Margin/VBox/Objective") != objective_before:
+			break
+		var state := int(warden.get("StateCode"))
+		# WardenState: 0 Dormant, 1 Advance, 2 Windup, 3 Recover, 4 Staggered, 5 Dead
+		var dist := _flat(warden.global_position - _player.global_position).length()
+		if state == 5:
+			break
+		if state == 4:
+			if dist > 2.8:
+				_steer_towards(warden.global_position)
+				Input.action_press("move_forward")
+				await _ticks(1)
+				continue
+			Input.action_release("move_forward")
+			await _aim_at_point(warden.global_position + Vector3(0.0, 1.0, 0.0), 6)
+			await _send_action("attack")
+			swings += 1
+			await _ticks(46)
+			continue
+		if dist > 3.0:
+			_steer_towards(warden.global_position)
+			Input.action_press("move_forward")
+			await _ticks(1)
+			continue
+		Input.action_release("move_forward")
+		await _aim_at_point(warden.global_position + Vector3(0.0, 1.0, 0.0), 6)
+		await _hold_and_release_attack(CHARGE_HOLD_TICKS)
+		charges += 1
+		if int(warden.get("StateCode")) != 4:
+			# Missed the window: step back out of the slam and try again.
+			retreats += 1
+			Input.action_press("move_backward")
+			await _ticks(40)
+			Input.action_release("move_backward")
+			await _ticks(30)
+	Input.action_release("move_forward")
+	Input.action_release("move_backward")
+	var won := _hud("Panel/Margin/VBox/Objective") != objective_before and not _is_over()
+	leg["warden"] = {"charges": charges, "swings": swings, "retreats": retreats, "won": won,
+		"seconds": snappedf(float(_tick - start_tick) / 60.0, 0.01),
+		"health_start": health_start, "health_end": _health_value()}
+	await _capture("warden_after")
+	return won
+
+func _defend(beacon: Node3D, leg: Dictionary) -> bool:
+	# Hold the plaza until the beacon fires: stay near it, and take on
+	# whatever comes -- pull drones down, strike what is in reach.
+	var holdout := _scene.get_node_or_null("BeaconHoldout")
+	var start_tick := _tick
+	var kills_seen := 0
+	var health_start := _health_value()
+	var captured_mid := false
+	while _tick - start_tick < int(ENCOUNTER_TIMEOUT_S * 60):
+		if _is_over():
+			break
+		if not captured_mid and _tick - start_tick > 60 * 25:
+			captured_mid = true
+			await _capture("holdout_mid")
+		var enemies: Array = []
+		if holdout != null:
+			enemies = holdout.get("SpawnedNodes")
+		var target := _nearest_living(enemies, false)
+		if _flat(beacon.global_position - _player.global_position).length() > 9.0:
+			_steer_towards(beacon.global_position)
+			Input.action_press("move_forward")
+			await _ticks(1)
+			continue
+		if target == null:
+			Input.action_release("move_forward")
+			await _ticks(6)
+			continue
+		if target.has_method("Activate"):
+			await _engage_drone(target)
+			continue
+		# A Scout: meet it and strike.
+		var dist := _flat(target.global_position - _player.global_position).length()
+		if dist > STRIKE_RANGE_M:
+			_steer_towards(target.global_position)
+			Input.action_press("move_forward")
+			await _ticks(1)
+			continue
+		Input.action_release("move_forward")
+		await _aim_at(target, 8)
+		await _send_action("attack")
+		await _ticks(20)
+	Input.action_release("move_forward")
+	var won := _victory_reached() or (_is_over() and not _defeat_reached())
+	leg["holdout"] = {"won": won, "seconds": snappedf(float(_tick - start_tick) / 60.0, 0.01),
+		"health_start": health_start, "health_end": _health_value()}
+	return won
+
+func _nearest_living(nodes: Array, drones_only: bool) -> Node3D:
+	var best: Node3D = null
+	var best_d := INF
+	for n in nodes:
+		if not is_instance_valid(n) or not (n is Node3D):
+			continue
+		var defeated = n.get("IsDefeated")
+		if defeated == null or bool(defeated):
+			continue
+		if drones_only and not n.has_method("Activate"):
+			continue
+		var d := _player.global_position.distance_to(n.global_position)
+		if d < best_d:
+			best_d = d
+			best = n
+	return best
+
+func _steer_towards(point: Vector3) -> void:
+	var to := _flat(point - _player.global_position)
+	_turn(wrapf(atan2(-to.x, -to.z) - _player.rotation.y, -PI, PI), 0.0)
+
+func _aim_at_point(point: Vector3, max_steps: int) -> void:
+	var head := _player.get_node_or_null("Head") as Node3D
+	var camera := _player.get_node_or_null("Head/Camera3D") as Node3D
+	for i in max_steps:
+		if _is_over():
+			return
+		var to_target: Vector3 = point - _player.global_position
+		var yaw_delta: float = wrapf(atan2(-to_target.x, -to_target.z) - _player.rotation.y, -PI, PI)
+		var pitch_delta := 0.0
+		if head != null and camera != null:
+			var eye: Vector3 = camera.global_position
+			var flat := Vector2(point.x - eye.x, point.z - eye.z).length()
+			pitch_delta = atan2(point.y - eye.y, maxf(flat, 0.01)) - head.rotation.x
+		if absf(yaw_delta) < 0.015 and absf(pitch_delta) < 0.015:
+			return
+		_turn(yaw_delta, pitch_delta)
+		await _ticks(1)
 
 # --- defeat and respawn -------------------------------------------------------
 

@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://titancraft_galaxabrain_warden"]
+
+[ext_resource type="Script" path="res://src/Enemies/GalaxabrainWarden.cs" id="1_warden"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_CHAR_GalaxabrainWarden_V1.gltf" id="2_body"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_CHAR_GalaxabrainWarden_Guard_V1.gltf" id="3_guard"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_CHAR_GalaxabrainWarden_Disabled_V1.gltf" id="4_disabled"]
+
+[sub_resource type="BoxShape3D" id="SHAPE_Warden"]
+size = Vector3(2.8, 1.9, 3.0)
+
+[sub_resource type="StandardMaterial3D" id="MAT_WardenCore"]
+albedo_color = Color(1, 0.12, 0.3, 1)
+emission_enabled = true
+emission = Color(1, 0.12, 0.3, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="SphereMesh" id="MESH_WardenCore"]
+material = SubResource("MAT_WardenCore")
+radius = 0.24
+height = 0.48
+radial_segments = 12
+rings = 6
+
+[node name="GalaxabrainWarden" type="CharacterBody3D"]
+script = ExtResource("1_warden")
+metadata/role = "Galaxabrain Warden (README section 6 amendment, D3): guards the beacon's power core; its guard deflects every strike but a Mk III charged one."
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+shape = SubResource("SHAPE_Warden")
+
+[node name="AliveVisual" type="Node3D" parent="."]
+
+[node name="WardenModel" parent="AliveVisual" instance=ExtResource("2_body")]
+
+[node name="Guard" type="Node3D" parent="AliveVisual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.2)
+
+[node name="GuardModel" parent="AliveVisual/Guard" instance=ExtResource("3_guard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.25, 1.2)
+
+[node name="CoreGlow" type="MeshInstance3D" parent="AliveVisual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -0.72)
+mesh = SubResource("MESH_WardenCore")
+
+[node name="DisabledVisual" type="Node3D" parent="."]
+visible = false
+
+[node name="WardenDisabledModel" parent="DisabledVisual" instance=ExtResource("4_disabled")]

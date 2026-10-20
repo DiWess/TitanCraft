@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://titancraft_story_note"]
+
+[ext_resource type="Script" path="res://src/World/StoryNote.cs" id="1_note"]
+
+[sub_resource type="SphereShape3D" id="SHAPE_Note"]
+radius = 0.8
+
+[sub_resource type="StandardMaterial3D" id="MAT_Glint"]
+shading_mode = 0
+albedo_color = Color(1, 0.86, 0.55, 0.9)
+transparency = 1
+emission_enabled = true
+emission = Color(1, 0.82, 0.5, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="SphereMesh" id="MESH_Glint"]
+material = SubResource("MAT_Glint")
+radius = 0.035
+height = 0.07
+radial_segments = 6
+rings = 3
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_Glint"]
+emission_shape = 1
+emission_sphere_radius = 0.25
+direction = Vector3(0, 1, 0)
+spread = 25.0
+initial_velocity_min = 0.05
+initial_velocity_max = 0.15
+gravity = Vector3(0, 0.05, 0)
+scale_min = 0.5
+scale_max = 1.0
+
+[node name="StoryNote" type="Area3D"]
+script = ExtResource("1_note")
+metadata/role = "An optional discovery (workstream D): read with E; counted on the victory screen."
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("SHAPE_Note")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Glint" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+amount = 6
+lifetime = 1.6
+process_material = SubResource("PPM_Glint")
+draw_pass_1 = SubResource("MESH_Glint")

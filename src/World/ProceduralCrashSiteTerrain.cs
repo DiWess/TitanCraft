@@ -80,7 +80,62 @@ public partial class ProceduralCrashSiteTerrain : Node3D
         AddChild(instance);
     }
 
-    private static StandardMaterial3D Material(Color color) => new() { AlbedoColor = color, Roughness = 0.92f };
+    private static StandardMaterial3D Material(Color color) => new()
+    {
+        AlbedoColor = color,
+        Roughness = 0.92f,
+        // Ground grain (workstream D): one shared world-space noise texture and
+        // normal map over every terrain piece, so the flat zone colours read
+        // as ash, soil and rock instead of painted card.
+        AlbedoTexture = GroundGrain.Albedo,
+        NormalEnabled = true,
+        NormalTexture = GroundGrain.Normal,
+        NormalScale = 0.8f,
+        Uv1Triplanar = true,
+        Uv1WorldTriplanar = true,
+        Uv1Scale = Vector3.One * 0.4f,
+        TextureFilter = BaseMaterial3D.TextureFilterEnum.LinearWithMipmapsAnisotropic,
+    };
+
+    private static class GroundGrain
+    {
+        private static FastNoiseLite Noise() => new()
+        {
+            NoiseType = FastNoiseLite.NoiseTypeEnum.SimplexSmooth,
+            Frequency = 0.035f,
+            FractalOctaves = 5,
+            Seed = Seed,
+        };
+
+        public static readonly NoiseTexture2D Albedo = new()
+        {
+            Width = 512,
+            Height = 512,
+            Seamless = true,
+            Noise = Noise(),
+            ColorRamp = Ramp(),
+            GenerateMipmaps = true,
+        };
+
+        public static readonly NoiseTexture2D Normal = new()
+        {
+            Width = 512,
+            Height = 512,
+            Seamless = true,
+            AsNormalMap = true,
+            BumpStrength = 8f,
+            Noise = Noise(),
+            GenerateMipmaps = true,
+        };
+
+        private static Gradient Ramp()
+        {
+            var ramp = new Gradient();
+            ramp.SetColor(0, new Color(0.72f, 0.72f, 0.72f));
+            ramp.SetColor(1, new Color(1f, 1f, 1f));
+            return ramp;
+        }
+    }
 
     public static Dictionary<string, Vector3> ReadTargets(Node worldRoot)
     {
@@ -395,7 +450,51 @@ public partial class ProceduralCrashSiteTerrain : Node3D
             TerrainZone.HorizonRidge => HorizonHeight(x, z, minX, maxX, minZ, maxZ) + faceted * 0.28f,
             _ => 0.22f + faceted * 0.16f
         };
-        return Mathf.Clamp(Mathf.Lerp(CorridorHeight, height, transition), CorridorHeight, MaxOutsideHeight);
+        float natural = Mathf.Clamp(Mathf.Lerp(CorridorHeight, height, transition), CorridorHeight, MaxOutsideHeight);
+        float paved = Mathf.Lerp(natural, CorridorHeight, PavedWeight(x, z));
+        // East of the harbour wall the ground falls away under the sea
+        // (workstream D): the old horizon ridge there hid the water.
+        return Mathf.Lerp(paved, SeaFloorHeight, SeaWeight(x));
+    }
+
+    /// <summary>Where the shore starts to fall away, east of the sea walls (x ~ 34-36).</summary>
+    public const float SeaShoreX = 36.5f;
+    public const float SeaShoreWidth = 3.5f;
+    public const float SeaFloorHeight = -1.2f;
+
+    public static float SeaWeight(float x)
+    {
+        float t = Mathf.Clamp((x - SeaShoreX) / SeaShoreWidth, 0.0f, 1.0f);
+        return t * t * (3.0f - 2.0f * t);
+    }
+
+    /// <summary>
+    /// Courts the player walks in that the natural terrain would bury: the
+    /// Net-makers' Yard and the tower court (workstream B). The visual terrain
+    /// carries no collision, so ground the player can stand on must also look
+    /// like ground at that height. (x min, x max, z min, z max), blended to the
+    /// natural surface over <see cref="PavedBlendMetres"/>. Mirrored in
+    /// tools/level/build_mwezi_quarter_district.py.
+    /// </summary>
+    public static readonly (float MinX, float MaxX, float MinZ, float MaxZ)[] PavedCourts =
+    {
+        (-21.5f, -12.1f, -29.5f, -17.8f),
+        (4.8f, 20.4f, -29.5f, -20.5f),
+    };
+
+    public const float PavedBlendMetres = 1.5f;
+
+    public static float PavedWeight(float x, float z)
+    {
+        float weight = 0.0f;
+        foreach (var court in PavedCourts)
+        {
+            float dx = MathF.Max(MathF.Max(court.MinX - x, x - court.MaxX), 0.0f);
+            float dz = MathF.Max(MathF.Max(court.MinZ - z, z - court.MaxZ), 0.0f);
+            float outside = MathF.Sqrt(dx * dx + dz * dz);
+            weight = MathF.Max(weight, Mathf.Clamp(1.0f - outside / PavedBlendMetres, 0.0f, 1.0f));
+        }
+        return weight;
     }
 
     private static TerrainZone ZoneAt(float x, float z, float distanceToRoute, IReadOnlyDictionary<string, Vector3> targets, float minX, float maxX, float minZ, float maxZ)

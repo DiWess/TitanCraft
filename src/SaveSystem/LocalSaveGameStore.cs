@@ -34,6 +34,12 @@ public static class LocalSaveGameStore
         try
         {
             var loaded = JsonSerializer.Deserialize<CrashSiteSaveData>(file.GetAsText());
+            if (loaded is not null && !CrashSiteSaveMigration.TryMigrate(loaded))
+            {
+                GD.PushWarning($"Ignoring Crash Site save version {loaded.SaveVersion} at '{savePath}'. Starting a new run.");
+                return false;
+            }
+
             if (!IsValid(loaded))
             {
                 GD.PushWarning($"Ignoring invalid Crash Site save data at '{savePath}'. Starting a new run.");
@@ -70,6 +76,8 @@ public static class LocalSaveGameStore
             && saveData.Metal >= 0
             && saveData.Biomass >= 0
             && saveData.ElectronicComponents >= 0
+            && saveData.ArmLevel >= 0
+            && saveData.ArmLevel <= Resources.MvpInventory.MaxArmLevel
             && Enum.IsDefined(typeof(CrashSiteMissionStep), saveData.MissionStep);
     }
 }

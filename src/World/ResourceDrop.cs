@@ -114,6 +114,22 @@ public partial class ResourceDrop : Area3D, ICrashSiteInteractable, ILookHighlig
         return true;
     }
 
+    /// <summary>
+    /// Reconstructs an already-taken pickup from a save: gone, silently, so a
+    /// reload cannot hand the same salvage out twice.
+    /// </summary>
+    public void RestoreCollected()
+    {
+        if (_isCollected)
+        {
+            return;
+        }
+
+        _isCollected = true;
+        DisableInteraction();
+        QueueFree();
+    }
+
     public void SetHighlighted(bool isHighlighted)
     {
         if (_itemMesh is not null)

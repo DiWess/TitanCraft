@@ -8,10 +8,10 @@ script = ExtResource("1_pause")
 
 [node name="Panel" type="PanelContainer" parent="."]
 offsets_preset = 8
-offset_left = 460.0
-offset_top = 140.0
-offset_right = 820.0
-offset_bottom = 560.0
+offset_left = 410.0
+offset_top = 110.0
+offset_right = 870.0
+offset_bottom = 610.0
 
 [node name="Menu" type="VBoxContainer" parent="Panel"]
 
@@ -22,12 +22,13 @@ horizontal_alignment = 1
 [node name="Controls" type="Label" parent="Panel/Menu"]
 theme_override_colors/font_color = Color(0.83, 0.8, 0.72, 1)
 theme_override_font_sizes/font_size = 14
-text = "WASD / ZQSD — move
-Mouse — look
-Space — jump
+text = "WASD / ZQSD — move    Shift — sprint
+Mouse — look    Space — jump
 E — interact, craft at the workbench
-Left click — attack, once the Mk I is built
-Esc — pause"
+Left click — strike (Mk I)
+Right click or F — pull (Mk II)
+Hold left click, release — charged strike (Mk III)
+Esc — pause    Keys can be changed in Settings"
 metadata/notes = "The controls reference; the HUD teaches controls step by step through the onboarding prompt"
 
 [node name="ResumeButton" type="Button" parent="Panel/Menu"]
@@ -35,6 +36,9 @@ text = "Resume"
 
 [node name="SaveButton" type="Button" parent="Panel/Menu"]
 text = "Save"
+
+[node name="SettingsButton" type="Button" parent="Panel/Menu"]
+text = "Settings"
 
 [node name="MainMenuButton" type="Button" parent="Panel/Menu"]
 text = "Return to Main Menu"
@@ -44,9 +48,11 @@ text = "Quit"
 
 [connection signal="pressed" from="Panel/Menu/ResumeButton" to="." method="Resume"]
 [connection signal="pressed" from="Panel/Menu/SaveButton" to="." method="SaveGame"]
+[connection signal="pressed" from="Panel/Menu/SettingsButton" to="." method="OpenSettings"]
 [connection signal="pressed" from="Panel/Menu/MainMenuButton" to="." method="ReturnToMainMenu"]
 [connection signal="pressed" from="Panel/Menu/QuitButton" to="." method="QuitGame"]
 [connection signal="mouse_entered" from="Panel/Menu/ResumeButton" to="." method="PlayHoverSound"]
 [connection signal="mouse_entered" from="Panel/Menu/SaveButton" to="." method="PlayHoverSound"]
+[connection signal="mouse_entered" from="Panel/Menu/SettingsButton" to="." method="PlayHoverSound"]
 [connection signal="mouse_entered" from="Panel/Menu/MainMenuButton" to="." method="PlayHoverSound"]
 [connection signal="mouse_entered" from="Panel/Menu/QuitButton" to="." method="PlayHoverSound"]

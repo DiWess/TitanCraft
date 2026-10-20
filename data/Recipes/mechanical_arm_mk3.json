@@ -1,0 +1,8 @@
+{
+  "tier": 3,
+  "name": "Breaker Coil",
+  "metal": 4,
+  "biomass": 3,
+  "electronicComponents": 3,
+  "requiresGalaxabrainComponent": false
+}

@@ -91,8 +91,9 @@ public partial class CrashSiteHudBinder : Node
     {
         // Inventory.Changed is the single HUD refresh trigger for both generic
         // resources and the mission component pickup.
-        _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents, inventory.HasGalaxabrainComponent);
-        _hud.SetMechanicalArmProgress(_mechanicalArmRecipe.GetProgressText(inventory));
+        _hud.SetResources(inventory.Metal, inventory.Biomass, inventory.ElectronicComponents, inventory.HasGalaxabrainComponent, inventory.HasPowerCore);
+        _hud.SetMechanicalArmProgress(ArmProgressText(inventory));
+        AnnounceUpgradeReady(inventory);
 
         if (inventory.Metal + inventory.Biomass + inventory.ElectronicComponents > 0)
         {
@@ -123,5 +124,40 @@ public partial class CrashSiteHudBinder : Node
     private void UpdateMission(CrashSiteMissionState mission)
     {
         _hud.SetObjective(mission.HudBreadcrumb);
+        _hud.SetMechanicalArmProgress(ArmProgressText(_player.Inventory));
+        AnnounceUpgradeReady(_player.Inventory);
+        if (mission.IsVictory)
+            _hud.SetActionFeedback(FirstPersonController.BeaconActivationFeedback);
+    }
+
+    /// <summary>
+    /// The arm line tracks the module the mission is asking for: the online
+    /// line between upgrades, the next module's bill of salvage while the
+    /// mission is collecting for it.
+    /// </summary>
+    private string ArmProgressText(TitanCraft.Resources.MvpInventory inventory)
+    {
+        var next = MechanicalArmRecipe.NextFor(inventory);
+        if (next is null || next.Tier == 1)
+            return next is null ? MechanicalArmRecipe.OnlineText(inventory.ArmLevel) : _mechanicalArmRecipe.GetProgressText(inventory);
+
+        return _player.Mission.CurrentStep == World.Workbench.StepForTier(next.Tier)
+            ? next.GetProgressText(inventory)
+            : MechanicalArmRecipe.OnlineText(inventory.ArmLevel);
+    }
+
+    private int _announcedReadyTier;
+
+    /// <summary>One line, once, when the salvage for the next module is in hand.</summary>
+    private void AnnounceUpgradeReady(TitanCraft.Resources.MvpInventory inventory)
+    {
+        var next = MechanicalArmRecipe.NextFor(inventory);
+        if (next is null || next.Tier < 2 || _announcedReadyTier >= next.Tier
+            || _player.Mission.CurrentStep != World.Workbench.StepForTier(next.Tier)
+            || !next.CanCraft(inventory))
+            return;
+
+        _announcedReadyTier = next.Tier;
+        _hud.SetActionFeedback($"Salvage secured — fit {next.DisplayName} at the workbench.");
     }
 }

@@ -41,6 +41,18 @@ public sealed class PlayerHealth
         Changed?.Invoke(this);
     }
 
+    /// <summary>Suit repaired to full (checkpoints).</summary>
+    public void RestoreToFull()
+    {
+        if (CurrentHealth == MaxHealth)
+        {
+            return;
+        }
+
+        CurrentHealth = MaxHealth;
+        Changed?.Invoke(this);
+    }
+
     public void Restore(int currentHealth)
     {
         CurrentHealth = Math.Clamp(currentHealth, 0, MaxHealth);

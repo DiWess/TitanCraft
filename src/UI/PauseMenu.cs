@@ -10,6 +10,8 @@ public partial class PauseMenu : CanvasLayer
     [Export] public string MainMenuScenePath { get; set; } = "res://scenes/UI/MainMenu.tscn";
     [Export] public bool CanSave { get; set; } = true;
 
+    private SettingsPanel? _settings;
+
     public override void _Ready()
     {
         Visible = false;
@@ -18,12 +20,40 @@ public partial class PauseMenu : CanvasLayer
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("pause_menu"))
-            TogglePause();
+        if (!@event.IsActionPressed("pause_menu"))
+            return;
+
+        // Esc backs out of the settings screen first, then out of the pause.
+        if (_settings is { Visible: true })
+        {
+            if (!_settings.IsListeningForKey)
+                _settings.Close();
+            return;
+        }
+
+        TogglePause();
+    }
+
+    public void OpenSettings()
+    {
+        AudioCue.Play(this, "AudioLayer_UI/UI_Select");
+        if (_settings is null)
+        {
+            _settings = new SettingsPanel { Name = "SettingsPanel" };
+            AddChild(_settings);
+            _settings.Closed += () => GetNode<Control>("Panel").Visible = true;
+        }
+
+        GetNode<Control>("Panel").Visible = false;
+        _settings.Open();
+        var viewport = GetViewport().GetVisibleRect().Size;
+        _settings.Position = (viewport - _settings.GetCombinedMinimumSize()) / 2f;
     }
 
     public void TogglePause()
     {
+        if (_settings is { Visible: true })
+            _settings.Close();
         Visible = !Visible;
         GetTree().Paused = Visible;
         Input.MouseMode = Visible ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;

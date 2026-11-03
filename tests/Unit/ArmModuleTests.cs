@@ -1,3 +1,9 @@
+// These tests use Godot value-type math only (Vector3); keeping them
+// runtime-free prevents the GdUnit adapter connection timeout in CI, which is why
+// this suite suppresses GdUnit0501 rather than adding [RequireGodotRuntime].
+// Same rationale and pattern as tests/Unit/GameFeelLayerTests.cs.
+#pragma warning disable GdUnit0501
+
 using GdUnit4;
 using Godot;
 using TitanCraft.Combat;

@@ -1,7 +1,8 @@
 name: TitanCraft Release
 
 # Builds the Windows game and attaches it to a DRAFT GitHub Release. Nothing
-# becomes public until a person reviews the draft and presses Publish.
+# becomes public until a person presses Publish, or starts the run by hand with
+# "publish" ticked.
 on:
   push:
     tags:
@@ -9,8 +10,12 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to build (for example v1.0.0)'
+        description: 'Release tag to create (for example v1.0.0). Run it on the branch or tag to build; the tag is created on that commit if it does not exist yet.'
         required: true
+      publish:
+        description: 'Publish the release at once instead of leaving it as a draft'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -30,7 +35,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.tag || github.ref }}
+          ref: ${{ github.ref }}
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -129,6 +134,9 @@ jobs:
         run: |
           set -euo pipefail
           name="TitanCraft-${VERSION}-windows-x64"
-          gh release create "$TAG" --draft --title "TitanCraft: Crash Site ${VERSION}" \
+          # Drafts unless a person ticked "publish" when starting the run by hand.
+          draft="--draft"
+          if [ "${{ github.event.inputs.publish }}" = "true" ]; then draft=""; fi
+          gh release create "$TAG" --target "$GITHUB_SHA" $draft --title "TitanCraft: Crash Site ${VERSION}" \
             --notes-file docs/release/RELEASE_NOTES.md \
             "dist/$name.zip" "dist/$name.zip.sha256"

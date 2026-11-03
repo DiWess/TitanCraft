@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to build (for example v1.0.0)'
+        description: 'Release tag to create (for example v1.0.0). Run it on the branch or tag to build; the tag is created on that commit if it does not exist yet.'
         required: true
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.tag || github.ref }}
+          ref: ${{ github.ref }}
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -129,6 +129,6 @@ jobs:
         run: |
           set -euo pipefail
           name="TitanCraft-${VERSION}-windows-x64"
-          gh release create "$TAG" --draft --title "TitanCraft: Crash Site ${VERSION}" \
+          gh release create "$TAG" --target "$GITHUB_SHA" --draft --title "TitanCraft: Crash Site ${VERSION}" \
             --notes-file docs/release/RELEASE_NOTES.md \
             "dist/$name.zip" "dist/$name.zip.sha256"

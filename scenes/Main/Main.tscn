@@ -1,4 +1,4 @@
-[gd_scene load_steps=110 format=3 uid="uid://titancraft_main"]
+[gd_scene load_steps=145 format=3 uid="uid://titancraft_main"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://src/World/ResourcePickup.cs" id="2_resource_pickup"]
@@ -110,6 +110,39 @@
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_Medium_V1.gltf" id="110_v1_shard_medium"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_ENV_AlienShard_EmbeddedCluster_V1.gltf" id="111_v1_shard_cluster"]
 [ext_resource type="PackedScene" path="res://assets/models/mvp_pack_v1/TC_PolishDetails_V1.gltf" id="112_v1_polish_details"]
+[ext_resource type="PackedScene" path="res://scenes/Enemies/SwarmDrone.tscn" id="200_swarm_drone"]
+[ext_resource type="PackedScene" path="res://scenes/Enemies/GalaxabrainWarden.tscn" id="201_warden"]
+[ext_resource type="PackedScene" path="res://scenes/World/WreckBarricade.tscn" id="202_wreck_barricade"]
+[ext_resource type="PackedScene" path="res://scenes/World/CrackedGate.tscn" id="203_cracked_gate"]
+[ext_resource type="PackedScene" path="res://scenes/World/PowerCore.tscn" id="204_power_core"]
+[ext_resource type="Script" path="res://src/World/DroneNestEncounter.cs" id="205_drone_nest_script"]
+[ext_resource type="Script" path="res://src/World/BeaconHoldout.cs" id="206_holdout_script"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/arm_pull_01.wav" id="210_arm_pull"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/charge_ready_01.wav" id="211_charge_ready"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/deflect_01.wav" id="212_deflect"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/weapon/charged_impact_01.wav" id="213_charged_impact"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/drone_alert_01.wav" id="214_drone_alert"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/drone_telegraph_01.wav" id="215_drone_telegraph"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/drone_hit_01.wav" id="216_drone_hit"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/drone_death_01.wav" id="217_drone_death"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/warden_alert_01.wav" id="218_warden_alert"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/warden_windup_01.wav" id="219_warden_windup"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/warden_slam_01.wav" id="220_warden_slam"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/warden_hurt_01.wav" id="221_warden_hurt"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/warden_guard_break_01.wav" id="222_warden_guard_break"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/enemy/warden_death_01.wav" id="223_warden_death"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/holdout_wave_01.wav" id="224_holdout_wave"]
+[ext_resource type="PackedScene" path="res://scenes/World/StoryNote.tscn" id="230_story_note"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_PROP_NoticeBoard_V1.gltf" id="231_notice_board"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_PROP_Slate_V1.gltf" id="232_slate"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_PROP_ToyBoat_V1.gltf" id="233_toy_boat"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_PROP_FlightRecorder_V1.gltf" id="234_recorder"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_PROP_StrippedMachine_V1.gltf" id="235_machine"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_PROP_Plaque_V1.gltf" id="236_plaque"]
+[ext_resource type="Script" path="res://src/UI/StoryOverlay.cs" id="237_story_overlay"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/state/discovery_01.wav" id="238_discovery_audio"]
+[ext_resource type="Shader" path="res://assets/shaders/harbour_sea.gdshader" id="239_sea_shader"]
+[ext_resource type="Script" path="res://src/World/QuarterSurfaceDetail.cs" id="240_surface_detail"]
 
 [sub_resource type="StandardMaterial3D" id="PROD_MAT_OffWhite"]
 albedo_color = Color(0.88, 0.85, 0.80, 1)
@@ -447,6 +480,16 @@ material = ExtResource("16_orange")
 size = Vector3(0.5, 0.06, 0.14)
 material = ExtResource("30_cyan")
 
+[sub_resource type="ShaderMaterial" id="MAT_HarbourSea"]
+render_priority = 0
+shader = ExtResource("239_sea_shader")
+
+[sub_resource type="PlaneMesh" id="MESH_HarbourSea"]
+material = SubResource("MAT_HarbourSea")
+size = Vector2(160, 170)
+subdivide_width = 96
+subdivide_depth = 96
+
 [node name="Main" type="Node3D"]
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
@@ -639,6 +682,30 @@ volume_db = -10.0
 unit_size = 1.0
 metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
 metadata/notes = "Latch click and short tone when the attack cooldown ends"
+[node name="Arm_Pull" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("210_arm_pull")
+volume_db = -6.0
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Mk II magnet clamp firing"
+[node name="Arm_ChargeReady" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("211_charge_ready")
+volume_db = -8.0
+unit_size = 1.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Mk III charge full: a release now is a charged strike"
+[node name="Weapon_Deflect" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("212_deflect")
+volume_db = -6.0
+unit_size = 2.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "A strike turned aside by the Warden's guard or sound stone"
+[node name="Weapon_ChargedImpact" type="AudioStreamPlayer3D" parent="AudioLayer_Player"]
+stream = ExtResource("213_charged_impact")
+volume_db = -3.0
+unit_size = 2.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Mk III charged strike landing"
 [node name="AudioLayer_Enemy" type="Node" parent="."]
 metadata/category = "Scout enemy state and behavior audio"
 metadata/positioning = "3D positional audio from scout position"
@@ -666,6 +733,66 @@ volume_db = -6.0
 unit_size = 3.0
 metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
 metadata/notes = "The Scout's last cry, layered over its README 16 death tone (GalaxabrainScout DeathAudio)"
+[node name="Drone_Alert" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("214_drone_alert")
+volume_db = -6.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Swarm drone wakes"
+[node name="Drone_Telegraph" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("215_drone_telegraph")
+volume_db = -4.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Swarm drone about to dive: the cue to strike or pull"
+[node name="Drone_Hit" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("216_drone_hit")
+volume_db = -8.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Swarm drone struck or pulled"
+[node name="Drone_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("217_drone_death")
+volume_db = -6.0
+unit_size = 3.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Swarm drone falls"
+[node name="Warden_Alert" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("218_warden_alert")
+volume_db = -2.0
+unit_size = 5.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "The Warden wakes when its gate breaks"
+[node name="Warden_Windup" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("219_warden_windup")
+volume_db = -4.0
+unit_size = 5.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "Slam wind-up: the cue to back off"
+[node name="Warden_Slam" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("220_warden_slam")
+volume_db = -2.0
+unit_size = 5.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "The slam lands"
+[node name="Warden_Hurt" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("221_warden_hurt")
+volume_db = -6.0
+unit_size = 4.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "A strike lands on the staggered Warden"
+[node name="Warden_GuardBreak" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("222_warden_guard_break")
+volume_db = -3.0
+unit_size = 4.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "A charged strike breaks the Warden's guard"
+[node name="Warden_Death" type="AudioStreamPlayer3D" parent="AudioLayer_Enemy"]
+stream = ExtResource("223_warden_death")
+volume_db = -2.0
+unit_size = 5.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "The Warden falls"
 [node name="AudioLayer_UI" type="Node" parent="."]
 process_mode = 3
 metadata/category = "UI menu and confirmation audio"
@@ -704,6 +831,16 @@ stream = ExtResource("104_state_mission")
 volume_db = -8.0
 metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
 metadata/notes = "Swell under the beacon during the victory hold, before the victory screen"
+[node name="Holdout_Wave" type="AudioStreamPlayer" parent="AudioLayer_State"]
+stream = ExtResource("224_holdout_wave")
+volume_db = -10.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "A holdout wave answers the beacon"
+[node name="State_Discovery" type="AudioStreamPlayer" parent="AudioLayer_State"]
+stream = ExtResource("238_discovery_audio")
+volume_db = -12.0
+metadata/source = "Project-authored: tools/audio/synthesize_cues.py (docs/audio/audio-provenance.md)"
+metadata/notes = "A story note read for the first time"
 [node name="AudioLayer_Save" type="Node" parent="."]
 metadata/category = "Save/Load state audio"
 metadata/positioning = "2D non-positional audio"
@@ -1288,6 +1425,303 @@ mesh = SubResource("BoxMesh_spire_fin")
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,40.0,0)
 mesh = SubResource("CylinderMesh_spire_beam")
 cast_shadow = 0
+
+[node name="ActTwoSalvage" type="Node3D" parent="."]
+metadata/purpose = "Workstream B: salvage for the Mk II fitting, spread across the quarter so the second sweep re-reads streets already walked."
+
+[node name="ResourceDrop_HarbourMetal" parent="ActTwoSalvage" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,24.4,0.85,-10.6)
+Quantity = 3
+
+[node name="V1BetaMetalModel" parent="ActTwoSalvage/ResourceDrop_HarbourMetal/VisualGroup" index="0"]
+visible = true
+
+[node name="ItemMesh" parent="ActTwoSalvage/ResourceDrop_HarbourMetal/VisualGroup" index="2"]
+visible = false
+mesh = SubResource("BoxMesh_metal")
+material_override = SubResource("MAT_MetalPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="ActTwoSalvage/ResourceDrop_HarbourMetal/AudioPlayers" index="0"]
+stream = ExtResource("97_pickup_metal")
+volume_db = -8.0
+
+[node name="ResourceDrop_ArcadeMetal" parent="ActTwoSalvage" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,2.9,0.85,-16.6)
+Quantity = 3
+
+[node name="V1BetaMetalModel" parent="ActTwoSalvage/ResourceDrop_ArcadeMetal/VisualGroup" index="0"]
+visible = true
+
+[node name="ItemMesh" parent="ActTwoSalvage/ResourceDrop_ArcadeMetal/VisualGroup" index="2"]
+visible = false
+mesh = SubResource("BoxMesh_metal")
+material_override = SubResource("MAT_MetalPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="ActTwoSalvage/ResourceDrop_ArcadeMetal/AudioPlayers" index="0"]
+stream = ExtResource("97_pickup_metal")
+volume_db = -8.0
+
+[node name="ResourceDrop_StallElectronics" parent="ActTwoSalvage" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-9.6,0.85,-16.0)
+Type = 2
+Quantity = 2
+
+[node name="V1BetaEnergyCellModel" parent="ActTwoSalvage/ResourceDrop_StallElectronics/VisualGroup" index="1"]
+visible = true
+
+[node name="ItemMesh" parent="ActTwoSalvage/ResourceDrop_StallElectronics/VisualGroup" index="2"]
+visible = false
+mesh = SubResource("CylinderMesh_electronics")
+material_override = SubResource("MAT_ElectronicsPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="ActTwoSalvage/ResourceDrop_StallElectronics/AudioPlayers" index="0"]
+stream = ExtResource("98_pickup_glass")
+volume_db = -8.0
+
+[node name="NetYard" type="Node3D" parent="."]
+metadata/purpose = "Workstream B, the Net-makers' Yard: the Mk II gate, the drone nest, and the salvage Mk III is built from. Walls: tools/level/build_mwezi_quarter_district.py."
+
+[node name="WreckBarricade" parent="NetYard" instance=ExtResource("202_wreck_barricade")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-14.0,0,-20.4)
+PlayerPath = NodePath("../../Player")
+
+[node name="DroneNest" type="Node3D" parent="NetYard"]
+script = ExtResource("205_drone_nest_script")
+PlayerPath = NodePath("../../Player")
+
+[node name="SwarmDrone_A" parent="NetYard/DroneNest" instance=ExtResource("200_swarm_drone")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-18.0,3.0,-24.5)
+PlayerPath = NodePath("../../../Player")
+OrbitPhase = 0.0
+FirstDiveDelaySeconds = 2.4
+
+[node name="SwarmDrone_B" parent="NetYard/DroneNest" instance=ExtResource("200_swarm_drone")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-15.5,3.3,-27.0)
+PlayerPath = NodePath("../../../Player")
+OrbitPhase = 2.1
+FirstDiveDelaySeconds = 3.6
+
+[node name="SwarmDrone_C" parent="NetYard/DroneNest" instance=ExtResource("200_swarm_drone")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-19.6,2.8,-22.5)
+PlayerPath = NodePath("../../../Player")
+OrbitPhase = 4.2
+FirstDiveDelaySeconds = 4.8
+
+[node name="ResourceDrop_YardMetalStall" parent="NetYard" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-19.8,0.85,-26.2)
+Quantity = 2
+
+[node name="V1BetaMetalModel" parent="NetYard/ResourceDrop_YardMetalStall/VisualGroup" index="0"]
+visible = true
+
+[node name="ItemMesh" parent="NetYard/ResourceDrop_YardMetalStall/VisualGroup" index="2"]
+visible = false
+mesh = SubResource("BoxMesh_metal")
+material_override = SubResource("MAT_MetalPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="NetYard/ResourceDrop_YardMetalStall/AudioPlayers" index="0"]
+stream = ExtResource("97_pickup_metal")
+volume_db = -8.0
+
+[node name="ResourceDrop_YardMetalPalm" parent="NetYard" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-14.6,0.85,-27.9)
+Quantity = 2
+
+[node name="V1BetaMetalModel" parent="NetYard/ResourceDrop_YardMetalPalm/VisualGroup" index="0"]
+visible = true
+
+[node name="ItemMesh" parent="NetYard/ResourceDrop_YardMetalPalm/VisualGroup" index="2"]
+visible = false
+mesh = SubResource("BoxMesh_metal")
+material_override = SubResource("MAT_MetalPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="NetYard/ResourceDrop_YardMetalPalm/AudioPlayers" index="0"]
+stream = ExtResource("97_pickup_metal")
+volume_db = -8.0
+
+[node name="ResourceDrop_YardBroodBiomass" parent="NetYard" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-17.4,0.85,-21.8)
+Type = 1
+Quantity = 3
+
+[node name="MvpBiomassModel" parent="NetYard/ResourceDrop_YardBroodBiomass/VisualGroup" index="4"]
+visible = true
+
+[node name="ItemMesh" parent="NetYard/ResourceDrop_YardBroodBiomass/VisualGroup" index="0"]
+visible = false
+mesh = SubResource("SphereMesh_biomass")
+material_override = SubResource("MAT_BiomassPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="NetYard/ResourceDrop_YardBroodBiomass/AudioPlayers" index="0"]
+stream = ExtResource("99_pickup_organic")
+volume_db = -8.0
+
+[node name="ResourceDrop_YardRadioElectronics" parent="NetYard" instance=ExtResource("43_resource_drop")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-19.0,0.85,-28.2)
+Type = 2
+Quantity = 3
+
+[node name="V1BetaEnergyCellModel" parent="NetYard/ResourceDrop_YardRadioElectronics/VisualGroup" index="1"]
+visible = true
+
+[node name="ItemMesh" parent="NetYard/ResourceDrop_YardRadioElectronics/VisualGroup" index="2"]
+visible = false
+mesh = SubResource("CylinderMesh_electronics")
+material_override = SubResource("MAT_ElectronicsPickup_Bright")
+
+[node name="SpatialPickupPlayer" parent="NetYard/ResourceDrop_YardRadioElectronics/AudioPlayers" index="0"]
+stream = ExtResource("98_pickup_glass")
+volume_db = -8.0
+
+[node name="YardGateLight" type="OmniLight3D" parent="NetYard"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-14.0,2.8,-19.2)
+light_color = Color(1, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+
+[node name="YardNestGlow" type="OmniLight3D" parent="NetYard"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-17.2,1.2,-24.6)
+light_color = Color(0.62, 0.32, 1, 1)
+light_energy = 0.9
+omni_range = 6.0
+
+[node name="TowerCourt" type="Node3D" parent="."]
+metadata/purpose = "Workstream B and C, the tower court: the Mk III gate, the Warden, and the beacon's power core."
+
+[node name="CrackedGate" parent="TowerCourt" instance=ExtResource("203_cracked_gate")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,12.3,0,-22.9)
+PlayerPath = NodePath("../../Player")
+
+[node name="Warden" parent="TowerCourt" instance=ExtResource("201_warden")]
+transform = Transform3D(-1,0,0,0,1,0,0,0,-1,12.6,0,-26.3)
+PlayerPath = NodePath("../../Player")
+PowerCorePath = NodePath("../PowerCorePickup")
+
+[node name="PowerCorePickup" parent="TowerCourt" instance=ExtResource("204_power_core")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,7.6,0.2,-27.6)
+
+[node name="TowerGateLight" type="OmniLight3D" parent="TowerCourt"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,12.3,2.8,-21.3)
+light_color = Color(1, 0.74, 0.46, 1)
+light_energy = 1.4
+omni_range = 5.5
+
+[node name="BeaconHoldout" type="Node3D" parent="."]
+script = ExtResource("206_holdout_script")
+PlayerPath = NodePath("../Player")
+BeaconPath = NodePath("../Placeholder_Beacon")
+DroneScene = ExtResource("200_swarm_drone")
+ScoutScene = ExtResource("7_galaxabrain_scout")
+metadata/purpose = "Workstream C climax: the beacon charges while the player holds the plaza; drones arrive over the sea wall and Scouts up from the harbour."
+
+[node name="DroneSpawns" type="Node3D" parent="BeaconHoldout"]
+
+[node name="Spawn_SeaEast" type="Marker3D" parent="BeaconHoldout/DroneSpawns"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,34.6,4.5,-16.0)
+
+[node name="Spawn_SeaNorth" type="Marker3D" parent="BeaconHoldout/DroneSpawns"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,30.0,5.0,-28.4)
+
+[node name="Spawn_RoofsEast" type="Marker3D" parent="BeaconHoldout/DroneSpawns"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,34.2,4.5,-6.0)
+
+[node name="ScoutSpawns" type="Node3D" parent="BeaconHoldout"]
+
+[node name="Spawn_HarbourSteps" type="Marker3D" parent="BeaconHoldout/ScoutSpawns"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,32.0,1.0,-14.0)
+
+[node name="Spawn_EastStreet" type="Marker3D" parent="BeaconHoldout/ScoutSpawns"]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,21.8,1.0,-9.5)
+
+[node name="HarbourSea" type="MeshInstance3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,115,-0.3,-10)
+cast_shadow = 0
+mesh = SubResource("MESH_HarbourSea")
+metadata/purpose = "Workstream D: the sea beyond the harbour wall; the terrain falls away under it east of x 36.5 (ProceduralCrashSiteTerrain.SeaWeight)."
+
+[node name="QuarterSurfaceDetail" type="Node" parent="."]
+script = ExtResource("240_surface_detail")
+Roots = Array[NodePath]([NodePath("../MweziQuarterDistrict"), NodePath("../NetYard"), NodePath("../TowerCourt"), NodePath("../Discoveries"), NodePath("../Placeholder_SavePoint"), NodePath("../ProductionVisualRoot")])
+metadata/purpose = "Workstream D: world-space noise texture and normal map on the quarter's flat-colour materials, by material name."
+
+[node name="Discoveries" type="Node3D" parent="."]
+metadata/purpose = "Workstream D: six optional notes that tell why the quarter is empty and what the Galaxabrains want; none gates the mission."
+
+[node name="Note_HarbourNotice" parent="Discoveries" instance=ExtResource("230_story_note")]
+transform = Transform3D(0.0000,0,1.0000,0,1,0,-1.0000,0,0.0000,31.8,0,-14.6)
+NoteId = "harbour_notice"
+Noun = "harbour notice"
+Title = "Harbour notice"
+Body = "BY ORDER OF THE HARBOUR COUNCIL
+All boats leave on the evening tide. Take water and the nets; leave the rest.
+The beacon stays lit while anyone is still ashore.
+
+Below, in another hand: the beacon went dark on the third night."
+
+[node name="Model" parent="Discoveries/Note_HarbourNotice/Visual" instance=ExtResource("231_notice_board")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0,0)
+
+[node name="Note_NetMakerSlate" parent="Discoveries" instance=ExtResource("230_story_note")]
+transform = Transform3D(0.0000,0,-1.0000,0,1,0,1.0000,0,0.0000,-20.3,0,-24.0)
+NoteId = "net_maker_slate"
+Noun = "net-maker's slate"
+Title = "A net-maker's slate"
+Body = "Five nights counted, the fifth crossed through.
+They do not want us. They want the machines: every cell, every board.
+They carried the beacon's core into the tower court and walled it in.
+Whoever reads this — it only needs its core."
+
+[node name="Model" parent="Discoveries/Note_NetMakerSlate/Visual" instance=ExtResource("232_slate")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0,0)
+
+[node name="Note_ToyBoat" parent="Discoveries" instance=ExtResource("230_story_note")]
+transform = Transform3D(0.9397,0,-0.3420,0,1,0,0.3420,0,0.9397,0.2,0,-28.3)
+NoteId = "toy_boat"
+Noun = "toy boat"
+Title = "A carved boat"
+Body = "A child's boat, left where the lane ends. Its sail is painted with a lit tower.
+Scratched into the hull: WAIT FOR THE LIGHT."
+
+[node name="Model" parent="Discoveries/Note_ToyBoat/Visual" instance=ExtResource("233_toy_boat")]
+transform = Transform3D(1.6,0,0,0,1.6,0,0,0,1.6,0,0,0)
+
+[node name="Note_FlightRecorder" parent="Discoveries" instance=ExtResource("230_story_note")]
+transform = Transform3D(0.9063,0,0.4226,0,1,0,-0.4226,0,0.9063,-2.2,0,2.2)
+NoteId = "flight_recorder"
+Noun = "flight recorder"
+Title = "Flight recorder, TC-07"
+Body = "Hull breach. Reactor scrammed. Crew of one.
+A beacon on this coast answered our distress call before we came down.
+If it can call once, it can call again."
+
+[node name="Model" parent="Discoveries/Note_FlightRecorder/Visual" instance=ExtResource("234_recorder")]
+transform = Transform3D(1.4,0,0,0,1.4,0,0,0,1.4,0,0,0)
+
+[node name="Note_StrippedPump" parent="Discoveries" instance=ExtResource("230_story_note")]
+transform = Transform3D(0.0000,0,1.0000,0,1,0,-1.0000,0,0.0000,23.4,0,-5.4)
+NoteId = "stripped_pump"
+Noun = "gutted water pump"
+Title = "A gutted water pump"
+Body = "The cabinet was torn open. Every circuit board is gone; the copper pipes are untouched.
+Violet resin seals the wounds. Whatever took the boards wanted only the parts that think."
+
+[node name="Model" parent="Discoveries/Note_StrippedPump/Visual" instance=ExtResource("235_machine")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0,0)
+
+[node name="Note_TowerPlaque" parent="Discoveries" instance=ExtResource("230_story_note")]
+transform = Transform3D(0.0000,0,1.0000,0,1,0,-1.0000,0,0.0000,19.95,0.0,-25.6)
+NoteId = "tower_plaque"
+Noun = "carved plaque"
+Title = "Plaque in the tower court"
+Body = "This tower kept the harbour light for those at sea.
+While the light burns, every boat can find the quarter.
+Keep it burning."
+
+[node name="Model" parent="Discoveries/Note_TowerPlaque/Visual" instance=ExtResource("236_plaque")]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,0.85,0)
+
+[node name="StoryOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("237_story_overlay")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.2,0)

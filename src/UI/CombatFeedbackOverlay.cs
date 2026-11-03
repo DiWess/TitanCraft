@@ -30,7 +30,11 @@ public partial class CombatFeedbackOverlay : Control
     [Export(PropertyHint.Range, "2,24,0.5")] public float CrosshairLength { get; set; } = 7.0f;
     [Export(PropertyHint.Range, "1,6,0.5")] public float CrosshairThickness { get; set; } = 2.0f;
 
+    [Export] public Color ChargeColor { get; set; } = new(1.0f, 0.62f, 0.22f, 0.95f);
+    [Export] public Color ChargedColor { get; set; } = new(1.0f, 0.86f, 0.45f, 1.0f);
+
     private readonly HitMarkerState _hitMarker = new();
+    private float _chargeFraction;
     private readonly DamageIndicatorState _damageIndicator = new();
 
     public bool IsHitMarkerVisible => _hitMarker.IsVisible;
@@ -51,6 +55,24 @@ public partial class CombatFeedbackOverlay : Control
         _hitMarker.Trigger(lethal);
         QueueRedraw();
     }
+
+    /// <summary>
+    /// Mk III charge, drawn as an arc closing around the crosshair; a full
+    /// ring means a release now is a charged strike. 0 hides it.
+    /// </summary>
+    public void SetChargeFraction(float fraction)
+    {
+        fraction = Mathf.Clamp(fraction, 0f, 1f);
+        if (Mathf.IsEqualApprox(fraction, _chargeFraction))
+        {
+            return;
+        }
+
+        _chargeFraction = fraction;
+        QueueRedraw();
+    }
+
+    public float ChargeFraction => _chargeFraction;
 
     public void ShowDamageFrom(Vector3 playerPosition, float playerYawRadians, Vector3 damageSource)
     {
@@ -84,6 +106,14 @@ public partial class CombatFeedbackOverlay : Control
         if (_damageIndicator.IsVisible)
         {
             DrawDamageIndicator(center);
+        }
+
+        if (_chargeFraction > 0f)
+        {
+            var full = _chargeFraction >= 1f;
+            DrawArc(center, CrosshairGap + CrosshairLength + 6.0f, -Mathf.Pi / 2f,
+                -Mathf.Pi / 2f + Mathf.Tau * _chargeFraction, 48, full ? ChargedColor : ChargeColor,
+                full ? CrosshairThickness + 1.5f : CrosshairThickness, true);
         }
     }
 

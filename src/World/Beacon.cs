@@ -20,7 +20,14 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
 
     public bool IsActivated { get; private set; }
 
-    public string InteractionPrompt => "Press E to activate the rescue beacon";
+    /// <summary>Holdout charge, 0-1; a beacon lit outside a holdout is fully charged.</summary>
+    private float _charge = 1f;
+
+    public float Charge => _charge;
+
+    public void SetCharge(float fraction) => _charge = Mathf.Clamp(fraction, 0f, 1f);
+
+    public string InteractionPrompt => "Press E to install the power core and activate the beacon";
 
     // Once lit there is nothing left to do; the prompt used to linger through
     // the whole victory hold.
@@ -60,8 +67,12 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
         }
 
         _pulseSeconds += (float)delta;
-        _skyBeam.LightEnergy = _skyBeamBaseEnergy
-            * (1f + BeamPulseDepth * Mathf.Sin(_pulseSeconds * BeamPulseRadiansPerSecond));
+        // While the holdout charges, the beam grows from a flicker to full
+        // strength, so the plaza itself shows how close rescue is.
+        var strength = 0.2f + 0.8f * _charge;
+        var pulseRate = BeamPulseRadiansPerSecond * (_charge < 1f ? 2.2f : 1f);
+        _skyBeam.LightEnergy = _skyBeamBaseEnergy * strength
+            * (1f + BeamPulseDepth * Mathf.Sin(_pulseSeconds * pulseRate));
     }
 
     public bool Interact(MvpInventory inventory, CrashSiteMissionState mission)
@@ -71,7 +82,7 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
 
         if (IsActivated
             || mission.CurrentStep != CrashSiteMissionStep.ActivateBeacon
-            || !inventory.HasGalaxabrainComponent)
+            || !inventory.HasPowerCore)
         {
             return false;
         }
@@ -105,6 +116,7 @@ public partial class Beacon : StaticBody3D, ICrashSiteInteractable, ILookHighlig
     public void RestoreActivated(bool isActivated)
     {
         IsActivated = isActivated;
+        _charge = 1f;
         UpdateVisualState();
     }
 

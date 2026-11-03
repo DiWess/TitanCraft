@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://titancraft_swarm_drone"]
+
+[ext_resource type="Script" path="res://src/Enemies/SwarmDrone.cs" id="1_drone"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_CHAR_GalaxabrainDrone_V1.gltf" id="2_drone_model"]
+
+[sub_resource type="SphereShape3D" id="SHAPE_Drone"]
+radius = 0.5
+
+[sub_resource type="StandardMaterial3D" id="MAT_DroneCore"]
+albedo_color = Color(0.48, 0.18, 1, 1)
+emission_enabled = true
+emission = Color(0.48, 0.18, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="SphereMesh" id="MESH_DroneCore"]
+material = SubResource("MAT_DroneCore")
+radius = 0.13
+height = 0.26
+radial_segments = 10
+rings = 5
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_DroneDeath"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 1.5
+initial_velocity_max = 3.5
+gravity = Vector3(0, -6, 0)
+scale_min = 0.6
+scale_max = 1.4
+color = Color(0.62, 0.3, 1, 1)
+
+[sub_resource type="BoxMesh" id="MESH_DroneShard"]
+material = SubResource("MAT_DroneCore")
+size = Vector3(0.06, 0.06, 0.12)
+
+[node name="SwarmDrone" type="CharacterBody3D"]
+motion_mode = 1
+script = ExtResource("1_drone")
+metadata/role = "Galaxabrain swarm drone (README section 6 amendment, D3): hovers out of Mk I reach, dives on a telegraph; the Mk II clamp pulls it down."
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SHAPE_Drone")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="DroneModel" parent="Visual" instance=ExtResource("2_drone_model")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0, 0)
+
+[node name="CoreGlow" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, -0.14)
+mesh = SubResource("MESH_DroneCore")
+
+[node name="DeathBurst" type="GPUParticles3D" parent="."]
+emitting = false
+one_shot = true
+amount = 28
+lifetime = 0.9
+explosiveness = 1.0
+process_material = SubResource("PPM_DroneDeath")
+draw_pass_1 = SubResource("MESH_DroneShard")

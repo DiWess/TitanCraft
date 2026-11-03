@@ -9,5 +9,8 @@ public enum CrashSiteMissionPhase
     Scavenge,
     Craft,
     ExtractConquer,
-    Complete
+    Complete,
+    NetYard,
+    Tower,
+    Beacon,
 }

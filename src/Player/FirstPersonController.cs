@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using TitanCraft.Combat;
 using TitanCraft.Core;
 using TitanCraft.Crafting;
 using TitanCraft.Enemies;
@@ -15,12 +16,20 @@ public partial class FirstPersonController : CharacterBody3D
     public event Action<string>? InteractionPromptChanged;
     public const string GalaxabrainScoutHitFeedback = "Mechanical Arm strike landed.";
     public const string GalaxabrainScoutDefeatFeedback = "Galaxabrain Scout disabled — recover the component.";
-    public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — activate the beacon beam.";
-    public const string SavePointSuccessFeedback = "Checkpoint saved — continue to the beacon.";
+    public const string GalaxabrainComponentRecoveryFeedback = "Galaxabrain component recovered — fit it at the workbench as Mk II.";
+    public const string SavePointSuccessFeedback = "Checkpoint saved — suit repaired.";
     public const string BeaconActivationFeedback = "Beacon activated — rescue signal online.";
+    public const string BeaconChargingFeedback = "Power core installed — the beacon is charging. Hold the plaza!";
     public const string DefeatRetryFeedback = "Suit integrity failed — reload from checkpoint.";
     public const string ResourceCompletionFeedback = "Resources secured — craft the Mechanical Arm Mk I at the workbench.";
     public const string MechanicalArmCraftSuccessFeedback = "Mechanical Arm Mk I online — defeat the Galaxabrain Scout.";
+    public const string Mk2CraftSuccessFeedback = "Mk II Magnet Clamp online — right click pulls. Open the Net-makers' Yard.";
+    public const string Mk3CraftSuccessFeedback = "Mk III Breaker Coil online — hold left click to charge, release to strike.";
+    public const string ChargedStrikeFeedback = "Charged strike landed.";
+    public const string PullMissFeedback = "Nothing to pull there — aim at loose wreckage or a drone.";
+    public const string PullBlockedFeedback = "Pull needs the Mk II Magnet Clamp — fit the Scout's component at the workbench.";
+    public const string PowerCoreRecoveryFeedback = "Power core recovered — install it at the beacon.";
+    public const string WorkbenchCheckpointSuffix = " Suit repaired, checkpoint saved.";
 
     public event Action<string>? ActionFeedbackChanged;
 
@@ -35,6 +44,12 @@ public partial class FirstPersonController : CharacterBody3D
 
     /// <summary>Raised when a Mk I strike connects — onboarding step 6.</summary>
     public event Action? AttackLanded;
+
+    /// <summary>Raised when the Mk II clamp yanks something.</summary>
+    public event Action<IPullTarget>? PullLanded;
+
+    /// <summary>Raised with the module tier after any workbench craft.</summary>
+    public event Action<int>? ArmCrafted;
     [Export] public float WalkSpeed { get; set; } = 5.0f;
     [Export] public float JumpVelocity { get; set; } = 4.5f;
     [Export] public float MouseSensitivity { get; set; } = 0.0025f;
@@ -52,6 +67,12 @@ public partial class FirstPersonController : CharacterBody3D
     [Export] public float FovLerpSpeed { get; set; } = 8.0f;
     [Export] public float SprintSpeedMultiplier { get; set; } = 1.15f;
     [Export] public float WalkFootstepIntervalSeconds { get; set; } = 0.45f;
+    [Export] public float PullRange { get; set; } = MagnetPullLogic.DefaultRange;
+    [Export] public float ChargedStrikeRange { get; set; } = ChargedStrikeLogic.DefaultChargedRange;
+    [Export] public int ChargedStrikeDamage { get; set; } = ChargedStrikeLogic.DefaultChargedDamage;
+
+    /// <summary>Movement while holding a charge: the coil is heavy.</summary>
+    [Export] public float ChargingSpeedMultiplier { get; set; } = 0.6f;
     [Export] public float SprintFootstepIntervalSeconds { get; set; } = 0.32f;
 
     // Upward pitch punch with a slight rightward bias, matching the arm's jab.
@@ -76,6 +97,39 @@ public partial class FirstPersonController : CharacterBody3D
     private float _bodyYaw;
     private MechanicalArmAttackLogic _mechanicalArmAttack = null!;
     private MechanicalArmRecipe _mechanicalArmRecipe = null!;
+    private readonly MagnetPullLogic _magnetPull = new();
+    private readonly ChargedStrikeLogic _chargedStrike = new();
+    private float _chargedRecoveryRemaining;
+    private Vector3? _lastDamageOrigin;
+    private Node3D? _clampModule;
+    private Node3D? _coilModule;
+    private MeshInstance3D? _coilGlow;
+    private MeshInstance3D? _pullBeam;
+    private Tween? _pullBeamTween;
+    private bool _wasFullyCharged;
+    private float _sensitivityScale = 1f;
+    private bool _invertY;
+
+    /// <summary>Base field of view before settings; sprint adds the same margin on top of the player's choice.</summary>
+    private float _authoredBaseFov;
+    private float _authoredSprintMargin;
+    private bool _authoredFovCaptured;
+
+    private void ApplySettings()
+    {
+        if (!_authoredFovCaptured)
+        {
+            _authoredBaseFov = BaseFov;
+            _authoredSprintMargin = SprintFov - BaseFov;
+            _authoredFovCaptured = true;
+        }
+
+        var settings = GameSettings.Current;
+        _sensitivityScale = settings.MouseSensitivityScale;
+        _invertY = settings.InvertY;
+        BaseFov = settings.FieldOfView;
+        SprintFov = settings.FieldOfView + _authoredSprintMargin;
+    }
     private CameraShaker? _cameraShaker;
     private TimeManager? _timeManager;
     private int _lastHealth;
@@ -110,6 +164,8 @@ public partial class FirstPersonController : CharacterBody3D
         _head = GetNode<Node3D>("Head");
         _camera = GetNode<Camera3D>("Head/Camera3D");
         _camera.Current = true;
+        ApplySettings();
+        GameSettings.Changed += ApplySettings;
         _camera.Fov = BaseFov;
         _cameraShaker = _camera as CameraShaker;
         _timeManager = GetNodeOrNull<TimeManager>(TimeManagerPath);
@@ -122,6 +178,14 @@ public partial class FirstPersonController : CharacterBody3D
         _mechanicalArmBasePosition = _mechanicalArmVisual?.Position ?? Vector3.Zero;
         _bareArmBasePosition = _bareArmVisual?.Position ?? Vector3.Zero;
         _bareArmBaseRotation = _bareArmVisual?.Rotation ?? Vector3.Zero;
+        _clampModule = GetNodeOrNull<Node3D>("Head/Camera3D/MechanicalArmVisual/ClampModule");
+        _coilModule = GetNodeOrNull<Node3D>("Head/Camera3D/MechanicalArmVisual/CoilModule");
+        _coilGlow = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/MechanicalArmVisual/CoilModule/CoilGlow");
+        _pullBeam = GetNodeOrNull<MeshInstance3D>("Head/Camera3D/PullBeam");
+        if (_pullBeam is not null)
+        {
+            _pullBeam.Visible = false;
+        }
         Inventory.Changed += UpdateMechanicalArmVisual;
         Health.Changed += OnHealthChanged;
         UpdateMechanicalArmVisual(Inventory);
@@ -131,6 +195,7 @@ public partial class FirstPersonController : CharacterBody3D
 
     public override void _ExitTree()
     {
+        GameSettings.Changed -= ApplySettings;
         Inventory.Changed -= UpdateMechanicalArmVisual;
         Health.Changed -= OnHealthChanged;
         ClearResourceLookTarget();
@@ -192,6 +257,18 @@ public partial class FirstPersonController : CharacterBody3D
         {
             _bareArmVisual.Visible = !inventory.IsMechanicalArmBuilt;
         }
+
+        // Each module is fitted onto the same arm, so the upgrade is visible
+        // in the hand the player looks at, not only in the HUD line.
+        if (_clampModule is not null)
+        {
+            _clampModule.Visible = inventory.HasMagnetClamp;
+        }
+
+        if (_coilModule is not null)
+        {
+            _coilModule.Visible = inventory.HasBreakerCoil;
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -207,7 +284,38 @@ public partial class FirstPersonController : CharacterBody3D
             // Recapture on attack so returning from window focus loss or a menu
             // cannot leave mouse-look clamped by the visible OS cursor.
             CaptureMouseForGameplay();
-            TryAttack();
+            if (Inventory.HasBreakerCoil)
+            {
+                // Mk III: the blow lands on release, charged if held long enough.
+                _chargedStrike.Begin();
+                _wasFullyCharged = false;
+            }
+            else
+            {
+                TryAttack();
+            }
+            return;
+        }
+
+        if (@event.IsActionReleased("attack") && _chargedStrike.IsCharging)
+        {
+            var charged = _chargedStrike.Release();
+            CombatOverlay?.SetChargeFraction(0f);
+            if (charged)
+            {
+                TryChargedStrike();
+            }
+            else
+            {
+                TryAttack();
+            }
+            return;
+        }
+
+        if (@event.IsActionPressed("pull"))
+        {
+            CaptureMouseForGameplay();
+            TryPull();
             return;
         }
 
@@ -226,8 +334,8 @@ public partial class FirstPersonController : CharacterBody3D
             CaptureMouseForGameplay();
             var look = FirstPersonMovement.ApplyMouseLook(
                 new Vector2(_bodyYaw, _cameraPitch),
-                mouseMotion.Relative,
-                MouseSensitivity,
+                _invertY ? new Vector2(mouseMotion.Relative.X, -mouseMotion.Relative.Y) : mouseMotion.Relative,
+                MouseSensitivity * _sensitivityScale,
                 MaxLookAngleDegrees);
             // Accumulated here and consumed in _PhysicsProcess so viewmodel sway
             // reacts to the whole frame's turn, not to one input event of many.
@@ -259,7 +367,12 @@ public partial class FirstPersonController : CharacterBody3D
         }
     }
 
-    public bool TryAttack()
+    public bool TryAttack() => TryStrike(charged: false);
+
+    /// <summary>Mk III: the heavy blow a full charge releases.</summary>
+    public bool TryChargedStrike() => TryStrike(charged: true);
+
+    private bool TryStrike(bool charged)
     {
         if (!Inventory.IsMechanicalArmBuilt)
         {
@@ -267,57 +380,255 @@ public partial class FirstPersonController : CharacterBody3D
             return false;
         }
 
-        if (_mechanicalArmAttack.IsOnCooldown)
+        if (charged && !Inventory.HasBreakerCoil)
         {
-            ShowActionFeedback("Mk I recharging — wait a moment before the next punch.");
             return false;
         }
 
-        PlayArmSwingFeedback();
+        if (_mechanicalArmAttack.IsOnCooldown || _chargedRecoveryRemaining > 0f)
+        {
+            ShowActionFeedback("Arm recharging — wait a moment before the next punch.");
+            return false;
+        }
 
+        PlayArmSwingFeedback(charged);
+
+        var range = charged ? ChargedStrikeRange : AttackRange;
         var query = PhysicsRayQueryParameters3D.Create(
             _camera.GlobalPosition,
-            _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * AttackRange);
+            _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * range);
         query.CollideWithAreas = false;
         query.CollideWithBodies = true;
+        query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
+
+        if (charged)
+        {
+            // The coil discharges whether or not it connects.
+            _chargedRecoveryRemaining = ChargedStrikeLogic.DefaultRecoverySeconds;
+            _cameraShaker?.AddTrauma(0.18f);
+        }
 
         var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
         if (!hit.TryGetValue("collider", out var colliderVariant))
         {
-            ShowActionFeedback("Attack missed: aim at the Galaxabrain within Mk I range.");
+            ShowActionFeedback(charged
+                ? "Charged strike missed — get in close to the target."
+                : "Attack missed: aim at the Galaxabrain within Mk I range.");
             return false;
         }
 
-        if (colliderVariant.AsGodotObject() is not GalaxabrainScout scout || scout.Brain.IsDead)
+        var target = FindAncestor<IArmTarget>(colliderVariant.AsGodotObject());
+        if (target is null || !target.IsStrikeable)
         {
             ShowActionFeedback("Attack ready: aim at the living Galaxabrain, then left click.");
             return false;
         }
 
-        if (!_mechanicalArmAttack.TryAttack(Inventory))
+        if (!charged && !_mechanicalArmAttack.TryAttack(Inventory))
         {
             ShowActionFeedback("Mk I cannot strike yet.");
             return false;
         }
 
-        scout.ApplyDamage(_mechanicalArmAttack.Damage);
+        var damage = charged ? ChargedStrikeDamage : _mechanicalArmAttack.Damage;
+        var outcome = target.ReceiveStrike(new ArmStrike(damage, charged, GlobalPosition));
+        if (outcome == StrikeOutcome.Ignored)
+        {
+            ShowActionFeedback("Attack ready: aim at the living Galaxabrain, then left click.");
+            return false;
+        }
+
+        var hitPoint = hit.TryGetValue("position", out var position) ? position.AsVector3() : GlobalPosition;
+        if (outcome == StrikeOutcome.Deflected)
+        {
+            // A guard or sound stone turns the blow: a hard, dull stop rather
+            // than the hit's punch, and the line names what would work.
+            _cameraShaker?.AddTrauma(0.12f);
+            _cameraShaker?.AddKick(-HitKickPitchRadians * 0.5f, 0.0f);
+            AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Deflect", hitPoint);
+            ShowActionFeedback(target.DeflectFeedback);
+            return true;
+        }
+
+        var lethal = outcome == StrikeOutcome.Killed;
         _timeManager?.TriggerDefaultHitStop();
-        _cameraShaker?.AddTrauma(0.22f);
+        _cameraShaker?.AddTrauma(charged ? 0.45f : 0.22f);
         // A confirmed hit punches the view up and slightly across, so landing a
         // strike feels different from swinging at air.
-        _cameraShaker?.AddKick(HitKickPitchRadians, HitKickYawRadians);
+        _cameraShaker?.AddKick(HitKickPitchRadians * (charged ? 1.8f : 1f), HitKickYawRadians);
         AudioCue.Play(this, ArmHitAudioPath);
-        AudioCue.Play3D(this, "AudioLayer_Player/Weapon_Impact", GlobalPosition);
-        CombatOverlay?.ShowHitMarker(scout.Brain.IsDead);
+        AudioCue.Play3D(this, charged ? "AudioLayer_Player/Weapon_ChargedImpact" : "AudioLayer_Player/Weapon_Impact", hitPoint);
+        CombatOverlay?.ShowHitMarker(lethal);
         AttackLanded?.Invoke();
-        if (!scout.Brain.IsDead)
+        if (!lethal)
         {
-            ShowActionFeedback(GalaxabrainScoutHitFeedback);
+            ShowActionFeedback(charged ? ChargedStrikeFeedback : GalaxabrainScoutHitFeedback);
         }
         return true;
     }
 
-    private void PlayArmSwingFeedback()
+    /// <summary>
+    /// Mk II magnet clamp. The crosshair ray picks a pull target first; failing
+    /// that, the nearest target inside a small cone around it with a clear line
+    /// of sight, because drones are small and fast and an exact hit would make
+    /// the module feel broken rather than skilful.
+    /// </summary>
+    public bool TryPull()
+    {
+        if (!Inventory.HasMagnetClamp)
+        {
+            if (Inventory.IsMechanicalArmBuilt)
+            {
+                ShowActionFeedback(PullBlockedFeedback);
+            }
+            return false;
+        }
+
+        if (_magnetPull.IsOnCooldown)
+        {
+            return false;
+        }
+
+        var target = FindPullTarget();
+        if (target is null)
+        {
+            // A clamp shot at nothing still fires: it costs the cooldown.
+            _magnetPull.TryFire(Inventory);
+            AudioCue.Play3D(this, "AudioLayer_Player/Arm_Pull", GlobalPosition);
+            ShowPullBeam(_camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * 6f);
+            ShowActionFeedback(PullMissFeedback);
+            return false;
+        }
+
+        _magnetPull.TryFire(Inventory);
+        var anchor = target.PullAnchor;
+        if (!target.Pull(GlobalPosition))
+        {
+            return false;
+        }
+
+        AudioCue.Play3D(this, "AudioLayer_Player/Arm_Pull", GlobalPosition);
+        ShowPullBeam(anchor);
+        _cameraShaker?.AddKick(-SwingKickPitchRadians * 1.5f, 0.0f);
+        _cameraShaker?.AddTrauma(0.12f);
+        PullLanded?.Invoke(target);
+        return true;
+    }
+
+    private IPullTarget? FindPullTarget()
+    {
+        var from = _camera.GlobalPosition;
+        var aim = -_camera.GlobalTransform.Basis.Z;
+        var query = PhysicsRayQueryParameters3D.Create(from, from + aim * PullRange);
+        query.CollideWithAreas = false;
+        query.CollideWithBodies = true;
+        query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
+        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        if (hit.TryGetValue("collider", out var colliderVariant)
+            && FindAncestor<IPullTarget>(colliderVariant.AsGodotObject()) is { CanBePulled: true } direct)
+        {
+            return direct;
+        }
+
+        IPullTarget? best = null;
+        var bestCos = -1f;
+        foreach (var node in GetTree().GetNodesInGroup(PullTargetGroup))
+        {
+            if (node is not IPullTarget candidate || !candidate.CanBePulled)
+                continue;
+
+            var toTarget = candidate.PullAnchor - from;
+            if (!MagnetPullLogic.IsWithinAssist(aim, toTarget, PullRange))
+                continue;
+
+            var cos = aim.Dot(toTarget.Normalized());
+            if (cos <= bestCos || !HasLineOfSight(from, candidate))
+                continue;
+
+            best = candidate;
+            bestCos = cos;
+        }
+
+        return best;
+    }
+
+    /// <summary>Scene group every <see cref="IPullTarget"/> joins, for clamp aim assist.</summary>
+    public const string PullTargetGroup = "pull_targets";
+
+    private bool HasLineOfSight(Vector3 from, IPullTarget target)
+    {
+        var query = PhysicsRayQueryParameters3D.Create(from, target.PullAnchor);
+        query.CollideWithAreas = false;
+        query.CollideWithBodies = true;
+        query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
+        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        return !hit.TryGetValue("collider", out var collider)
+            || ReferenceEquals(FindAncestor<IPullTarget>(collider.AsGodotObject()), target);
+    }
+
+    private void ShowPullBeam(Vector3 worldTarget)
+    {
+        if (_pullBeam is null)
+        {
+            return;
+        }
+
+        // A short-lived line from the clamp to what it grabbed: the pull reads
+        // as an action at a distance, not as the object moving on its own.
+        var start = _camera.GlobalPosition + _camera.GlobalTransform.Basis * new Vector3(0.32f, -0.28f, -0.6f);
+        var length = start.DistanceTo(worldTarget);
+        if (length < 0.1f)
+        {
+            return;
+        }
+
+        _pullBeam.GlobalPosition = (start + worldTarget) * 0.5f;
+        _pullBeam.LookAt(worldTarget, Vector3.Up);
+        _pullBeam.Scale = new Vector3(1f, 1f, length);
+        _pullBeam.Visible = true;
+        if (_pullBeamTween is { } previous && previous.IsValid())
+        {
+            previous.Kill();
+        }
+
+        _pullBeamTween = CreateTween();
+        _pullBeamTween.TweenInterval(0.18f);
+        _pullBeamTween.TweenCallback(Callable.From(() =>
+        {
+            if (_pullBeam is not null)
+            {
+                _pullBeam.Visible = false;
+            }
+        }));
+    }
+
+    /// <summary>
+    /// Damage from any enemy: remembers where it came from so the damage
+    /// indicator points at the right attacker, now that there is more than one kind.
+    /// </summary>
+    public void TakeHit(int damage, Vector3 sourcePosition)
+    {
+        _lastDamageOrigin = sourcePosition;
+        Health.ApplyDamage(damage);
+    }
+
+    private static T? FindAncestor<T>(GodotObject? collider) where T : class
+    {
+        var node = collider as Node;
+        while (node is not null)
+        {
+            if (node is T match)
+            {
+                return match;
+            }
+
+            node = node.GetParent();
+        }
+
+        return null;
+    }
+
+    private void PlayArmSwingFeedback(bool charged = false)
     {
         // Viewmodel punch: quick forward jab and spring back, plus the swing
         // whoosh — played for every unblocked swing, hit or miss, so attack
@@ -335,7 +646,7 @@ public partial class FirstPersonController : CharacterBody3D
         }
 
         _mechanicalArmVisual.Rotation = _mechanicalArmBaseRotation;
-        var jabRotation = _mechanicalArmBaseRotation + new Vector3(-0.35f, 0f, 0f);
+        var jabRotation = _mechanicalArmBaseRotation + new Vector3(charged ? -0.6f : -0.35f, 0f, 0f);
         _armSwingTween = CreateTween();
         _armSwingTween.TweenProperty(_mechanicalArmVisual, "rotation", jabRotation, 0.07f)
             .SetTrans(Tween.TransitionType.Quad)
@@ -381,9 +692,21 @@ public partial class FirstPersonController : CharacterBody3D
         else if (interacted && interactable is Workbench)
         {
             // Reuse the existing controller-to-HUD feedback signal for the craft success,
-            // keeping the MVP loop guidance in one player-facing action channel.
-            ShowActionFeedback(MechanicalArmCraftSuccessFeedback);
+            // keeping the loop guidance in one player-facing action channel.
+            var tier = Inventory.ArmLevel;
+            ShowActionFeedback(tier switch
+            {
+                >= 3 => Mk3CraftSuccessFeedback,
+                2 => Mk2CraftSuccessFeedback,
+                _ => MechanicalArmCraftSuccessFeedback,
+            });
             AudioCue.Play(this, "AudioLayer_UI/UI_Craft_Complete");
+            ArmCrafted?.Invoke(tier);
+        }
+        else if (interacted && interactable is PowerCorePickup)
+        {
+            ShowActionFeedback(PowerCoreRecoveryFeedback);
+            AudioCue.Play(this, "AudioLayer_State/State_Objective");
         }
         else if (interacted && interactable is GalaxabrainComponentPickup)
         {
@@ -396,9 +719,8 @@ public partial class FirstPersonController : CharacterBody3D
         }
         else if (interacted && interactable is Beacon)
         {
-            // Beacon success uses the existing controller-to-HUD action feedback
-            // pathway so victory confirmation appears without a new UI system.
-            ShowActionFeedback(BeaconActivationFeedback);
+            // Activation starts the charge; the holdout's own feedback takes it from here.
+            ShowActionFeedback(BeaconChargingFeedback);
         }
 
         return interacted;
@@ -420,6 +742,48 @@ public partial class FirstPersonController : CharacterBody3D
     }
 
     private bool TryGetTargetInteractionPrompt(out string prompt, out ILookHighlightTarget? highlightTarget)
+    {
+        prompt = string.Empty;
+        highlightTarget = null;
+        if (TryGetInteractablePrompt(out prompt, out highlightTarget))
+        {
+            return true;
+        }
+
+        return TryGetAimHint(out prompt);
+    }
+
+    /// <summary>
+    /// What the arm could do to the thing under the crosshair (pull the wreck,
+    /// break the cracked stone), shown in the same prompt line as E-interactions
+    /// so a new module is taught where it is needed, not in a menu.
+    /// </summary>
+    private bool TryGetAimHint(out string prompt)
+    {
+        prompt = string.Empty;
+        if (!Inventory.IsMechanicalArmBuilt)
+        {
+            return false;
+        }
+
+        var query = PhysicsRayQueryParameters3D.Create(
+            _camera.GlobalPosition,
+            _camera.GlobalPosition - _camera.GlobalTransform.Basis.Z * PullRange);
+        query.CollideWithAreas = false;
+        query.CollideWithBodies = true;
+        query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
+        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        if (!hit.TryGetValue("collider", out var collider)
+            || FindAncestor<IAimHint>(collider.AsGodotObject()) is not { } hint)
+        {
+            return false;
+        }
+
+        prompt = hint.GetAimHint(Inventory);
+        return !string.IsNullOrEmpty(prompt);
+    }
+
+    private bool TryGetInteractablePrompt(out string prompt, out ILookHighlightTarget? highlightTarget)
     {
         prompt = string.Empty;
         highlightTarget = null;
@@ -530,14 +894,50 @@ public partial class FirstPersonController : CharacterBody3D
 
     private string BuildWorkbenchPrompt()
     {
-        if (Inventory.IsMechanicalArmBuilt)
-            return "Workbench: Mk I already built. Left click attacks the Galaxabrain.";
+        var next = MechanicalArmRecipe.NextFor(Inventory);
+        if (next is null)
+            return "Workbench: the arm is complete — Mk III online.";
 
-        var cost = $"needs {_mechanicalArmRecipe.MetalCost} Metal, {_mechanicalArmRecipe.BiomassCost} Biomass, {_mechanicalArmRecipe.ElectronicComponentsCost} Electronics";
-        return _mechanicalArmRecipe.CanCraft(Inventory) && Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm
-            ? $"Press E to craft Mechanical Arm Mk I ({cost})."
-            : $"Workbench: Mechanical Arm Mk I {cost}. Collect resources first.";
+        var cost = $"{next.MetalCost} Metal";
+        if (next.BiomassCost > 0)
+            cost += $", {next.BiomassCost} Biomass";
+        if (next.ElectronicComponentsCost > 0)
+            cost += $", {next.ElectronicComponentsCost} Electronics";
+        if (next.RequiresGalaxabrainComponent)
+            cost += ", the Scout's component";
+
+        if (next.Tier == 1)
+        {
+            var mk1Cost = $"needs {_mechanicalArmRecipe.MetalCost} Metal, {_mechanicalArmRecipe.BiomassCost} Biomass, {_mechanicalArmRecipe.ElectronicComponentsCost} Electronics";
+            return _mechanicalArmRecipe.CanCraft(Inventory) && Mission.CurrentStep == CrashSiteMissionStep.BuildMechanicalArm
+                ? $"Press E to craft Mechanical Arm Mk I ({mk1Cost})."
+                : $"Workbench: Mechanical Arm Mk I {mk1Cost}. Collect resources first.";
+        }
+
+        if (Mission.CurrentStep < Workbench.StepForTier(next.Tier))
+            return Inventory.ArmLevel >= 1
+                ? $"Workbench: {RomanArm()} online. Left click attacks."
+                : $"Workbench: {next.DisplayName} needs {cost}.";
+
+        return next.CanCraft(Inventory)
+            ? $"Press E to fit {next.DisplayName} ({cost})."
+            : $"Workbench: {next.DisplayName} needs {cost}.";
     }
+
+    private string RomanArm() => $"Mk {MechanicalArmRecipe.RomanTier(Inventory.ArmLevel)}";
+
+    public const string WardenDefeatFeedback = "Warden down — take the beacon's power core from its nest.";
+    public const string HoldoutLeftFeedback = "The beacon stops charging out here — get back to the plaza!";
+    public const string HoldoutReturnedFeedback = "Beacon charging — hold the plaza.";
+
+    public void ShowWardenDefeatFeedback()
+    {
+        ShowActionFeedback(WardenDefeatFeedback);
+        AudioCue.Play(this, "AudioLayer_State/State_Objective");
+    }
+
+    public void ShowHoldoutFeedback(bool holding) =>
+        ShowActionFeedback(holding ? HoldoutReturnedFeedback : HoldoutLeftFeedback);
 
     public void ShowGalaxabrainScoutDefeatFeedback()
     {
@@ -564,6 +964,9 @@ public partial class FirstPersonController : CharacterBody3D
         }
 
         _mechanicalArmAttack.Tick((float)delta);
+        _magnetPull.Tick((float)delta);
+        _chargedRecoveryRemaining = Mathf.Max(0f, _chargedRecoveryRemaining - (float)delta);
+        UpdateCharge((float)delta);
         UpdateWeaponReadyAudio();
         UpdateInteractionPrompt();
 
@@ -586,7 +989,8 @@ public partial class FirstPersonController : CharacterBody3D
         var targetFov = isSprinting ? SprintFov : BaseFov;
         _camera.Fov = Mathf.Lerp(_camera.Fov, targetFov, 1.0f - Mathf.Exp(-FovLerpSpeed * (float)delta));
 
-        var speed = WalkSpeed * (isSprinting ? SprintSpeedMultiplier : 1.0f);
+        var speed = WalkSpeed * (isSprinting ? SprintSpeedMultiplier : 1.0f)
+            * (_chargedStrike.IsCharging ? ChargingSpeedMultiplier : 1.0f);
         velocity.X = moveDirection.X * speed;
         velocity.Z = moveDirection.Z * speed;
         Velocity = velocity;
@@ -666,8 +1070,15 @@ public partial class FirstPersonController : CharacterBody3D
             return;
         }
 
-        // The MVP has exactly one damage source, so the living Scout is the
-        // only thing that can have hit the player.
+        if (_lastDamageOrigin is { } origin)
+        {
+            overlay.ShowDamageFrom(GlobalPosition, _bodyYaw, origin);
+            _lastDamageOrigin = null;
+            return;
+        }
+
+        // Damage applied without a known source (tests, legacy callers): the
+        // nearest living Scout is the best guess.
         foreach (var node in GetTree().GetNodesInGroup(GalaxabrainScout.GalaxabrainScoutGroup))
         {
             if (node is GalaxabrainScout scout && GodotObject.IsInstanceValid(scout) && !scout.Brain.IsDead)
@@ -677,6 +1088,61 @@ public partial class FirstPersonController : CharacterBody3D
             }
         }
     }
+
+    private void UpdateCharge(float deltaSeconds)
+    {
+        if (!_chargedStrike.IsCharging)
+        {
+            if (_coilGlow is not null && _coilGlow.Scale.X > 1.001f)
+            {
+                _coilGlow.Scale = Vector3.One;
+            }
+            return;
+        }
+
+        // Releasing the button outside gameplay input (a menu opened) must
+        // not leave a charge armed forever.
+        if (!Input.IsActionPressed("attack"))
+        {
+            _chargedStrike.Cancel();
+            CombatOverlay?.SetChargeFraction(0f);
+            return;
+        }
+
+        _chargedStrike.Tick(deltaSeconds);
+        var fraction = _chargedStrike.ChargeFraction;
+        CombatOverlay?.SetChargeFraction(fraction);
+        if (_coilGlow is not null)
+        {
+            _coilGlow.Scale = Vector3.One * (1f + 0.35f * fraction);
+        }
+
+        if (_mechanicalArmVisual is not null)
+        {
+            _mechanicalArmVisual.Rotation = _mechanicalArmBaseRotation + new Vector3(0.25f * fraction, 0f, 0f);
+        }
+
+        if (_chargedStrike.IsFullyCharged && !_wasFullyCharged)
+        {
+            _wasFullyCharged = true;
+            AudioCue.Play3D(this, "AudioLayer_Player/Arm_ChargeReady", GlobalPosition);
+            _cameraShaker?.AddTrauma(0.06f);
+        }
+    }
+
+    /// <summary>Test seam: hold a Mk III charge for <paramref name="seconds"/> without input, then release.</summary>
+    public bool ChargeAndReleaseForTest(float seconds)
+    {
+        if (!Inventory.HasBreakerCoil)
+            return false;
+
+        _chargedStrike.Begin();
+        _chargedStrike.Tick(seconds);
+        var charged = _chargedStrike.Release();
+        return charged ? TryChargedStrike() : TryAttack();
+    }
+
+    public bool IsChargingStrike => _chargedStrike.IsCharging;
 
     private void UpdateFootstepAudio(Vector2 inputDirection, bool isSprinting, float deltaSeconds)
     {

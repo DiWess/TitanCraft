@@ -84,4 +84,19 @@ public sealed class PlayerHealthTests
         AssertThat(health.CurrentHealth).IsEqual(35);
         AssertThat(health.IsDead).IsFalse();
     }
+
+    [TestCase]
+    public void HealingRepairsUpToTheMaximumAndNeverRevives()
+    {
+        var health = new PlayerHealth();
+        health.ApplyDamage(30);
+        health.Heal(12);
+        AssertThat(health.CurrentHealth).IsEqual(82);
+        health.Heal(500);
+        AssertThat(health.CurrentHealth).IsEqual(PlayerHealth.DefaultMaxHealth);
+
+        health.ApplyDamage(PlayerHealth.DefaultMaxHealth);
+        health.Heal(50);
+        AssertThat(health.IsDead).IsTrue();
+    }
 }

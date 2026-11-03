@@ -19,6 +19,7 @@ public partial class EndScreen : Control
     public override void _Ready()
     {
         ShowEndingSnapshot();
+        ShowRunSummary();
 
         // Only a screen that offers "Reload Last Save" (defeat) has anything to
         // say about a missing checkpoint. The victory screen has no reload, and
@@ -95,6 +96,18 @@ public partial class EndScreen : Control
         snapshot.Visible = texture is not null;
         if (texture is not null && GetNodeOrNull<ColorRect>(BackdropPath) is { } backdrop)
             backdrop.Color = new Color(backdrop.Color, SnapshotBackdropAlpha);
+    }
+
+    /// <summary>The victory screen's line of numbers: what the player found and how long it took.</summary>
+    private void ShowRunSummary()
+    {
+        if (GetNodeOrNull<Label>("Menu/RunSummary") is not { } line)
+            return;
+
+        var summary = RunSummary.Take();
+        line.Visible = summary is not null;
+        if (summary is { } numbers)
+            line.Text = RunSummary.Describe(numbers.Read, numbers.Total, numbers.Seconds);
     }
 
     public void ReturnToMainMenu() => GetTree().ChangeSceneToFile(MainMenuScenePath);

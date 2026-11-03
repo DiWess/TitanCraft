@@ -46,18 +46,27 @@ public static class AudioCue
             return;
         }
 
-        // Fall back to scene-root path
-        var root = caller.GetTree().Root.GetChild(0);
-        if (root == null)
+        // Fall back to a scene-level path ("AudioLayer_State/...")
+        FindInAncestors<AudioStreamPlayer>(caller, audioPath)?.Play();
+    }
+
+    /// <summary>
+    /// Resolves a scene-level cue path from the caller's nearest ancestor that
+    /// has it. This used to be GetTree().Root.GetChild(0), which is the game
+    /// scene in play but the test runner under test, and would become an
+    /// autoload the moment the project gained one.
+    /// </summary>
+    private static T? FindInAncestors<T>(Node caller, string audioPath) where T : Node
+    {
+        for (var node = caller.GetParent(); node is not null; node = node.GetParent())
         {
-            return;
+            if (node.GetNodeOrNull<T>(audioPath) is { } found)
+            {
+                return found;
+            }
         }
 
-        audioPlayer = root.GetNodeOrNull<AudioStreamPlayer>(audioPath);
-        if (audioPlayer != null)
-        {
-            audioPlayer.Play();
-        }
+        return null;
     }
 
     /// <summary>
@@ -83,14 +92,7 @@ public static class AudioCue
             return;
         }
 
-        // Fall back to scene-root path
-        var root = caller.GetTree().Root.GetChild(0);
-        if (root == null)
-        {
-            return;
-        }
-
-        audioPlayer = root.GetNodeOrNull<AudioStreamPlayer3D>(audioPath);
+        audioPlayer = FindInAncestors<AudioStreamPlayer3D>(caller, audioPath);
         if (audioPlayer != null)
         {
             audioPlayer.GlobalPosition = globalPosition;
@@ -115,16 +117,6 @@ public static class AudioCue
             return;
         }
 
-        var root = caller.GetTree().Root.GetChild(0);
-        if (root == null)
-        {
-            return;
-        }
-
-        audioPlayer = root.GetNodeOrNull<AudioStreamPlayer>(audioPath);
-        if (audioPlayer != null)
-        {
-            audioPlayer.Stop();
-        }
+        FindInAncestors<AudioStreamPlayer>(caller, audioPath)?.Stop();
     }
 }

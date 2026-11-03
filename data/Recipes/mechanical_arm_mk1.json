@@ -1,5 +1,8 @@
 {
+  "tier": 1,
+  "name": "Strike Arm",
   "metal": 10,
   "biomass": 3,
-  "electronicComponents": 2
+  "electronicComponents": 2,
+  "requiresGalaxabrainComponent": false
 }

@@ -69,6 +69,12 @@ public partial class CrashSiteEndScreenNavigator : Node
         // climax resolves in the world before the victory screen arrives.
         if (scenePath == VictoryScenePath)
         {
+            if (GetNodeOrNull<SaveSystem.CrashSiteSaveCoordinator>("../SaveCoordinator") is { } coordinator)
+            {
+                var (read, total) = coordinator.Discoveries();
+                RunSummary.Set(read, total, coordinator.PlaySeconds);
+            }
+
             AudioCue.Play(this, MissionCompleteAudioPath);
             GetNodeOrNull<VictoryEndingShot>(EndingShotPath)?.Play();
         }

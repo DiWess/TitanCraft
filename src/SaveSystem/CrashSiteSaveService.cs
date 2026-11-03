@@ -71,6 +71,11 @@ public sealed class CrashSiteSaveService
         try
         {
             var saveData = JsonSerializer.Deserialize<CrashSiteSaveData>(json, JsonOptions);
+            if (saveData is not null && !CrashSiteSaveMigration.TryMigrate(saveData))
+            {
+                return CrashSiteSaveData.NewGame();
+            }
+
             return IsValid(saveData) ? saveData! : CrashSiteSaveData.NewGame();
         }
         catch (JsonException)
@@ -90,6 +95,8 @@ public sealed class CrashSiteSaveService
             && saveData.Metal >= 0
             && saveData.Biomass >= 0
             && saveData.ElectronicComponents >= 0
+            && saveData.ArmLevel >= 0
+            && saveData.ArmLevel <= Resources.MvpInventory.MaxArmLevel
             && Enum.IsDefined(saveData.MissionStep);
     }
 }

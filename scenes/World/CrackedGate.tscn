@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://titancraft_cracked_gate"]
+
+[ext_resource type="Script" path="res://src/World/BreakableWall.cs" id="1_wall"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_ENV_CrackedGate_V1.gltf" id="2_intact"]
+[ext_resource type="PackedScene" path="res://assets/models/post_mvp_kit_v1/TC_ENV_CrackedGate_Broken_V1.gltf" id="3_broken"]
+[ext_resource type="AudioStream" path="res://assets/audio/sources/world/gate_break_01.wav" id="4_break"]
+
+[sub_resource type="BoxShape3D" id="SHAPE_Infill"]
+size = Vector3(2.7, 3.0, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="MAT_Dust"]
+albedo_color = Color(0.86, 0.83, 0.76, 1)
+roughness = 1.0
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_Rubble"]
+emission_shape = 3
+emission_box_extents = Vector3(1.2, 1.3, 0.2)
+direction = Vector3(0, 0.3, 1)
+spread = 50.0
+initial_velocity_min = 1.5
+initial_velocity_max = 4.0
+gravity = Vector3(0, -9.8, 0)
+scale_min = 0.6
+scale_max = 1.8
+
+[sub_resource type="BoxMesh" id="MESH_RubbleChunk"]
+material = SubResource("MAT_Dust")
+size = Vector3(0.14, 0.12, 0.16)
+
+[node name="CrackedGate" type="StaticBody3D"]
+script = ExtResource("1_wall")
+metadata/role = "The tower court's bricked-up gate; a Mk III charged strike breaks it (workstream B)."
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("SHAPE_Infill")
+
+[node name="IntactVisual" type="Node3D" parent="."]
+
+[node name="GateModel" parent="IntactVisual" instance=ExtResource("2_intact")]
+
+[node name="BrokenVisual" type="Node3D" parent="."]
+visible = false
+
+[node name="GateRubbleModel" parent="BrokenVisual" instance=ExtResource("3_broken")]
+
+[node name="BreakBurst" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+emitting = false
+one_shot = true
+amount = 40
+lifetime = 1.3
+explosiveness = 0.9
+process_material = SubResource("PPM_Rubble")
+draw_pass_1 = SubResource("MESH_RubbleChunk")
+
+[node name="BreakAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_break")
+volume_db = 0.0
+unit_size = 5.0

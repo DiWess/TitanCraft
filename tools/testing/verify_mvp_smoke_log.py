@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-"""Fail CI when the Crash Site MVP smoke log is missing a required milestone."""
+"""Fail CI when the Crash Site smoke log is missing a required milestone.
+
+Milestones 1-11 are the MVP loop; 12-19 are the arm modules, the yard, the
+tower court and the beacon holdout (workstreams B and C).
+"""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-REQUIRED_MILESTONES = tuple(f"MVP_SMOKE_MILESTONE_{number:02d}" for number in range(1, 12))
+REQUIRED_MILESTONES = tuple(f"MVP_SMOKE_MILESTONE_{number:02d}" for number in range(1, 20))
 
 
 def parse_args() -> argparse.Namespace:

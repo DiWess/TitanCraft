@@ -33,7 +33,7 @@ public partial class CrashSiteHud : CanvasLayer
     private static readonly Color GainAccent = new(1.0f, 0.62f, 0.18f);
     private static readonly Color DamageAccent = new(1.0f, 0.28f, 0.22f);
     private int _lastHealth = -1;
-    private (int Metal, int Biomass, int Electronics, bool Component) _lastResources = (-1, -1, -1, false);
+    private (int Metal, int Biomass, int Electronics, bool Component, bool Core) _lastResources = (-1, -1, -1, false, false);
     private string _lastArmProgress = string.Empty;
 
     public void SetHealth(int current, int maximum)
@@ -49,20 +49,26 @@ public partial class CrashSiteHud : CanvasLayer
     public void SetObjective(string objective) => _objective.Text = objective;
 
     public void SetResources(int metal, int biomass, int electronicComponents, bool hasGalaxabrainComponent)
+        => SetResources(metal, biomass, electronicComponents, hasGalaxabrainComponent, hasPowerCore: false);
+
+    public void SetResources(int metal, int biomass, int electronicComponents, bool hasGalaxabrainComponent, bool hasPowerCore)
     {
         // Surface both craft electronics and the later mission component so the HUD
         // confirms every pickup required by the Crash Site loop.
         // The component only appears once recovered: "Missing" for the whole
         // first half of the run was a line of noise in a panel meant to be glanced at.
         var missionComponent = hasGalaxabrainComponent ? "  Component: Recovered" : string.Empty;
+        if (hasPowerCore)
+            missionComponent += "  Power core";
         _resources.Text = $"Metal: {metal}  Biomass: {biomass}  Electronics: {electronicComponents}{missionComponent}";
 
-        var current = (metal, biomass, electronicComponents, hasGalaxabrainComponent);
+        var current = (metal, biomass, electronicComponents, hasGalaxabrainComponent, hasPowerCore);
         var gained = _lastResources.Metal >= 0
             && (metal > _lastResources.Metal
                 || biomass > _lastResources.Biomass
                 || electronicComponents > _lastResources.Electronics
-                || (hasGalaxabrainComponent && !_lastResources.Component));
+                || (hasGalaxabrainComponent && !_lastResources.Component)
+                || (hasPowerCore && !_lastResources.Core));
         if (gained)
         {
             PulseLabel(_resources, GainAccent);

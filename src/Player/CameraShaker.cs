@@ -37,7 +37,11 @@ public partial class CameraShaker : Camera3D
         _strafeLean = Mathf.Clamp(strafeInput, -1.0f, 1.0f);
     }
 
-    public void AddKick(float pitchRadians, float yawRadians) => _kick.Add(pitchRadians, yawRadians);
+    public void AddKick(float pitchRadians, float yawRadians)
+    {
+        var scale = TitanCraft.Core.GameSettings.Current.ReduceCameraShake ? 0.4f : 1.0f;
+        _kick.Add(pitchRadians * scale, yawRadians * scale);
+    }
 
     /// <summary>Returns true when the landing was hard enough to register.</summary>
     public bool ReportLanding(float impactSpeed) => _landing.Trigger(impactSpeed);
@@ -91,7 +95,10 @@ public partial class CameraShaker : Camera3D
 
     public void AddTrauma(float amount)
     {
-        _trauma = Mathf.Clamp(_trauma + amount, 0.0f, 1.0f);
+        // "Reduce camera shake" (settings) keeps a hint of every impact
+        // rather than none, so hits still register.
+        var scale = TitanCraft.Core.GameSettings.Current.ReduceCameraShake ? 0.3f : 1.0f;
+        _trauma = Mathf.Clamp(_trauma + amount * scale, 0.0f, 1.0f);
     }
 
     public static float CalculateShakeIntensity(float trauma)
